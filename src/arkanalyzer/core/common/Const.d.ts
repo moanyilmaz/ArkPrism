@@ -1,0 +1,22 @@
+export declare const NAME_DELIMITER = "$";
+export declare const NAME_PREFIX = "%";
+export declare const UNKNOWN_NAME = "unk";
+export declare const DEFAULT_NAME = "dflt";
+export declare const DEFAULT_ARK_CLASS_NAME: string;
+export declare const ANONYMOUS_CLASS_PREFIX: string;
+export declare const ANONYMOUS_CLASS_DELIMITER = "$";
+export declare const DEFAULT_ARK_METHOD_NAME: string;
+export declare const INSTANCE_INIT_METHOD_NAME: string;
+export declare const STATIC_INIT_METHOD_NAME: string;
+export declare const STATIC_BLOCK_METHOD_NAME_PREFIX: string;
+export declare const ANONYMOUS_METHOD_PREFIX: string;
+export declare const CALL_SIGNATURE_NAME = "create";
+export declare const UNKNOWN_PROJECT_NAME: string;
+export declare const UNKNOWN_FILE_NAME: string;
+export declare const UNKNOWN_NAMESPACE_NAME: string;
+export declare const UNKNOWN_CLASS_NAME = "";
+export declare const UNKNOWN_FIELD_NAME = "";
+export declare const UNKNOWN_METHOD_NAME = "";
+export declare const TEMP_LOCAL_PREFIX = "%";
+export declare const LEXICAL_ENV_NAME_PREFIX: string;
+//# sourceMappingURL=Const.d.ts.map

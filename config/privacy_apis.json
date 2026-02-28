@@ -1,0 +1,453 @@
+[
+    {
+        "systemPackage": "@kit.NetworkKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "connection",
+                "method": "getAllNets",
+                "permission": "ohos.permission.GET_NETWORK_INFO",
+                "profilingCategory": "network.connectivity"
+            },
+            {
+                "directCall": true,
+                "namespace": "connection",
+                "method": "getNetCapabilities",
+                "permission": "ohos.permission.GET_NETWORK_INFO",
+                "profilingCategory": "network.connectivity"
+            },
+            {
+                "directCall": true,
+                "namespace": "connection",
+                "method": "getConnectionProperties",
+                "permission": "ohos.permission.GET_NETWORK_INFO",
+                "profilingCategory": "network.connectivity"
+            },
+            {
+                "directCall": true,
+                "namespace": "connection",
+                "method": "getAddressesByName",
+                "permission": "ohos.permission.GET_NETWORK_INFO",
+                "profilingCategory": "network.connectivity"
+            },
+            {
+                "directCall": true,
+                "namespace": "connection",
+                "method": "getDefaultNet",
+                "permission": "ohos.permission.GET_NETWORK_INFO",
+                "profilingCategory": "network.connectivity"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.AdsKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "identifier",
+                "method": "getOAID",
+                "permission": "ohos.permission.APP_TRACKING_CONSENT",
+                "profilingCategory": "device_identity.ad_tracking"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.TelephonyKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "sim",
+                "method": "getSimOperatorNumeric",
+                "profilingCategory": "device_identity.sim"
+            },
+            {
+                "directCall": true,
+                "namespace": "sim",
+                "method": "getSimSpn",
+                "profilingCategory": "device_identity.sim"
+            },
+            {
+                "directCall": true,
+                "namespace": "sim",
+                "method": "getSimAccountInfo",
+                "profilingCategory": "device_identity.sim"
+            },
+            {
+                "directCall": true,
+                "namespace": "sim",
+                "method": "getActiveSimAccountInfoList",
+                "profilingCategory": "device_identity.sim"
+            },
+            {
+                "directCall": true,
+                "namespace": "sim",
+                "method": "getISOCountryCodeForSimSync",
+                "profilingCategory": "device_identity.sim"
+            },
+            {
+                "directCall": true,
+                "namespace": "sms",
+                "method": "getDefaultSmsSimId",
+                "profilingCategory": "user_data.sms"
+            },
+            {
+                "directCall": true,
+                "namespace": "sms",
+                "method": "getDefaultSmsSlotId",
+                "profilingCategory": "user_data.sms"
+            },
+            {
+                "directCall": true,
+                "namespace": "sms",
+                "method": "hasSmsCapability",
+                "profilingCategory": "user_data.sms"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.BasicServicesKit",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "pasteboard",
+                "method": "pasteboard.SystemPasteboard.getData",
+                "profilingCategory": "user_data.clipboard"
+            },
+            {
+                "directCall": false,
+                "namespace": "pasteboard",
+                "method": "pasteboard.PasteData.getPrimaryText",
+                "profilingCategory": "user_data.clipboard"
+            },
+            {
+                "directCall": false,
+                "namespace": "osAccount",
+                "method": "osAccount.AccountManager.getOsAccountLocalId",
+                "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
+                "profilingCategory": "user_data.account"
+            },
+            {
+                "directCall": false,
+                "namespace": "appAccount",
+                "method": "appAccount.AppAccountManager.getAllAccounts",
+                "permission": "ohos.permission.GET_APP_ACCOUNTS",
+                "profilingCategory": "user_data.account"
+            },
+            {
+                "directCall": false,
+                "namespace": "distributedAccount",
+                "method": "distributedAccount.DistributedAccountAbility.getOsAccountDistributedInfo",
+                "profilingCategory": "user_data.account"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "deviceType",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "manufacture",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "brand",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "marketName",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "productSeries",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "productModel",
+                "profilingCategory": "device_identity.hardware"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "displayVersion",
+                "profilingCategory": "device_identity.software"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "incrementalVersion",
+                "profilingCategory": "device_identity.software"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "osFullName",
+                "profilingCategory": "device_identity.software"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "securityPatchTag",
+                "profilingCategory": "device_identity.software"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "bootloaderVersion",
+                "profilingCategory": "device_identity.software"
+            },
+            {
+                "directCall": null,
+                "namespace": "deviceInfo",
+                "method": "serial",
+                "profilingCategory": "device_identity.unique_id"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "batterySOC",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "chargingStatus",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "healthStatus",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "pluggedType",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "voltage",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "technology",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "batteryTemperature",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "isBatteryPresent",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "batteryCapacityLevel",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": null,
+                "namespace": "batteryInfo",
+                "method": "nowCurrent",
+                "profilingCategory": "device_status.battery"
+            },
+            {
+                "directCall": true,
+                "namespace": "i18n",
+                "method": "getSystemLanguage",
+                "profilingCategory": "user_preference.locale"
+            },
+            {
+                "directCall": true,
+                "namespace": "i18n",
+                "method": "getSystemRegion",
+                "profilingCategory": "user_preference.locale"
+            },
+            {
+                "directCall": true,
+                "namespace": "i18n",
+                "method": "getTimeZone",
+                "profilingCategory": "user_preference.locale"
+            },
+            {
+                "directCall": true,
+                "namespace": "settings",
+                "method": "getValueSync",
+                "profilingCategory": "user_preference.settings"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.CameraKit",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "camera",
+                "method": "camera.CameraManager.getSupportedCameras",
+                "permission": "ohos.permission.CAMERA",
+                "profilingCategory": "media.camera"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.AudioKit",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "audio",
+                "method": "audio.AudioManager.getAudioScene",
+                "permission": "ohos.permission.MICROPHONE",
+                "profilingCategory": "media.audio"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.ConnectivityKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "access",
+                "method": "getState",
+                "permission": "ohos.permission.ACCESS_BLUETOOTH",
+                "profilingCategory": "network.bluetooth"
+            },
+            {
+                "directCall": true,
+                "namespace": "wifiManager",
+                "method": "getScanInfoList",
+                "permission": "ohos.permission.GET_WIFI_INFO",
+                "profilingCategory": "network.wifi"
+            },
+            {
+                "directCall": true,
+                "namespace": "wifiManager",
+                "method": "getLinkedInfo",
+                "permission": "ohos.permission.GET_WIFI_INFO",
+                "profilingCategory": "network.wifi"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.LocationKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "geoLocationManager",
+                "method": "isLocationEnabled",
+                "permission": "ohos.permission.LOCATION",
+                "profilingCategory": "location"
+            },
+            {
+                "directCall": true,
+                "namespace": "geoLocationManager",
+                "method": "getLastLocation",
+                "permission": "ohos.permission.LOCATION",
+                "profilingCategory": "location"
+            },
+            {
+                "directCall": true,
+                "namespace": "geoLocationManager",
+                "method": "getCurrentLocation",
+                "permission": "ohos.permission.LOCATION",
+                "profilingCategory": "location"
+            },
+            {
+                "directCall": true,
+                "namespace": "geoLocationManager",
+                "method": "getAddressesFromLocation",
+                "permission": "ohos.permission.LOCATION",
+                "profilingCategory": "location"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.SensorServiceKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "sensor",
+                "method": "on",
+                "permission": "ohos.permission.ACTIVITY_MOTION",
+                "profilingCategory": "device_status.sensor"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.ContactsKit",
+        "privacyApis": [
+            {
+                "directCall": true,
+                "namespace": "contact",
+                "method": "selectContacts",
+                "permission": "ohos.permission.READ_CONTACTS",
+                "profilingCategory": "user_data.contacts"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.DistributedServiceKit",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "distributedDeviceManager",
+                "method": "distributedDeviceManager.DeviceManager.getLocalDeviceId",
+                "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
+                "profilingCategory": "device_identity.distributed"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.ArkUI",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "display",
+                "method": "display.Display.getDefaultDisplaySync",
+                "profilingCategory": "device_identity.screen"
+            },
+            {
+                "directCall": false,
+                "namespace": "display",
+                "method": "display.Display.getAllDisplays",
+                "profilingCategory": "device_identity.screen"
+            }
+        ]
+    },
+    {
+        "systemPackage": "@kit.AbilityKit",
+        "privacyApis": [
+            {
+                "directCall": false,
+                "namespace": "bundleManager",
+                "method": "bundleManager.getBundleInfoForSelf",
+                "profilingCategory": "app_environment"
+            },
+            {
+                "directCall": false,
+                "namespace": "bundleManager",
+                "method": "bundleManager.BundleInfo.getAppInfo",
+                "profilingCategory": "app_environment"
+            }
+        ]
+    }
+]

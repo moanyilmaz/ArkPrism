@@ -1,0 +1,33 @@
+{
+    "name": "arkprism",
+    "version": "1.0.0",
+    "description": "ArkPrism: ArkTS Privacy-sensitive API Recognition and Information-flow Subgraph Mapping",
+    "main": "dist/arkprism.js",
+    "scripts": {
+        "analyze": "ts-node src/arkprism.ts",
+        "batch": "ts-node src/arkprism.ts --batch",
+        "build": "tsc",
+        "start": "ts-node src/arkprism.ts"
+    },
+    "keywords": [
+        "harmonyos",
+        "arkts",
+        "privacy",
+        "static-analysis",
+        "arkanalyzer",
+        "call-graph",
+        "information-flow"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "commander": "11.0.0",
+        "json5": "^2.2.3",
+        "log4js": "6.7.1",
+        "ohos-typescript": "^4.9.5-r6"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3",
+        "ts-node": "^10.9.2",
+        "@types/node": "^20.11.0"
+    }
+}
