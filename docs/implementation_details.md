@@ -28,7 +28,7 @@ This document provides a comprehensive guide to ArkPrism's architecture, module-
 
 ArkPrism follows a layered pipeline architecture. Each layer consumes previous layers' output and produces structured results for the next.
 
-![ArkPrism Architecture](../img/pipeline.pdf)
+![ArkPrism Architecture](../img/pipeline.png)
 
 **Data flow**: Each layer's output feeds into subsequent layers. API detection results are shared across all downstream layers.
 

@@ -54,7 +54,7 @@ Results are written to `out/<project-name>/`:
 
 ## Analysis Pipeline
 
-![ArkPrism Analysis Pipeline](./img/pipeline.pdf)
+![ArkPrism Analysis Pipeline](./img/pipeline.png)
 
 ## Project Structure
 
