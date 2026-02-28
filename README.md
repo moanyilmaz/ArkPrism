@@ -25,7 +25,7 @@ A static analysis tool for HarmonyOS app privacy compliance, built on [ArkAnalyz
 ### Installation
 
 ```bash
-git clone https://github.com/pluiee/ArkPrism.git
+git clone https://github.com/moanyilmaz/ArkPrism.git
 cd ArkPrism
 npm install
 ```
