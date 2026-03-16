@@ -2,7 +2,7 @@
 
 > **ArkTS Privacy-sensitive API Recognition and Information-flow Subgraph Mapping**
 
-A static analysis tool for HarmonyOS app privacy compliance, built on [ArkAnalyzer](https://gitee.com/ArkAnalyzer/ArkAnalyzer). ArkPrism extracts privacy-sensitive control flow subgraphs — tracing data from entry methods through sensitive API calls to data sinks — and detects multi-source collaborative profiling behaviors.
+A static analysis tool for HarmonyOS app privacy compliance, built on [ArkAnalyzer](https://gitcode.com/JJ339/arkanalyzer). ArkPrism extracts privacy-sensitive control flow subgraphs — tracing data from entry methods through sensitive API calls to data sinks — and detects multi-source collaborative profiling behaviors.
 
 ## Features
 
