@@ -177,6 +177,28 @@ export interface MultiSourceCollaboration {
     subgraph?: MultiSourceSubgraph;
 }
 
+// ==================== Layer 5.5: HapFlow Taint Analysis Types ====================
+
+/** A single step in a taint propagation path */
+export interface TaintPathStep {
+    statement: string;          // IR statement string
+    file: string;               // Source file / position info
+    line: number;               // Line number
+    method: string;             // Enclosing method name
+}
+
+/** A detected taint flow from source to sink */
+export interface TaintFlowResult {
+    sourceApi: string;          // Source statement or API signature
+    sourceFile: string;         // Source file / position
+    sourceLine: number;         // Source line number
+    sinkApi: string;            // Sink statement or API signature
+    sinkFile: string;           // Sink file / position
+    sinkLine: number;           // Sink line number
+    taintedValue: string;       // The tainted value being tracked
+    path: TaintPathStep[];      // Complete propagation path from source to sink
+}
+
 // ==================== Layer 6: Output Types ====================
 
 /** Permission declaration extracted from module.json5 */
@@ -195,12 +217,14 @@ export interface ArkPrismOutput {
     callChains: CallChainResult[];
     multiSourceCollaborations: MultiSourceCollaboration[];
     permissionUsages: PermissionResult[];
+    taintFlows?: TaintFlowResult[];
     statistics: {
         totalFilesAnalyzed: number;
         totalMethodsAnalyzed: number;
         totalApisDetected: number;
         totalCallChainsBuilt: number;
         totalCollaborationsDetected: number;
+        totalTaintFlows?: number;
     };
 }
 
