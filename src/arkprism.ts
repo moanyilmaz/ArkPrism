@@ -24,15 +24,21 @@ import { detectMultiSourceCollaborations } from './multiSourceAnalyzer';
 import { analyzeDataSinks } from './dataSinkAnalyzer';
 import { analyzePermissions } from './permissionAnalyzer';
 import { generateDot } from './dotExporter';
-import { ArkPrismOutput, PrivacyDataApiResult } from './prototypes';
+import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult } from './prototypes';
+import { runHapflowAnalysis, HapflowOptions } from './hapflowRunner';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
+
+const DEFAULT_SDK_PATH = 'E:/OpenHarmony_SDK/18/ets';
 
 // ---- Core analysis pipeline (shared by single & batch) ----
 
 interface AnalysisOptions {
     outputDir: string;
     noDot: boolean;
+    noTaint: boolean;
+    noPta: boolean;
+    sdkPath: string;
 }
 
 function analyzeProject(projectDir: string, projectName: string, opts: AnalysisOptions): ArkPrismOutput {
@@ -95,6 +101,23 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         }
     }
 
+    // HapFlow IFDS Taint Analysis
+    let taintFlows: TaintFlowResult[] = [];
+    if (!opts.noTaint) {
+        try {
+            taintFlows = runHapflowAnalysis(scene, {
+                noPta: opts.noPta,
+                sdkPath: opts.sdkPath
+            });
+            console.log(`[HAPFLOW] Taint analysis complete: ${taintFlows.length} flows detected.`);
+        } catch (e) {
+            console.log(`[WARN] HapFlow taint analysis failed: ${e}`);
+            if (e instanceof Error && e.stack) {
+                console.log(e.stack);
+            }
+        }
+    }
+
     // Permissions
     let permissionResults = analyzePermissions(projectDir);
 
@@ -108,12 +131,14 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         callChains: callChainResults,
         multiSourceCollaborations: multiSourceResults,
         permissionUsages: permissionResults,
+        taintFlows: taintFlows.length > 0 ? taintFlows : undefined,
         statistics: {
             totalFilesAnalyzed: filesAnalyzed,
             totalMethodsAnalyzed: methodsAnalyzed,
             totalApisDetected: allApiResults.length,
             totalCallChainsBuilt: chainsWithPath,
-            totalCollaborationsDetected: multiSourceResults.length
+            totalCollaborationsDetected: multiSourceResults.length,
+            totalTaintFlows: taintFlows.length
         }
     };
 
@@ -152,6 +177,9 @@ Usage:
 Options:
   --output-dir <dir>    Output directory (default: ./out)
   --no-dot              Skip DOT graph generation
+  --no-taint            Skip HapFlow taint analysis
+  --no-pta              Skip pointer analysis (faster but less precise)
+  --sdkPath <dir>       OpenHarmony SDK path (default: E:/OpenHarmony_SDK/18/ets)
   --help                Show this help message
 `);
 }
@@ -162,6 +190,9 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
     let target = '';
     let outputDir = path.resolve(__dirname, '..', 'out');
     let noDot = false;
+    let noTaint = false;
+    let noPta = false;
+    let sdkPath = DEFAULT_SDK_PATH;
 
     for (let i = 0; i < args.length; i++) {
         let arg = args[i];
@@ -178,12 +209,18 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
             outputDir = args[++i] || outputDir;
         } else if (arg === '--no-dot') {
             noDot = true;
+        } else if (arg === '--no-taint') {
+            noTaint = true;
+        } else if (arg === '--no-pta') {
+            noPta = true;
+        } else if (arg === '--sdkPath') {
+            sdkPath = args[++i] || sdkPath;
         } else if (!arg.startsWith('-')) {
             target = arg;
         }
     }
 
-    return { mode, target, opts: { outputDir, noDot } };
+    return { mode, target, opts: { outputDir, noDot, noTaint, noPta, sdkPath } };
 }
 
 // ---- Run modes ----
@@ -208,6 +245,7 @@ function runSingle(projectDir: string, opts: AnalysisOptions): void {
     console.log(`  Privacy APIs detected:     ${output.statistics.totalApisDetected}`);
     console.log(`  Call chains built:         ${output.statistics.totalCallChainsBuilt}`);
     console.log(`  Collab. behaviors found:   ${output.statistics.totalCollaborationsDetected}`);
+    console.log(`  Taint flows detected:      ${output.statistics.totalTaintFlows || 0}`);
     console.log("=".repeat(70));
 }
 
