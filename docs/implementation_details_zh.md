@@ -1,535 +1,461 @@
-# ArkPrism 实现细节文档
-
-> ArkPrism: ArkTS 隐私敏感 API 识别与信息流子图映射
-
-本文档详细介绍 ArkPrism 的架构设计、各模块实现细节、ArkAnalyzer API 使用方式及输出格式。
-
----
-
-## 目录
-
-1. [整体架构](#1-整体架构)
-2. [ArkAnalyzer 集成清单](#2-arkanalyzer-集成清单)
-3. [Layer 2: 隐私 API 检测](#3-layer-2-隐私-api-检测)
-4. [Layer 3: 调用图构建](#4-layer-3-调用图构建)
-5. [Layer 4: 调用链追踪](#5-layer-4-调用链追踪)
-6. [Layer 5a: 数据汇点分析](#6-layer-5a-数据汇点分析)
-7. [Layer 5b: 多源协作检测](#7-layer-5b-多源协作检测)
-8. [权限分析](#8-权限分析)
-9. [语义上下文](#9-语义上下文)
-10. [DOT 可视化](#10-dot-可视化)
-11. [类型系统](#11-类型系统)
-12. [输出格式](#12-输出格式)
-13. [配置文件](#13-配置文件)
-
----
-
-## 1. 整体架构
-
-ArkPrism 采用分层流水线架构，每一层消费上一层的输出，并产生结构化结果传递给下一层。
-
-整个分析流程由 CLI 入口 `arkprism.ts` 驱动，支持三种运行模式（单项目分析、批量分析、配置文件模式）。主分析流水线如下：
-
-1. **Layer 1: 场景构建** — 读取项目源码，依次调用 `SceneConfig` → `buildBasicInfo()` → `buildScene4HarmonyProject()` → `inferTypes()`，构建 ArkAnalyzer 分析场景。
-2. **Layer 2: 隐私 API 检测**（`apiDetector.ts`）— 使用四种检测模式对 IR 进行规则匹配，输出 `PrivacyDataApiResult[]`。
-3. **Layer 3: 调用图构建**（`callGraphBuilder.ts`）— 基于 RTA/CHA/PTA 算法构建调用图，并补充生命周期隐式边。
-4. **Layer 4: 调用链追踪**（`callChainTracer.ts`）— 从敏感 API 出发，通过反向 BFS 追踪到入口方法，同时提取控制流信息和语义上下文，输出 `CallChainResult[]`。
-5. **Layer 5a: 数据汇点分析**（`dataSinkAnalyzer.ts`）— 基于 Def-Use 链追踪隐私数据的流向，输出 `DataSinkInfo[]`。
-6. **Layer 5b: 多源协作检测**（`multiSourceAnalyzer.ts`）— 检测多个隐私 API 的组合使用，计算 LCA 并构建协作子图，输出 `MultiSourceCollaboration[]`。
-
-Layer 5a 和 Layer 5b 并行执行，两者的结果最终汇聚至输出层，生成 JSON 报告和 DOT 可视化文件（`dotExporter.ts`）。
-
-此外，`permissionAnalyzer.ts` 作为独立的旁路模块，从 `module.json5` 中提取权限声明信息，与主流水线的 API 检测结果交叉对照。
-
-**数据流向**：每一层的输出作为下一层的输入。API 检测结果被所有下游层共享。
-
----
-
-## 2. ArkAnalyzer 集成清单
-
-### 已使用的核心 API
-
-| API / 类型 | 使用位置 | 用途 |
-|------------|---------|------|
-| `SceneConfig` | arkprism.ts | 项目配置构建 |
-| `SceneConfig.buildFromProjectDir()` | arkprism.ts | 从目录自动生成配置 |
-| `Scene` | utils.ts, 全局 | 分析场景核心对象 |
-| `Scene.buildBasicInfo()` | utils.ts | 构建基础 IR 信息 |
-| `Scene.buildScene4HarmonyProject()` | utils.ts | 鸿蒙项目特化构建 |
-| `Scene.inferTypes()` | utils.ts | 类型推断 |
-| `Scene.getFiles()` | arkprism.ts | 获取所有源文件 |
-| `Scene.getMethods()` | callGraphBuilder.ts | 遍历所有方法 |
-| `Scene.makeCallGraphRTA()` | callGraphBuilder.ts | RTA 调用图构建 |
-| `Scene.makeCallGraphCHA()` | callGraphBuilder.ts | CHA 调用图（回退方案） |
-| `CallGraph` | callGraphBuilder.ts, callChainTracer.ts | 调用图对象 |
-| `CallGraph.getNodeNum()` | callGraphBuilder.ts | 节点数量 |
-| `CallGraph.nodesItor()` | callChainTracer.ts | 遍历所有节点 |
-| `CallGraph.getOutgoingEdges()` | callChainTracer.ts | 获取出边 |
-| `CallGraph.getCallGraphNodeByMethod()` | callGraphBuilder.ts | 按方法查找节点 |
-| `CallGraph.getCallEdgeByPair()` | callGraphBuilder.ts | 检查边是否存在 |
-| `CallGraph.addDirectOrSpecialCallEdge()` | callGraphBuilder.ts | 添加生命周期隐式边 |
-| `CallGraphNode` | callChainTracer.ts | 调用图节点 |
-| `ClassHierarchyAnalysis` | callChainTracer.ts, multiSourceAnalyzer.ts | CHA 虚调用解析 |
-| `DominanceFinder` | callChainTracer.ts | 支配树计算 |
-| `DominanceTree` | callChainTracer.ts | 支配关系查询 |
-| `ArkMethod` | 全局 | 方法对象 |
-| `ArkMethod.getBody()` | callChainTracer.ts, dataSinkAnalyzer.ts | 获取方法体 |
-| `ArkMethod.getBody().getCfg()` | 多处 | 获取控制流图 |
-| `ArkMethod.getSignature()` | callGraphBuilder.ts | 方法签名 |
-| `ArkMethod.getDeclaringArkClass()` | dataSinkAnalyzer.ts | 获取所属类 |
-| `ArkFile` | apiDetector.ts | 文件对象 |
-| `ArkFile.getClasses()` | apiDetector.ts | 获取类列表 |
-| `ArkFile.getImportInfos()` | utils.ts | 获取 import 信息 |
-| `ArkClass` | apiDetector.ts | 类对象 |
-| `ArkClass.getMethods()` | apiDetector.ts | 获取方法列表 |
-| `Cfg` | apiDetector.ts | 控制流图对象 |
-| `Cfg.getStmts()` | 多处 | 获取语句列表 |
-| `Cfg.getBlocks()` | callChainTracer.ts | 获取基本块列表 |
-| `BasicBlock` | callChainTracer.ts | 基本块 |
-| `BasicBlock.getSuccessors()` | callChainTracer.ts | 后继基本块 |
-| `BasicBlock.getExceptionalSuccessorBlocks()` | callChainTracer.ts | 异常后继块（try-catch） |
-| `BasicBlock.getStmts()` | callChainTracer.ts | 块内语句 |
-| `ArkIfStmt` | callChainTracer.ts | if 条件语句 |
-| `ArkIfStmt.getConditionExprRef()` | callChainTracer.ts | 获取条件表达式 |
-| `ArkInvokeStmt` | apiDetector.ts, callChainTracer.ts | 调用语句 |
-| `ArkInvokeStmt.getInvokeExpr()` | apiDetector.ts | 获取调用表达式 |
-| `ArkAssignStmt` | apiDetector.ts, dataSinkAnalyzer.ts | 赋值语句 |
-| `ArkReturnStmt` | dataSinkAnalyzer.ts | 返回语句 |
-| `ArkReturnStmt.getOp()` | dataSinkAnalyzer.ts | 获取返回值 |
-| `Stmt.getUses()` | dataSinkAnalyzer.ts, callChainTracer.ts | Def-Use 链：获取使用的值 |
-| `Stmt.getLeftOp()` | dataSinkAnalyzer.ts | Def-Use 链：获取被赋值的变量 |
-| `Stmt.containsInvokeExpr()` | callChainTracer.ts | 检查是否包含调用 |
-| `Stmt.getInvokeExpr()` | callChainTracer.ts | 获取调用表达式 |
-| `Stmt.getOriginPositionInfo()` | 多处 | 获取源码位置（行号） |
-| `AbstractInvokeExpr` | apiDetector.ts | 调用表达式抽象类 |
-| `getCallbackMethodFromStmt()` | callChainTracer.ts, multiSourceAnalyzer.ts | 解析 Promise .then/.catch 回调 |
-| `COMPONENT_LIFECYCLE_METHOD_NAME` | callGraphBuilder.ts | 组件生命周期常量（17 个方法） |
-| `LIFECYCLE_METHOD_NAME` | callGraphBuilder.ts | UIAbility 生命周期常量（27 个方法） |
-
-### 功能与 API 对应关系
-
-| ArkPrism 功能 | ArkAnalyzer 支撑 |
-|--------------|-----------------|
-| API 检测 | Cfg → Stmts → ArkInvokeStmt/ArkAssignStmt 模式匹配 |
-| 调用图构建 | `makeCallGraphRTA()` + `makeCallGraphCHA()` |
-| 反向 BFS | CallGraph.nodesItor() + getOutgoingEdges() 构建反向映射 |
-| 控制流分析 | BasicBlock.getSuccessors() + ArkIfStmt + DominanceFinder |
-| 数据汇点追踪 | Stmt.getLeftOp() + getUses()（Def-Use 链）+ ArkReturnStmt.getOp() |
-| 异步检测 | ArkAwaitExpr constructor name 检查 |
-| 回调解析 | getCallbackMethodFromStmt() + %AM 匿名方法模式 |
-| 生命周期边 | COMPONENT_LIFECYCLE_METHOD_NAME + LIFECYCLE_METHOD_NAME |
-| CHA | ClassHierarchyAnalysis 虚调用解析 |
-| 支配树 | DominanceFinder → DominanceTree → getImmediateDominator() |
+# ArkPrism 实现细节
 
----
+本文按当前仓库代码的真实行为整理 ArkPrism 的实现。重点覆盖入口流程、规则检测、调用图增强、调用链追踪、数据汇聚、多源协同、权限提取、HapFlow 污点分析与输出结构。
 
-## 3. Layer 2: 隐私 API 检测
+## 1. 项目目标
 
-**文件**：`apiDetector.ts`（299 行）
+ArkPrism 面向 HarmonyOS ArkTS 项目做隐私行为静态分析。它的核心输出不是“命中了哪些 API”，而是以下几层信息的组合：
 
-### 四种检测模式
+1. 哪些隐私 API 或隐私常量被访问。
+2. 这些访问是从哪个页面、生命周期或交互入口触发的。
+3. 返回的数据后续是否流向网络、存储、界面、日志或返回值。
+4. 多个隐私类别是否在同一逻辑点发生协同。
+5. 在可选条件下，是否存在更精确的 source-to-sink 污点路径。
 
-**模式 1：直接调用语句**（`ArkInvokeStmt`）
-```typescript
-// 源码: identifier.getOAID(callback)
-// IR:   invokeexpr identifier.getOAID(cb)
-```
-遍历 CFG 中的 `ArkInvokeStmt`，将方法名与规则库进行匹配。
-
-**模式 2：赋值后调用**（`ArkAssignStmt` + invoke）
-```typescript
-// 源码: let net = connection.getDefaultNet()
-// IR:   net = invokeexpr connection.getDefaultNet()
-```
-遍历 `ArkAssignStmt`，通过 `containsInvokeExpr()` 检查右侧值。
+## 2. 主流程
 
-**模式 3：间接调用**（管理器模式）
-```typescript
-// 源码: let mgr = pasteboard.getSystemPasteboard()
-//       let data = mgr.getData()
-```
-先检测管理器对象的创建，然后在同一方法内追踪对该对象的方法调用。
+CLI 入口在 `src/arkprism.ts`。当前 parser 实际支持的参数是：
 
-**模式 4：隐私常量访问**
-```typescript
-// 源码: let brand = deviceInfo.brand
-// IR:   brand = deviceInfo.brand（字段访问）
-```
-检查赋值语句右侧是否为 `命名空间.常量` 的形式。
+- `--batch`
+- `--config`
+- `--output-dir`
+- `--no-dot`
+- `--no-taint`
+- `--no-pta`
+- `--sdkPath`
 
-### 规则库（`config/privacy_apis.json`）
+主流程如下：
 
-```json
-{
-  "systemPackage": "@ohos.deviceInfo",
-  "privacyApis": [
-    {
-      "directCall": false,
-      "namespace": "deviceInfo",
-      "method": "brand",
-      "profilingCategory": "device_identity.hardware",
-      "sensitivityLevel": "low"
-    }
-  ]
-}
-```
+1. 构造 `SceneConfig`，调用 `getSceneFromJson()` 建立 ArkAnalyzer 场景。
+2. 若 SDK 路径存在，额外调用 `scene.buildSdk('@ohosSdk', sdkPath)` 加载 SDK 声明。
+3. 遍历 `scene.getFiles()`，跳过 `build`、`cache`、`node_modules`、`oh_modules`、`.preview`。
+4. 读取 `config/privacy_apis.json` 和 `config/system_packages14.json`。
+5. 对每个业务文件执行隐私 API 检测。
+6. 若检测到 API，则继续：
+   - `buildCallGraph(scene)`
+   - `traceCallChains(...)`
+   - `analyzeDataSinks(...)`
+   - `enrichCallChainsWithSemanticContext(...)`
+   - `detectMultiSourceCollaborations(...)`
+7. 若未传 `--no-taint`，运行 `runHapflowAnalysis(...)`。
+8. 运行 `analyzePermissions(projectDir)` 提取权限声明。
+9. 输出 JSON 报告；若未禁用 DOT，则额外导出图。
 
-**20+ 隐私类别**：`device_identity.hardware/software/unique_id/sim/ad_tracking/distributed/screen`、`device_status.battery/sensor`、`network.connectivity/wifi/bluetooth`、`user_data.account/clipboard/sms/contacts`、`user_preference.locale/settings`、`location`、`media.camera/audio`、`app_environment`。
+## 3. 场景构建与底层表示
 
----
+场景构建在 `src/utils.ts`。
 
-## 4. Layer 3: 调用图构建
+`getSceneFromJson()` 的顺序是：
 
-**文件**：`callGraphBuilder.ts`（180 行）
+1. `scene.buildBasicInfo(config)`
+2. `scene.buildScene4HarmonyProject()`
+3. `scene.inferTypes()`
 
-### 构建策略
+ArkPrism 自己不重新实现 IR、CFG 或调用图，而是建立在仓库内集成的 ArkAnalyzer 上。后续分析统一消费：
 
-调用图分三步构建：
+- Ark IR 语句
+- 方法签名
+- 控制流图
+- 调用图
+- 类型信息
+- 指针分析结果
 
-1. **收集入口点**：通过 `Scene.getMethods()` 过滤已知的入口方法名
-2. **尝试 RTA 构建**：`scene.makeCallGraphRTA(entryPoints)`
-3. **RTA 失败则回退到 CHA**：`scene.makeCallGraphCHA(entryPoints)`
-4. **增强**：添加生命周期隐式边
+这也是为什么它能同时做规则匹配、调用链回溯和 IFDS 污点分析。
 
-### 入口点识别
+## 4. 隐私 API 检测
 
-使用 ArkAnalyzer 官方常量 + 用户交互回调：
+实现位于 `src/apiDetector.ts`。
 
-| 优先级 | 类型 | 方法名 |
-|--------|------|--------|
-| 1 | 用户交互 | `onClick`、`onTouch`、`onChange`、`onSubmit`、`onSelect`、... |
-| 2 | 组件生命周期 | `aboutToAppear`、`aboutToDisappear`、`build`、`onPageShow`、`onPageHide`、`onLayout`、`onMeasure`、...（共 17 个） |
-| 3 | UIAbility 生命周期 | `onCreate`、`onForeground`、`onBackground`、`onNewWant`、`onBackup`、`onRestore`、...（共 27 个） |
-| 4 | 初始化 | `constructor`、`_DEFAULT_ARK_METHOD` |
+### 4.1 规则来源
 
-### 生命周期隐式边
-
-HarmonyOS 框架按固定顺序调用生命周期方法，但 ArkAnalyzer 的调用图不包含这些隐式边。ArkPrism 对其进行补充：
-
-- 组件生命周期：`aboutToAppear` → `build` → `onPageShow` → `onPageHide` → `aboutToDisappear`
-- UIAbility 生命周期：`onCreate` → `onWindowStageCreate` → `onForeground` → `onBackground` → `onWindowStageDestroy`
-
-通过 `CallGraph.addDirectOrSpecialCallEdge()` 添加这些边。
+规则来自 `config/privacy_apis.json`，系统包白名单来自 `config/system_packages14.json`。每条规则当前主要使用这些字段：
 
----
+- `namespace`
+- `method`
+- `directCall`
+- `permission`
+- `profilingCategory`
+- `ohos_module`
 
-## 5. Layer 4: 调用链追踪
+### 4.2 预过滤
 
-**文件**：`callChainTracer.ts`（885 行）
+分析器先读取当前文件真实导入的系统包，只保留与这些导入有关的规则。这样可以把大规则库压缩成文件级候选集合，降低误报和扫描成本。
 
-### 反向调用映射构建
+### 4.3 当前实际支持的 4 种检测模式
 
-五种边来源分层叠加，以实现最大覆盖：
+1. `direct invoke stmt`
+   - 纯调用语句
+   - 典型对象是 `ArkInvokeStmt`
+2. `direct invoke stmt after assignment`
+   - 赋值语句右侧是调用表达式
+   - 典型对象是 `ArkAssignStmt`
+3. `indirect invoke`
+   - 通过对象类型恢复 manager / service 上的方法
+   - 依赖接收者类型字符串
+4. `privacy constants`
+   - 字段或常量访问
+   - 依赖 `containsFieldRef()`
 
-1. **内置 CG 边**：`CallGraph.getOutgoingEdges()` 反转为 callee→caller
-2. **CHA 虚调用**：语句中的 `containsInvokeExpr()` → CHA 解析实际目标
-3. **Invoke 语句扫描**：遍历所有方法的语句，提取直接调用关系
-4. **回调参数边**：检测 `%AM` 匿名方法引用模式（ArkUI 组件回调）
-5. **getCallbackMethodFromStmt**：解析 Promise `.then()/.catch()` 回调
+代码里的 `PrivacyDataApiResult.category` 仍保留 `callback invoke` 枚举值，但当前 `apiDetector.ts` 不会产出这一类结果。
 
-### BFS 追踪算法
+### 4.4 导入兼容
 
-1. 从敏感 API 的声明方法出发
-2. 使用反向调用映射进行向上 BFS
-3. 在每个节点检查是否为入口方法
-   - 若否 → 继续 BFS
-   - 若是 → 选择优先级最高的入口
-4. 反转路径，得到：`入口 → ... → API`
-5. 对路径上的每个方法，提取：控制流结构、源码片段、语义上下文
+检测器兼容两类导入风格：
 
-### 控制流提取
+- `@kit.X`
+- `@ohos.xxx`
 
-对路径上每个方法的 CFG 进行分析：
+当规则通过 `ohos_module` 命中时，会把 `@ohos:` 标准化成 `@ohos.` 再匹配源码导入。
 
-- **if 分支**：`ArkIfStmt.getConditionExprRef()` → 条件表达式 + 权限守卫检测
-- **支配关系**：`DominanceFinder` → 检查 if 块是否支配 API 调用块
-- **try-catch**：`BasicBlock.getExceptionalSuccessorBlocks()` → 异常处理路径
-- **循环**：后向边检测（后继块编号 < 当前块编号）
-- **分支侧判断**：判定哪个分支包含 API 调用（`true_branch` / `false_branch` / `both`）
+### 4.5 结果字段
 
-### 异步调用检测
+每条命中结果都会写入：
 
-在结果组装时，检查 API 声明方法是否包含 `ArkAwaitExpr`：
+- `file`
+- `declaringMethod`
+- `code`
+- `permission`
+- `profilingCategory`
 
-```typescript
-for (let stmt of body.getCfg().getStmts()) {
-    let uses = stmt.getUses();
-    for (let u of uses) {
-        if (u.constructor.name === 'ArkAwaitExpr') {
-            result.isAsync = true;
-        }
-    }
-}
-```
+这些字段直接进入后续调用链、多源协同和汇聚分析。
 
----
+## 5. 调用图构建
 
-## 6. Layer 5a: 数据汇点分析
+实现位于 `src/callGraphBuilder.ts`。
 
-**文件**：`dataSinkAnalyzer.ts`（428 行）
+### 5.1 入口点选择
 
-### 汇点分类
+入口方法按优先级分为：
 
-| 类型 | 匹配模式 | 示例 API |
-|------|---------|---------|
-| `network` | HTTP/RCP/WebSocket 发送方法 | `request`、`fetch`、`send`、`upload` |
-| `storage` | 持久化存储方法 | `preferences.put`、`rdb.insert`、`fs.writeSync` |
-| `ui_display` | UI 组件创建/赋值 | `Text.create`、`setText`、`setValue` |
-| `log` | 日志输出 | `console.log`、`hilog.info`、`Logger.debug` |
-| `data_return` | 方法返回值传出 | `return privacyVariable` |
-| `unknown` | 兜底 | — |
+1. 用户交互回调
+2. 组件生命周期
+3. 应用生命周期
+4. 初始化方法
 
-### Def-Use 链追踪
+实际入口集来自：
 
-使用 ArkAnalyzer 的结构化 API 替代字符串匹配：
+- 交互回调列表，如 `onClick`、`onChange`、`onSubmit`
+- ArkAnalyzer 的 `COMPONENT_LIFECYCLE_METHOD_NAME`
+- ArkAnalyzer 的 `LIFECYCLE_METHOD_NAME`
+- `onConnect`、`onDisconnect`、`onRequest`
+- `_DEFAULT_ARK_METHOD`
+- `constructor`
 
-```typescript
-// 1. 提取被赋值的变量（Stmt.getLeftOp()）
-let leftOp = (stmt as ArkAssignStmt).getLeftOp();
-trackedVars.push(leftOp.toString());
+### 5.2 构建策略
 
-// 2. 检查后续语句是否使用该变量（Stmt.getUses()）
-for (let use of stmt.getUses()) {
-    if (trackedVars.includes(use.toString())) {
-        // 该变量在此语句中被使用 → 潜在汇点
-    }
-}
-```
+`buildCallGraph(scene)` 先尝试：
 
-### 返回值追踪
+1. `scene.makeCallGraphRTA(entryPoints)`
+2. 失败时退回 `scene.makeCallGraphCHA(entryPoints)`
 
-```typescript
-if (stmt.constructor.name === 'ArkReturnStmt') {
-    let returnVal = (stmt as any).getOp();
-    if (trackedVars.includes(returnVal.toString())) {
-        sinks.push({ sinkType: 'data_return', ... });
-    }
-}
-```
+### 5.3 生命周期隐式边
 
----
+调用图建立后，分析器还会手工补一批框架隐式边，例如：
 
-## 7. Layer 5b: 多源协作检测
+- `aboutToAppear -> build -> onPageShow -> onPageHide -> aboutToDisappear`
+- `onCreate -> onWindowStageCreate -> onForeground -> onBackground -> onWindowStageDestroy`
 
-**文件**：`multiSourceAnalyzer.ts`（663 行）
+这些边不是源码中的显式调用，但对页面级行为解释是必要的。
 
-### 核心概念
+### 5.4 代码中的已知限制
 
-**多源协作（Multi-Source Collaboration）**：多个不受权限管控的隐私 API 被组合使用，以构建用户画像（如设备指纹）。单个 API（如 `deviceInfo.brand`）风险较低，但将其与 `model`、`serial`、`osVersion` 组合使用，即可唯一标识用户。
+`callGraphBuilder.ts` 明确说明：ArkAnalyzer 原生 RTA/CHA 不能稳定建立“用户代码 -> SDK API”的边，原因主要有：
 
-### 检测策略
+- SDK 方法不进入普通 `methodsMap`
+- SDK `.d.ts` 无真实方法体
+- 动态调用路径只记录信息，不一定落成调用图边
 
-四层递进检测，范围由小到大：
+因此，真实的 API 终点补边依赖 `callChainTracer.ts` 中的 S3 语句扫描。
 
-| 策略 | 范围 | 示例 |
-|------|------|------|
-| `same-method` | 多个 API 在同一方法内调用 | `deviceid()` 调用 12 个设备信息 API |
-| `cross-method` | API 分布在不同方法中，通过调用图找到 LCA | `getHardwareInfo()` 和 `getSoftwareInfo()` 都被 `collectDeviceData()` 调用 |
-| `per-file` | 同文件内不同方法的 API 聚合 | `DevicePage.ets` 中多个方法访问不同设备 API |
-| `application-level` | 跨文件的相同类别 API（兜底策略） | 风险等级 = low |
+## 6. 调用链追踪
 
-### LCA（最近公共祖先）计算
+实现位于 `src/callChainTracer.ts`，这是当前项目最关键的模块。
 
-```typescript
-function findMultiLCA(methodSigs: string[], reverseMap): string | null {
-    // 1. 为每个方法构建祖先集合（BFS 向上）
-    let ancestorSets = methodSigs.map(sig => buildAncestorSet(sig, reverseMap));
-    // 2. 取所有祖先集合的交集
-    let common = intersect(ancestorSets);
-    // 3. 返回深度最大的公共祖先（最近公共祖先）
-    return deepest(common);
-}
-```
+### 6.1 目标
 
-### 子图构建
+对每一个隐私 API，回答三个问题：
 
-每个 `MultiSourceCollaboration` 包含 `subgraph` 字段，表示完整的调用结构：
+1. 它从哪个入口方法触发。
+2. 中间经过了哪些业务方法或回调。
+3. 调用时处于什么控制流和语义上下文。
 
-```
-Entry: Index.build (component_lifecycle)
-  └──[callback]──→ build_callback_0
-                      └──[direct]──→ LCA: Index.deviceid
-                                      ├──→ deviceInfo.brand [hardware]     ──→ console.log (LOG)
-                                      ├──→ deviceInfo.osFullName [software] ──→ console.log (LOG)
-                                      └──→ deviceInfo.serial [unique_id]   ──→ console.log (LOG)
-```
+### 6.2 增强反向调用图
 
-### 风险评估
+当前 tracer 的反向图来自以下来源：
 
-| 条件 | 风险等级 |
-|------|---------|
-| ≥ 3 个不同的隐私类别 | **high**（如 hardware + software + unique_id） |
-| 2 个类别 | **medium** |
-| 1 个类别 | **low** |
+1. Source 1：原生调用图边
+2. Source 4：函数参数回调边
+3. Source 5：ArkUI/Promise 回调边
+4. Source 3：基于可达域的显式调用扫描
 
----
+需要注意两点：
 
-## 8. 权限分析
+- `callChainTracer.ts` 里的旧注释仍写着“五源”，但当前实现已经移除了 S2 CHA 补边。
+- `multiSourceAnalyzer.ts` 的内部路径图仍保留了 CHA 作为辅助来源，两者不要混淆。
 
-**文件**：`permissionAnalyzer.ts`（约 100 行）
+### 6.3 Source 4：回调参数补边
 
-解析项目中 `module.json5` 的 `requestPermissions` 字段。与 API 检测结果交叉对照，可识别：
-- 需要权限但未在 `module.json5` 中声明的 API
-- 已声明但实际未被使用的权限
+这一层专门补 ArkUI 匿名回调和函数参数回调：
 
----
+- 先检查调用参数中是否存在 `FunctionType`
+- 若存在，则精确解析到对应方法签名
+- 若精确解析失败，再回退到 `%AM...` 名称匹配
 
-## 9. 语义上下文
+这一步解决的是 `build()` 里注册回调、真正业务逻辑藏在 `%AMx$build()` 中的问题。
 
-**实现位置**：`callChainTracer.ts`
+### 6.4 Source 5：框架回调与 Promise
 
-为每条调用链生成 `SemanticContext`，为下游基于 LLM 的目的分析提供线索：
+这一层进一步补两类边：
 
-| 字段 | 提取方式 | 示例 |
-|------|---------|------|
-| `pageName` | 从文件路径提取 | `"Contact"`（来自 Contact.ets） |
-| `componentClass` | 入口方法所属类 | `"SelectContact"` |
-| `semanticAnchor` | 调用链中最具语义的非框架方法 | `"SelectContact.chooseContact"` |
-| `simplifiedChain` | 解析回调名后的路径 | `"build() → build_cb3() → testSelectContact() → chooseContact()"` |
-| `purposeHint` | 综合文本摘要 | `"In Contact.ets, function chooseContact() calls productModel [hardware], data flows to log"` |
-
-**语义锚点选取**：跳过框架方法（`build`、`aboutToAppear`、`%AM*`），选取第一个有语义含义的用户定义方法。
-
----
-
-## 10. DOT 可视化
-
-**文件**：`dotExporter.ts`（约 310 行）
-
-生成 Graphviz DOT 格式，包含两类子图：
-
-### 单源子图（`cluster_single_*`）
-
-按 `(profilingCategory, entryMethod)` 分组，展示：入口 → 中间节点 → API → 汇点。
-
-### 多源子图（`cluster_multi_*`）
-
-展示完整的多源协作结构，使用专属节点样式：
-
-| 节点类型 | 形状 | 颜色 |
-|---------|------|------|
-| 入口 | 矩形（粗边框） | 绿色 `#D5E8D4` |
-| LCA | 六角形（粗边框） | 金色 `#FFF9C4` |
-| API（源） | 矩形 | 红色 `#FFE6E6` |
-| 中间节点 | 矩形 | 蓝色 `#DAE8FC` |
-| 汇点 | 圆角矩形 | 橙色 `#FFF3E0` |
-
-子图边框颜色反映风险等级：红色 = high，橙色 = medium，绿色 = low。
-
----
-
-## 11. 类型系统
-
-**文件**：`prototypes.ts`（212 行）
-
-```typescript
-// Layer 2
-interface PrivacyDataApiResult     // API 检测结果
-interface PrivacyPackageInfo       // 规则包定义
-interface ImportEntryCheckUnit     // 检测单元
-
-// Layer 3-4
-interface CallChainLink            // 调用链中的一条边
-interface ControlStructureInfo     // 控制流信息
-interface SourceSnippetInfo        // 源码片段
-interface SemanticContext          // 语义上下文（供 LLM 分析）
-interface CallChainResult          // 完整调用链结果（含 isAsync）
-
-// Layer 5
-interface DataSinkInfo             // 数据汇点（含 data_return 类型）
-interface MultiSourceBranch        // 多源子图中的一条分支
-interface MultiSourceSubgraph      // 完整多源子图
-interface MultiSourceCollaboration // 多源协作结果
-
-// 输出
-interface ArkPrismOutput           // 顶层输出容器
-```
-
----
-
-## 12. 输出格式
-
-### JSON 报告（`*-arkprism-report.json`）
-
-```json
-{
-    "projectName": "STUFFS_NEXT-master",
-    "analysisTimestamp": "2026-02-28T08:50:00",
-    "privacyApiUsages": [
-        {
-            "category": "privacy constants",
-            "apiPackage": "@ohos.deviceInfo",
-            "namespace": "deviceInfo",
-            "method": "brand",
-            "profilingCategory": "device_identity.hardware",
-            "file": "entry/src/main/ets/pages/deviceid.ets",
-            "declaringMethod": "Index.deviceid()",
-            "line": 5,
-            "code": "brand = deviceInfo.brand"
-        }
-    ],
-    "callChains": [
-        {
-            "apiUsageIndex": 0,
-            "entryMethod": { "name": "Index.build", "type": "component_lifecycle" },
-            "chain": [
-                { "caller": "Index.build", "callee": "Index.%AM0$build", "callType": "callback" },
-                { "caller": "Index.%AM0$build", "callee": "Index.deviceid", "callType": "direct" }
-            ],
-            "controlStructures": [],
-            "dataSinks": [ { "sinkType": "log", "sinkApi": "console.log" } ],
-            "semanticContext": {
-                "pageName": "deviceid",
-                "semanticAnchor": "Index.deviceid",
-                "purposeHint": "calls brand [device_identity.hardware], data flows to log"
-            },
-            "isAsync": false
-        }
-    ],
-    "multiSourceCollaborations": [
-        {
-            "strategy": "same-method",
-            "lcaMethod": "Index.deviceid",
-            "riskLevel": "high",
-            "categories": ["device_identity.hardware", "device_identity.software", "device_identity.unique_id"],
-            "apis": [ "..." ],
-            "subgraph": {
-                "entry": { "name": "Index.build", "type": "component_lifecycle" },
-                "entryToLca": [ "..." ],
-                "branches": [
-                    { "api": "deviceInfo.brand", "category": "...", "lcaToSource": [], "sinks": ["..."] }
-                ]
-            }
-        }
-    ],
-    "permissionUsages": [ "..." ],
-    "statistics": {
-        "totalFilesAnalyzed": 29,
-        "totalMethodsAnalyzed": 366,
-        "totalApisDetected": 47,
-        "totalCallChainsBuilt": 47,
-        "totalCollaborationsDetected": 3
-    }
-}
-```
-
----
-
-## 13. 配置文件
-
-### `config/privacy_apis.json`
-
-隐私 API 规则库，每条规则包含：
-
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| `systemPackage` | string | HarmonyOS SDK 包名（如 `@ohos.deviceInfo`） |
-| `privacyApis[].directCall` | boolean/null | true = 直接调用，false = 常量访问，null = 两者 |
-| `privacyApis[].namespace` | string | 导入后的命名空间（如 `deviceInfo`） |
-| `privacyApis[].method` | string | 方法/属性名（如 `brand`） |
-| `privacyApis[].permission` | string? | 所需权限（如 `ohos.permission.GET_WIFI_INFO`） |
-| `privacyApis[].profilingCategory` | string | 隐私类别（如 `device_identity.hardware`） |
-
-### `config/system_packages14.json`
-
-HarmonyOS API 14 系统包完整列表，用于区分 import 语句中的系统包与第三方包。
+- `getCallbackMethodFromStmt(...)` 能识别的 ArkUI 事件回调
+- Promise 的 `.then()`、`.catch()`、`.finally()` 回调
+
+### 6.5 Source 3：可达域内 invoke 扫描
+
+这是当前版本覆盖率提升的主来源。
+
+算法思路是：
+
+1. 先用入口方法、`%dflt`、`[static]%dflt`、`initialRender` 建立可达种子。
+2. 用已有边做一次正向 BFS，得到初始可达集。
+3. 只对可达方法继续扫描 `invokeExpr.getMethodSignature()`。
+4. 若语句中引用 `%AM`，把同类中的对应回调方法也标记为可达。
+5. 反复迭代直到没有新增方法。
+
+这个设计避免了“全工程暴力扫描 invoke”带来的噪声，同时补回原生调用图漏掉的 SDK 终点。
+
+### 6.6 路径搜索
+
+对每个 API，tracer 从 `declaringMethod` 反向 BFS 回溯，默认最大深度 15。若 API 所在方法本身就是入口，则直接构造单跳链。
+
+结果中的每条 `CallChainLink` 会记录：
+
+- `caller`
+- `callee`
+- `callType`
+- 解析后的可读名
+
+### 6.7 控制结构抽取
+
+`extractControlStructures()` 会结合 CFG、基本块顺序和支配关系，抽取：
+
+- `if`
+- `loop`
+- `try_catch`
+
+附带字段包括：
+
+- `condition`
+- `branchSide`
+- `isGuardCondition`
+- `hasCatchFallback`
+- `isDominatingApiCall`
+
+这使得报告可以区分“权限判断后才调用”与“异常回退中调用”。
+
+### 6.8 语义上下文
+
+`buildSemanticContext()` 进一步生成：
+
+- `pageName`
+- `componentClass`
+- `semanticAnchor`
+- `simplifiedChain`
+- `purposeHint`
+
+其中 `semanticAnchor` 会主动跳过 `build`、`aboutToAppear`、默认方法、匿名包装层等弱语义节点，尽量定位到真正的业务方法。
+
+### 6.9 后验验证
+
+`verifyCallChain()` 已实现，但当前主流程默认不调用。它仍可在测试或离线验证时使用，按每一条边检查：
+
+- 直接调用
+- `FunctionType` 回调引用
+- `%AM` 引用
+- 原生调用图边
+
+## 7. 数据汇聚分析
+
+实现位于 `src/dataSinkAnalyzer.ts`。
+
+### 7.1 当前 sink 类型
+
+当前代码支持：
+
+- `network`
+- `storage`
+- `ui_display`
+- `log`
+- `data_return`
+
+### 7.2 分析策略
+
+它不是全程序精确污点，而是“变量跟踪 + sink 模式匹配”的轻量实现：
+
+1. 先找 API 结果赋给了哪个变量。
+2. 再扫描变量是否流入 sink 语句。
+3. 若变量被写进 `this.xxx` 字段，则允许在同类其它方法中继续扫描。
+
+### 7.3 实际覆盖
+
+当前内置的模式主要覆盖：
+
+- 网络发送：HTTP、RCP、WebSocket、Socket、上传
+- 本地写入：preferences、RdbStore、fs
+- UI 展示：Text、TextInput、Image 等组件调用
+- 日志：`console.*`、`hilog.*`
+- 返回值：`ArkReturnStmt`
+
+## 8. 多源协同分析
+
+实现位于 `src/multiSourceAnalyzer.ts`。
+
+### 8.1 目标
+
+它关心的不是单个 API，而是多个 `profilingCategory` 是否在同一逻辑上下文中汇合，形成更完整的画像行为。
+
+### 8.2 四层策略
+
+当前实现按以下顺序检测：
+
+1. Same-method
+2. Cross-method via LCA
+3. Same-file aggregation
+4. Application-level aggregation
+
+### 8.3 风险等级
+
+风险分级以类别数为准：
+
+- 4 类及以上：`high`
+- 3 类：`medium`
+- 2 类：`low`
+
+### 8.4 子图构建
+
+若存在具体的 LCA，分析器会构造 `subgraph`：
+
+- `entryToLca`
+- 每个 `lcaToSource`
+- 每个 source 的 sinks
+
+这会直接被 DOT 导出器消费。
+
+### 8.5 与 tracer 的区别
+
+`multiSourceAnalyzer.ts` 自己构建路径图时，仍然保留：
+
+- 原生调用图边
+- CHA 解析
+- invoke 扫描
+- `%AM` 回调边
+- `getCallbackMethodFromStmt`
+
+因此它和 `callChainTracer.ts` 的增强图来源不完全相同。
+
+## 9. 权限分析
+
+实现位于 `src/permissionAnalyzer.ts`。
+
+当前权限分析器只做“声明提取”，不做“权限合规判定”。
+
+实际行为是：
+
+1. 查找全部 `module.json5`
+2. 解析 `module.requestPermissions`
+3. 抽取 `permission` 和 `reason`
+4. 若 `reason` 形如 `$string:xxx`，则去 `string.json` 中解引用
+
+当前没有做以下工作：
+
+- 未检测 API 是否缺失权限声明
+- 未检测权限是否冗余
+- 未输出 API 与权限的一致性结论
+
+## 10. HapFlow 污点分析
+
+入口在 `src/hapflowRunner.ts`，核心实现位于 `src/hapflow/`。
+
+### 10.1 启动条件
+
+只有满足以下条件才会真正运行：
+
+1. 未传 `--no-taint`
+2. SDK 路径存在
+3. source / sink 规则能成功加载
+
+否则主流程会跳过并返回空 taint 结果。
+
+### 10.2 运行步骤
+
+`runHapflowAnalysis()` 的顺序是：
+
+1. 懒加载 SDK 到 `scene`
+2. 创建 `DummyMain`
+3. 可选执行 PTA
+4. 从 `config/hapflow_sources.json` 和 `config/hapflow_sinks.json` 读规则
+5. 建立 `TaintAnalysisChecker`
+6. 调用 `TaintAnalysisSolver.solve()`
+7. 把 `TaintFact[]` 转成 `TaintFlowResult[]`
+
+### 10.3 当前传播能力
+
+`src/hapflow/TaintAnalysis.ts` 中的 IFDS 问题当前支持：
+
+- 普通赋值传播
+- 过程间参数映射
+- 返回值回传
+- `this` 字段与静态字段传播
+- 闭包局部变量传播
+- 回调型 source
+- `ArgIn` 型 source
+- `Map.set` / `Set.add` / `Array.push`
+- 基于 PTA 的别名相关节点扩散
+- sink 命中后的完整 path 记录
+
+### 10.4 当前求解边界
+
+求解器不会盲目深入所有 SDK 方法体，而是更偏向：
+
+- 跟进项目内真实可分析的方法
+- 解析调用参数中携带的 callback
+
+这与 ArkTS 实际代码形态更匹配，也能控制分析成本。
+
+## 11. 输出结构
+
+顶层输出类型在 `src/prototypes.ts` 中定义。最终 JSON 当前主要包含：
+
+- `privacyApiUsages`
+- `callChains`
+- `multiSourceCollaborations`
+- `permissionUsages`
+- `taintFlows`
+- `statistics`
+
+统计字段为：
+
+- `totalFilesAnalyzed`
+- `totalMethodsAnalyzed`
+- `totalApisDetected`
+- `totalCallChainsBuilt`
+- `totalCollaborationsDetected`
+- `totalTaintFlows`
+
+## 12. 当前实现边界
+
+按当前代码，应明确以下边界：
+
+1. `callback invoke` 类型只存在于类型定义中，检测器当前不产出。
+2. tracer 主流程不默认执行 `verifyCallChain()`。
+3. 数据汇聚分析是轻量模式匹配，不等于全程序精确污点。
+4. 权限分析只提取声明，不做缺失/冗余审计。
+5. HapFlow 是可选阶段，依赖 SDK 和 source/sink 配置。
+6. `arkprism.ts` 文件头注释里提到 `--dot-only`，但当前 parser 实际并未实现该参数。
+
+## 13. 总结
+
+当前版本的 ArkPrism 可以概括为：
+
+它以 ArkAnalyzer 的结构化程序表示为底座，先用规则识别隐私 API，再用增强反向调用图恢复入口到 API 的真实执行链，随后补充数据去向、协同行为和权限背景，并在条件允许时运行 HapFlow 做更精确的跨过程污点求解，最终统一输出为 JSON 和 DOT。
+
