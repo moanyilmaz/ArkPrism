@@ -367,17 +367,25 @@ HapFlow 会：
 3. 这类内容会显著膨胀 Git 历史，拖慢 clone、fetch 和 diff。
 4. 数据集中存在不同项目自带的 LICENSE / README，需要单独确认再分发。
 
-### 当前建议
+### 当前默认策略
 
 - 本仓库默认**不提交**：
   - `out/`
   - `output/`
   - `.tmp_*`
   - `dataset/`
-- 如果确实要公开数据集，建议改为：
-  - 单独建立 dataset 仓库
-  - 或使用 Git LFS
-  - 或只提交经过清洗的最小复现实验子集
+
+如果你确实要公开完整数据集，当前仓库支持另一种做法：
+
+- 保持原始 `dataset/` 目录继续忽略
+- 生成一个完整 zip 归档
+- 把 zip 作为 Git LFS 文件提交到专用分支
+
+这样可以：
+
+- 保留“数据集在 GitHub 仓库里”的分发方式
+- 避免把 1.1GB 的原始目录树直接写进普通 Git 历史
+- 让主代码仓库默认 clone 仍然相对可控
 
 ### 批量分析的推荐做法
 
@@ -394,6 +402,26 @@ npx ts-node src/arkprism.ts --batch E:/Projects/ARGUS/dataset
 ```
 
 这样既能跑批量分析，又不会把数据集混进代码仓库。
+
+### 完整数据集 zip 发布方式
+
+如果需要把完整数据集也托管在 GitHub，当前推荐发布形式是：
+
+1. 把 `E:/Projects/ARGUS/dataset` 打成一个 zip。
+2. 把 zip 放进仓库内的归档目录。
+3. 用 Git LFS 跟踪该 zip。
+4. 把它推到一个专门的数据集分支。
+
+说明：
+
+- 普通 Git 跟踪大文件会碰到 GitHub 的文件大小限制。
+- GitHub 官方文档要求大于 100 MiB 的文件使用 Git LFS。
+- GitHub 官方文档同时说明，Git LFS 的单文件上限取决于计划；GitHub Free / Pro 为 2 GB。
+
+参考：
+
+- [About large files on GitHub](https://docs.github.com/en/repositories/working-with-files/managing-large-files/about-large-files-on-github)
+- [About Git Large File Storage](https://docs.github.com/repositories/working-with-files/managing-large-files/about-git-large-file-storage)
 
 ## 12. 当前已知边界
 
@@ -448,4 +476,3 @@ npm run analyze -- --no-pta E:/path/to/project
 注意：
 
 - 若你准备单独发布数据集，需要分别确认数据集中每个样本项目的许可证和可再分发性。
-
