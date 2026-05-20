@@ -4,149 +4,97 @@
  * Analyzes where privacy data flows after being collected.
  * Classifies data sinks into: network, storage, ui_display, log, unknown.
  *
- * Based on HarmonyOS NEXT developer documentation:
+ * Configuration: Sink patterns are loaded from JSON (config/data_sinks.json)
+ * instead of hardcoded strings, enabling easy extension without code changes.
  *
- * Network APIs (6 channels):
- *   - http.HttpRequest.request / requestInStream (@kit.NetworkKit)
- *   - rcp.Session.fetch/get/post/put/delete (@kit.RemoteCommunicationKit)
- *   - webSocket.send (@kit.NetworkKit)
- *   - TCPSocket.send / UDPSocket.send / TLSSocket.send (@kit.NetworkKit)
- *   - request.uploadFile / agent.create (@kit.BasicServicesKit)
- *
- * Storage APIs:
- *   - preferences.put / putSync (@kit.ArkData)
- *   - RdbStore.insert / update (@kit.ArkData)
- *   - fs.write / writeSync (@kit.CoreFileKit)
- *
- * UI Display:
- *   - ArkUI component creation (Text, TextInput, etc.)
- *   - @State variable assignment in build context
- *
- * Logging:
- *   - console.log/info/warn/error/debug
- *   - hilog.info/warn/error/debug
+ * Based on HarmonyOS NEXT developer documentation.
  */
 
 import { Scene, ArkMethod, ArkReturnStmt } from './arkanalyzer';
 import { PrivacyDataApiResult, CallChainResult, DataSinkInfo } from './prototypes';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// ---- Sink pattern definitions (based on HarmonyOS developer documentation) ----
+// ---- JSON Configuration Loading ----
 
-/** Network sending API signatures (method names used in IR) */
-const NETWORK_SINK_PATTERNS: string[] = [
-    // @kit.NetworkKit - HTTP
-    'request',           // http.HttpRequest.request()
-    'requestInStream',   // http.HttpRequest.requestInStream()
-    // @kit.RemoteCommunicationKit - RCP
-    'fetch',             // rcp.Session.fetch()
-    // Note: get/post/put/delete are too generic, matched with context
-    // @kit.NetworkKit - WebSocket
-    'send',              // webSocket.send() / TCPSocket.send() / UDPSocket.send()
-    // @kit.BasicServicesKit - Upload
-    'uploadFile',        // request.uploadFile()
-];
+interface SinkPattern {
+    namespace: string;
+    methods: string[];
+    api: string;
+    kit?: string;
+}
 
-/** Network namespace patterns - used to disambiguate generic method names */
-const NETWORK_NAMESPACES: string[] = [
-    'http', 'rcp', 'webSocket', 'socket', 'request',
-    'HttpRequest', 'Session', 'WebSocket',
-    'TCPSocket', 'UDPSocket', 'TLSSocket',
-];
+interface SinkCategory {
+    description: string;
+    patternMatch: string;
+    patterns: SinkPattern[];
+}
 
-/** Storage API patterns */
-const STORAGE_SINK_PATTERNS: string[] = [
-    'put',               // preferences.put()
-    'putSync',           // preferences.putSync()
-    'insert',            // RdbStore.insert()
-    'update',            // RdbStore.update()
-    'write',             // fs.write()
-    'writeSync',         // fs.writeSync()
-    'flushSync',         // preferences.flushSync()
-];
+interface SinkConfig {
+    sinkCategories: { [key: string]: SinkCategory };
+    version: string;
+    updated: string;
+}
 
-const STORAGE_NAMESPACES: string[] = [
-    'preferences', 'Preferences', 'rdb', 'RdbStore', 'fs',
-    'relationalStore', 'dataPreferences',
-];
+/** Loaded sink configuration */
+let sinkConfig: SinkConfig | null = null;
 
-/** UI display patterns */
-const UI_DISPLAY_PATTERNS: string[] = [
-    'create',            // Text.create(), TextInput.create(), etc.
-    'setText',
-    'setValue',
-];
+/**
+ * Load sink configuration from JSON file.
+ * Uses cached config on subsequent calls.
+ */
+function loadSinkConfig(): SinkConfig {
+    if (sinkConfig) return sinkConfig!;
 
-const UI_NAMESPACES: string[] = [
-    'Text', 'TextInput', 'TextArea', 'RichText',
-    'Image', 'List', 'Column', 'Row', 'Flex',
-];
+    const configPath = path.resolve(__dirname, '..', 'config', 'data_sinks.json');
+    try {
+        if (fs.existsSync(configPath)) {
+            const content = fs.readFileSync(configPath, 'utf8');
+            sinkConfig = JSON.parse(content);
+            console.log(`[SINK] Loaded sink config from: ${configPath} (v${sinkConfig!.version})`);
+            return sinkConfig!;
+        }
+    } catch (e) {
+        console.log(`[SINK][WARN] Failed to load sink config: ${e}`);
+    }
 
-/** Log patterns */
-const LOG_PATTERNS: string[] = [
-    'log', 'info', 'warn', 'error', 'debug',
-];
+    // Return empty config if file not found
+    sinkConfig = { sinkCategories: {}, version: 'fallback', updated: '' };
+    return sinkConfig!;
+}
 
-const LOG_NAMESPACES: string[] = [
-    'console', 'hilog', 'Logger',
-];
+/**
+ * Get all namespace-method pairs for a sink category.
+ */
+function getSinkPatterns(category: string): { ns: string; methods: string[]; api: string }[] {
+    const config = loadSinkConfig();
+    const cat = config.sinkCategories[category];
+    if (!cat) return [];
+    return cat.patterns.map(p => ({ ns: p.namespace, methods: p.methods, api: p.api }));
+}
 
 // ---- Analysis functions ----
 
 /**
  * Check if an IR statement string matches a sink pattern.
+ * Uses JSON config for extensible sink definitions.
  * Returns the sink classification or null.
  */
 function classifySinkStatement(stmtStr: string): {
     sinkType: DataSinkInfo['sinkType'];
     sinkApi: string;
 } | null {
-    // Network sinks: check namespace + method
-    for (const ns of NETWORK_NAMESPACES) {
-        if (stmtStr.includes(ns)) {
-            for (const method of NETWORK_SINK_PATTERNS) {
-                if (stmtStr.includes(`.${method}(`)) {
-                    return { sinkType: 'network', sinkApi: `${ns}.${method}` };
-                }
-            }
-            // Special case for RCP Session methods
-            if (ns === 'Session' || ns === 'rcp') {
-                for (const m of ['get', 'post', 'put', 'delete']) {
-                    if (stmtStr.includes(`.${m}(`)) {
-                        return { sinkType: 'network', sinkApi: `rcp.Session.${m}` };
+    const categories = ['network', 'storage', 'ui_display', 'log'] as const;
+
+    for (const category of categories) {
+        const patterns = getSinkPatterns(category);
+        for (const { ns, methods, api } of patterns) {
+            // Check if namespace appears in statement
+            if (stmtStr.includes(ns)) {
+                for (const method of methods) {
+                    if (stmtStr.includes(`.${method}(`)) {
+                        return { sinkType: category, sinkApi: `${api}.${method}` };
                     }
-                }
-            }
-        }
-    }
-
-    // Storage sinks
-    for (const ns of STORAGE_NAMESPACES) {
-        if (stmtStr.includes(ns)) {
-            for (const method of STORAGE_SINK_PATTERNS) {
-                if (stmtStr.includes(`.${method}(`)) {
-                    return { sinkType: 'storage', sinkApi: `${ns}.${method}` };
-                }
-            }
-        }
-    }
-
-    // UI display sinks
-    for (const ns of UI_NAMESPACES) {
-        if (stmtStr.includes(ns)) {
-            for (const method of UI_DISPLAY_PATTERNS) {
-                if (stmtStr.includes(`.${method}(`)) {
-                    return { sinkType: 'ui_display', sinkApi: `${ns}.${method}` };
-                }
-            }
-        }
-    }
-
-    // Log sinks
-    for (const ns of LOG_NAMESPACES) {
-        if (stmtStr.includes(`${ns}.`)) {
-            for (const method of LOG_PATTERNS) {
-                if (stmtStr.includes(`.${method}(`)) {
-                    return { sinkType: 'log', sinkApi: `${ns}.${method}` };
                 }
             }
         }

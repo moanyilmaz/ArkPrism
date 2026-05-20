@@ -26,10 +26,12 @@ import { analyzePermissions } from './permissionAnalyzer';
 import { generateDot } from './dotExporter';
 import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult } from './prototypes';
 import { runHapflowAnalysis, HapflowOptions } from './hapflowRunner';
+import { analyzeViewTrees } from './viewTreeAnalyzer';
+import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
 
-const DEFAULT_SDK_PATH = 'E:/OpenHarmony_SDK/18/ets';
+const DEFAULT_SDK_PATH = 'D:/DevEco Studio/sdk/default/openharmony/ets';
 
 // ---- Core analysis pipeline (shared by single & batch) ----
 
@@ -48,6 +50,14 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     let scene = getSceneFromJson(sceneConfig);
     let allFiles = scene.getFiles();
     console.log(`[SCENE] Scene built. Files: ${allFiles.length}`);
+
+    // Analyze ViewTrees for UI callback patterns and state usage
+    let viewTreeResult = analyzeViewTrees(scene);
+    if (viewTreeResult.componentClasses.length > 0) {
+        console.log(`[VIEW-TREE] ${viewTreeResult.componentClasses.length} components, `
+            + `${viewTreeResult.callbackBindings.length} callbacks, `
+            + `${viewTreeResult.stateToUIFlows.length} state flows.`);
+    }
 
     // Read rules
     let privacyApisPath = path.resolve(__dirname, '..', 'config', 'privacy_apis.json');
@@ -99,6 +109,17 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         } catch (e) {
             console.log(`[WARN] Call graph failed: ${e}`);
         }
+    }
+
+    // Data Flow Analysis using built-in Cfg Def-Use chains (always runs)
+    try {
+        let dfStats = getDataFlowStats(scene);
+        if (dfStats.methodsWithUnreachableBlocks > 0) {
+            console.log(`[DATA-FLOW] ${dfStats.methodsWithUnreachableBlocks} methods with unreachable blocks, `
+                + `${dfStats.totalUnreachableBlocks} blocks total.`);
+        }
+    } catch (e) {
+        console.log(`[WARN] Data flow analysis failed: ${e}`);
     }
 
     // HapFlow IFDS Taint Analysis

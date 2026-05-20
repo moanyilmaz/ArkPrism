@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Data sink rules for privacy data flow tracking",
+  "version": "1.0.0",
+  "updated": "2026-05-20",
+
+  "sinkCategories": {
+    "network": {
+      "description": "APIs that send data over network",
+      "patternMatch": "namespace_method",
+      "patterns": [
+        {
+          "namespace": "http",
+          "methods": ["request", "requestInStream"],
+          "api": "http.HttpRequest",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "rcp",
+          "methods": ["fetch", "get", "post", "put", "delete"],
+          "api": "rcp.Session",
+          "kit": "@kit.RemoteCommunicationKit"
+        },
+        {
+          "namespace": "webSocket",
+          "methods": ["send"],
+          "api": "webSocket.send",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "socket",
+          "methods": ["send"],
+          "api": "socket.send",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "TCPSocket",
+          "methods": ["send"],
+          "api": "TCPSocket.send",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "UDPSocket",
+          "methods": ["send"],
+          "api": "UDPSocket.send",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "TLSSocket",
+          "methods": ["send"],
+          "api": "TLSSocket.send",
+          "kit": "@kit.NetworkKit"
+        },
+        {
+          "namespace": "request",
+          "methods": ["uploadFile"],
+          "api": "request.uploadFile",
+          "kit": "@kit.BasicServicesKit"
+        }
+      ]
+    },
+
+    "storage": {
+      "description": "APIs that persist data locally",
+      "patternMatch": "namespace_method",
+      "patterns": [
+        {
+          "namespace": "preferences",
+          "methods": ["put", "putSync", "flushSync"],
+          "api": "preferences",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "Preferences",
+          "methods": ["put", "putSync", "flushSync"],
+          "api": "Preferences",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "dataPreferences",
+          "methods": ["put", "putSync", "flushSync"],
+          "api": "dataPreferences",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "rdb",
+          "methods": ["insert", "update"],
+          "api": "rdb.RdbStore",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "RdbStore",
+          "methods": ["insert", "update"],
+          "api": "RdbStore",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "relationalStore",
+          "methods": ["insert", "update"],
+          "api": "relationalStore",
+          "kit": "@kit.ArkData"
+        },
+        {
+          "namespace": "fs",
+          "methods": ["write", "writeSync"],
+          "api": "fs",
+          "kit": "@kit.CoreFileKit"
+        }
+      ]
+    },
+
+    "ui_display": {
+      "description": "APIs that display data in UI",
+      "patternMatch": "namespace_method",
+      "patterns": [
+        {
+          "namespace": "Text",
+          "methods": ["create", "setText"],
+          "api": "Text",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "TextInput",
+          "methods": ["create", "setText", "setValue"],
+          "api": "TextInput",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "TextArea",
+          "methods": ["create", "setText", "setValue"],
+          "api": "TextArea",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "RichText",
+          "methods": ["create"],
+          "api": "RichText",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "Image",
+          "methods": ["create"],
+          "api": "Image",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "List",
+          "methods": ["create"],
+          "api": "List",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "Column",
+          "methods": ["create"],
+          "api": "Column",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "Row",
+          "methods": ["create"],
+          "api": "Row",
+          "kit": "@kit.ArkUI"
+        },
+        {
+          "namespace": "Flex",
+          "methods": ["create"],
+          "api": "Flex",
+          "kit": "@kit.ArkUI"
+        }
+      ]
+    },
+
+    "log": {
+      "description": "APIs that log data (debugging, telemetry)",
+      "patternMatch": "namespace_method",
+      "patterns": [
+        {
+          "namespace": "console",
+          "methods": ["log", "info", "warn", "error", "debug"],
+          "api": "console",
+          "kit": "builtin"
+        },
+        {
+          "namespace": "hilog",
+          "methods": ["info", "warn", "error", "debug"],
+          "api": "hilog",
+          "kit": "@kit.Hilog"
+        },
+        {
+          "namespace": "Logger",
+          "methods": ["info", "warn", "error", "debug"],
+          "api": "Logger",
+          "kit": "@kit.Logger"
+        }
+      ]
+    },
+
+    "data_return": {
+      "description": "Return statements that expose privacy data",
+      "patternMatch": "return_stmt",
+      "patterns": [
+        {
+          "namespace": "*",
+          "methods": ["*"],
+          "api": "return",
+          "note": "Tracked when return value uses sensitive data variables"
+        }
+      ]
+    }
+  },
+
+  "metadata": {
+    "sources": [
+      "HarmonyOS NEXT Developer Documentation",
+      "OpenHarmony API Reference"
+    ],
+    "lastUpdated": "2026-05-20",
+    "maintainer": "ArkPrism Team"
+  }
+}

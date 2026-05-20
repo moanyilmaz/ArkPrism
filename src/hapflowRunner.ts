@@ -59,7 +59,7 @@ export function runHapflowAnalysis(
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
 
     // 1. Load SDK files for source/sink resolution
-    const sdkPath = opts.sdkPath || 'E:/OpenHarmony_SDK/20/ets';
+    const sdkPath = opts.sdkPath || 'D:/DevEco Studio/sdk/default/openharmony/ets';
     if (!fs.existsSync(sdkPath)) {
         console.log(`[HAPFLOW][ERROR] SDK path does not exist: ${sdkPath}`);
         console.log('[HAPFLOW][ERROR] Cannot resolve API signatures without SDK. Aborting taint analysis.');
