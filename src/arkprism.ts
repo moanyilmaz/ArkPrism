@@ -28,6 +28,7 @@ import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult } from './prototy
 import { runHapflowAnalysis, HapflowOptions } from './hapflowRunner';
 import { analyzeViewTrees } from './viewTreeAnalyzer';
 import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
+import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
 
@@ -120,6 +121,19 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         }
     } catch (e) {
         console.log(`[WARN] Data flow analysis failed: ${e}`);
+    }
+
+    // Recursive/Loop Pattern Detection
+    try {
+        let recursiveStats = getRecursiveStats(scene);
+        if (recursiveStats.methodsWithLoops > 0) {
+            let loopTypes = Object.entries(recursiveStats.loopBreakdown)
+                .map(([k, v]) => `${k}(${v})`)
+                .join(', ');
+            console.log(`[RECURSIVE] ${recursiveStats.methodsWithLoops} methods with loops: ${loopTypes}`);
+        }
+    } catch (e) {
+        console.log(`[WARN] Recursive pattern detection failed: ${e}`);
     }
 
     // HapFlow IFDS Taint Analysis
