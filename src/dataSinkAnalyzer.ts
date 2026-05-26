@@ -7,10 +7,16 @@
  * Configuration: Sink patterns are loaded from JSON (config/data_sinks.json)
  * instead of hardcoded strings, enabling easy extension without code changes.
  *
+ * Key improvement: Uses ArkAnalyzer's structured APIs (getInvokeExpr, getMethodSignature)
+ * instead of string matching to avoid false positives from variable names containing
+ * similar keywords (e.g., 'requestInfo' being matched as 'request.downloadTask').
+ *
  * Based on HarmonyOS NEXT developer documentation.
  */
 
 import { Scene, ArkMethod, ArkReturnStmt } from './arkanalyzer';
+import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkStaticInvokeExpr } from './arkanalyzer/core/base/Expr';
+import { ClassSignature, MethodSignature } from './arkanalyzer/core/model/ArkSignature';
 import { PrivacyDataApiResult, CallChainResult, DataSinkInfo } from './prototypes';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -73,26 +79,279 @@ function getSinkPatterns(category: string): { ns: string; methods: string[]; api
     return cat.patterns.map(p => ({ ns: p.namespace, methods: p.methods, api: p.api }));
 }
 
-// ---- Analysis functions ----
+// ---- Structured Sink Matching using ArkAnalyzer APIs ----
 
 /**
- * Check if an IR statement string matches a sink pattern.
- * Uses JSON config for extensible sink definitions.
- * Returns the sink classification or null.
+ * Extract namespace from method signature.
+ * Handles both instance calls (base.namespace.method) and static calls.
  */
-function classifySinkStatement(stmtStr: string): {
+function extractNamespace(invokeExpr: AbstractInvokeExpr, stmt: any): string | null {
+    try {
+        if (invokeExpr instanceof ArkInstanceInvokeExpr) {
+            // For instance calls: base.method()
+            const base = invokeExpr.getBase();
+            if (base) {
+                const baseStr = base.toString();
+                // The base could be a namespace like 'geoLocationManager', 'console', etc.
+                // or an imported module alias
+                return baseStr;
+            }
+        } else if (invokeExpr instanceof ArkStaticInvokeExpr) {
+            // For static calls: <namespace.Class.method>()
+            const sig = invokeExpr.getMethodSignature();
+            if (sig) {
+                const classSig = sig.getDeclaringClassSignature();
+                const className = classSig.getClassName();
+                // Static invoke format is typically 'namespace.Class.method'
+                // Extract the namespace part (before the first dot)
+                const dotIdx = className.indexOf('.');
+                if (dotIdx > 0) {
+                    return className.substring(0, dotIdx);
+                }
+                // If no dot, the className might be just the namespace
+                return className;
+            }
+        }
+    } catch { /* ignore */ }
+    return null;
+}
+
+/**
+ * Extract method name from invoke expression.
+ */
+function extractMethodName(invokeExpr: AbstractInvokeExpr): string | null {
+    try {
+        const sig = invokeExpr.getMethodSignature();
+        if (sig) {
+            return sig.getMethodSubSignature()?.getMethodName() || null;
+        }
+    } catch { /* ignore */ }
+    return null;
+}
+
+/**
+ * Map method patterns to their possible namespaces based on SDK documentation.
+ * This is derived from HarmonyOS/OpenHarmony API reference:
+ * - SystemPasteboard.setData comes from @kit.BasicServicesKit pasteboard module
+ * - RdbStore operations come from @kit.ArkData rdb module
+ * - KVStore operations come from @kit.DistributedServiceKit distributedKVStore module
+ *
+ * Format: { methodName: [possibleNamespace1, possibleNamespace2, ...] }
+ * Note: Some methods exist in multiple namespaces (e.g., 'delete', 'get')
+ */
+const METHOD_NAMESPACE_PATTERNS: { [methodName: string]: string[] } = {
+    // pasteboard module methods - verified via HarmonyOS SDK type definitions
+    'setData': ['pasteboard'],
+    'setPrimaryData': ['pasteboard'],
+    'setClipboardData': ['pasteboard'],
+    'getData': ['pasteboard'],
+    'getPrimaryText': ['pasteboard'],
+    'getUnifiedDataSync': ['pasteboard'],
+    'createData': ['pasteboard'],
+    'hasClipboardData': ['pasteboard'],
+
+    // rdb module methods
+    'insert': ['rdb', 'RdbStore', 'relationalStore'],
+    'update': ['rdb', 'RdbStore', 'relationalStore'],
+    'delete': ['rdb', 'RdbStore', 'relationalStore', 'photoAccessHelper'],
+    'batchInsert': ['rdb', 'RdbStore', 'relationalStore'],
+    'executeSql': ['rdb'],
+    'query': ['rdb', 'RdbStore', 'relationalStore'],
+
+    // distributedKVStore module methods
+    'put': ['distributedKVStore', 'kvStore', 'distributedData'],
+    'batchPut': ['distributedKVStore', 'kvStore'],
+    'batchPutSync': ['distributedKVStore', 'kvStore'],
+    'getAll': ['distributedKVStore', 'kvStore'],
+
+    // fs module methods
+    'write': ['fs'],
+    'writeSync': ['fs'],
+    'writeFile': ['fs', 'fileio'],
+    'writeFileSync': ['fs', 'fileio'],
+    'appendFile': ['fs', 'fileio'],
+    'appendFileSync': ['fs', 'fileio'],
+
+    // photoAccessHelper module methods
+    'createAsset': ['photoAccessHelper'],
+    'modifyAsset': ['photoAccessHelper'],
+
+    // preferences module methods
+    'putSync': ['preferences', 'Preferences', 'dataPreferences'],
+    'flushSync': ['preferences', 'Preferences', 'dataPreferences'],
+    'getSync': ['preferences', 'Preferences', 'dataPreferences'],
+};
+
+/**
+ * Standalone write operations: APIs where the call itself IS a sink.
+ * These operations write/persist data, regardless of whether privacy data flows to them.
+ *
+ * For example: createAsset() creates a media file (write operation),
+ * even if no tracked privacy variable is passed to it.
+ *
+ * Based on HarmonyOS API documentation:
+ * - photoAccessHelper.createAsset: Creates a media asset (photo/video) on device
+ * - photoAccessHelper.modifyAsset: Modifies an existing media asset
+ */
+const STANDALONE_WRITE_OPERATIONS: { [methodName: string]: { sinkType: DataSinkInfo['sinkType']; api: string } } = {
+    // photoAccessHelper write operations
+    'createAsset': { sinkType: 'storage', api: 'photoAccessHelper.PhotoAccessHelper.createAsset' },
+    'modifyAsset': { sinkType: 'storage', api: 'photoAccessHelper.PhotoAccessHelper.modifyAsset' },
+};
+
+// ---- Callback Parameter Tracking ----
+
+/**
+ * Trace data flow from callback parameters to sinks.
+ *
+ * For example, in:
+ *   getData((err, pasteData) => {
+ *       let text = pasteData.getPrimaryText();
+ *       console.log(text);
+ *   })
+ *
+ * This function traces 'pasteData' (parameter at index 1) to detect
+ * the 'console.log' sink that receives the de-obfuscated text.
+ *
+ * @param callbackMethod - The callback's ArkMethod
+ * @param parameterIndex - Index of the parameter to trace (0-based)
+ * @param outerTrackedVars - Variables from the outer method to check against
+ * @param filePath - Source file path for sink reporting
+ * @returns Array of DataSinkInfo found in the callback body
+ */
+function traceCallbackParameterDataFlow(
+    callbackMethod: ArkMethod,
+    parameterIndex: number,
+    outerTrackedVars: string[],
+    filePath: string
+): DataSinkInfo[] {
+    let sinks: DataSinkInfo[] = [];
+
+    try {
+        // Get the parameter variable at the given index
+        const paramInstances = callbackMethod.getParameterInstances();
+        if (!paramInstances || parameterIndex >= paramInstances.length) {
+            return sinks;
+        }
+
+        const paramLocal = paramInstances[parameterIndex];
+        const paramName = paramLocal?.toString();
+        if (!paramName) return sinks;
+
+        // Scan the callback method for sinks using this parameter
+        // Note: We don't pass scene here to avoid recursive callback-in-callback detection
+        // (which would be extremely rare in practice)
+        const callbackSinks = scanMethodForSinks(callbackMethod, [paramName]);
+
+        for (const sink of callbackSinks) {
+            // Update the file path to reflect the actual callback location
+            let callbackFilePath = filePath;
+            try {
+                const declaringFile = callbackMethod.getDeclaringArkFile();
+                if (declaringFile) {
+                    callbackFilePath = declaringFile.getName();
+                }
+            } catch { /* ignore */ }
+
+            sinks.push({
+                ...sink,
+                sinkFile: callbackFilePath,
+                // Mark this sink as coming from a callback parameter
+                dataVariable: `[callback:param${parameterIndex}] ${sink.dataVariable || paramName}`,
+            });
+        }
+    } catch { /* ignore */ }
+
+    return sinks;
+}
+
+/**
+ * Extract namespace from a type signature string.
+ * Handles formats like 'pasteboard.SystemPasteboard' -> 'pasteboard'
+ */
+function extractNamespaceFromType(typeStr: string | null): string | null {
+    if (!typeStr) return null;
+    // Type signature format: 'namespace.ClassName' or just 'ClassName'
+    const dotIdx = typeStr.indexOf('.');
+    if (dotIdx > 0) {
+        return typeStr.substring(0, dotIdx);
+    }
+    return typeStr;
+}
+
+/**
+ * Check if an invoke expression matches a sink pattern.
+ * Uses ArkAnalyzer's structured APIs for precise matching:
+ * - getInvokeExpr() to get the call expression
+ * - getMethodSignature() to get namespace and method name
+ * - type inference for instance variables when direct namespace match fails
+ *
+ * This avoids false positives like 'requestInfo' variable matching 'request.downloadTask'.
+ * When the base variable name doesn't directly match a namespace (e.g., 'systemPasteboard'),
+ * we use the method name to infer the expected namespace based on SDK documentation.
+ */
+function classifySinkInvoke(invokeExpr: AbstractInvokeExpr, stmt: any): {
     sinkType: DataSinkInfo['sinkType'];
     sinkApi: string;
 } | null {
-    const categories = ['network', 'storage', 'ui_display', 'log'] as const;
+    const categories = ['network', 'storage', 'ui_display', 'log', 'intent', 'share'] as const;
+
+    // Extract namespace and method name from the invoke expression
+    let namespace = extractNamespace(invokeExpr, stmt);
+    const methodName = extractMethodName(invokeExpr);
+
+    if (!namespace || !methodName) {
+        return null;
+    }
+
+    // Check if the method name indicates a known sink API method
+    const inferredNamespace = METHOD_NAMESPACE_PATTERNS[methodName];
 
     for (const category of categories) {
         const patterns = getSinkPatterns(category);
         for (const { ns, methods, api } of patterns) {
-            // Check if namespace appears in statement
-            if (stmtStr.includes(ns)) {
+            // Direct namespace match (e.g., 'console.error', 'geoLocationManager.on')
+            if (namespace === ns) {
+                if (methods.includes(methodName)) {
+                    return { sinkType: category, sinkApi: `${api}.${methodName}` };
+                }
+            }
+            // Method-based namespace inference for instance variables
+            // e.g., 'systemPasteboard.setData' -> 'pasteboard.setData'
+            // This handles cases where the variable name differs from the module namespace
+            else if (inferredNamespace && inferredNamespace.includes(ns) && methods.includes(methodName)) {
+                // Verify the method belongs to this namespace's type system
+                // by checking if the method is commonly associated with this namespace
+                return { sinkType: category, sinkApi: `${api}.${methodName}` };
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Legacy fallback: Check statement string for sink patterns.
+ * Only used when getInvokeExpr() returns null (e.g., property access patterns).
+ * Uses word boundary checks to avoid partial matches.
+ */
+function classifySinkStatementFallback(stmtStr: string): {
+    sinkType: DataSinkInfo['sinkType'];
+    sinkApi: string;
+} | null {
+    const categories = ['network', 'storage', 'ui_display', 'log', 'intent', 'share'] as const;
+
+    for (const category of categories) {
+        const patterns = getSinkPatterns(category);
+        for (const { ns, methods, api } of patterns) {
+            // Use word boundary regex pattern: namespace followed by .method(
+            // This ensures 'requestInfo' (no dot) doesn't match 'request.'
+            const nsPattern = new RegExp(`\\b${ns}\\.`);
+            if (nsPattern.test(stmtStr)) {
                 for (const method of methods) {
-                    if (stmtStr.includes(`.${method}(`)) {
+                    // Check for .method( with word boundary before the dot
+                    const methodPattern = new RegExp(`\\.${method}\\(`);
+                    if (methodPattern.test(stmtStr)) {
                         return { sinkType: category, sinkApi: `${api}.${method}` };
                     }
                 }
@@ -102,6 +361,8 @@ function classifySinkStatement(stmtStr: string): {
 
     return null;
 }
+
+// ---- Analysis functions ----
 
 /**
  * Extract the assigned variable from a privacy API usage statement.
@@ -152,12 +413,17 @@ function extractAssignedVariable(method: ArkMethod, apiResult: PrivacyDataApiRes
 
 /**
  * Scan a method's body for data sink patterns.
- * Enhanced: uses Stmt.getUses() to precisely track which statements
- * use the tracked variables, rather than pure string matching.
+ * Uses ArkAnalyzer's getInvokeExpr() API for precise matching.
+ * Falls back to string matching only when structural APIs are unavailable.
+ *
+ * @param method - The method to scan
+ * @param trackedVars - Variables that carry privacy data from source APIs
+ * @param scene - ArkAnalyzer scene for callback method lookup
  */
 function scanMethodForSinks(
     method: ArkMethod,
-    trackedVars: string[]
+    trackedVars: string[],
+    scene?: Scene
 ): DataSinkInfo[] {
     let sinks: DataSinkInfo[] = [];
     try {
@@ -171,8 +437,45 @@ function scanMethodForSinks(
         } catch { /* ignore */ }
 
         for (let stmt of stmts) {
-            let s = stmt.toString();
-            let classification = classifySinkStatement(s);
+            // Try structured API matching first (precise, avoids false positives)
+            let classification: { sinkType: DataSinkInfo['sinkType']; sinkApi: string } | null = null;
+
+            try {
+                if (stmt.containsInvokeExpr()) {
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (invokeExpr) {
+                        classification = classifySinkInvoke(invokeExpr, stmt);
+
+                        // Check for standalone write operations (createAsset, modifyAsset, etc.)
+                        // These are sinks even without tracked variable data flow
+                        if (!classification) {
+                            const methodName = extractMethodName(invokeExpr);
+                            if (methodName && STANDALONE_WRITE_OPERATIONS[methodName]) {
+                                const op = STANDALONE_WRITE_OPERATIONS[methodName];
+                                classification = { sinkType: op.sinkType, sinkApi: op.api };
+                            }
+                        }
+                    }
+                }
+            } catch { /* ignore */ }
+
+            // Fallback to string matching only if structural matching failed
+            if (!classification) {
+                const s = stmt.toString();
+                classification = classifySinkStatementFallback(s);
+
+                // Also check for standalone write operations via string matching
+                // This handles cases like "photoAccessHelper.createAsset(...)" directly in code
+                if (!classification) {
+                    for (const [methodName, op] of Object.entries(STANDALONE_WRITE_OPERATIONS)) {
+                        if (s.includes(methodName + '(')) {
+                            classification = { sinkType: op.sinkType, sinkApi: op.api };
+                            break;
+                        }
+                    }
+                }
+            }
+
             if (classification) {
                 // Method 1: Precise variable tracking via getUses()
                 let usedVar: string | undefined;
@@ -191,6 +494,7 @@ function scanMethodForSinks(
 
                 // Method 2: Fallback to string matching for field refs (this.xxx)
                 if (!usedVar) {
+                    let s = stmt.toString();
                     for (let v of trackedVars) {
                         if (s.includes(v)) {
                             usedVar = v;
@@ -213,6 +517,43 @@ function scanMethodForSinks(
                     sinkLine: lineNo > 0 ? lineNo : undefined,
                     dataVariable: usedVar,
                 });
+            }
+
+            // Callback parameter tracking: trace data flow through callback parameters
+            // This handles patterns like: getData((err, pasteData) => { ... })
+            if (scene && stmt.containsInvokeExpr()) {
+                try {
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (invokeExpr) {
+                        const args = invokeExpr.getArgs() || [];
+                        for (let i = 0; i < args.length; i++) {
+                            const arg = args[i];
+                            if (!arg || typeof arg.getType !== 'function') continue;
+
+                            const argType = arg.getType();
+                            // Check if this argument has FunctionType (it's a callback function)
+                            if (argType && argType.constructor && argType.constructor.name === 'FunctionType') {
+                                try {
+                                    const funcType = argType as any;
+                                    const sig = funcType.getMethodSignature ? funcType.getMethodSignature() : null;
+                                    if (sig) {
+                                        const callbackMethod = scene.getMethod(sig.toString());
+                                        if (callbackMethod) {
+                                            // Trace data flow through callback parameter
+                                            const callbackSinks = traceCallbackParameterDataFlow(
+                                                callbackMethod,
+                                                i,
+                                                trackedVars,
+                                                filePath
+                                            );
+                                            sinks.push(...callbackSinks);
+                                        }
+                                    }
+                                } catch { /* ignore */ }
+                            }
+                        }
+                    }
+                } catch { /* ignore */ }
             }
         }
 
@@ -313,7 +654,7 @@ function analyzeDataSinksForApi(
         let varsToTrack = (method === declaringMethod) ? trackedVars : fieldVars;
         if (varsToTrack.length === 0 && method !== declaringMethod) continue;
 
-        let sinks = scanMethodForSinks(method, varsToTrack);
+        let sinks = scanMethodForSinks(method, varsToTrack, scene);
         allSinks = allSinks.concat(sinks);
     }
 
@@ -353,6 +694,8 @@ export function analyzeDataSinks(
     let storageCount = 0;
     let uiCount = 0;
     let logCount = 0;
+    let intentCount = 0;
+    let shareCount = 0;
 
     for (let chainResult of callChainResults) {
         let apiResult = apiResults[chainResult.apiUsageIndex];
@@ -367,9 +710,11 @@ export function analyzeDataSinks(
             else if (s.sinkType === 'storage') storageCount++;
             else if (s.sinkType === 'ui_display') uiCount++;
             else if (s.sinkType === 'log') logCount++;
+            else if (s.sinkType === 'intent') intentCount++;
+            else if (s.sinkType === 'share') shareCount++;
         }
     }
 
     console.log(`[SINK] Data sink analysis complete. Found ${totalSinks} sinks:`);
-    console.log(`  [SINK] - network: ${networkCount}, storage: ${storageCount}, ui_display: ${uiCount}, log: ${logCount}`);
+    console.log(`  [SINK] - network: ${networkCount}, storage: ${storageCount}, ui_display: ${uiCount}, log: ${logCount}, intent: ${intentCount}, share: ${shareCount}`);
 }

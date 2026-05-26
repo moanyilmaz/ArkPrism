@@ -17,11 +17,12 @@ import { PointerAnalysisConfig } from "../arkanalyzer";
 import * as fs from 'fs';
 import { Source } from "./Source";
 import { Santization } from "./Santization";
-import { getPossibleRelatedNodes, INTERNAL_PARAMETER_SOURCE, INTERNAL_SINK_METHOD_toString, Json2ArkMethod, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, Json2ArkMethod_LLM, Json2ArkMethodSignature, isClosureLocal, getClosures } from "./Util";
+import { getPossibleRelatedNodes, INTERNAL_PARAMETER_SOURCE, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, Json2ArkMethod_LLM, Json2ArkMethodSignature, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
 import { TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
 import { PathEdgePoint } from "../arkanalyzer";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
+import { ArkThisRef } from "../arkanalyzer";
 
 // @ts-ignore - ClassCategory/ArkClass may need deep import  
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
@@ -51,6 +52,608 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         this.pointerAnalysis = pta;
     }
 
+    /**
+     * Direct analysis for SDK callback data flows.
+     * This complements IFDS by analyzing methods that may not be reachable from DummyMain
+     * but contain source API calls with callbacks.
+     */
+    public analyzeCallbackDataFlows(): void {
+        for (const method of this.scene.getMethods()) {
+            const cfg = method.getCfg();
+            if (!cfg) continue;
+
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!stmt.containsInvokeExpr()) continue;
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (!invokeExpr) continue;
+
+                    // Check if this is a source API call
+                    const source = callSource(invokeExpr, this.sources, this.scene);
+                    if (source) {
+                        if (source.sourceType === 'callback') {
+                            this.analyzeCallbackSource(method, stmt, invokeExpr, source);
+                        } else if (source.sourceType === 'return') {
+                            this.analyzePromiseChaining(method, stmt, invokeExpr, source);
+                        }
+                        continue;
+                    }
+
+                    // Also check for .then() calls whose base might be a source API
+                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr);
+                }
+            }
+        }
+    }
+
+    /**
+     * Analyze callback-style source API: getData((err, data) => { ... })
+     */
+    private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
+        const args = invokeExpr.getArgs();
+        if (source.callbackIndex < 0 || source.callbackIndex >= args.length) return;
+
+        const callbackArg = args[source.callbackIndex];
+        const callbackArgType = callbackArg.getType();
+
+        // Try to find the callback method
+        let callbackMethod: ArkMethod | null = null;
+        if (callbackArgType instanceof FunctionType) {
+            const callbackSig = callbackArgType.getMethodSignature();
+            callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
+        }
+
+        // If no callback method found, try to find it by scanning anonymous methods
+        if (!callbackMethod) {
+            callbackMethod = this.findCallbackMethod(method, invokeExpr);
+        }
+
+        if (!callbackMethod) return;
+
+        // Get callback parameters
+        const paramInstances = callbackMethod.getParameterInstances();
+        if (!paramInstances || paramInstances.length === 0) return;
+
+        // Check each callback parameter (skip error parameter if present)
+        const startIndex = paramInstances.length > 1 && paramInstances[0]?.toString().includes('err') ? 1 : 0;
+
+        for (let i = startIndex; i < paramInstances.length; i++) {
+            const param = paramInstances[i];
+            if (param instanceof Local) {
+                const fact = new TaintFact(param);
+                fact.addPath(stmt);
+                this.traceCallbackParamDataFlow(callbackMethod, param, fact);
+            }
+        }
+    }
+
+    /**
+     * Analyze Promise-style source API: selectContacts().then(info => { ... })
+     * or async/await: const info = await selectContacts()
+     */
+    private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
+        // Pattern 1: API().then(callback) - the invoke result is passed to .then()
+        if (stmt instanceof ArkAssignStmt) {
+            const resultVar = stmt.getDef();
+            if (resultVar instanceof Local) {
+                this.analyzeThenChaining(method, resultVar, stmt, source);
+            }
+        }
+
+        // Pattern 2: async/await - trace returned Promise value
+        if (stmt instanceof ArkAssignStmt) {
+            const leftOp = stmt.getLeftOp();
+            const rightOp = stmt.getRightOp();
+
+            if (rightOp instanceof AbstractInvokeExpr) {
+                const sourceCheck = callSource(rightOp, this.sources, this.scene);
+                if (sourceCheck && sourceCheck.sourceType === 'return' && leftOp instanceof Local) {
+                    const fact = new TaintFact(leftOp);
+                    fact.addPath(stmt);
+                    this.traceReturnedValueDataFlow(method, leftOp, fact);
+                }
+            }
+        }
+    }
+
+    /**
+     * Analyze chained .then() calls where the base is itself an invoke returning a Promise.
+     * Pattern: sourceApi().then(callback) - no intermediate variable assignment.
+     */
+    private analyzeChainedThenInvoke(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
+        // Check if this is a .then() call
+        const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+        if (methodName !== 'then') return;
+
+        if (!(invokeExpr instanceof ArkInstanceInvokeExpr)) return;
+
+        const base = invokeExpr.getBase();
+
+        // Case 1: Direct chaining - sourceApi().then(callback)
+        if (base instanceof AbstractInvokeExpr) {
+            const source = callSource(base, this.sources, this.scene);
+            if (source && source.sourceType === 'return') {
+                this.processThenCallback(method, stmt, invokeExpr);
+            }
+            return;
+        }
+
+        // Case 2: Intermediate variable - let x = sourceApi(); x.then(callback)
+        if (!(base instanceof Local)) return;
+
+        const sourceInvoke = this.findSourceInvokeForVariable(method, base);
+        if (!sourceInvoke) return;
+
+        const source = callSource(sourceInvoke, this.sources, this.scene);
+        if (!source || source.sourceType !== 'return') return;
+
+        this.processThenCallback(method, stmt, invokeExpr);
+    }
+
+    /**
+     * Process the callback of a .then() call and trace data flow.
+     */
+    private processThenCallback(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
+        const args = invokeExpr.getArgs();
+        if (args.length === 0) return;
+
+        const callbackArg = args[0];
+        const callbackArgType = callbackArg.getType();
+
+        // For .then() callbacks with ClosureType, we need special handling
+        // because the FunctionType signature might point to the wrong method
+        let callbackMethod: ArkMethod | null = null;
+
+        // Try FunctionType first
+        if (callbackArgType instanceof FunctionType) {
+            const callbackSig = callbackArgType.getMethodSignature();
+            callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
+            if (callbackMethod) {
+                const params = callbackMethod.getParameters();
+                const names = params.map(p => p.getName());
+                if (names.includes('resolve') || names.includes('reject')) {
+                    callbackMethod = null;
+                }
+            }
+        }
+
+        // If not found, try ClosureType
+        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
+            const typeStr = callbackArgType.toString();
+            const match = typeStr.match(/closures:\s*(.+)/);
+            if (match) {
+                const closureSigStr = match[1].trim();
+                const cls = method.getDeclaringArkClass();
+                // Fallback: find by method name pattern
+                const sigParts = closureSigStr.split('.');
+                const callbackName = sigParts[sigParts.length - 1].split('(')[0];
+                for (const m of cls.getMethods(true)) {
+                    if (m.getName() === callbackName) {
+                        callbackMethod = m;
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Also handle ClosureType (used by some SDK methods like selectContacts)
+        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
+            const typeStr = callbackArgType.toString();
+            const match = typeStr.match(/closures:\s*(.+)/);
+            if (match) {
+                const closureSigStr = match[1].trim();
+                const cls = method.getDeclaringArkClass();
+                callbackMethod = cls.getMethod(closureSigStr as unknown as MethodSignature);
+                // Fallback: find by method name pattern
+                if (!callbackMethod) {
+                    const sigParts = closureSigStr.split('.');
+                    const callbackName = sigParts[sigParts.length - 1].split('(')[0];
+                    for (const m of cls.getMethods(true)) {
+                        if (m.getName() === callbackName) {
+                            callbackMethod = m;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+        if (!callbackMethod) {
+            callbackMethod = this.findCallbackMethodFromInvoke(method, invokeExpr);
+        }
+
+        if (!callbackMethod) return;
+
+        // Get callback parameters with closure resolution
+        const resolvedParams = getResolvedCallbackParameters(callbackMethod);
+
+        if (resolvedParams.length === 0) return;
+
+        // For .then() success callback, find the first non-closure parameter
+        // Skip closure variables (%closures*) as they are from Promise constructor, not .then() callback
+        let resolvedParam: Value | null = null;
+        for (const param of resolvedParams) {
+            if (param instanceof Local) {
+                const paramName = param.getName();
+                // Skip closure variables
+                if (paramName.startsWith('%closures')) {
+                    continue;
+                }
+                // This is a regular callback parameter
+                resolvedParam = param;
+                break;
+            }
+        }
+
+        if (resolvedParam) {
+            const fact = new TaintFact(resolvedParam);
+            fact.addPath(stmt);
+            this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
+        }
+    }
+
+    /**
+     * Find the source invoke statement that assigns a value to the given variable.
+     * Also handles Promise chains like: let x = sourceApi().then(callback)
+     */
+    private findSourceInvokeForVariable(method: ArkMethod, localVar: Local): AbstractInvokeExpr | null {
+        const cfg = method.getCfg();
+        if (!cfg) return null;
+
+        for (const block of cfg.getBlocks()) {
+            for (const stmt of block.getStmts()) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                const leftOp = stmt.getLeftOp();
+                if (!ValueEqual(leftOp, localVar)) continue;
+
+                const rightOp = stmt.getRightOp();
+                if (rightOp instanceof AbstractInvokeExpr) {
+                    // Check if this is a .then() call
+                    if (rightOp instanceof ArkInstanceInvokeExpr) {
+                        const methodName = rightOp.getMethodSignature().getMethodSubSignature().getMethodName();
+                        if (methodName === 'then') {
+                            // Get the base of .then() - this is the source API call
+                            const thenBase = rightOp.getBase();
+                            if (thenBase instanceof AbstractInvokeExpr) {
+                                const source = callSource(thenBase, this.sources, this.scene);
+                                if (source && source.sourceType === 'return') {
+                                    return thenBase;
+                                }
+                            }
+                        }
+                    }
+                    return rightOp;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Analyze .then() chaining: resultVar.then(callback)
+     */
+    private analyzeThenChaining(method: ArkMethod, promiseVar: Local, sourceStmt: Stmt, source: Source): void {
+        const cfg = method.getCfg();
+        if (!cfg) return;
+
+        // Look for .then() calls on promiseVar
+        for (const block of cfg.getBlocks()) {
+            for (const stmt of block.getStmts()) {
+                if (!stmt.containsInvokeExpr()) continue;
+
+                const invokeExpr = stmt.getInvokeExpr();
+                if (!invokeExpr) continue;
+
+                // Check if this is a .then() call
+                const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                if (methodName !== 'then') continue;
+
+                // Check if the base is our promise variable
+                if (invokeExpr instanceof ArkInstanceInvokeExpr) {
+                    const base = invokeExpr.getBase();
+                    if (!ValueEqual(base, promiseVar)) continue;
+                }
+
+                // Get the callback argument (index 0 is success callback, index 1 is error)
+                const args = invokeExpr.getArgs();
+                if (args.length === 0) continue;
+
+                const callbackArg = args[0];
+                const callbackArgType = callbackArg.getType();
+
+                let callbackMethod: ArkMethod | null = null;
+                if (callbackArgType instanceof FunctionType) {
+                    const callbackSig = callbackArgType.getMethodSignature();
+                    callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
+                }
+
+                // If not found, try scanning for anonymous methods
+                if (!callbackMethod) {
+                    callbackMethod = this.findCallbackMethodFromInvoke(method, invokeExpr);
+                }
+
+                if (!callbackMethod) continue;
+
+                // Get callback parameters with closure resolution
+                const resolvedParams = getResolvedCallbackParameters(callbackMethod);
+                if (resolvedParams.length === 0) continue;
+
+                // For .then() success callback, the resolved value is the first param
+                const resolvedParam = resolvedParams[0];
+                if (resolvedParam instanceof Local) {
+                    const fact = new TaintFact(resolvedParam);
+                    fact.addPath(sourceStmt);
+                    fact.addPath(stmt);
+                    this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
+                }
+            }
+        }
+    }
+
+    /**
+     * Find callback method from a .then() invoke expression
+     */
+    private findCallbackMethodFromInvoke(callerMethod: ArkMethod, invokeExpr: AbstractInvokeExpr): ArkMethod | null {
+        const cls = callerMethod.getDeclaringArkClass();
+
+        // Look for patterns: %AC0$methodName or %AM0$methodName
+        for (const m of cls.getMethods(true)) {
+            const name = m.getName();
+            if ((name.startsWith('%AC') || name.startsWith('%AM')) && name.includes('$')) {
+                const body = m.getBody();
+                if (body && body.getCfg()) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Trace data flow from a returned Promise value
+     * e.g., let contacts = await selectContacts(); ... use contacts ...
+     */
+    private traceReturnedValueDataFlow(method: ArkMethod, startVar: Local, startFact: TaintFact): void {
+        const cfg = method.getCfg();
+        if (!cfg) return;
+
+        const visited = new Set<string>();
+        const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
+
+        while (worklist.length > 0) {
+            const { var: currentVar, fact: currentFact } = worklist.pop()!;
+            const key = currentVar.toString() + '|' + currentFact.getPath().map(s => s.toString()).join('->');
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            // Check for sink usage
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!stmt.containsInvokeExpr()) continue;
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (!invokeExpr) continue;
+
+                    if (this.callSink(invokeExpr)) {
+                        const args = invokeExpr.getArgs();
+                        for (const arg of args) {
+                            if (ValueEqual(arg, currentVar)) {
+                                const sinkFact = new TaintFact(currentVar);
+                                for (const p of currentFact.getPath()) {
+                                    sinkFact.addPath(p);
+                                }
+                                sinkFact.addPath(stmt);
+
+                                let isNew = true;
+                                for (const existing of this.detectOutcome) {
+                                    const existingPath = existing.getPath();
+                                    const newPath = sinkFact.getPath();
+                                    if (existingPath.length > 0 && newPath.length > 0 &&
+                                        existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
+                                        isNew = false;
+                                        break;
+                                    }
+                                }
+                                if (isNew) {
+                                    this.detectOutcome.push(sinkFact);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Propagate through assignments
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!(stmt instanceof ArkAssignStmt)) continue;
+                    const leftOp = stmt.getLeftOp();
+                    const rightOp = stmt.getRightOp();
+
+                    if (ValueEqual(rightOp, currentVar) && leftOp instanceof Local) {
+                        const newFact = new TaintFact(leftOp);
+                        for (const p of currentFact.getPath()) {
+                            newFact.addPath(p);
+                        }
+                        newFact.addPath(stmt);
+                        worklist.push({ var: leftOp, fact: newFact });
+                    }
+
+                    // Handle method calls: let result = var.method()
+                    if (rightOp instanceof ArkInstanceInvokeExpr && leftOp instanceof Local) {
+                        const base = rightOp.getBase();
+                        if (ValueEqual(base, currentVar)) {
+                            const newFact = new TaintFact(leftOp);
+                            for (const p of currentFact.getPath()) {
+                                newFact.addPath(p);
+                            }
+                            newFact.addPath(stmt);
+                            worklist.push({ var: leftOp, fact: newFact });
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Find callback method by scanning anonymous methods in the class.
+     */
+    private findCallbackMethod(callerMethod: ArkMethod, invokeExpr: AbstractInvokeExpr): ArkMethod | null {
+        const cls = callerMethod.getDeclaringArkClass();
+
+        // Look for anonymous callback methods that follow naming patterns
+        for (const m of cls.getMethods(true)) {
+            const name = m.getName();
+            // Match patterns like %AC0$MethodName or %AM0$MethodName
+            if ((name.startsWith('%AC') || name.startsWith('%AM')) && name.includes('$')) {
+                const body = m.getBody();
+                if (body && body.getCfg()) {
+                    return m;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Trace data flow from a callback parameter to sinks.
+     */
+    private traceCallbackParamDataFlow(method: ArkMethod, startVar: Value, startFact: TaintFact): void {
+        const cfg = method.getCfg();
+        if (!cfg) return;
+
+        const visited = new Set<string>();
+        const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
+
+        while (worklist.length > 0) {
+            const { var: currentVar, fact: currentFact } = worklist.pop()!;
+            const key = currentVar.toString() + '|' + currentFact.getPath().map(s => s.toString()).join('->');
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            // Collect all statements in the method
+            const allStmts: Stmt[] = [];
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    allStmts.push(stmt);
+                }
+            }
+
+            // Check for sink usage first
+            for (const stmt of allStmts) {
+                if (!stmt.containsInvokeExpr()) continue;
+                const invokeExpr = stmt.getInvokeExpr();
+                if (!invokeExpr) continue;
+
+                const isSink = this.callSink(invokeExpr);
+                if (isSink) {
+                    const args = invokeExpr.getArgs();
+                    for (const arg of args) {
+                        if (ValueEqual(arg, currentVar)) {
+                            // Found a sink!
+                            const sinkFact = new TaintFact(currentVar);
+                            for (const p of currentFact.getPath()) {
+                                sinkFact.addPath(p);
+                            }
+                            sinkFact.addPath(stmt);
+
+                            // Check if this is a new detection
+                            let isNew = true;
+                            for (const existing of this.detectOutcome) {
+                                const existingPath = existing.getPath();
+                                const newPath = sinkFact.getPath();
+                                if (existingPath.length > 0 && newPath.length > 0 &&
+                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
+                                    isNew = false;
+                                    break;
+                                }
+                            }
+                            if (isNew) {
+                                this.detectOutcome.push(sinkFact);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Then propagate through assignments
+            for (const stmt of allStmts) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                const leftOp = stmt.getLeftOp();
+                const rightOp = stmt.getRightOp();
+
+                if (ValueEqual(rightOp, currentVar)) {
+                    // currentVar is assigned to leftOp
+                    const newFact = new TaintFact(leftOp);
+                    for (const p of currentFact.getPath()) {
+                        newFact.addPath(p);
+                    }
+                    newFact.addPath(stmt);
+
+                    if (leftOp instanceof Local) {
+                        worklist.push({ var: leftOp, fact: newFact });
+                    } else if (leftOp instanceof ArkInstanceFieldRef) {
+                        worklist.push({ var: leftOp, fact: newFact });
+                    } else if (leftOp instanceof ArkArrayRef) {
+                        worklist.push({ var: leftOp.getBase(), fact: newFact });
+                    }
+                }
+
+                // Check if currentVar is used as base for field access
+                if (currentVar instanceof Local && rightOp instanceof ArkInstanceFieldRef && LocalEqual(rightOp.getBase(), currentVar)) {
+                    const newFact = new TaintFact(rightOp);
+                    for (const p of currentFact.getPath()) {
+                        newFact.addPath(p);
+                    }
+                    newFact.addPath(stmt);
+                    worklist.push({ var: rightOp, fact: newFact });
+                }
+
+                // Check if rightOp is a method call on currentVar (e.g., pasteData.getPrimaryText())
+                // The return value depends on the tainted receiver
+                if (currentVar instanceof Local && rightOp instanceof AbstractInvokeExpr) {
+                    const methodInvoke = rightOp as AbstractInvokeExpr;
+                    let baseUsed = false;
+
+                    if (methodInvoke instanceof ArkInstanceInvokeExpr) {
+                        const invokeBase = methodInvoke.getBase();
+                        if (ValueEqual(invokeBase, currentVar)) {
+                            baseUsed = true;
+                        }
+                    }
+
+                    if (baseUsed && leftOp instanceof Local) {
+                        // leftOp depends on tainted data from method call
+                        const newFact = new TaintFact(leftOp);
+                        for (const p of currentFact.getPath()) {
+                            newFact.addPath(p);
+                        }
+                        newFact.addPath(stmt);
+                        worklist.push({ var: leftOp, fact: newFact });
+                    }
+                }
+
+                // Handle string concatenation: taint propagates through string operations
+                // e.g., 'Clipboard Data: ' + text
+                if (leftOp instanceof Local && typeof rightOp === 'string' === false) {
+                    // Check if rightOp references currentVar in any way
+                    const uses = rightOp.getUses ? rightOp.getUses() : [];
+                    for (const use of uses) {
+                        if (ValueEqual(use, currentVar)) {
+                            const newFact = new TaintFact(leftOp);
+                            for (const p of currentFact.getPath()) {
+                                newFact.addPath(p);
+                            }
+                            newFact.addPath(stmt);
+                            worklist.push({ var: leftOp, fact: newFact });
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     getEntryPoint(): Stmt {
         return this.entryPoint;
     }
@@ -60,12 +663,35 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     }
 
     public callSink(expr: AbstractInvokeExpr): boolean {
+        const methodSignature = expr.getMethodSignature().toString();
+        const methodName = expr.getMethodSignature().getMethodSubSignature().getMethodName();
+
+        // Check internal sinks first (these are guaranteed sinks)
+        if (INTERNAL_SINK_METHOD_toString.includes(methodSignature)) {
+            return true;
+        }
+
+        // Also check for common log sink methods
+        if (LOG_SINK_METHODS.includes(methodName)) {
+            return true;
+        }
+
+        // Exact match against configured sinks
         for (const sink of this.sinks) {
-            const methodSignature = expr.getMethodSignature().toString()
-            if (sink.toString() == methodSignature || INTERNAL_SINK_METHOD_toString.includes(methodSignature)) {
+            if (sink.toString() == methodSignature) {
                 return true;
             }
         }
+
+        // For SDK methods with unknown signature, fuzzy match by method name
+        if (methodSignature.includes('@%unk') || methodSignature.includes('@unk')) {
+            for (const sink of this.sinks) {
+                if (sink.toString().includes(methodName)) {
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 
@@ -361,7 +987,11 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
 
                     for (const sink of checkerInstance.sinks) {
-                        if (callExpr.getMethodSignature() == sink) {
+                        const callSig = callExpr.getMethodSignature().toString();
+                        const sinkSig = sink.toString();
+                        // Exact match or fuzzy match for unknown signatures
+                        if (callSig === sinkSig ||
+                            (callSig.includes('@%unk') && sinkSig.includes(callExpr.getMethodSignature().getMethodSubSignature().getMethodName()))) {
                             for (const param of callExpr.getArgs()) {
                                 if (ValueEqual(param, dataFact.getValue())) {
                                     dataFact.addPath(srcStmt);
@@ -582,6 +1212,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             for (const ms of methodSignatures) {
                 this.sinks.push(ms);
+            }
+
+            // If no signatures found (e.g., for builtin methods like console.info), add the method name as a pattern
+            if (methodSignatures.length === 0) {
+                console.log(`[SINK] No signatures found for ${object.namespace || ''}.${object.api_name}, adding method name pattern`);
+                // We'll handle this via fuzzy matching in callSink instead
             }
         }
     }

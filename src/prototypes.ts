@@ -128,7 +128,7 @@ export interface CallChainResult {
 
 /** Data sink classification for privacy data flow */
 export interface DataSinkInfo {
-    sinkType: "network" | "storage" | "ui_display" | "log" | "data_return" | "unknown";
+    sinkType: "network" | "storage" | "ui_display" | "log" | "intent" | "share" | "data_return" | "unknown";
     sinkApi: string;                // e.g. "http.HttpRequest.request"
     sinkMethod: string;             // method signature where the sink occurs
     sinkFile: string;
@@ -208,6 +208,21 @@ export interface PermissionResult {
     reason: string[] | null;
 }
 
+/** Data flow analysis statistics */
+export interface DataFlowStats {
+    totalMethods: number;
+    methodsWithUnreachableBlocks: number;
+    totalUnreachableBlocks: number;
+    totalDeadVariables: number;
+}
+
+/** Recursive/loop pattern detection statistics */
+export interface RecursivePatternStats {
+    totalMethods: number;
+    methodsWithLoops: number;
+    loopBreakdown: { [key: string]: number };
+}
+
 /** Top-level ArkPrism analysis output */
 export interface ArkPrismOutput {
     projectName: string;
@@ -226,6 +241,8 @@ export interface ArkPrismOutput {
         totalCollaborationsDetected: number;
         totalTaintFlows?: number;
     };
+    dataFlowStats?: DataFlowStats;
+    recursivePatternStats?: RecursivePatternStats;
 }
 
 /** Helper type for string.json file objects */

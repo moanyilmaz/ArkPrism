@@ -144,6 +144,11 @@ export function runHapflowAnalysis(
     const solver = new TaintAnalysisSolver(problem, scene, pta);
     solver.solve();
 
+    // 5b. Execute direct callback data flow analysis
+    // This catches callback-based SDK calls that IFDS might miss
+    console.log('[HAPFLOW] Running direct callback analysis...');
+    problem.analyzeCallbackDataFlows();
+
     // 6. Convert and return results
     const outcome = problem.getOutcome();
     console.log(`[HAPFLOW] Analysis complete. Found ${outcome.length} taint flows.`);

@@ -169,6 +169,7 @@ export abstract class DataflowSolver<D extends object> {
     protected getCallees(invokeStmt: ArkInvokeStmt): Set<ArkMethod> {
         let callees: Set<ArkMethod> = new Set();
         const invokeExpr = invokeStmt.getInvokeExpr();
+
         if (invokeExpr instanceof ArkPtrInvokeExpr) {
             const ptrLocal = invokeExpr.getFuncPtrLocal();
             let functionType = ptrLocal.getType();
@@ -197,10 +198,16 @@ export abstract class DataflowSolver<D extends object> {
             const invokeMethodFileSignature = invokeExpr.getMethodSignature().getDeclaringClassSignature().getDeclaringFileSignature();
 
             const paramFuncs = getRecallMethodInParam(invokeStmt);
+
             if (this.scene.getFile(invokeMethodFileSignature) && !this.scene.hasSdkFile(invokeMethodFileSignature)) {
                 callees = this.getAllCalleeMethodsFromCG(invokeStmt, paramFuncs);
             } else {
-                callees = new Set(paramFuncs);
+                // For SDK calls, include any found paramFuncs or callbacks
+                if (paramFuncs.length > 0) {
+                    for (const pf of paramFuncs) {
+                        callees.add(pf);
+                    }
+                }
             }
         }
         return callees;

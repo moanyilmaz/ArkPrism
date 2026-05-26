@@ -63,7 +63,7 @@ function checkDirectCallPrivacyApis(
                             results.push({
                                 category: "direct invoke stmt after assignment",
                                 apiPackage: namespacesInStmt[0].systemPackage,
-                                namespace: rightOpUses[0]?.toString() || "",
+                                namespace: namespacesInStmt[0].importSystemNamespace,
                                 method: invokeMethodName || "",
                                 args: invokeExpr?.getArgs().map(arg => arg.toString()) || [],
                                 code: stmt.toString(),
@@ -92,7 +92,7 @@ function checkDirectCallPrivacyApis(
                         results.push({
                             category: "direct invoke stmt",
                             apiPackage: namespacesInStmt[0].systemPackage,
-                            namespace: stmtUses[1].toString() || "",
+                            namespace: namespacesInStmt[0].importSystemNamespace,
                             method: invokeMethodName || "",
                             args: invokeExpr.getArgs().map(arg => arg.toString()),
                             code: stmt.toString(),
@@ -142,11 +142,25 @@ function checkIndirectCallPrivacyApis(
                     ? indirectCallCheckUnits.filter(unit => unit.importClauseName === callerNamespace)
                     : [];
 
-                if (namespacesInCaller.length > 0 && callerTypeList) {
-                    callerTypeList[0] = namespacesInCaller[0].importSystemNamespace;
-                    let methodCall = callerTypeList.concat(invokeMethodName || "").join(".");
-                    let matchedApi = namespacesInCaller[0].relatedApis.find(api => api.method === methodCall);
+                // Heuristic fallback: if type inference failed (unknown/empty type) but method name matches
+                // an indirect call rule, try to match by method name alone
+                // This handles cases where ArkAnalyzer can't infer the return type of SDK helper methods
+                if (namespacesInCaller.length === 0 && invokeMethodName) {
+                    for (const unit of indirectCallCheckUnits) {
+                        const matchedByMethod = unit.relatedApis.find(api => api.method === invokeMethodName);
+                        if (matchedByMethod) {
+                            namespacesInCaller = [unit];
+                            break;
+                        }
+                    }
+                }
+
+                if (namespacesInCaller.length > 0) {
+                    // Privacy rules store methods without namespace prefix (e.g., "createAsset", not "photoAccessHelper.createAsset")
+                    let matchedApi = namespacesInCaller[0].relatedApis.find(api => api.method === invokeMethodName);
                     if (matchedApi) {
+                        // For indirect calls, method is just the method name (namespace is separate)
+                        let methodCall = invokeMethodName || "";
                         results.push({
                             category: "indirect invoke",
                             apiPackage: namespacesInCaller[0].systemPackage,

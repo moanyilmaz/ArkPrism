@@ -24,7 +24,7 @@ import { detectMultiSourceCollaborations } from './multiSourceAnalyzer';
 import { analyzeDataSinks } from './dataSinkAnalyzer';
 import { analyzePermissions } from './permissionAnalyzer';
 import { generateDot } from './dotExporter';
-import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult } from './prototypes';
+import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult, DataFlowStats, RecursivePatternStats } from './prototypes';
 import { runHapflowAnalysis, HapflowOptions } from './hapflowRunner';
 import { analyzeViewTrees } from './viewTreeAnalyzer';
 import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
@@ -113,8 +113,9 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     }
 
     // Data Flow Analysis using built-in Cfg Def-Use chains (always runs)
+    let dfStats: DataFlowStats | undefined;
     try {
-        let dfStats = getDataFlowStats(scene);
+        dfStats = getDataFlowStats(scene);
         if (dfStats.methodsWithUnreachableBlocks > 0) {
             console.log(`[DATA-FLOW] ${dfStats.methodsWithUnreachableBlocks} methods with unreachable blocks, `
                 + `${dfStats.totalUnreachableBlocks} blocks total.`);
@@ -124,8 +125,9 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     }
 
     // Recursive/Loop Pattern Detection
+    let recursiveStats: RecursivePatternStats | undefined;
     try {
-        let recursiveStats = getRecursiveStats(scene);
+        recursiveStats = getRecursiveStats(scene);
         if (recursiveStats.methodsWithLoops > 0) {
             let loopTypes = Object.entries(recursiveStats.loopBreakdown)
                 .map(([k, v]) => `${k}(${v})`)
@@ -174,7 +176,9 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
             totalCallChainsBuilt: chainsWithPath,
             totalCollaborationsDetected: multiSourceResults.length,
             totalTaintFlows: taintFlows.length
-        }
+        },
+        dataFlowStats: dfStats,
+        recursivePatternStats: recursiveStats
     };
 
     // Write JSON report

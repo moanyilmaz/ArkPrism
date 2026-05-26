@@ -9,7 +9,7 @@
  */
 
 import {
-    Scene, Cfg, BasicBlock, SCCDetection, GraphTraits, BaseNode
+    Scene, Cfg, BasicBlock, SCCDetection, BaseNode
 } from './arkanalyzer';
 
 /**

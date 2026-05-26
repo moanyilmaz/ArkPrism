@@ -37,7 +37,9 @@ export function inferFieldType(
     fieldName: string,
     arkClass: ArkClass
 ): { type: Type | null; baseObject: any } | null {
-    return TypeInference.inferFieldType(baseType, fieldName, arkClass);
+    const result = TypeInference.inferFieldType(baseType, fieldName, arkClass);
+    if (!result) return null;
+    return Array.isArray(result) ? { type: result[1], baseObject: result[0] } : result;
 }
 
 /**

@@ -1,79 +1,103 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "description": "Data sink rules for privacy data flow tracking",
-  "version": "1.0.0",
-  "updated": "2026-05-20",
+  "description": "Enhanced data sink rules for privacy data flow tracking - v2.0",
+  "version": "2.0.0",
+  "updated": "2026-05-21",
 
   "sinkCategories": {
     "network": {
-      "description": "APIs that send data over network",
-      "patternMatch": "namespace_method",
+      "description": "APIs that send data over network (data exfiltration)",
+      "severity": "critical",
       "patterns": [
         {
           "namespace": "http",
-          "methods": ["request", "requestInStream"],
+          "methods": ["request", "requestInStream", "on"],
           "api": "http.HttpRequest",
           "kit": "@kit.NetworkKit"
         },
         {
+          "namespace": "http",
+          "methods": ["request", "requestInStream"],
+          "api": "http.Http",
+          "kit": "@kit.NetworkKit"
+        },
+        {
           "namespace": "rcp",
-          "methods": ["fetch", "get", "post", "put", "delete"],
+          "methods": ["fetch", "get", "post", "put", "delete", "sendRequest"],
           "api": "rcp.Session",
           "kit": "@kit.RemoteCommunicationKit"
         },
         {
           "namespace": "webSocket",
-          "methods": ["send"],
-          "api": "webSocket.send",
+          "methods": ["send", "sendPartialMessage"],
+          "api": "webSocket.WebSocket",
           "kit": "@kit.NetworkKit"
         },
         {
           "namespace": "socket",
-          "methods": ["send"],
-          "api": "socket.send",
+          "methods": ["send", "sendArrayBuffer"],
+          "api": "socket.Socket",
           "kit": "@kit.NetworkKit"
         },
         {
           "namespace": "TCPSocket",
-          "methods": ["send"],
-          "api": "TCPSocket.send",
+          "methods": ["send", "sendArrayBuffer"],
+          "api": "TCPSocket",
           "kit": "@kit.NetworkKit"
         },
         {
           "namespace": "UDPSocket",
-          "methods": ["send"],
-          "api": "UDPSocket.send",
+          "methods": ["send", "sendArrayBuffer"],
+          "api": "UDPSocket",
           "kit": "@kit.NetworkKit"
         },
         {
           "namespace": "TLSSocket",
-          "methods": ["send"],
-          "api": "TLSSocket.send",
+          "methods": ["send", "sendArrayBuffer"],
+          "api": "TLSSocket",
           "kit": "@kit.NetworkKit"
         },
         {
           "namespace": "request",
-          "methods": ["uploadFile"],
-          "api": "request.uploadFile",
+          "methods": ["uploadFile", "downloadFile"],
+          "api": "request.downloadTask",
           "kit": "@kit.BasicServicesKit"
+        },
+        {
+          "namespace": "request",
+          "methods": ["on", "off", "once"],
+          "api": "request.downloadTask",
+          "kit": "@kit.BasicServicesKit"
+        },
+        {
+          "namespace": "wifiManager",
+          "methods": ["scan", "connectToDevice"],
+          "api": "wifiManager",
+          "kit": "@ohos.wifiManager"
+        },
+        {
+          "namespace": "ble",
+          "methods": ["writeCharacteristicValue", "sendData"],
+          "api": "ble.GattClientDevice",
+          "kit": "@ohos.bluetooth.ble"
         }
       ]
     },
 
     "storage": {
-      "description": "APIs that persist data locally",
-      "patternMatch": "namespace_method",
+      "description": "APIs that persist data locally (data retention)",
+      "severity": "high",
       "patterns": [
         {
           "namespace": "preferences",
           "methods": ["put", "putSync", "flushSync"],
-          "api": "preferences",
+          "api": "preferences.Preferences",
           "kit": "@kit.ArkData"
         },
         {
           "namespace": "Preferences",
           "methods": ["put", "putSync", "flushSync"],
-          "api": "Preferences",
+          "api": "dataPreferences.Preferences",
           "kit": "@kit.ArkData"
         },
         {
@@ -84,34 +108,70 @@
         },
         {
           "namespace": "rdb",
-          "methods": ["insert", "update"],
+          "methods": ["insert", "update", "delete", "batchInsert", "executeSql"],
           "api": "rdb.RdbStore",
           "kit": "@kit.ArkData"
         },
         {
           "namespace": "RdbStore",
-          "methods": ["insert", "update"],
-          "api": "RdbStore",
+          "methods": ["insert", "update", "delete", "batchInsert"],
+          "api": "relationalStore.RdbStore",
           "kit": "@kit.ArkData"
         },
         {
           "namespace": "relationalStore",
-          "methods": ["insert", "update"],
+          "methods": ["insert", "update", "delete", "batchInsert"],
           "api": "relationalStore",
           "kit": "@kit.ArkData"
         },
         {
+          "namespace": "distributedKVStore",
+          "methods": ["put", "putSync", "batchPut", "batchPutSync"],
+          "api": "distributedKVStore.SingleKVStore",
+          "kit": "@kit.DistributedServiceKit"
+        },
+        {
+          "namespace": "kvStore",
+          "methods": ["put", "putSync", "batchPut"],
+          "api": "distributedKVStore",
+          "kit": "@kit.DistributedServiceKit"
+        },
+        {
+          "namespace": "distributedData",
+          "methods": ["put", "putSync"],
+          "api": "distributedData.AppDataHub",
+          "kit": "@ohos.data.distributedData"
+        },
+        {
           "namespace": "fs",
-          "methods": ["write", "writeSync"],
+          "methods": ["write", "writeSync", "writeFile", "writeFileSync", "appendFile", "appendFileSync"],
           "api": "fs",
           "kit": "@kit.CoreFileKit"
+        },
+        {
+          "namespace": "fileio",
+          "methods": ["writeFile", "writeFileSync", "appendFile", "appendFileSync"],
+          "api": "fileio",
+          "kit": "@ohos.fileio"
+        },
+        {
+          "namespace": "photoAccessHelper",
+          "methods": ["createAsset", "modifyAsset", "delete"],
+          "api": "photoAccessHelper.PhotoAccessHelper",
+          "kit": "@ohos.file.photoAccessHelper"
+        },
+        {
+          "namespace": "pasteboard",
+          "methods": ["setData", "setPrimaryData", "setClipboardData"],
+          "api": "pasteboard.SystemPasteboard",
+          "kit": "@kit.BasicServicesKit"
         }
       ]
     },
 
     "ui_display": {
-      "description": "APIs that display data in UI",
-      "patternMatch": "namespace_method",
+      "description": "APIs that display data in UI (data exposure to user)",
+      "severity": "medium",
       "patterns": [
         {
           "namespace": "Text",
@@ -133,7 +193,7 @@
         },
         {
           "namespace": "RichText",
-          "methods": ["create"],
+          "methods": ["create", "setRichText"],
           "api": "RichText",
           "kit": "@kit.ArkUI"
         },
@@ -150,60 +210,109 @@
           "kit": "@kit.ArkUI"
         },
         {
-          "namespace": "Column",
+          "namespace": "ListItem",
           "methods": ["create"],
-          "api": "Column",
+          "api": "ListItem",
           "kit": "@kit.ArkUI"
         },
         {
-          "namespace": "Row",
+          "namespace": "ForEach",
           "methods": ["create"],
-          "api": "Row",
+          "api": "ForEach",
           "kit": "@kit.ArkUI"
         },
         {
-          "namespace": "Flex",
+          "namespace": "LazyForEach",
           "methods": ["create"],
-          "api": "Flex",
+          "api": "LazyForEach",
           "kit": "@kit.ArkUI"
         }
       ]
     },
 
     "log": {
-      "description": "APIs that log data (debugging, telemetry)",
-      "patternMatch": "namespace_method",
+      "description": "APIs that log data (potential telemetry/debug leakage)",
+      "severity": "medium",
       "patterns": [
         {
           "namespace": "console",
-          "methods": ["log", "info", "warn", "error", "debug"],
+          "methods": ["log", "info", "warn", "error", "debug", "trace", "table"],
           "api": "console",
           "kit": "builtin"
         },
         {
           "namespace": "hilog",
-          "methods": ["info", "warn", "error", "debug"],
+          "methods": ["debug", "info", "warn", "error", "fatal"],
           "api": "hilog",
-          "kit": "@kit.Hilog"
+          "kit": "@ohos.hilog"
         },
         {
           "namespace": "Logger",
-          "methods": ["info", "warn", "error", "debug"],
+          "methods": ["debug", "info", "warn", "error"],
           "api": "Logger",
-          "kit": "@kit.Logger"
+          "kit": "@ohos.faultLogger"
+        },
+        {
+          "namespace": "printLog",
+          "methods": ["printLog"],
+          "api": "hiLog",
+          "kit": "@ohos.hilog"
+        },
+        {
+          "namespace": "HiLog",
+          "methods": ["debug", "info", "warn", "error"],
+          "api": "HiLog",
+          "kit": "@ohos.hilog"
         }
       ]
     },
 
-    "data_return": {
-      "description": "Return statements that expose privacy data",
-      "patternMatch": "return_stmt",
+    "intent": {
+      "description": "APIs that send data via Intent/Ability (data sharing between apps)",
+      "severity": "high",
       "patterns": [
         {
-          "namespace": "*",
-          "methods": ["*"],
-          "api": "return",
-          "note": "Tracked when return value uses sensitive data variables"
+          "namespace": "want",
+          "methods": ["addFlags", "setFlags"],
+          "api": "want.Want",
+          "kit": "@ohos.app.ability.Want"
+        },
+        {
+          "namespace": "wantAgent",
+          "methods": ["getWant", "cancel"],
+          "api": "wantAgent",
+          "kit": "@ohos.wantAgent"
+        },
+        {
+          "namespace": "abilityAccessCtrl",
+          "methods": ["onRequestPermissionsFromUserResult"],
+          "api": "abilityAccessCtrl",
+          "kit": "@ohos.abilityAccessCtrl"
+        }
+      ]
+    },
+
+    "share": {
+      "description": "APIs that share data with other apps or services",
+      "severity": "high",
+      "patterns": [
+        {
+          "namespace": "share",
+          "methods": ["shareSystemSharedUri"],
+          "api": "share.ShareOption",
+          "kit": "@kit.BasicServicesKit"
+        },
+        {
+          "namespace": "picker",
+          "methods": ["save", "publish"],
+          "api": "picker",
+          "kit": "@ohos.file.picker"
+        },
+        {
+          "namespace": "fileAccess",
+          "methods": ["share"],
+          "api": "fileAccess",
+          "kit": "@ohos.file.fileAccess"
         }
       ]
     }
@@ -212,9 +321,17 @@
   "metadata": {
     "sources": [
       "HarmonyOS NEXT Developer Documentation",
-      "OpenHarmony API Reference"
+      "OpenHarmony API Reference",
+      "Android Privacy Leak Detection Literature (FlowDroid, Amandroid)",
+      "DroidBench Test Suite"
     ],
-    "lastUpdated": "2026-05-20",
-    "maintainer": "ArkPrism Team"
+    "references": [
+      "SEAndroid: Towards Mandatory MAC in Android",
+      "FlowDroid: Precise Static Data Flow Analysis of Android",
+      "Amandroid: A Precise and General Inter-component Data Flow Analysis"
+    ],
+    "lastUpdated": "2026-05-21",
+    "maintainer": "ArkPrism Team",
+    "notes": "Sink rules follow Android taint analysis conventions: network=critical, storage=high, intent=high, log=medium"
   }
 }

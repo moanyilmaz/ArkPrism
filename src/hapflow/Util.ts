@@ -33,6 +33,12 @@ export const INTERNAL_SINK_METHOD_toString: string[] = [
     "@ohosSdk/api/@internal/full/global.d.ts: console.[static]assert(string, any[])",
 ]
 
+// Log sink method names that should always be considered sinks
+export const LOG_SINK_METHODS: string[] = [
+    'info', 'error', 'warn', 'debug', 'fatal', 'trace',
+    'log', 'printLog'
+]
+
 const filenamePrefix = 'api/';
 const paramCallbackString = 'AsyncCallback';
 
@@ -306,9 +312,13 @@ function paramEqual(methodSignature: MethodSignature, paramInfos: string[]): boo
 
 export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
     const ret: ArkMethod[] = [];
-    for (const param of stmt.getInvokeExpr().getArgs()) {
-        if (param.getType() instanceof FunctionType) {
-            const methodSignature = (param.getType() as FunctionType).getMethodSignature();
+    const invokeExpr = stmt.getInvokeExpr();
+    const args = invokeExpr.getArgs ? invokeExpr.getArgs() : [];
+    for (let i = 0; i < args.length; i++) {
+        const param = args[i];
+        const paramType = param?.getType ? param.getType() : null;
+        if (paramType instanceof FunctionType) {
+            const methodSignature = paramType.getMethodSignature();
             const method = stmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass().getMethod(methodSignature);
             if (method) {
                 ret.push(method);
@@ -362,6 +372,132 @@ export function getClosures(method: ArkMethod): Local[] | undefined {
         }
     }
     return closures;
+}
+
+/**
+ * Resolve a closure variable to its actual captured value.
+ *
+ * When a lambda/callback has parameters like `info`, they may be represented as
+ * ClosureFieldRef that references a variable from the enclosing scope (e.g., %closures0).
+ * This function finds the actual value that the closure variable captures.
+ *
+ * @param closureLocal - The closure variable (e.g., %closures0)
+ * @param method - The callback method containing the closure
+ * @returns The actual Value captured by this closure, or null if not found
+ */
+export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): Value | null {
+    const cfg = method.getCfg();
+    if (!cfg) return null;
+
+    console.log(`[DEBUG][resolveClosure] Looking for: ${closureLocal.toString()}`);
+
+    // Get the LexicalEnvType from the starting block
+    for (const stmt of cfg.getStartingBlock()!.getStmts()) {
+        if (stmt instanceof ArkAssignStmt) {
+            const rightOp = stmt.getRightOp();
+            if (rightOp.getType() instanceof LexicalEnvType) {
+                const lexicalEnv = rightOp.getType() as LexicalEnvType;
+                const closures = lexicalEnv.getClosures();
+                console.log(`[DEBUG][resolveClosure] Found LexicalEnvType with ${closures.length} closures`);
+                console.log(`[DEBUG][resolveClosure] closures: ${closures.map(c => c.toString()).join(', ')}`);
+
+                // closures is typically an array of Local or ClosureFieldRef
+                for (const closure of closures as Value[]) {
+                    console.log(`[DEBUG][resolveClosure]   Checking closure: ${closure.toString()}, type: ${(closure as any).constructor?.name}`);
+                    if ((closure as any).constructor?.name === 'ClosureFieldRef') {
+                        const closureRef = closure as ClosureFieldRef;
+                        // Check if this closure field matches our closure local
+                        console.log(`[DEBUG][resolveClosure]     ClosureFieldRef fieldName: ${closureRef.getFieldName()}`);
+                        console.log(`[DEBUG][resolveClosure]     ClosureFieldRef base: ${closureRef.getBase().toString()}`);
+                        if (closureRef.toString() === closureLocal.toString()) {
+                            // The base of the ClosureFieldRef is the actual captured value
+                            console.log(`[DEBUG][resolveClosure]     MATCH! Returning base: ${closureRef.getBase().toString()}`);
+                            return closureRef.getBase();
+                        }
+                    } else if ((closure as any).constructor?.name === 'Local') {
+                        console.log(`[DEBUG][resolveClosure]     Local name: ${(closure as Local).getName()}`);
+                        // If closures contain Locals directly, check by name pattern
+                        if (closureLocal.getName().startsWith('%closures')) {
+                            // Try to find the corresponding captured value
+                            // by looking at how the closure environment was constructed
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    // Fallback: try to find the closure by analyzing the method's statements
+    console.log(`[DEBUG][resolveClosure] Checking method statements...`);
+    for (const block of cfg.getBlocks()) {
+        for (const stmt of block.getStmts()) {
+            if (!(stmt instanceof ArkAssignStmt)) continue;
+            const leftOp = stmt.getLeftOp();
+            if (!(leftOp instanceof Local)) continue;
+
+            // Check if leftOp is our closure variable
+            if (leftOp.getName() === closureLocal.getName()) {
+                const rightOp = stmt.getRightOp();
+                console.log(`[DEBUG][resolveClosure]   Found closure assignment: ${leftOp.getName()} = ${rightOp.toString()}, type: ${(rightOp as any).constructor?.name}`);
+                // The rightOp should be the closure environment or closure field ref
+                if ((rightOp as any).constructor?.name === 'ClosureFieldRef') {
+                    console.log(`[DEBUG][resolveClosure]     Returning ClosureFieldRef base: ${(rightOp as ClosureFieldRef).getBase().toString()}`);
+                    return (rightOp as ClosureFieldRef).getBase();
+                }
+                // If rightOp is a Local from enclosing scope, return it
+                if (rightOp instanceof Local) {
+                    console.log(`[DEBUG][resolveClosure]     Returning Local: ${rightOp.toString()}`);
+                    return rightOp;
+                }
+            }
+        }
+    }
+
+    return null;
+}
+
+/**
+ * Get the actual parameters from a callback method, resolving closure variables.
+ *
+ * For a .then() callback like:
+ *   selectContacts().then((info) => { ... })
+ *
+ * The `info` parameter may be:
+ * 1. A direct Local parameter (normal case)
+ * 2. A ClosureFieldRef that captures a value from the enclosing scope
+ *
+ * This function returns the resolved values for all parameters.
+ */
+export function getResolvedCallbackParameters(callbackMethod: ArkMethod): Value[] {
+    const resolvedParams: Value[] = [];
+    const paramInstances = callbackMethod.getParameterInstances();
+    if (!paramInstances) return resolvedParams;
+
+    for (const param of paramInstances) {
+        if (param instanceof Local) {
+            const paramName = param.getName();
+            // Check if this is a closure variable (by isClosureLocal check)
+            if (isClosureLocal(param)) {
+                // It's a closure that captures an outer scope variable
+                const resolved = resolveClosureVariable(param, callbackMethod);
+                if (resolved) {
+                    resolvedParams.push(resolved);
+                    continue;
+                }
+                // Fall through to add as regular param if resolution fails
+            }
+            // Regular parameter - add it directly
+            resolvedParams.push(param);
+        } else if ((param as any).constructor?.name === 'ClosureFieldRef') {
+            // The base of ClosureFieldRef is the actual captured value
+            resolvedParams.push((param as ClosureFieldRef).getBase());
+        } else {
+            // Other value types
+            resolvedParams.push(param);
+        }
+    }
+
+    return resolvedParams;
 }
 
 export function ValueEqual(value1: Value, value2: Value): boolean {
@@ -525,9 +661,35 @@ export function classInheritsAbility(arkClass: ArkClass): boolean {
 export function callSource(val: Value, sources: Map<string, Source>, scene: Scene): Source | null {
     if (val instanceof AbstractInvokeExpr) {
         const valMethodSignature = val.getMethodSignature();
-        if (sources.has(valMethodSignature.toString())) {
-            return sources.get(valMethodSignature.toString())!;
+        const sigStr = valMethodSignature.toString();
+
+        // Exact match first
+        if (sources.has(sigStr)) {
+            return sources.get(sigStr)!;
         }
+
+        // Fuzzy match: when signature is unknown (@%unk), match by method name only
+        // This is less precise but necessary for SDK calls that ArkAnalyzer can't resolve
+        // For Promise/.then() patterns, prefer 'return' sources over 'callback' sources
+        if (sigStr.includes('@%unk') || sigStr.includes('@unk')) {
+            const methodName = valMethodSignature.getMethodSubSignature().getMethodName();
+            // Find sources where the method name matches exactly
+            let returnSource: Source | null = null;
+            let callbackSource: Source | null = null;
+            for (const [key, source] of sources) {
+                const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
+                if (sourceMethodName === methodName) {
+                    if (source.sourceType === 'return') {
+                        returnSource = source;
+                    } else if (!callbackSource) {
+                        callbackSource = source;
+                    }
+                }
+            }
+            // Prefer return sources (for Promise/.then() patterns)
+            return returnSource || callbackSource;
+        }
+
         const cls = scene.getClass(valMethodSignature.getDeclaringClassSignature());
         if (cls && classInheritsAbility(cls)) {
             for (const source of sources.values()) {
