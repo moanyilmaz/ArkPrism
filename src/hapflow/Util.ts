@@ -634,7 +634,7 @@ export function classInheritsAbility(arkClass: ArkClass): boolean {
     return false;
 }
 
-export function callSource(val: Value, sources: Map<string, Source>, scene: Scene): Source | null {
+export function callSource(val: Value, sources: Map<string, Source>, scene: Scene, pta?: any): Source | null {
     if (val instanceof AbstractInvokeExpr) {
         const valMethodSignature = val.getMethodSignature();
         const sigStr = valMethodSignature.toString();
@@ -652,6 +652,8 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             // Get the base type if it's an instance invoke
             let baseTypeName: string | null = null;
             let baseTypeString: string | null = null;
+            let pointerAliases: string[] = [];  // Aliases from pointer analysis
+
             if (val instanceof ArkInstanceInvokeExpr) {
                 const base = val.getBase();
                 if (base) {
@@ -660,18 +662,29 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                         baseTypeName = baseType.toString();
                         baseTypeString = base.toString();
                     }
+
+                    // Use pointer analysis to get more precise type information
+                    if (pta && pta.getRelatedNodes) {
+                        const relatedNodes = pta.getRelatedNodes(base);
+                        if (relatedNodes) {
+                            for (const related of relatedNodes) {
+                                const relatedType = related.getType();
+                                if (relatedType) {
+                                    pointerAliases.push(relatedType.toString());
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
             // Find sources matching both method name AND (if available) base type
             let bestMatch: Source | null = null;
             let bestMatchScore = 0;
-            let matchCount = 0;
 
             for (const [key, source] of sources) {
                 const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
                 if (sourceMethodName !== methodName) continue;
-                matchCount++;
 
                 let score = 1; // Base score for method name match
 
@@ -712,6 +725,19 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                                     }
                                 }
                             }
+                        }
+                    }
+                }
+
+                // Level 5: Use pointer analysis aliases for precise matching
+                // If PTA found related nodes with specific types, use them
+                if (pointerAliases.length > 0) {
+                    const sourceNsLower = sourceNs.toLowerCase();
+                    for (const alias of pointerAliases) {
+                        const aliasLower = alias.toLowerCase().replace(/\./g, '').replace(/@/g, '');
+                        if (aliasLower.includes(sourceNsLower) || sourceNsLower.includes(aliasLower)) {
+                            score = 5; // Highest confidence - direct pointer alias match
+                            break;
                         }
                     }
                 }

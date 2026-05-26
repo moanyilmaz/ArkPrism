@@ -70,7 +70,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (!invokeExpr) continue;
 
                     // Check if this is a source API call
-                    const source = callSource(invokeExpr, this.sources, this.scene);
+                    const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
                     if (source) {
                         sourceCount++;
                         if (source.sourceType === 'callback') {
@@ -209,7 +209,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             const rightOp = stmt.getRightOp();
 
             if (rightOp instanceof AbstractInvokeExpr) {
-                const sourceCheck = callSource(rightOp, this.sources, this.scene);
+                const sourceCheck = callSource(rightOp, this.sources, this.scene, this.pointerAnalysis);
                 if (sourceCheck && sourceCheck.sourceType === 'return' && leftOp instanceof Local) {
                     const fact = new TaintFact(leftOp);
                     fact.addPath(stmt);
@@ -234,7 +234,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         // Case 1: Direct chaining - sourceApi().then(callback)
         if (base instanceof AbstractInvokeExpr) {
-            const source = callSource(base, this.sources, this.scene);
+            const source = callSource(base, this.sources, this.scene, this.pointerAnalysis);
             if (source && source.sourceType === 'return') {
                 this.processThenCallback(method, stmt, invokeExpr);
             }
@@ -247,7 +247,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const sourceInvoke = this.findSourceInvokeForVariable(method, base);
         if (!sourceInvoke) return;
 
-        const source = callSource(sourceInvoke, this.sources, this.scene);
+        const source = callSource(sourceInvoke, this.sources, this.scene, this.pointerAnalysis);
         if (!source || source.sourceType !== 'return') return;
 
         this.processThenCallback(method, stmt, invokeExpr);
@@ -360,7 +360,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             // Get the base of .then() - this is the source API call
                             const thenBase = rightOp.getBase();
                             if (thenBase instanceof AbstractInvokeExpr) {
-                                const source = callSource(thenBase, this.sources, this.scene);
+                                const source = callSource(thenBase, this.sources, this.scene, this.pointerAnalysis);
                                 if (source && source.sourceType === 'return') {
                                     return thenBase;
                                 }
@@ -770,13 +770,13 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     }
 
     protected addTaintFromSourceAssgin(dataFact: TaintFact, stmt: ArkAssignStmt, ret: Set<TaintFact>) {
-        if (this.getZeroValue() == dataFact && callSource(stmt.getRightOp(), this.sources, this.scene)) {
+        if (this.getZeroValue() == dataFact && callSource(stmt.getRightOp(), this.sources, this.scene, this.pointerAnalysis)) {
             propagateFact(stmt.getDef()!, stmt, ret);
         }
     }
 
     protected addTaintFromSourceCall(stmt: Stmt, method: ArkMethod, ret: Set<TaintFact>) {
-        const source = callSource(stmt.getInvokeExpr()!, this.sources, this.scene);
+        const source = callSource(stmt.getInvokeExpr()!, this.sources, this.scene, this.pointerAnalysis);
         if (source) {
             const invokeExpr = stmt.getInvokeExpr()!;
             if (source.sourceType == 'callback') {
@@ -927,7 +927,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
                 } else if (srcStmt.getInvokeExpr()) {
                     const invokeExpr = srcStmt.getInvokeExpr();
-                    const source = callSource(invokeExpr!, checkerInstance.sources, checkerInstance.scene);
+                    const source = callSource(invokeExpr!, checkerInstance.sources, checkerInstance.scene, checkerInstance.pointerAnalysis);
                     if (source && source.sourceType == 'ArgIn') {
                         propagateFact(invokeExpr!.getArgs()[source.sourceIndex], srcStmt, ret);
                     }
