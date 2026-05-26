@@ -3,10 +3,8 @@ dist/
 out/
 output/
 dataset/
-.tmp_batch_input_*/
-.tmp_resume_*/
+.vscode/
 *.js.map
 *.log
 .DS_Store
-Thumbs.db
-3793863.pdf
+
