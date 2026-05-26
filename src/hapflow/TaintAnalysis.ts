@@ -58,6 +58,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * but contain source API calls with callbacks.
      */
     public analyzeCallbackDataFlows(): void {
+        let sourceCount = 0;
         for (const method of this.scene.getMethods()) {
             const cfg = method.getCfg();
             if (!cfg) continue;
@@ -71,6 +72,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     // Check if this is a source API call
                     const source = callSource(invokeExpr, this.sources, this.scene);
                     if (source) {
+                        sourceCount++;
                         if (source.sourceType === 'callback') {
                             this.analyzeCallbackSource(method, stmt, invokeExpr, source);
                         } else if (source.sourceType === 'return') {
@@ -88,6 +90,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     /**
      * Analyze callback-style source API: getData((err, data) => { ... })
+     * For callback-style sources, we need to find the callback lambda that is passed as an argument.
+     * The callback parameter contains the actual callback implementation, not the callback type declaration.
      */
     private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
         const args = invokeExpr.getArgs();
@@ -96,21 +100,42 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const callbackArg = args[source.callbackIndex];
         const callbackArgType = callbackArg.getType();
 
-        // Try to find the callback method
+        // The callbackArg is typically a Local (variable reference) or a reference to an inline lambda
+        // We need to find the method that implements this callback
+
         let callbackMethod: ArkMethod | null = null;
+
+        // Approach 1: If callbackArgType is a FunctionType, get the method signature
         if (callbackArgType instanceof FunctionType) {
             const callbackSig = callbackArgType.getMethodSignature();
             callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
         }
 
-        // If no callback method found, try to find it by scanning anonymous methods
+        // Approach 2: If callbackArgType is a ClosureType, extract the lambda method from closures field
+        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
+            const typeStr = callbackArgType.toString();
+            const match = typeStr.match(/closures:\s*(.+)/);
+            if (match) {
+                const closureSigStr = match[1].trim();
+                callbackMethod = method.getDeclaringArkClass().getMethod(closureSigStr as unknown as MethodSignature);
+            }
+        }
+
+        // Approach 3: If callbackArg is a Local, try to find its definition and get the lambda method
+        if (!callbackMethod && callbackArg instanceof Local) {
+            callbackMethod = this.findLambdaMethodForLocal(method, callbackArg);
+        }
+
+        // Approach 4: Try findCallbackMethod
         if (!callbackMethod) {
             callbackMethod = this.findCallbackMethod(method, invokeExpr);
         }
 
-        if (!callbackMethod) return;
+        if (!callbackMethod) {
+            return;
+        }
 
-        // Get callback parameters
+        // Get callback parameters from the lambda method
         const paramInstances = callbackMethod.getParameterInstances();
         if (!paramInstances || paramInstances.length === 0) return;
 
@@ -125,6 +150,44 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 this.traceCallbackParamDataFlow(callbackMethod, param, fact);
             }
         }
+    }
+
+    /**
+     * Find the lambda method that assigns to a given Local variable
+     * e.g., for: %AM9$%AM7$requestPermissions = new SomeLambda()
+     * Find the lambda method referenced by the Local
+     */
+    private findLambdaMethodForLocal(method: ArkMethod, local: Local): ArkMethod | null {
+        const cfg = method.getCfg();
+        if (!cfg) return null;
+
+        // Find the statement where the local is assigned
+        for (const block of cfg.getBlocks()) {
+            for (const s of block.getStmts()) {
+                if (s instanceof ArkAssignStmt) {
+                    const leftOp = s.getLeftOp();
+                    if (leftOp instanceof Local && leftOp.toString() === local.toString()) {
+                        const rightOp = s.getRightOp();
+                        // Check if it's a new expression or a reference to a lambda
+                        if (rightOp instanceof ArkInstanceInvokeExpr) {
+                            // Could be a constructor call
+                            const methodSig = rightOp.getMethodSignature();
+                            const type = rightOp.getType();
+                            if (type && type.constructor?.name === 'ClosureType') {
+                                // This is a closure - try to find the lambda method
+                                const typeStr = type.toString();
+                                const match = typeStr.match(/closures:\s*(.+)/);
+                                if (match) {
+                                    const closureSigStr = match[1].trim();
+                                    return method.getDeclaringArkClass().getMethod(closureSigStr as unknown as MethodSignature);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     /**

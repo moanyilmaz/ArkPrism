@@ -15,7 +15,7 @@ import { ClassHierarchyAnalysis } from "../arkanalyzer";
 import { Constant } from "../arkanalyzer";
 import { MultiRef } from "./MuiltiRef";
 import { MethodSignature } from "../arkanalyzer";
-import { AbstractInvokeExpr } from "../arkanalyzer";
+import { AbstractInvokeExpr, ArkInstanceInvokeExpr } from "../arkanalyzer";
 import { Source } from "./Source";
 
 // @ts-ignore - ClassCategory may not be in barrel export
@@ -644,26 +644,87 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             return sources.get(sigStr)!;
         }
 
-        // Fuzzy match: when signature is unknown (@%unk), match by method name only
-        // This is less precise but necessary for SDK calls that ArkAnalyzer can't resolve
-        // For Promise/.then() patterns, prefer 'return' sources over 'callback' sources
+        // Fuzzy match: when signature is unknown (@%unk), match by method name AND base type
+        // This is more precise than just matching method name
         if (sigStr.includes('@%unk') || sigStr.includes('@unk')) {
             const methodName = valMethodSignature.getMethodSubSignature().getMethodName();
-            // Find sources where the method name matches exactly
-            let returnSource: Source | null = null;
-            let callbackSource: Source | null = null;
-            for (const [key, source] of sources) {
-                const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
-                if (sourceMethodName === methodName) {
-                    if (source.sourceType === 'return') {
-                        returnSource = source;
-                    } else if (!callbackSource) {
-                        callbackSource = source;
+
+            // Get the base type if it's an instance invoke
+            let baseTypeName: string | null = null;
+            let baseTypeString: string | null = null;
+            if (val instanceof ArkInstanceInvokeExpr) {
+                const base = val.getBase();
+                if (base) {
+                    const baseType = base.getType();
+                    if (baseType) {
+                        baseTypeName = baseType.toString();
+                        baseTypeString = base.toString();
                     }
                 }
             }
-            // Prefer return sources (for Promise/.then() patterns)
-            return returnSource || callbackSource;
+
+            // Find sources matching both method name AND (if available) base type
+            let bestMatch: Source | null = null;
+            let bestMatchScore = 0;
+            let matchCount = 0;
+
+            for (const [key, source] of sources) {
+                const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
+                if (sourceMethodName !== methodName) continue;
+                matchCount++;
+
+                let score = 1; // Base score for method name match
+
+                // Check if namespace matches the base type
+                const sourceNs = key.split('/')[0]; // namespace is before the first /
+                if (baseTypeName && sourceNs) {
+                    // Normalize for comparison
+                    const normalizedBase = baseTypeName.toLowerCase().replace(/\./g, '').replace(/@/g, '');
+                    const normalizedNs = sourceNs.toLowerCase().replace(/\./g, '').replace(/@/g, '');
+                    // Match if either contains the other
+                    if (normalizedBase.includes(normalizedNs) || normalizedNs.includes(normalizedBase)) {
+                        score = 2; // Higher score for namespace match
+                    }
+                }
+
+                // If base type is unknown, try to match using module pattern from source key
+                // e.g., source key "@@ohosSdk/api/@ohos.geoLocationManager.d.ts" -> extract "geoLocationManager"
+                const sourceModuleMatch = key.match(/@ohos\.(\w+)/);
+                if (sourceModuleMatch) {
+                    const sourceModuleName = sourceModuleMatch[1].toLowerCase();
+                    // Check if the base type string or full signature contains this module name
+                    const baseStr = (baseTypeString || '').toLowerCase();
+                    const fullSig = valMethodSignature.toString().toLowerCase();
+                    if (baseStr.includes(sourceModuleName) || fullSig.includes(sourceModuleName)) {
+                        score = 3; // Higher score for module name match
+
+                        // Extra bonus for matching first argument pattern (like 'locationChange')
+                        if (val instanceof AbstractInvokeExpr) {
+                            const args = val.getArgs();
+                            if (args.length > 0) {
+                                const firstArg = args[0];
+                                if (firstArg instanceof Constant) {
+                                    const firstArgStr = firstArg.toString().toLowerCase();
+                                    const sourceKeyLower = key.toLowerCase();
+                                    // If the source key contains the first argument string
+                                    if (sourceKeyLower.includes(firstArgStr.replace(/'/g, ''))) {
+                                        score += 1; // Extra point for argument match
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Prefer callback sources when looking for callbacks
+                if (score > bestMatchScore) {
+                    bestMatchScore = score;
+                    bestMatch = source;
+                } else if (score === bestMatchScore && bestMatch && source.sourceType === 'callback') {
+                    bestMatch = source;
+                }
+            }
+            return bestMatch;
         }
 
         const cls = scene.getClass(valMethodSignature.getDeclaringClassSignature());
