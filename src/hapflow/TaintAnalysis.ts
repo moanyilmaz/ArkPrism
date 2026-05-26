@@ -224,25 +224,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             if (match) {
                 const closureSigStr = match[1].trim();
                 const cls = method.getDeclaringArkClass();
-                // Fallback: find by method name pattern
-                const sigParts = closureSigStr.split('.');
-                const callbackName = sigParts[sigParts.length - 1].split('(')[0];
-                for (const m of cls.getMethods(true)) {
-                    if (m.getName() === callbackName) {
-                        callbackMethod = m;
-                        break;
-                    }
-                }
-            }
-        }
-
-        // Also handle ClosureType (used by some SDK methods like selectContacts)
-        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
-            const typeStr = callbackArgType.toString();
-            const match = typeStr.match(/closures:\s*(.+)/);
-            if (match) {
-                const closureSigStr = match[1].trim();
-                const cls = method.getDeclaringArkClass();
+                // Try direct method lookup first
                 callbackMethod = cls.getMethod(closureSigStr as unknown as MethodSignature);
                 // Fallback: find by method name pattern
                 if (!callbackMethod) {
@@ -635,7 +617,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                 // Handle string concatenation: taint propagates through string operations
                 // e.g., 'Clipboard Data: ' + text
-                if (leftOp instanceof Local && typeof rightOp === 'string' === false) {
+                if (leftOp instanceof Local) {
                     // Check if rightOp references currentVar in any way
                     const uses = rightOp.getUses ? rightOp.getUses() : [];
                     for (const use of uses) {
@@ -719,8 +701,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (newOutcome) {
                         this.detectOutcome.push(dataFact);
                     }
-                    console.log("[HAPFLOW] source: " + dataFact);
-                    console.log("[HAPFLOW] sink: " + srcStmt.getOriginPositionInfo().toString() + ", " + srcStmt.toString());
                 }
             }
         }
@@ -996,8 +976,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                                 if (ValueEqual(param, dataFact.getValue())) {
                                     dataFact.addPath(srcStmt);
                                     checkerInstance.detectOutcome.push(dataFact);
-                                    console.log("[HAPFLOW] source: " + dataFact);
-                                    console.log("[HAPFLOW] sink: " + srcStmt.getOriginPositionInfo().toString() + ", " + srcStmt.toString());
                                 }
                             }
                         }
@@ -1216,7 +1194,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             // If no signatures found (e.g., for builtin methods like console.info), add the method name as a pattern
             if (methodSignatures.length === 0) {
-                console.log(`[SINK] No signatures found for ${object.namespace || ''}.${object.api_name}, adding method name pattern`);
                 // We'll handle this via fuzzy matching in callSink instead
             }
         }

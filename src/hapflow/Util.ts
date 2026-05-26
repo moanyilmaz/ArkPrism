@@ -34,9 +34,10 @@ export const INTERNAL_SINK_METHOD_toString: string[] = [
 ]
 
 // Log sink method names that should always be considered sinks
+// Only console.* methods are considered sinks, NOT custom Logger classes
+// Custom Logger.info() etc. are NOT sinks unless they output to network/file
 export const LOG_SINK_METHODS: string[] = [
-    'info', 'error', 'warn', 'debug', 'fatal', 'trace',
-    'log', 'printLog'
+    'printLog'
 ]
 
 const filenamePrefix = 'api/';
@@ -389,8 +390,6 @@ export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): 
     const cfg = method.getCfg();
     if (!cfg) return null;
 
-    console.log(`[DEBUG][resolveClosure] Looking for: ${closureLocal.toString()}`);
-
     // Get the LexicalEnvType from the starting block
     for (const stmt of cfg.getStartingBlock()!.getStmts()) {
         if (stmt instanceof ArkAssignStmt) {
@@ -398,28 +397,12 @@ export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): 
             if (rightOp.getType() instanceof LexicalEnvType) {
                 const lexicalEnv = rightOp.getType() as LexicalEnvType;
                 const closures = lexicalEnv.getClosures();
-                console.log(`[DEBUG][resolveClosure] Found LexicalEnvType with ${closures.length} closures`);
-                console.log(`[DEBUG][resolveClosure] closures: ${closures.map(c => c.toString()).join(', ')}`);
 
-                // closures is typically an array of Local or ClosureFieldRef
                 for (const closure of closures as Value[]) {
-                    console.log(`[DEBUG][resolveClosure]   Checking closure: ${closure.toString()}, type: ${(closure as any).constructor?.name}`);
                     if ((closure as any).constructor?.name === 'ClosureFieldRef') {
                         const closureRef = closure as ClosureFieldRef;
-                        // Check if this closure field matches our closure local
-                        console.log(`[DEBUG][resolveClosure]     ClosureFieldRef fieldName: ${closureRef.getFieldName()}`);
-                        console.log(`[DEBUG][resolveClosure]     ClosureFieldRef base: ${closureRef.getBase().toString()}`);
                         if (closureRef.toString() === closureLocal.toString()) {
-                            // The base of the ClosureFieldRef is the actual captured value
-                            console.log(`[DEBUG][resolveClosure]     MATCH! Returning base: ${closureRef.getBase().toString()}`);
                             return closureRef.getBase();
-                        }
-                    } else if ((closure as any).constructor?.name === 'Local') {
-                        console.log(`[DEBUG][resolveClosure]     Local name: ${(closure as Local).getName()}`);
-                        // If closures contain Locals directly, check by name pattern
-                        if (closureLocal.getName().startsWith('%closures')) {
-                            // Try to find the corresponding captured value
-                            // by looking at how the closure environment was constructed
                         }
                     }
                 }
@@ -428,25 +411,18 @@ export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): 
     }
 
     // Fallback: try to find the closure by analyzing the method's statements
-    console.log(`[DEBUG][resolveClosure] Checking method statements...`);
     for (const block of cfg.getBlocks()) {
         for (const stmt of block.getStmts()) {
             if (!(stmt instanceof ArkAssignStmt)) continue;
             const leftOp = stmt.getLeftOp();
             if (!(leftOp instanceof Local)) continue;
 
-            // Check if leftOp is our closure variable
             if (leftOp.getName() === closureLocal.getName()) {
                 const rightOp = stmt.getRightOp();
-                console.log(`[DEBUG][resolveClosure]   Found closure assignment: ${leftOp.getName()} = ${rightOp.toString()}, type: ${(rightOp as any).constructor?.name}`);
-                // The rightOp should be the closure environment or closure field ref
                 if ((rightOp as any).constructor?.name === 'ClosureFieldRef') {
-                    console.log(`[DEBUG][resolveClosure]     Returning ClosureFieldRef base: ${(rightOp as ClosureFieldRef).getBase().toString()}`);
                     return (rightOp as ClosureFieldRef).getBase();
                 }
-                // If rightOp is a Local from enclosing scope, return it
                 if (rightOp instanceof Local) {
-                    console.log(`[DEBUG][resolveClosure]     Returning Local: ${rightOp.toString()}`);
                     return rightOp;
                 }
             }
