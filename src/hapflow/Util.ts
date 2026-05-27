@@ -290,6 +290,25 @@ function canBeSplitAndContained(a: string, b: string): boolean {
     return true;
 }
 
+// Non-privacy API method names that should be excluded from source matching
+// These are system management APIs that don't return sensitive data
+const NON_PRIVACY_API_METHODS = new Set([
+    'createSubscriber',
+    'subscribe',
+    'unsubscribe',
+    'publish',
+    'publishEvent',
+    'delete',
+    'release',
+    'checkPermission',
+    'requestPermission',
+    'verifyPermission',
+]);
+
+function isNonPrivacyApi(methodName: string): boolean {
+    return NON_PRIVACY_API_METHODS.has(methodName);
+}
+
 function paramEqual(methodSignature: MethodSignature, paramInfos: string[]): boolean {
     if (methodSignature.getParamLength() != paramInfos.length) {
         return false;
@@ -648,6 +667,11 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
         // This is more precise than just matching method name
         if (sigStr.includes('@%unk') || sigStr.includes('@unk')) {
             const methodName = valMethodSignature.getMethodSubSignature().getMethodName();
+
+            // Skip non-privacy APIs (system management, event subscription, etc.)
+            if (isNonPrivacyApi(methodName)) {
+                return null;
+            }
 
             // Get the base type if it's an instance invoke
             let baseTypeName: string | null = null;
