@@ -654,6 +654,26 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     worklist.push({ var: rightOp, fact: newFact });
                 }
 
+                // Check if currentVar is used as base for array access (e.g., data[0])
+                if (currentVar instanceof Local && rightOp instanceof ArkArrayRef && LocalEqual(rightOp.getBase(), currentVar)) {
+                    const newFact = new TaintFact(rightOp);
+                    for (const p of currentFact.getPath()) {
+                        newFact.addPath(p);
+                    }
+                    newFact.addPath(stmt);
+                    worklist.push({ var: rightOp, fact: newFact });
+                }
+
+                // Check if currentVar is an ArkArrayRef and rightOp is field access on it (e.g., data[0].placeName)
+                if (currentVar instanceof ArkArrayRef && rightOp instanceof ArkInstanceFieldRef && ValueEqual(rightOp.getBase(), currentVar)) {
+                    const newFact = new TaintFact(rightOp);
+                    for (const p of currentFact.getPath()) {
+                        newFact.addPath(p);
+                    }
+                    newFact.addPath(stmt);
+                    worklist.push({ var: rightOp, fact: newFact });
+                }
+
                 // Check if rightOp is a method call on currentVar (e.g., pasteData.getPrimaryText())
                 // The return value depends on the tainted receiver
                 if (currentVar instanceof Local && rightOp instanceof AbstractInvokeExpr) {
@@ -930,6 +950,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     const source = callSource(invokeExpr!, checkerInstance.sources, checkerInstance.scene, checkerInstance.pointerAnalysis);
                     if (source && source.sourceType == 'ArgIn') {
                         propagateFact(invokeExpr!.getArgs()[source.sourceIndex], srcStmt, ret);
+                    }
+                    // Handle return-type sources: when the API returns sensitive data (e.g., getAddressesFromLocation)
+                    // The return value flows through Promise.then() to the callback parameter
+                    if (source && source.sourceType == 'return') {
+                        // Create a special taint fact for the invoke expression result
+                        // This will propagate through .then() callbacks automatically
+                        const invokeResultFact = new TaintFact(invokeExpr!);
+                        invokeResultFact.addPath(srcStmt);
+                        ret.add(invokeResultFact);
                     }
                     if (invokeExpr instanceof ArkInstanceInvokeExpr && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() == 'constructor' &&
                         invokeExpr.getBase().getType().toString().includes('Error')) {

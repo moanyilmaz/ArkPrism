@@ -712,8 +712,12 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
 
                 let score = 1; // Base score for method name match
 
-                // Check if namespace matches the base type
-                const sourceNs = key.split('/')[0]; // namespace is before the first /
+                // Extract the actual module name from source key
+                // Key format: @ohosSdk/api/@ohos.geoLocationManager.d.ts -> 'geoLocationManager'
+                // Or: @ohosSdk/api/@ohos.geoLocationManager.d.ts: ClassName.methodName
+                const sourceNsMatch = key.match(/@ohos\.(\w+)/);
+                const sourceNs = sourceNsMatch ? sourceNsMatch[1] : '';
+
                 if (baseTypeName && sourceNs) {
                     // Normalize for comparison
                     const normalizedBase = baseTypeName.toLowerCase().replace(/\./g, '').replace(/@/g, '');
@@ -766,12 +770,16 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                     }
                 }
 
-                // Prefer callback sources when looking for callbacks
+                // Prefer return sources when base type is unknown (for better data flow tracking)
+                // When baseTypeName is 'unknown', 'return' sources are more likely to produce data flows
                 if (score > bestMatchScore) {
                     bestMatchScore = score;
                     bestMatch = source;
-                } else if (score === bestMatchScore && bestMatch && source.sourceType === 'callback') {
-                    bestMatch = source;
+                } else if (score === bestMatchScore && bestMatch) {
+                    // Prefer return type over callback when base is unknown
+                    if (baseTypeName === 'unknown' && source.sourceType === 'return') {
+                        bestMatch = source;
+                    }
                 }
             }
             return bestMatch;
