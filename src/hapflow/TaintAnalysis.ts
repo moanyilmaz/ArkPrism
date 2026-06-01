@@ -58,8 +58,25 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * but contain source API calls with callbacks.
      */
     public analyzeCallbackDataFlows(): void {
+        // Limit analysis to avoid OOM on large projects
+        const MAX_SOURCES_TO_ANALYZE = 50;
+        const MAX_METHODS_TO_SCAN = 500;
+
         let sourceCount = 0;
+        let methodCount = 0;
+        const visitedCallbacks = new Set<string>(); // Avoid analyzing same callback multiple times
+
+        console.log(`[HAPFLOW] Callback analysis: scanning up to ${MAX_METHODS_TO_SCAN} methods`);
+
         for (const method of this.scene.getMethods()) {
+            if (methodCount++ > MAX_METHODS_TO_SCAN) {
+                console.log('[HAPFLOW] Callback analysis: reached method limit, skipping remaining methods');
+                break;
+            }
+            if (methodCount % 100 === 0) {
+                console.log(`[HAPFLOW] Callback analysis: scanned ${methodCount} methods`);
+            }
+
             const cfg = method.getCfg();
             if (!cfg) continue;
 
@@ -73,16 +90,21 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
                     if (source) {
                         sourceCount++;
+                        if (sourceCount > MAX_SOURCES_TO_ANALYZE) {
+                            console.log('[HAPFLOW] Callback analysis: reached source limit');
+                            return;
+                        }
+
                         if (source.sourceType === 'callback') {
-                            this.analyzeCallbackSource(method, stmt, invokeExpr, source);
+                            this.analyzeCallbackSource(method, stmt, invokeExpr, source, visitedCallbacks);
                         } else if (source.sourceType === 'return') {
-                            this.analyzePromiseChaining(method, stmt, invokeExpr, source);
+                            this.analyzePromiseChaining(method, stmt, invokeExpr, source, visitedCallbacks);
                         }
                         continue;
                     }
 
                     // Also check for .then() calls whose base might be a source API
-                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr);
+                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr, visitedCallbacks);
                 }
             }
         }
@@ -93,7 +115,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * For callback-style sources, we need to find the callback lambda that is passed as an argument.
      * The callback parameter contains the actual callback implementation, not the callback type declaration.
      */
-    private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
+    private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source, visitedCallbacks: Set<string>): void {
         const args = invokeExpr.getArgs();
         if (source.callbackIndex < 0 || source.callbackIndex >= args.length) return;
 
@@ -194,12 +216,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * Analyze Promise-style source API: selectContacts().then(info => { ... })
      * or async/await: const info = await selectContacts()
      */
-    private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
+    private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source, visitedCallbacks: Set<string>): void {
         // Pattern 1: API().then(callback) - the invoke result is passed to .then()
         if (stmt instanceof ArkAssignStmt) {
             const resultVar = stmt.getDef();
             if (resultVar instanceof Local) {
-                this.analyzeThenChaining(method, resultVar, stmt, source);
+                this.analyzeThenChaining(method, resultVar, stmt, source, visitedCallbacks);
             }
         }
 
@@ -223,7 +245,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * Analyze chained .then() calls where the base is itself an invoke returning a Promise.
      * Pattern: sourceApi().then(callback) - no intermediate variable assignment.
      */
-    private analyzeChainedThenInvoke(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
+    private analyzeChainedThenInvoke(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, visitedCallbacks: Set<string>): void {
         // Check if this is a .then() call
         const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
         if (methodName !== 'then') return;
@@ -377,7 +399,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     /**
      * Analyze .then() chaining: resultVar.then(callback)
      */
-    private analyzeThenChaining(method: ArkMethod, promiseVar: Local, sourceStmt: Stmt, source: Source): void {
+    private analyzeThenChaining(method: ArkMethod, promiseVar: Local, sourceStmt: Stmt, source: Source, visitedCallbacks: Set<string>): void {
         const cfg = method.getCfg();
         if (!cfg) return;
 

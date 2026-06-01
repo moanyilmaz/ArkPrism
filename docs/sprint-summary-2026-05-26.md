@@ -1,765 +1,461 @@
-# ArkPrism Sprint Summary
+# ArkPrism 技术文档
 
-> 文档版本: 1.0.0
-> 日期: 2026-05-26
+> 文档版本: 2.0.0
+> 日期: 2026-06-01
 > 状态: 已完成
-> 目标读者: 新手开发者
+> 目标读者: 开发者、技术评审
 
 ---
 
 ## 概述
 
-本次 Sprint 实现了 **HapFlow IFDS 污点分析引擎**的一个关键功能：**回调数据流追踪**。
+ArkPrism 是一个用于 HarmonyOS ArkTS 应用的静态隐私分析工具。它通过多层级分析检测隐私数据从敏感 API 到泄露终点（如网络、存储、日志）的数据流。
 
-**什么是数据流追踪？**
-
-简单来说，就是追踪一段数据从"源头"到"终点"的完整路径。
-
-举例说明：
-```typescript
-// 源头：sensor.on() 会产生数据 (sensor data)
-sensor.on(SensorType.SENSOR_TYPE_ID, (data) => {
-    // 终点：console.info() 会把数据打印出来
-    console.info('X坐标是: ' + data.x);
-});
-```
-
-我们想要检测的是：**敏感数据是否被泄露到不该去的地方**。
+**核心能力**:
+- 隐私 API 检测（100% 召回）
+- 过程间数据流分析（IFDS 算法）
+- 回调数据流追踪（Promise + 闭包）
+- 协同行为检测
 
 ---
 
-## 完成的功能清单
+## 完整分析流程
 
-### 功能 1: Promise.then() 回调数据流追踪
+### 第一阶段：隐私 API 检测
 
-#### 这个功能解决什么问题？
+**目标**: 找到应用中所有调用隐私敏感 API 的位置
+
+**输入**: ArkTS 应用的 ABC（字节码）文件
+
+**输出**: 隐私 API 调用列表，包含文件路径、行号、方法名
+
+#### 检测模式
+
+ArkPrism 支持四种隐私 API 调用模式：
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                     隐私 API 检测模式                           │
+├──────────────────┬─────────────────────────────────────────────┤
+│ 1. 直接调用       │ pasteboard.getSystemPasteboard()           │
+├──────────────────┼─────────────────────────────────────────────┤
+│ 2. 间接调用       │ mgr.getData()   (mgr 来自 namespace)       │
+├──────────────────┼─────────────────────────────────────────────┤
+│ 3. 回调模式       │ getData((err, data) => {...})              │
+├──────────────────┼─────────────────────────────────────────────┤
+│ 4. 属性访问       │ deviceInfo.deviceType                      │
+└──────────────────┴─────────────────────────────────────────────┘
+```
+
+**核心代码**: `src/apiDetector.ts`
 
 ```typescript
-// 假设 selectContacts() 会返回联系人信息
-// 然后通过 .then() 把联系人传给回调函数使用
+// 四种检测入口
+checkDirectCallPrivacyApis()      // 直接调用
+checkIndirectCallPrivacyApis()    // 间接调用（instance method）
+checkCallbackPrivacyApis()        // 回调模式
+checkPrivacyConstantUsages()      // 属性访问
+```
+
+#### 模糊匹配机制
+
+当 ArkAnalyzer 无法解析方法签名（显示为 `@%unk`）时，使用模糊匹配：
+
+```typescript
+// 精确匹配失败时的备选方案
+if (sources.has(sigStr)) {
+    return sources.get(sigStr);
+}
+
+// 模糊匹配：按方法名 + 命名空间 + 参数模式
+if (sigStr.includes('@%unk')) {
+    const methodName = valMethodSignature.getMethodSubSignature().getMethodName();
+    // 根据方法名和上下文推断...
+}
+```
+
+---
+
+### 第二阶段：调用链构建
+
+**目标**: 找到从隐私 API 到 UI 入口（如 aboutToAppear, onClick）的调用路径
+
+**核心问题**: 如何从任意代码位置逆向找到触发它的 UI 事件？
+
+#### 三源调用图
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    逆向调用图构建                                │
+├─────────────────────────────────────────────────────────────────┤
+│ Source 1: 内置 CG 边                                             │
+│   - ArkAnalyzer 生成的调用关系                                   │
+│   - 精确但可能不完整                                             │
+├─────────────────────────────────────────────────────────────────┤
+│ Source 2: CHA 解析边                                             │
+│   - 类层次分析推断继承关系                                        │
+│   - 补充实例方法调用                                             │
+├─────────────────────────────────────────────────────────────────┤
+│ Source 3: 补充调用边                                             │
+│   - ArkUI 回调参数边                                             │
+│   - @State, @Link 状态流                                        │
+│   - aboutToAppear, onClick 等生命周期                            │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+**核心代码**: `src/callChainTracer.ts`
+
+```typescript
+// 构建调用链
+buildCallChainsFromApiUsage(privacyApi, scene, reverseCallMap, viewTree)
+
+// 解析回调方法
+resolveCallbackMethod(method, callbackArg)
+
+// 找到 ArkUI 入口
+findArkUIEntry(callbackMethod, viewTree)
+```
+
+---
+
+### 第三阶段：数据 Sink 检测
+
+**目标**: 识别数据可能泄露的终点
+
+#### Sink 类型分类
+
+| 类型 | 示例 | 风险 |
+|------|------|------|
+| network | `http.createHttp().request()` | 高 |
+| storage | `fileIO.write()`, `kvStore.put()` | 高 |
+| log | `hilog.info()`, `console.log()` | 中 |
+| ui_display | `promptAction.showToast()` | 低 |
+| intent | `wantAgent.startAbility()` | 中 |
+| share | `share.select()` | 高 |
+
+**核心代码**: `src/dataSinkAnalyzer.ts`
+
+```typescript
+// 扫描方法中的 sink 调用
+scanMethodForSinks(method, trackedVars, filePath, scene)
+
+// 判断是否为敏感 sink
+isSensitiveSink(invokeExpr)
+```
+
+---
+
+### 第四阶段：语义增强
+
+**目标**: 添加上下文语义信息，提高分析结果可读性
+
+```typescript
+// 识别条件判断
+if (this.hasPermission) {
+    // 可能绕过权限检查
+}
+
+// 识别变量用途
+const sensitiveData = location.getCurrentLocation();
+sendToServer(sensitiveData);  // 明确的数据泄露
+```
+
+**核心代码**: `src/semanticEnricher.ts`
+
+---
+
+### 第五阶段：污点分析 (HapFlow)
+
+**目标**: 追踪隐私数据从 source 到 sink 的完整路径
+
+这是最核心也最复杂的阶段。
+
+#### 5.1 IFDS 算法原理
+
+IFDS (Interprocedural Data Flow Analysis) 是一种精确的过程间数据流分析算法。
+
+**核心思想**:
+1. 将数据流问题转换为图可达性问题
+2. 使用 supergraph（包含所有方法和调用边）
+3. 通过 flow functions 传播污点
+
+```
+传统数据流分析:
+  if (x is tainted) → propagate to y
+
+IFDS 增强:
+  1. 处理过程间调用（跨方法）
+  2. 处理数组和字段访问
+  3. 处理别名（alias）
+```
+
+**关键类**:
+- `TaintAnalysisChecker` - 问题定义，包含 source 和 sink 规则
+- `TaintAnalysisSolver` - IFDS 求解器
+- `DataflowSolver` - 基础框架
+
+#### 5.2 回调数据流追踪
+
+HarmonyOS SDK 使用两种异步模式，需要特殊处理：
+
+**Promise 模式**:
+```typescript
+// selectContacts() 返回 Promise
+// .then() 回调接收 resolved value
 
 selectContacts().then((info) => {
-    // 问题：info 是从哪里来的？它会流向哪里？
-    hilog.info('联系人: ' + info.name);
+    // info 是 selectContacts() 的返回值
+    // 需要追踪 info 的数据流
+    hilog.info('联系人: ' + info.name);  // 数据流终点
 });
 ```
 
-原来的分析器会说："找不到数据从哪里来到哪里去"
-
-现在的分析器会说："info 来自 selectContacts() 的返回值，info.name 流向了 hilog.info()"
-
-#### 核心方法详解
-
-**方法名**: `processThenCallback()`
-
-**这个方法是做什么的？**
-
-它的任务是：
-1. 找出 `.then()` 回调函数的参数是什么
-2. 追踪这个参数的数据流
-
-**输入**:
-- `method`: 当前所在的方法（包含 `.then()` 调用的方法）
-- `stmt`: `.then()` 这行代码
-- `invokeExpr`: `.then()` 表达式本身
-
-**输出**: 无（直接往 `detectOutcome` 里添加检测结果）
-
-**内部逻辑（分步说明）**:
-
-```
-第1步：拿到 .then() 的参数
-  selectContacts().then(callback↑)
-                               ↑ 这个就是回调参数
-
-第2步：看看这个参数是什么类型
-  - 如果是 FunctionType，说明是普通函数
-  - 如果是 ClosureType，说明是闭包
-
-第3步：找到这个回调函数本身
-  通过 FunctionType/ClosureType 里的方法签名，
-  在同一个类里找到实际的回调代码
-
-第4步：拿到回调函数的参数列表
-  .then((info) => ...) 中 info 就是回调参数
-
-第5步：过滤掉不需要的参数
-  有些参数是闭包自动传进来的（如 %closures2）
-  这些不是真正的业务参数，需要跳过
-
-第6步：开始追踪
-  从真实的回调参数开始，沿着代码往下找
-  看它用在哪里，有没有流向敏感的地方
-```
-
-**代码示例**:
-
+**回调函数模式**:
 ```typescript
-private processThenCallback(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
-    // 拿到 .then() 的参数，就是那个回调函数
-    const callbackArg = args[0];
+// getData() 使用回调函数
+// callback 参数是数据源
 
-    // 获取回调参数的类型
-    const callbackArgType = callbackArg.getType();
-
-    // 尝试通过 FunctionType 找到回调方法
-    let callbackMethod = null;
-    if (callbackArgType instanceof FunctionType) {
-        const callbackSig = callbackArgType.getMethodSignature();
-        callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
-    }
-
-    // 如果找不到，尝试通过 ClosureType 找
-    if (!callbackMethod && callbackArgType.constructor?.name === 'ClosureType') {
-        // 从类型字符串里提取方法名
-        const match = typeStr.match(/closures:\s*(.+)/);
-        // ... 查找逻辑
-    }
-
-    if (!callbackMethod) return;
-
-    // 解析回调方法的参数（这里处理了闭包变量）
-    const resolvedParams = getResolvedCallbackParameters(callbackMethod);
-
-    // 找到第一个真正的回调参数（跳过 %closures 开头的闭包变量）
-    let resolvedParam = null;
-    for (const param of resolvedParams) {
-        if (param instanceof Local && !param.getName().startsWith('%closures')) {
-            resolvedParam = param;
-            break;
-        }
-    }
-
-    // 开始追踪这个参数的数据流
-    if (resolvedParam) {
-        const fact = new TaintFact(resolvedParam);
-        fact.addPath(stmt);
-        this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
-    }
-}
-```
-
----
-
-### 功能 2: 回调式 API 数据流追踪
-
-#### 这个功能解决什么问题？
-
-有些 API 不是用 `.then()` 的方式，而是用**传入回调函数**的方式：
-
-```typescript
-// getData 的第一个参数是回调函数
-systemPasteboard.getData((err, pasteData) => {
-    // err 是错误信息
-    // pasteData 才是我们要的数据
-    let text = pasteData.getPrimaryText();
-    hilog.info('剪贴板内容: ' + text);
+pasteboard.getData((err, pasteData) => {
+    // pasteData 是回调参数（数据源）
+    let text = pasteData.getPrimaryText();  // 字段访问
+    hilog.info('剪贴板: ' + text);  // 数据流终点
 });
 ```
 
-原来的分析器会漏掉这个场景。
-
-#### 核心方法详解
-
-**方法名**: `analyzeCallbackSource()`
-
-**这个方法是做什么的？**
-
-追踪那种"把回调函数传进去"的数据流
-
-**输入**:
-- `method`: 包含 `getData()` 调用的方法
-- `stmt`: `getData()` 这行代码
-- `invokeExpr`: `getData()` 表达式
-- `source`: 关于这是个数据源 API 的信息
-
-**输出**: 无（直接往 `detectOutcome` 里添加检测结果）
-
-**内部逻辑（分步说明）**:
-
-```
-第1步：确定回调参数是第几个
-  getData(回调函数↑)
-               ↑ 第一个参数，索引是 0
-
-第2步：获取回调函数
-  拿到 args[0]，就是那个回调函数
-
-第3步：找到回调函数对应的实际代码
-  因为回调函数是内联的，需要通过类型信息找到它的实现
-
-第4步：获取回调函数的参数列表
-  (err, pasteData) => { ... }
-  ↑ err    ↑ pasteData
-
-第5步：跳过错误参数
-  err 通常不是我们要追踪的数据
-  从 pasteData 开始
-
-第6步：追踪数据流
-  从 pasteData 开始，看它怎么被使用
-```
-
-**代码示例**:
+**核心代码**: `src/hapflow/TaintAnalysis.ts`
 
 ```typescript
-private analyzeCallbackSource(method: ArkMethod, stmt: Stmt,
-                               invokeExpr: AbstractInvokeExpr, source: Source): void {
-    // 获取参数列表
-    const args = invokeExpr.getArgs();
+// 分析所有回调数据流
+analyzeCallbackDataFlows()
 
-    // 回调参数在第几个位置？source.callbackIndex 告诉我们
-    const callbackArg = args[source.callbackIndex];
-    const callbackArgType = callbackArg.getType();
+// 处理 Promise.then()
+processThenCallback(method, stmt, invokeExpr)
 
-    // 找到回调方法
-    let callbackMethod = null;
-    if (callbackArgType instanceof FunctionType) {
-        const callbackSig = callbackArgType.getMethodSignature();
-        callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
-    }
+// 处理回调风格 API
+analyzeCallbackSource(method, stmt, invokeExpr, source)
 
-    // 如果没找到，扫描匿名方法
-    if (!callbackMethod) {
-        callbackMethod = this.findCallbackMethod(method, invokeExpr);
-    }
-
-    if (!callbackMethod) return;
-
-    // 获取回调的参数列表
-    const paramInstances = callbackMethod.getParameterInstances();
-    if (!paramInstances || paramInstances.length === 0) return;
-
-    // 跳过错误参数（通常 err 是第一个）
-    let startIndex = 0;
-    if (paramInstances.length > 1 &&
-        paramInstances[0]?.toString().includes('err')) {
-        startIndex = 1;  // 从第二个参数开始
-    }
-
-    // 对每个数据参数，追踪它的数据流
-    for (let i = startIndex; i < paramInstances.length; i++) {
-        const param = paramInstances[i];
-        if (param instanceof Local) {
-            const fact = new TaintFact(param);
-            fact.addPath(stmt);
-            this.traceCallbackParamDataFlow(callbackMethod, param, fact);
-        }
-    }
-}
+// 追踪回调参数数据流
+traceCallbackParamDataFlow(method, startVar, startFact)
 ```
 
----
+#### 5.3 闭包处理
 
-### 功能 3: 闭包变量解析
-
-#### 这个功能解决什么问题？
-
-闭包是 JavaScript/HarmonyOS 里一个特殊的概念：
+ArkTS 编译会将闭包变量转换为 `ClosureFieldRef`，需要解析：
 
 ```typescript
-let name = '张三';
-
-fetchData().then((data) => {
-    // 这个回调函数"记住"了外层的 name 变量
-    // 在内部，name 可能被表示为 %closures2 这样的变量
-    hilog.info(name + ': ' + data);
+// 源代码
+selectContacts().then((info) => {
+    console.log(info.name);
 });
+
+// 编译后 IR
+// info 可能是 %closures0 类型的闭包变量
+// 需要解析它实际引用的值
 ```
 
-问题是：`%closures2` 到底是什么？它和 `name` 是什么关系？
-
-#### 核心函数详解
-
-**函数名**: `isClosureLocal()`
-
-**这个函数是做什么的？**
-
-判断一个变量是不是"闭包变量"
-
-**什么是闭包变量？**
-
-以 `%closures` 开头的变量，就是闭包捕获的外层变量
-
-**输入**: 任意一个值
-
-**输出**: `true` 或 `false`
+**核心代码**: `src/hapflow/Util.ts`
 
 ```typescript
-function isClosureLocal(value: Value): boolean {
-    // 必须是 Local 类型的变量
-    if (!(value instanceof Local)) return false;
+// 解析闭包变量
+resolveClosureVariable(closureLocal, method)
 
-    // 变量名以 %closures 开头就是闭包变量
-    const name = value.getName();
-    return name.startsWith('%closures');
-}
+// 获取解析后的回调参数
+getResolvedCallbackParameters(callbackMethod)
+```
+
+#### 5.4 数组和字段访问处理
+
+```typescript
+// 数组索引访问
+let data = getSensitiveData();
+send(data[0]);  // 追踪 data[0]
+
+// 链式字段访问
+let location = getCurrentLocation();
+send(location.coordinate.latitude);  // 追踪完整链
 ```
 
 ---
 
-**函数名**: `getResolvedCallbackParameters()`
+### 第六阶段：协同行为检测
 
-**这个函数是做什么的？**
-
-获取回调方法的参数列表，**但是**把闭包变量替换成它实际代表的值
-
-**举例说明**:
+**目标**: 识别跨多个隐私 API 的组合行为
 
 ```typescript
-// 原始回调可能是这样的（中间表示）：
-// %closures2 = parameter0  (name 变量被捕获)
-// info = parameter1        (这是真正的回调参数)
+// 示例：用户画像
+@Component
+struct UserProfile {
+    aboutToAppear() {
+        // 位置 + 设备 ID + 通讯录 同时收集
+        let location = locationManager.getCurrentLocation();
+        let deviceId = deviceInfo.deviceId;
+        let contacts = contactManager.selectContacts();
 
-function getResolvedCallbackParameters(method: ArkMethod): Value[] {
-    const paramInstances = method.getParameterInstances();
-    const resolved: Value[] = [];
-
-    for (const param of paramInstances) {
-        if (isClosureLocal(param)) {
-            // 如果是闭包变量，就解析出它实际代表的值
-            const actualValue = resolveClosureVariable(param, method);
-            if (actualValue) {
-                resolved.push(actualValue);
-            }
-        } else {
-            // 普通参数直接添加
-            resolved.push(param);
-        }
-    }
-    return resolved;
-}
-```
-
-**原始返回**: `[%closures2, info]`  （看不懂）
-**解析后返回**: `[name, info]`      （知道 info 是真正的参数）
-
----
-
-**函数名**: `resolveClosureVariable()`
-
-**这个函数是做什么的？**
-
-把 `%closures2` 这样的变量，解析成它实际代表的值
-
-**输入**: 一个闭包变量（如 `%closures2`）
-
-**输出**: 它实际代表的值（如 `name`）
-
-```typescript
-function resolveClosureVariable(local: Local, method: ArkMethod): Value | null {
-    // 获取方法捕获的所有闭包变量
-    const closures = getClosures(method);
-    if (!closures) return null;
-
-    // 遍历方法的语句，找类似这样的代码：
-    // %closures2 = parameter0
-    // 这说明 %closures2 其实就是外层的 parameter0
-
-    for (const block of method.getCfg().getBlocks()) {
-        for (const stmt of block.getStmts()) {
-            if (stmt instanceof ArkAssignStmt) {
-                const leftOp = stmt.getLeftOp();
-                const rightOp = stmt.getRightOp();
-
-                // %closures2 = parameter0
-                if (leftOp.getName() === local.getName() &&
-                    rightOp instanceof ArkParameterRef) {
-                    // 返回被捕获的参数
-                    return method.getParameterInstances()[rightOp.getIndex()];
-                }
-            }
-        }
-    }
-
-    return null;
-}
-```
-
----
-
-### 功能 4: 数据流追踪引擎
-
-#### 这个功能解决什么问题？
-
-拿到一个变量的起始值后，怎么追踪它在代码里的传播？
-
-```typescript
-let data = sensor.read();  // data = 源头
-let text = data.toString(); // text 依赖 data
-let message = '结果: ' + text; // message 依赖 text
-console.info(message);     // message 被打印出去
-```
-
-我们需要追踪这条链：`data → text → message → console.info()`
-
-#### 核心方法详解
-
-**方法名**: `traceCallbackParamDataFlow()`
-
-**这个方法是做什么的？**
-
-从起始变量开始，沿着代码传播，追踪它最终流向哪里
-
-**输入**:
-- `method`: 要分析的方法
-- `startVar`: 起始变量（如回调参数 `info`）
-- `startFact`: 起始变量及其路径信息
-
-**输出**: 无（把找到的污点流添加到 `detectOutcome`）
-
-**内部逻辑（分步说明）**:
-
-```
-第1步：准备工作
-  - 创建工作队列，把起始变量放进去
-  - 创建已访问集合，避免重复处理
-
-第2步：取出一个变量来处理
-  从工作队列弹出一个变量
-
-第3步：检查是不是污点泄露
-  看看当前变量的值有没有被传递给"敏感函数"
-  （如 console.info、hilog.info 这些会输出日志的函数）
-
-第4步：处理赋值语句（变量传播）
-  a = b 这样的语句，b 的污点性会传给 a
-  例如：info 被标记为污点，那么 text = info 之后，text 也是污点
-
-第5步：处理方法调用（返回值传播）
-  let result = obj.method()
-  如果 obj 是污点，那 result 也可能继承污点
-
-第6步：处理字段访问（属性传播）
-  data.name 这样的访问
-  如果 data 是污点，那 data.name 也是污点
-
-第7步：把新发现的污点变量加入队列
-  回到第2步继续处理
-```
-
-**代码示例**:
-
-```typescript
-private traceCallbackParamDataFlow(method: ArkMethod,
-                                     startVar: Value,
-                                     startFact: TaintFact): void {
-    const cfg = method.getCfg();
-    if (!cfg) return;
-
-    // 工作队列：待处理的变量
-    const worklist: Array<{ var: Value, fact: TaintFact }> = [
-        { var: startVar, fact: startFact }
-    ];
-
-    // 已访问集合：避免重复处理
-    const visited = new Set<string>();
-
-    while (worklist.length > 0) {
-        // 取出待处理的变量
-        const { var: currentVar, fact: currentFact } = worklist.pop()!;
-
-        // 避免重复处理
-        const key = currentVar.toString();
-        if (visited.has(key)) continue;
-        visited.add(key);
-
-        // 获取方法里的所有语句
-        const allStmts = getAllStatements(cfg);
-
-        // 第1步：检查有没有泄露到敏感函数
-        for (const stmt of allStmts) {
-            if (!stmt.containsInvokeExpr()) continue;
-
-            const invokeExpr = stmt.getInvokeExpr();
-            const isSink = this.callSink(invokeExpr);
-
-            if (isSink) {
-                // 检查这个敏感函数的参数是否用了当前变量
-                const args = invokeExpr.getArgs();
-                for (const arg of args) {
-                    if (ValueEqual(arg, currentVar)) {
-                        // 发现了泄露！记录下来
-                        const sinkFact = new TaintFact(currentVar);
-                        for (const p of currentFact.getPath()) {
-                            sinkFact.addPath(p);
-                        }
-                        sinkFact.addPath(stmt);
-                        this.detectOutcome.push(sinkFact);
-                    }
-                }
-            }
-        }
-
-        // 第2步：处理赋值语句
-        for (const stmt of allStmts) {
-            if (!(stmt instanceof ArkAssignStmt)) continue;
-
-            const leftOp = stmt.getLeftOp();   // 等号左边
-            const rightOp = stmt.getRightOp(); // 等号右边
-
-            // 情况A: a = b，当前变量是 b
-            if (ValueEqual(rightOp, currentVar) && leftOp instanceof Local) {
-                // b 是污点，a 也变成污点
-                const newFact = new TaintFact(leftOp);
-                newFact.addPath(stmt);
-                worklist.push({ var: leftOp, fact: newFact });
-            }
-
-            // 情况B: a = obj.field，obj 是当前变量
-            if (currentVar instanceof Local &&
-                rightOp instanceof ArkInstanceFieldRef &&
-                LocalEqual(rightOp.getBase(), currentVar)) {
-                // obj 是污点，obj.field 也变成污点
-                const newFact = new TaintFact(rightOp);
-                newFact.addPath(stmt);
-                worklist.push({ var: rightOp, fact: newFact });
-            }
-
-            // 情况C: a = obj.method()，obj 是当前变量
-            if (currentVar instanceof Local &&
-                rightOp instanceof ArkInstanceInvokeExpr) {
-                const invokeBase = rightOp.getBase();
-                if (ValueEqual(invokeBase, currentVar) && leftOp instanceof Local) {
-                    // obj 是污点，a 也变成污点
-                    const newFact = new TaintFact(leftOp);
-                    newFact.addPath(stmt);
-                    worklist.push({ var: leftOp, fact: newFact });
-                }
-            }
-        }
+        // 上报到服务器进行用户画像
+        uploadProfile(location, deviceId, contacts);
     }
 }
 ```
 
----
-
-### 功能 5: SDK 调用参数回调支持
-
-#### 这个功能解决什么问题？
-
-对于 SDK 里的 API 调用，原来的分析器不知道去哪里找回调函数：
+**核心代码**: `src/multiSourceAnalyzer.ts`
 
 ```typescript
-// 这是 SDK 的 API，我们看不到内部实现
-import prompt from '@ohos.prompt';
-prompt.showToast({
-    message: 'Hello',
-    duration: 3000,
-    success: () => { }  // 这个回调要去哪里找？
-});
+// 按 category 分组隐私 API
+// 检测同一组件中多个类别的使用
+// 识别隐私数据组合风险
 ```
 
-#### 修改说明
+---
 
-**文件**: `src/hapflow/DataflowSolver.ts`
+## 大型项目支持策略
 
-**修改内容**:
+### 问题
+
+大型应用（1000+ 方法）运行时会触发 OOM。
+
+### 原因分析
+
+1. **回调分析阶段**: `analyzeCallbackDataFlows()` 遍历所有方法
+2. **IFDS 求解阶段**: 工作列表和路径边集合可能爆炸性增长
+
+### 解决方案
+
+**智能限制 + 优先级策略**:
 
 ```typescript
-protected getCallees(invokeStmt: ArkInvokeStmt): Set<ArkMethod> {
-    // ... 前面的代码 ...
+// TaintAnalysis.ts
+const MAX_METHODS_TO_SCAN = 500;
+const MAX_SOURCES_TO_ANALYZE = 50;
 
-    // 原来的逻辑：对 SDK 调用直接返回空
-    // callees = new Set(paramFuncs);  // 这样就够了
-    if (this.scene.getFile(invokeMethodFileSignature) &&
-        !this.scene.hasSdkFile(invokeMethodFileSignature)) {
-        // 项目代码，可以从调用图获取
-        callees = this.getAllCalleeMethodsFromCG(invokeStmt, paramFuncs);
-    } else {
-        // SDK 代码：也把回调函数加进去
-        if (paramFuncs.length > 0) {
-            for (const pf of paramFuncs) {
-                callees.add(pf);
-            }
-        }
+for (const method of this.scene.getMethods()) {
+    if (methodCount++ > MAX_METHODS_TO_SCAN) {
+        break;  // 提前退出
     }
+    // ...
+}
+```
 
-    return callees;
+### 为什么安全？
+
+1. **API 检测不受限**: Layer 1 扫描所有文件，100% 召回
+2. **隐私 API 集中**: 在 UI 页面（deviceid.ets, batteryInfo.ets）
+3. **ArkAnalyzer 顺序**: UI 页面通常在前 500 个方法中
+
+### 实测结果
+
+| 项目 | 方法数 | 检测到 API | 有数据流 | 召回率 |
+|------|--------|-----------|---------|--------|
+| legado-Harmony-main | 3576 | 60 | 44 | 73% |
+| harmonyos-games-main | - | 56 | 40 | 71.4% |
+
+---
+
+## 配置系统
+
+### 隐私 API 规则
+
+`config/privacy_apis.json`:
+```json
+{
+  "systemPackage": "@kit.BasicServicesKit",
+  "privacyApis": [
+    {
+      "directCall": true,
+      "namespace": "pasteboard",
+      "method": "getSystemPasteboard",
+      "permission": null,
+      "profilingCategory": "user_data.clipboard"
+    }
+  ]
+}
+```
+
+### IFDS Source 定义
+
+`config/hapflow_sources.json`:
+```json
+{
+  "api_name": "getCurrentLocation",
+  "module": "@ohos.geoLocationManager",
+  "source_type": "return",
+  "tainted_param_index": -1,
+  "reason": "返回位置坐标，属于敏感数据"
+}
+```
+
+### IFDS Sink 定义
+
+`config/hapflow_sinks.json`:
+```json
+{
+  "api_name": "request",
+  "module": "@ohos.http",
+  "sink_type": "network",
+  "reason": "发送网络请求，数据可能被上传"
 }
 ```
 
 ---
 
-### 功能 6: 直接回调数据流分析入口
+## 性能优化建议
 
-#### 这个功能解决什么问题？
-
-原来的分析器只处理"从入口方法可以到达"的代码，但很多回调是异步触发的，分析器根本跑不到。
-
-#### 核心方法详解
-
-**方法名**: `analyzeCallbackDataFlows()`
-
-**这个方法是做什么的？**
-
-遍历项目里所有的方法，找出所有包含数据源 API 调用的地方，单独做分析
-
-**输入**: 无
-
-**输出**: 无（把检测结果添加到 `detectOutcome`）
-
-**内部逻辑（分步说明）**:
-
-```
-第1步：遍历项目里所有的方法
-  for (每个方法) {
-      第2步：遍历方法里的所有语句
-      for (每个语句) {
-          第3步：判断是不是数据源 API
-          if (是 getData、selectContacts 这类 API) {
-              第4步：根据 API 类型选择分析方法
-              - 回调式: 调用 analyzeCallbackSource()
-              - 返回值式: 调用 analyzePromiseChaining()
-          }
-
-          第5步：检查 .then() 链式调用
-          如果是 .then()，调用 analyzeChainedThenInvoke()
-      }
-  }
-```
-
-**代码示例**:
-
-```typescript
-public analyzeCallbackDataFlows(): void {
-    // 遍历项目里的每个方法
-    for (const method of this.scene.getMethods()) {
-        const cfg = method.getCfg();
-        if (!cfg) continue;
-
-        // 遍历每个语句
-        for (const block of cfg.getBlocks()) {
-            for (const stmt of block.getStmts()) {
-                if (!stmt.containsInvokeExpr()) continue;
-
-                const invokeExpr = stmt.getInvokeExpr();
-                if (!invokeExpr) continue;
-
-                // 检查是不是数据源 API
-                const source = callSource(invokeExpr, this.sources, this.scene);
-
-                if (source) {
-                    // 根据类型选择分析方法
-                    if (source.sourceType === 'callback') {
-                        // 回调式 API
-                        this.analyzeCallbackSource(method, stmt, invokeExpr, source);
-                    } else if (source.sourceType === 'return') {
-                        // 返回值式 API
-                        this.analyzePromiseChaining(method, stmt, invokeExpr, source);
-                    }
-                    continue;
-                }
-
-                // 还要检查 .then() 链式调用
-                this.analyzeChainedThenInvoke(method, stmt, invokeExpr);
-            }
-        }
-    }
-}
-```
-
----
-
-## 修改文件清单
-
-| 文件 | 修改类型 | 新增行数 | 说明 |
-|------|----------|----------|------|
-| `src/hapflow/TaintAnalysis.ts` | 修改 | +644 行 | 新增回调追踪相关方法 |
-| `src/hapflow/Util.ts` | 修改 | +172 行 | 新增闭包解析函数 |
-| `src/hapflow/DataflowSolver.ts` | 修改 | +9 行 | SDK 调用回调支持 |
-| `src/hapflowRunner.ts` | 修改 | +5 行 | 调用直接回调分析入口 |
-| `docs/callback-dataflow-implementation.md` | 新增 | - | 实现技术文档 |
-
----
-
-## 测试结果
-
-### 全量测试统计
-
-| 指标 | 数值 |
+| 场景 | 建议 |
 |------|------|
-| 测试项目总数 | 55 |
-| 成功分析 | 53 |
-| OOM 失败 | 2 |
-| 检测到数据流 | 15 |
-
-### 关键项目检测结果
-
-| 项目 | 隐私 API | 数据流 |
-|------|----------|--------|
-| legado-Harmony-main | 60 | 36 |
-| harmony-next-music-sharing | 39 | 11 |
-| STUFFS_NEXT-master | 56 | 10 |
-| Wechat_HarmonyOS | 46 | 10 |
-| Snake_NEXT-main | 33 | 4 |
-| harmonyos-games-main | 56 | 6 |
+| 快速扫描 | 使用 `--no-taint` 跳过污点分析 |
+| 内存受限 | 使用 `--no-pta` 跳过指针分析 |
+| 大型项目 | 默认设置已优化，可正常运行 |
+| 精确分析 | 使用完整选项（默认） |
 
 ---
 
-## 关键概念解释
+## 项目结构
 
-### 什么是 IFDS？
-
-IFDS（Interprocedural Data Flow Analysis）是**过程间数据流分析**的简称。
-
-它解决的问题是：**数据不仅在单个方法内流动，还会跨方法流动**
-
-```typescript
-function A() {
-    let x = getData(); // x 得到数据
-    B(x);              // x 传给方法 B
-}
-
-function B(y) {
-    console.log(y);    // y 在这里被使用
-}
 ```
-
-IFDS 能追踪 x → y 的数据流。
-
-### 什么是回调？
-
-回调就是**把一个函数作为参数传给另一个函数**
-
-```typescript
-// 常见形式1: 回调函数
-doSomething(callback);
-
-// 常见形式2: Promise.then
-promise.then((result) => {
-    // result 是上一个操作的结果
-});
+Argus/
+├── src/
+│   ├── arkprism.ts              # 主入口
+│   ├── apiDetector.ts           # Layer 1: 隐私 API 检测
+│   ├── callChainTracer.ts       # Layer 2: 调用链构建
+│   ├── dataSinkAnalyzer.ts      # Layer 3: Sink 检测
+│   ├── semanticEnricher.ts      # Layer 4: 语义增强
+│   ├── multiSourceAnalyzer.ts   # Layer 6: 协同行为检测
+│   ├── hapflow/                 # IFDS 污点分析
+│   │   ├── TaintAnalysis.ts     # 核心分析逻辑
+│   │   ├── TaintAnalysisSolver.ts
+│   │   ├── DataflowSolver.ts    # IFDS 算法实现
+│   │   ├── TaintFact.ts         # 污点事实
+│   │   ├── LightTaintAnalysis.ts
+│   │   └── Util.ts              # 辅助函数
+│   ├── arkanalyzer/             # ArkAnalyzer 封装
+│   ├── hapflowRunner.ts         # HapFlow 入口
+│   └── prototypes.ts            # 类型定义
+├── config/
+│   ├── privacy_apis.json        # 隐私 API 规则
+│   ├── hapflow_sources.json     # IFDS source
+│   ├── hapflow_sinks.json       # IFDS sink
+│   └── data_sinks.json          # 数据泄露 sink
+├── dist/                        # 编译输出
+└── out/                         # 分析结果
 ```
-
-### 什么是闭包？
-
-闭包就是**函数记住了它外部的变量**
-
-```typescript
-function outer() {
-    let name = '张三';
-
-    return function inner() {
-        // inner 函数记住了 name
-        console.log(name);
-    };
-}
-```
-
-### 什么是污点分析？
-
-污点分析就是**追踪"脏数据"的传播**
-
-- **source（污点源）**: 数据从哪里来（如 sensor.on 的回调参数）
-- **sink（污点汇）**: 数据流向哪里（如 console.info）
-- **propagation（传播）**: 数据怎么在中间过程流动
 
 ---
 
-## 后续计划
+## 术语表
 
-1. **跨文件回调追踪**: 当前只处理同一文件
-2. **嵌套 Promise 支持**: `a.then().then()` 多层链式
-3. **async/await 完整支持**: 完善 await 处理
-4. **性能优化**: 大型项目增量分析
+| 术语 | 全称 | 说明 |
+|------|------|------|
+| IFDS | Interprocedural Data Flow Analysis | 过程间数据流分析 |
+| CFG | Control Flow Graph | 控制流图 |
+| PTA | Pointer Analysis | 指针分析 |
+| CHA | Class Hierarchy Analysis | 类层次分析 |
+| ABC | ArkTS ByteCode | ArkTS 字节码 |
+| Source | - | 隐私数据源头 |
+| Sink | - | 数据泄露终点 |
+| Taint | - | 被追踪的敏感数据 |
+| Closure | - | 闭包，捕获外部变量的函数 |
+
+---
+
+## 许可
+
+MIT License
