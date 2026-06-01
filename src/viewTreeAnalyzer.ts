@@ -113,7 +113,8 @@ export function analyzeViewTrees(scene: Scene): ViewTreeAnalysisResult {
                     arkFile.getName(),
                     result.callbackBindings,
                     stateToUI,
-                    stateVariables
+                    stateVariables,
+                    0  // Initial depth
                 );
             }
         }
@@ -139,15 +140,24 @@ export function analyzeViewTrees(scene: Scene): ViewTreeAnalysisResult {
 
 /**
  * Analyze a single ViewTreeNode and its children
+ * Note: depth parameter limits recursion to prevent stack overflow from circular references
  */
+const MAX_VIEW_TREE_DEPTH = 100;
+
 function analyzeViewTreeNode(
     node: ViewTreeNode,
     arkClass: ArkClass,
     fileName: string,
     callbackBindings: UICallbackBinding[],
     stateToUI: Map<string, Set<string>>,
-    stateVariables: Set<string>
+    stateVariables: Set<string>,
+    depth: number = 0
 ): void {
+    // Limit recursion depth to prevent stack overflow
+    if (depth > MAX_VIEW_TREE_DEPTH) {
+        return;
+    }
+
     // Track state variable usage
     if (node.stateValues) {
         for (const stateField of node.stateValues) {
@@ -211,7 +221,7 @@ function analyzeViewTreeNode(
         }
     }
 
-    // Recursively analyze children
+    // Recursively analyze children (pass depth to limit recursion)
     if (node.children) {
         for (const child of node.children) {
             analyzeViewTreeNode(
@@ -220,7 +230,8 @@ function analyzeViewTreeNode(
                 fileName,
                 callbackBindings,
                 stateToUI,
-                stateVariables
+                stateVariables,
+                depth + 1
             );
         }
     }
@@ -246,21 +257,37 @@ function isEventHandlerAttribute(attrName: string): boolean {
 
 /**
  * Extract target method signatures from attribute value uses
+ * Note: wrapped in try-catch to prevent stack overflow from circular references
  */
 function extractTargetMethods(
     uses: (any)[],
     arkClass: ArkClass
 ): string[] {
     const methods: string[] = [];
+    const maxMethods = 50; // Prevent memory issues
+    const seenSignatures = new Set<string>();
 
-    for (const use of uses) {
-        // Check if use is a MethodSignature
-        if (use && 'getMethodSubSignature' in use && typeof (use as any).getMethodSubSignature === 'function') {
-            methods.push(use.toString());
-        }
-        // Check if use is an ArkMethod
-        else if (use && typeof use.getName === 'function') {
-            methods.push(use.getName());
+    for (let i = 0; i < uses.length && methods.length < maxMethods; i++) {
+        const use = uses[i];
+        try {
+            // Check if use is a MethodSignature
+            if (use && 'getMethodSubSignature' in use && typeof (use as any).getMethodSubSignature === 'function') {
+                const sigStr = use.toString();
+                if (sigStr && !seenSignatures.has(sigStr)) {
+                    seenSignatures.add(sigStr);
+                    methods.push(sigStr);
+                }
+            }
+            // Check if use is an ArkMethod
+            else if (use && typeof use.getName === 'function') {
+                const name = use.getName();
+                if (name && !seenSignatures.has(name)) {
+                    seenSignatures.add(name);
+                    methods.push(name);
+                }
+            }
+        } catch (e) {
+            // Skip on toString/getName error (may be due to circular references)
         }
     }
 
