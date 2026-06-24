@@ -1,35 +1,29 @@
 
 import { Scene } from "../arkanalyzer";
-import { ArkBody } from "../arkanalyzer";
 import { DataflowProblem, FlowFunction } from "../arkanalyzer";
 import { Local } from "../arkanalyzer";
 import { Value } from "../arkanalyzer";
 import { ArkAssignStmt, ArkInvokeStmt, ArkReturnStmt, ArkThrowStmt, Stmt } from "../arkanalyzer";
 import { ArkMethod } from "../arkanalyzer";
 import { Constant } from "../arkanalyzer";
-import { AbstractFieldRef, AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkParameterRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
+import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { DataflowSolver } from "./DataflowSolver";
 import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from "../arkanalyzer";
-import { ArrayType, ClassType, FunctionType, LexicalEnvType, UnclearReferenceType, UndefinedType, VoidType } from "../arkanalyzer";
+import { ArrayType, ClassType, ClosureType, FunctionType, LexicalEnvType, UnclearReferenceType, UndefinedType } from "../arkanalyzer";
 import { MethodSignature } from "../arkanalyzer";
 import { PointerAnalysis } from "../arkanalyzer";
-import { PointerAnalysisConfig } from "../arkanalyzer";
 import * as fs from 'fs';
 import { Source } from "./Source";
-import { Santization } from "./Santization";
-import { getPossibleRelatedNodes, INTERNAL_PARAMETER_SOURCE, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, Json2ArkMethod_LLM, Json2ArkMethodSignature, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
+import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
 import { TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
-import { PathEdgePoint } from "../arkanalyzer";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
 import { ArkThisRef } from "../arkanalyzer";
 
-// @ts-ignore - ClassCategory/ArkClass may need deep import  
+// @ts-ignore - ClassCategory may need deep import
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
-// @ts-ignore - ANONYMOUS/INSTANCE_INIT constants
-import { ANONYMOUS_CLASS_PREFIX, ANONYMOUS_METHOD_PREFIX, INSTANCE_INIT_METHOD_NAME } from "../arkanalyzer";
-// @ts-ignore - FileSignature, NamespaceSignature may need deep import
-import { FileSignature, NamespaceSignature } from "../arkanalyzer";
+// @ts-ignore - INSTANCE_INIT may need deep import
+import { INSTANCE_INIT_METHOD_NAME } from "../arkanalyzer";
 
 const logger = Logger.getLogger(LOG_MODULE_TYPE.ARKANALYZER, 'HapFlow');
 
@@ -64,7 +58,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         let sourceCount = 0;
         let methodCount = 0;
-        const visitedCallbacks = new Set<string>(); // Avoid analyzing same callback multiple times
 
         console.log(`[HAPFLOW] Callback analysis: scanning up to ${MAX_METHODS_TO_SCAN} methods`);
 
@@ -96,15 +89,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         }
 
                         if (source.sourceType === 'callback') {
-                            this.analyzeCallbackSource(method, stmt, invokeExpr, source, visitedCallbacks);
+                            this.analyzeCallbackSource(method, stmt, invokeExpr, source);
                         } else if (source.sourceType === 'return') {
-                            this.analyzePromiseChaining(method, stmt, invokeExpr, source, visitedCallbacks);
+                            this.analyzePromiseChaining(method, stmt, invokeExpr, source);
                         }
                         continue;
                     }
 
                     // Also check for .then() calls whose base might be a source API
-                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr, visitedCallbacks);
+                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr);
                 }
             }
         }
@@ -115,7 +108,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * For callback-style sources, we need to find the callback lambda that is passed as an argument.
      * The callback parameter contains the actual callback implementation, not the callback type declaration.
      */
-    private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source, visitedCallbacks: Set<string>): void {
+    private analyzeCallbackSource(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
         const args = invokeExpr.getArgs();
         if (source.callbackIndex < 0 || source.callbackIndex >= args.length) return;
 
@@ -134,7 +127,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
 
         // Approach 2: If callbackArgType is a ClosureType, extract the lambda method from closures field
-        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
+        if (!callbackMethod && callbackArgType instanceof ClosureType) {
             const typeStr = callbackArgType.toString();
             const match = typeStr.match(/closures:\s*(.+)/);
             if (match) {
@@ -195,7 +188,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             // Could be a constructor call
                             const methodSig = rightOp.getMethodSignature();
                             const type = rightOp.getType();
-                            if (type && type.constructor?.name === 'ClosureType') {
+                            if (type && type instanceof ClosureType) {
                                 // This is a closure - try to find the lambda method
                                 const typeStr = type.toString();
                                 const match = typeStr.match(/closures:\s*(.+)/);
@@ -216,12 +209,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * Analyze Promise-style source API: selectContacts().then(info => { ... })
      * or async/await: const info = await selectContacts()
      */
-    private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source, visitedCallbacks: Set<string>): void {
+    private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
         // Pattern 1: API().then(callback) - the invoke result is passed to .then()
         if (stmt instanceof ArkAssignStmt) {
             const resultVar = stmt.getDef();
             if (resultVar instanceof Local) {
-                this.analyzeThenChaining(method, resultVar, stmt, source, visitedCallbacks);
+                this.analyzeThenChaining(method, resultVar, stmt, source);
             }
         }
 
@@ -245,7 +238,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * Analyze chained .then() calls where the base is itself an invoke returning a Promise.
      * Pattern: sourceApi().then(callback) - no intermediate variable assignment.
      */
-    private analyzeChainedThenInvoke(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, visitedCallbacks: Set<string>): void {
+    private analyzeChainedThenInvoke(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
         // Check if this is a .then() call
         const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
         if (methodName !== 'then') return;
@@ -303,7 +296,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
 
         // If not found, try ClosureType
-        if (!callbackMethod && callbackArgType && callbackArgType.constructor?.name === 'ClosureType') {
+        if (!callbackMethod && callbackArgType instanceof ClosureType) {
             const typeStr = callbackArgType.toString();
             const match = typeStr.match(/closures:\s*(.+)/);
             if (match) {
@@ -399,7 +392,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     /**
      * Analyze .then() chaining: resultVar.then(callback)
      */
-    private analyzeThenChaining(method: ArkMethod, promiseVar: Local, sourceStmt: Stmt, source: Source, visitedCallbacks: Set<string>): void {
+    private analyzeThenChaining(method: ArkMethod, promiseVar: Local, sourceStmt: Stmt, source: Source): void {
         const cfg = method.getCfg();
         if (!cfg) return;
 

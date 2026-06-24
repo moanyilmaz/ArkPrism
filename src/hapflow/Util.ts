@@ -2,20 +2,19 @@ import { ArkAssignStmt, ArkInvokeStmt, Stmt } from "../arkanalyzer";
 import { ArrayType, ClassType, FunctionType, LexicalEnvType } from "../arkanalyzer";
 import { Value } from "../arkanalyzer";
 import { ArkClass } from "../arkanalyzer";
-import { ExportInfo } from "../arkanalyzer";
 import { ArkMethod } from "../arkanalyzer";
 import { ArkNamespace } from "../arkanalyzer";
 import { Scene } from "../arkanalyzer";
 import { TaintFact } from "./TaintFact";
 import { Local } from "../arkanalyzer";
-import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkParameterRef, ArkStaticFieldRef, ArkThisRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
+import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { Cfg } from "../arkanalyzer";
 import { PointerAnalysis } from "../arkanalyzer";
 import { ClassHierarchyAnalysis } from "../arkanalyzer";
 import { Constant } from "../arkanalyzer";
 import { MultiRef } from "./MuiltiRef";
 import { MethodSignature } from "../arkanalyzer";
-import { AbstractInvokeExpr, ArkInstanceInvokeExpr } from "../arkanalyzer";
+import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkThisRef } from "../arkanalyzer";
 import { Source } from "./Source";
 
 // @ts-ignore - ClassCategory may not be in barrel export
@@ -423,7 +422,7 @@ export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): 
                 const closures = lexicalEnv.getClosures();
 
                 for (const closure of closures as Value[]) {
-                    if ((closure as any).constructor?.name === 'ClosureFieldRef') {
+                    if (closure instanceof ClosureFieldRef) {
                         const closureRef = closure as ClosureFieldRef;
                         if (closureRef.toString() === closureLocal.toString()) {
                             return closureRef.getBase();
@@ -443,7 +442,7 @@ export function resolveClosureVariable(closureLocal: Local, method: ArkMethod): 
 
             if (leftOp.getName() === closureLocal.getName()) {
                 const rightOp = stmt.getRightOp();
-                if ((rightOp as any).constructor?.name === 'ClosureFieldRef') {
+                if (rightOp instanceof ClosureFieldRef) {
                     return (rightOp as ClosureFieldRef).getBase();
                 }
                 if (rightOp instanceof Local) {
@@ -488,7 +487,7 @@ export function getResolvedCallbackParameters(callbackMethod: ArkMethod): Value[
             }
             // Regular parameter - add it directly
             resolvedParams.push(param);
-        } else if ((param as any).constructor?.name === 'ClosureFieldRef') {
+        } else if (param instanceof ClosureFieldRef) {
             // The base of ClosureFieldRef is the actual captured value
             resolvedParams.push((param as ClosureFieldRef).getBase());
         } else {
