@@ -33,6 +33,11 @@ export const INTERNAL_SINK_METHOD_toString: string[] = [
     "@ohosSdk/api/@internal/full/global.d.ts: console.[static]assert(string, any[])",
 ]
 
+// Promise sink method names - Promise resolve/reject are data leakage endpoints
+// Data passed to resolve() is returned from the Promise, potentially sent to external systems
+// Data passed to reject() may also leak error information
+export const RESOLVE_SINK_METHODS = ["resolve", "reject"];
+
 // Log sink method names that should always be considered sinks
 // Only console.* methods are considered sinks, NOT custom Logger classes
 // Custom Logger.info() etc. are NOT sinks unless they output to network/file
@@ -782,6 +787,20 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                     }
                 }
             }
+
+            // Special handling for contact APIs: if we didn't find a match yet, try method name only
+            // This handles cases like contact.selectContacts() where base type is 'unknown'
+            const CONTACT_APIS = ['selectContacts', 'queryContact', 'queryContacts', 'queryContactsByPhoneNumber', 'queryContactsByEmail'];
+            if (!bestMatch && CONTACT_APIS.includes(methodName)) {
+                for (const [key, source] of sources) {
+                    const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
+                    if (sourceMethodName === methodName && key.includes('contact')) {
+                        bestMatch = source;
+                        break;
+                    }
+                }
+            }
+
             return bestMatch;
         }
 

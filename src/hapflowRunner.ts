@@ -131,7 +131,7 @@ export function runHapflowAnalysis(
     console.log('[HAPFLOW] Loading source/sink definitions...');
     problem.addSourcesFromJson(sourcesPath);
     problem.addSinksFromJson(sinksPath);
-    console.log(`[HAPFLOW] Loaded ${problem.getSources().size} sources, ${problem.getSinks().length} sinks.`);
+    console.log('[HAPFLOW] Loaded ' + problem.getSources().size + ' sources, ' + problem.getSinks().length + ' sinks.');
 
     if (problem.getSources().size === 0 && problem.getSinks().length === 0) {
         console.log('[HAPFLOW][WARN] No sources or sinks loaded. SDK API signatures could not be resolved.');

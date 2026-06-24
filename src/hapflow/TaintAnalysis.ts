@@ -59,8 +59,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      */
     public analyzeCallbackDataFlows(): void {
         // Limit analysis to avoid OOM on large projects
-        const MAX_SOURCES_TO_ANALYZE = 50;
-        const MAX_METHODS_TO_SCAN = 500;
+        const MAX_SOURCES_TO_ANALYZE = 300;
+        const MAX_METHODS_TO_SCAN = 2000;
 
         let sourceCount = 0;
         let methodCount = 0;
@@ -1327,7 +1327,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 sourceIndex = (object.tainted_param_index ?? 0) - 1;
             } else if (sourceType === 'callback') {
                 callbackIndex = (object.tainted_param_index ?? 0) - 1;
-                const param = object.parameters[callbackIndex].type.trim();
+                const param = object.parameters && object.parameters[callbackIndex]?.type?.trim() || '';
                 const VALID_CALLBACK_PATTERN: RegExp = /^(?:.*?\.)?(?:Async)?Callback<.*>$/;
                 const ASYNC_CALLBACK_PATTERN: RegExp = /^(?:.*?\.)?AsyncCallback<.*>$/;
                 if (ASYNC_CALLBACK_PATTERN.test(param)) {
