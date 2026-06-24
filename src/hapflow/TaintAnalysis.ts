@@ -59,8 +59,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      */
     public analyzeCallbackDataFlows(): void {
         // Limit analysis to avoid OOM on large projects
-        const MAX_SOURCES_TO_ANALYZE = 300;
-        const MAX_METHODS_TO_SCAN = 2000;
+        const MAX_SOURCES_TO_ANALYZE = 2000;
+        const MAX_METHODS_TO_SCAN = 10000;
 
         let sourceCount = 0;
         let methodCount = 0;
