@@ -20,6 +20,37 @@ import { Source } from "./Source";
 // @ts-ignore - ClassCategory may not be in barrel export
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
 
+// Cached method name to sources mapping for faster lookup
+// Keyed by sources Map to avoid cross-contamination between analysis runs
+const methodNameCacheMap = new WeakMap<Map<string, Source>, Map<string, Source[]>>();
+
+/**
+ * Build a reverse index from method name to sources for faster lookup.
+ * This avoids scanning all sources for fuzzy matching.
+ */
+function buildMethodNameToSourcesCache(sources: Map<string, Source>): Map<string, Source[]> {
+    const cache = new Map<string, Source[]>();
+    for (const source of sources.values()) {
+        const methodName = source.methodSignature.getMethodSubSignature().getMethodName();
+        if (!cache.has(methodName)) {
+            cache.set(methodName, []);
+        }
+        cache.get(methodName)!.push(source);
+    }
+    return cache;
+}
+
+/**
+ * Get the method name to sources cache for the given sources Map.
+ * Creates and caches the index lazily.
+ */
+function getMethodNameToSourcesCache(sources: Map<string, Source>): Map<string, Source[]> {
+    if (!methodNameCacheMap.has(sources)) {
+        methodNameCacheMap.set(sources, buildMethodNameToSourcesCache(sources));
+    }
+    return methodNameCacheMap.get(sources)!;
+}
+
 export const INTERNAL_PARAMETER_SOURCE: string[] = [
     '@ohos.app.ability.Want.d.ts: Want'
 ]
@@ -728,13 +759,16 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             }
 
             // Find sources matching both method name AND (if available) base type
+            // Use cached method name index for faster lookup
             let bestMatch: Source | null = null;
             let bestMatchScore = 0;
 
-            for (const [key, source] of sources) {
-                const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
-                if (sourceMethodName !== methodName) continue;
+            // Get candidates from cache (sources with matching method name)
+            const methodCache = getMethodNameToSourcesCache(sources);
+            const candidates = methodCache.get(methodName) || [];
 
+            for (const source of candidates) {
+                const key = Array.from(sources.keys()).find(k => sources.get(k) === source) || '';
                 let score = 1; // Base score for method name match
 
                 // Extract the actual module name from source key
@@ -812,9 +846,10 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             // This handles cases like contact.selectContacts() where base type is 'unknown'
             const CONTACT_APIS = ['selectContacts', 'queryContact', 'queryContacts', 'queryContactsByPhoneNumber', 'queryContactsByEmail'];
             if (!bestMatch && CONTACT_APIS.includes(methodName)) {
-                for (const [key, source] of sources) {
-                    const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
-                    if (sourceMethodName === methodName && key.includes('contact')) {
+                // candidates already contains all sources with matching method name
+                for (const source of candidates) {
+                    const key = Array.from(sources.keys()).find(k => sources.get(k) === source) || '';
+                    if (key.includes('contact')) {
                         bestMatch = source;
                         break;
                     }
