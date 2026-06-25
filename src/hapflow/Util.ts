@@ -180,6 +180,14 @@ export function Json2ArkMethod_LLM(module: string, name: string, scene: Scene): 
 
 export function Json2ArkMethodSignature(module: string, namespace: string, className: string, name: string, scene: Scene, parameters?: { name: string, type: string }[]): MethodSignature[] {
     const methodSignatures: MethodSignature[] = [];
+
+    // Handle full method names like "console.log" - extract just the method name
+    let methodName = name;
+    if (className && name.includes('.')) {
+        const parts = name.split('.');
+        methodName = parts[parts.length - 1];
+    }
+
     const fileName = filenamePrefix + module + '.d.ts';
     const file = scene.getSdkArkFiles().filter(f => f.getName() == fileName)[0];
     if (!file) {
@@ -191,6 +199,8 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         : [];
 
     const namesMatch = (sig: MethodSignature, names: string[]): boolean => {
+        // If no parameter names to match, accept any signature
+        if (!names || names.length === 0) return true;
         if (sig.getParamLength() !== names.length) return false;
         for (let i = 0; i < names.length; i++) {
             const param = sig.getMethodSubSignature().getParameters()[i];
@@ -202,7 +212,7 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
     const collectFromMethod = (mtd: ArkMethod | null): MethodSignature[] => {
         if (!mtd) return [];
         const ms = mtd.getDeclareSignatures();
-        if (ms) {
+        if (ms && ms.length > 0) {
             const matched: MethodSignature[] = [];
             for (const sig of ms) {
                 if (namesMatch(sig, expectedParamNames)) {
@@ -223,40 +233,51 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
             if (className) {
                 const cls = ns.getClasses().find(c => c.getName() == className);
                 if (cls) {
-                    let mtd = cls.getMethodWithName(name);
-                    if (!mtd) mtd = cls.getStaticMethodWithName(name);
+                    let mtd = cls.getMethodWithName(methodName);
+                    if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
                     const ms = collectFromMethod(mtd);
                     if (ms.length > 0) return ms;
                 }
             } else {
                 const defCls = ns.getDefaultClass();
                 if (defCls) {
-                    let mtd = defCls.getMethodWithName(name);
-                    if (!mtd) mtd = defCls.getStaticMethodWithName(name);
+                    let mtd = defCls.getMethodWithName(methodName);
+                    if (!mtd) mtd = defCls.getStaticMethodWithName(methodName);
                     const ms = collectFromMethod(mtd);
                     if (ms.length > 0) return ms;
                 }
                 for (const cls of ns.getClasses()) {
-                    let mtd = cls.getMethodWithName(name);
-                    if (!mtd) mtd = cls.getStaticMethodWithName(name);
+                    let mtd = cls.getMethodWithName(methodName);
+                    if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
                     const ms = collectFromMethod(mtd);
                     if (ms.length > 0) return ms;
                 }
+            }
+        }
+    } else if (className) {
+        // No namespace, but has className - search for the class directly in file's top-level classes
+        // This handles cases like console.log where console is a top-level class
+        for (const cls of file.getClasses()) {
+            if (cls.getName() == className) {
+                let mtd = cls.getMethodWithName(methodName);
+                if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
+                const ms = collectFromMethod(mtd);
+                if (ms.length > 0) return ms;
             }
         }
     }
 
     const defFileCls = file.getDefaultClass();
     if (defFileCls) {
-        let mtd = defFileCls.getMethodWithName(name);
-        if (!mtd) mtd = defFileCls.getStaticMethodWithName(name);
+        let mtd = defFileCls.getMethodWithName(methodName);
+        if (!mtd) mtd = defFileCls.getStaticMethodWithName(methodName);
         const ms = collectFromMethod(mtd);
         if (ms.length > 0) return ms;
     }
 
     for (const cls of file.getClasses()) {
-        let mtd = cls.getMethodWithName(name);
-        if (!mtd) mtd = cls.getStaticMethodWithName(name);
+        let mtd = cls.getMethodWithName(methodName);
+        if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
         const ms = collectFromMethod(mtd);
         if (ms.length > 0) return ms;
     }
@@ -264,14 +285,14 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
     for (const ns of file.getNamespaces()) {
         const defCls = ns.getDefaultClass();
         if (defCls) {
-            let mtd = defCls.getMethodWithName(name);
-            if (!mtd) mtd = defCls.getStaticMethodWithName(name);
+            let mtd = defCls.getMethodWithName(methodName);
+            if (!mtd) mtd = defCls.getStaticMethodWithName(methodName);
             const ms = collectFromMethod(mtd);
             if (ms.length > 0) return ms;
         }
         for (const cls of ns.getClasses()) {
-            let mtd = cls.getMethodWithName(name);
-            if (!mtd) mtd = cls.getStaticMethodWithName(name);
+            let mtd = cls.getMethodWithName(methodName);
+            if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
             const ms = collectFromMethod(mtd);
             if (ms.length > 0) return ms;
         }
