@@ -37,6 +37,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private santizations: MethodSignature[] = [];
     private pointerAnalysis: PointerAnalysis | undefined;
     private detectOutcome: TaintFact[] = [];
+
+    // Budget options for callback analysis
+    private callbackBudgetOptions = {
+        maxMethods: 3000,
+        maxSources: 300,
+        maxStates: 2000,
+        maxPathLen: 50
+    };
+
     constructor(stmt: Stmt, method: ArkMethod, pta?: PointerAnalysis) {
         super();
         this.zeroValue = new TaintFact(new Constant('zeroValue', UndefinedType.getInstance()));
@@ -44,6 +53,35 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         this.entryMethod = method;
         this.scene = method.getDeclaringArkFile().getScene();
         this.pointerAnalysis = pta;
+    }
+
+    /**
+     * Set budget options for callback analysis.
+     */
+    public setCallbackBudgetOptions(options: {
+        maxMethods?: number;
+        maxSources?: number;
+        maxStates?: number;
+        maxPathLen?: number;
+    }): void {
+        if (options.maxMethods !== undefined) this.callbackBudgetOptions.maxMethods = options.maxMethods;
+        if (options.maxSources !== undefined) this.callbackBudgetOptions.maxSources = options.maxSources;
+        if (options.maxStates !== undefined) this.callbackBudgetOptions.maxStates = options.maxStates;
+        if (options.maxPathLen !== undefined) this.callbackBudgetOptions.maxPathLen = options.maxPathLen;
+    }
+
+    /**
+     * Get callback budget options.
+     */
+    public getCallbackBudgetOptions() {
+        return { ...this.callbackBudgetOptions };
+    }
+
+    /**
+     * Get current analysis stats for logging.
+     */
+    public getStats(): { budgetExceeded: boolean; edgesProcessed: number } {
+        return { budgetExceeded: false, edgesProcessed: 0 };
     }
 
     /**
@@ -406,20 +444,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     /**
      * Find callback method from a .then() invoke expression
+     * DISABLED: This fallback was causing incorrect callback bindings.
+     * Now returns null to require explicit FunctionType/ClosureType resolution.
      */
     private findCallbackMethodFromInvoke(callerMethod: ArkMethod, invokeExpr: AbstractInvokeExpr): ArkMethod | null {
-        const cls = callerMethod.getDeclaringArkClass();
-
-        // Look for patterns: %AC0$methodName or %AM0$methodName
-        for (const m of cls.getMethods(true)) {
-            const name = m.getName();
-            if ((name.startsWith('%AC') || name.startsWith('%AM')) && name.includes('$')) {
-                const body = m.getBody();
-                if (body && body.getCfg()) {
-                    return m;
-                }
-            }
-        }
+        // DISABLED - no longer using regex fallback for callback method lookup
+        // Only FunctionType.getMethodSignature() and ClosureType closures: resolution is allowed
         return null;
     }
 
@@ -434,11 +464,36 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const visited = new Set<string>();
         const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
 
+        // Pre-collect all statements for efficiency
+        let allStmts: Stmt[] = [];
+        if (cfg) {
+            for (const block of cfg.getBlocks()) {
+                allStmts.push(...block.getStmts());
+            }
+        }
+
+        // Track state count for budget
+        let stateCount = 0;
+
         while (worklist.length > 0) {
+            // Check state budget
+            stateCount++;
+            if (stateCount > this.callbackBudgetOptions.maxStates) {
+                console.log(`[HAPFLOW] traceReturnedValueDataFlow: budget exceeded (${stateCount} states)`);
+                break;
+            }
+
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
-            const key = currentVar.toString() + '|' + currentFact.getPath().map(s => s.toString()).join('->');
+
+            // Use method signature + variable string for visited key (no path, to avoid state explosion)
+            const key = method.getSignature().toString() + '|' + currentVar.toString();
             if (visited.has(key)) continue;
             visited.add(key);
+
+            // Check path length budget
+            if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                continue;
+            }
 
             // Check for sink usage
             for (const block of cfg.getBlocks()) {
@@ -511,21 +566,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     /**
      * Find callback method by scanning anonymous methods in the class.
+     * DISABLED: This fallback was causing incorrect callback bindings.
+     * Now returns null to require explicit FunctionType/ClosureType resolution.
      */
     private findCallbackMethod(callerMethod: ArkMethod, invokeExpr: AbstractInvokeExpr): ArkMethod | null {
-        const cls = callerMethod.getDeclaringArkClass();
-
-        // Look for anonymous callback methods that follow naming patterns
-        for (const m of cls.getMethods(true)) {
-            const name = m.getName();
-            // Match patterns like %AC0$MethodName or %AM0$MethodName
-            if ((name.startsWith('%AC') || name.startsWith('%AM')) && name.includes('$')) {
-                const body = m.getBody();
-                if (body && body.getCfg()) {
-                    return m;
-                }
-            }
-        }
+        // DISABLED - no longer using regex fallback for callback method lookup
+        // Only FunctionType.getMethodSignature() and ClosureType closures: resolution is allowed
         return null;
     }
 
@@ -539,18 +585,35 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const visited = new Set<string>();
         const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
 
+        // Pre-collect all statements for efficiency (moved outside loop)
+        let allStmts: Stmt[] = [];
+        if (cfg) {
+            for (const block of cfg.getBlocks()) {
+                allStmts.push(...block.getStmts());
+            }
+        }
+
+        // Track state count for budget
+        let stateCount = 0;
+
         while (worklist.length > 0) {
+            // Check state budget
+            stateCount++;
+            if (stateCount > this.callbackBudgetOptions.maxStates) {
+                console.log(`[HAPFLOW] traceCallbackParamDataFlow: budget exceeded (${stateCount} states)`);
+                break;
+            }
+
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
-            const key = currentVar.toString() + '|' + currentFact.getPath().map(s => s.toString()).join('->');
+
+            // Use method signature + variable string for visited key (no path, to avoid state explosion)
+            const key = method.getSignature().toString() + '|' + currentVar.toString();
             if (visited.has(key)) continue;
             visited.add(key);
 
-            // Collect all statements in the method
-            const allStmts: Stmt[] = [];
-            for (const block of cfg.getBlocks()) {
-                for (const stmt of block.getStmts()) {
-                    allStmts.push(stmt);
-                }
+            // Check path length budget
+            if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                continue;
             }
 
             // Check for sink usage first

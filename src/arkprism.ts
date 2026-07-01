@@ -42,6 +42,17 @@ interface AnalysisOptions {
     noTaint: boolean;
     noPta: boolean;
     sdkPath: string;
+    // IFDS options
+    ifdsBatchSize?: number;
+    ifdsMaxEdges?: number;
+    ifdsMaxWorklist?: number;
+    ifdsTimeoutMs?: number;
+    // Callback analysis options
+    callbackAnalysis?: boolean;
+    callbackMaxMethods?: number;
+    callbackMaxSources?: number;
+    callbackMaxStates?: number;
+    callbackMaxPathLen?: number;
 }
 
 function analyzeProject(projectDir: string, projectName: string, opts: AnalysisOptions): ArkPrismOutput {
@@ -144,7 +155,16 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         try {
             taintFlows = runHapflowAnalysis(scene, {
                 noPta: opts.noPta,
-                sdkPath: opts.sdkPath
+                sdkPath: opts.sdkPath,
+                ifdsBatchSize: opts.ifdsBatchSize,
+                ifdsMaxEdges: opts.ifdsMaxEdges,
+                ifdsMaxWorklist: opts.ifdsMaxWorklist,
+                ifdsTimeoutMs: opts.ifdsTimeoutMs,
+                callbackAnalysis: opts.callbackAnalysis,
+                callbackMaxMethods: opts.callbackMaxMethods,
+                callbackMaxSources: opts.callbackMaxSources,
+                callbackMaxStates: opts.callbackMaxStates,
+                callbackMaxPathLen: opts.callbackMaxPathLen
             });
             console.log(`[HAPFLOW] Taint analysis complete: ${taintFlows.length} flows detected.`);
         } catch (e) {
@@ -218,7 +238,34 @@ Options:
   --no-dot              Skip DOT graph generation
   --no-taint            Skip HapFlow taint analysis
   --no-pta              Skip pointer analysis (faster but less precise)
-  --sdkPath <dir>       OpenHarmony SDK path (default: E:/OpenHarmony_SDK/18/ets)
+  --sdkPath <dir>       OpenHarmony SDK path (default: D:/DevEco Studio/sdk/default/openharmony/ets)
+
+IFDS Options:
+  --ifds-batch-size <n>         Sources per batch (default: 50)
+  --ifds-max-edges <n>          Max IFDS edges (default: 1000000)
+  --ifds-max-worklist <n>       Max worklist size (default: 500000)
+  --ifds-timeout-ms <n>         Timeout in milliseconds (default: 300000)
+
+Callback Analysis Options:
+  --callback-analysis <true|false>   Enable direct callback analysis (default: false)
+  --callback-max-methods <n>         Max methods to scan (default: 3000)
+  --callback-max-sources <n>         Max sources to analyze (default: 300)
+  --callback-max-states <n>          Max states per source (default: 2000)
+  --callback-max-path-len <n>        Max path length (default: 50)
+
+Examples:
+  # Basic analysis
+  npx ts-node src/arkprism.ts dataset/DrawingBook-master
+
+  # Faster analysis (no pointer analysis)
+  npx ts-node src/arkprism.ts dataset/DrawingBook-master --no-pta
+
+  # Skip taint analysis entirely
+  npx ts-node src/arkprism.ts dataset/DrawingBook-master --no-taint
+
+  # Enable callback analysis with small budget
+  npx ts-node src/arkprism.ts dataset/DrawingBook-master --no-pta --callback-analysis true --callback-max-methods 1000
+
   --help                Show this help message
 `);
 }
@@ -232,6 +279,19 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
     let noTaint = false;
     let noPta = false;
     let sdkPath = DEFAULT_SDK_PATH;
+
+    // IFDS options
+    let ifdsBatchSize: number | undefined;
+    let ifdsMaxEdges: number | undefined;
+    let ifdsMaxWorklist: number | undefined;
+    let ifdsTimeoutMs: number | undefined;
+
+    // Callback analysis options
+    let callbackAnalysis: boolean | undefined;
+    let callbackMaxMethods: number | undefined;
+    let callbackMaxSources: number | undefined;
+    let callbackMaxStates: number | undefined;
+    let callbackMaxPathLen: number | undefined;
 
     for (let i = 0; i < args.length; i++) {
         let arg = args[i];
@@ -254,12 +314,41 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
             noPta = true;
         } else if (arg === '--sdkPath') {
             sdkPath = args[++i] || sdkPath;
+        }
+        // IFDS options
+        else if (arg === '--ifds-batch-size') {
+            ifdsBatchSize = parseInt(args[++i]) || 50;
+        } else if (arg === '--ifds-max-edges') {
+            ifdsMaxEdges = parseInt(args[++i]) || 1000000;
+        } else if (arg === '--ifds-max-worklist') {
+            ifdsMaxWorklist = parseInt(args[++i]) || 500000;
+        } else if (arg === '--ifds-timeout-ms') {
+            ifdsTimeoutMs = parseInt(args[++i]) || 300000;
+        }
+        // Callback analysis options
+        else if (arg === '--callback-analysis') {
+            callbackAnalysis = args[++i]?.toLowerCase() === 'true';
+        } else if (arg === '--callback-max-methods') {
+            callbackMaxMethods = parseInt(args[++i]) || 3000;
+        } else if (arg === '--callback-max-sources') {
+            callbackMaxSources = parseInt(args[++i]) || 300;
+        } else if (arg === '--callback-max-states') {
+            callbackMaxStates = parseInt(args[++i]) || 2000;
+        } else if (arg === '--callback-max-path-len') {
+            callbackMaxPathLen = parseInt(args[++i]) || 50;
         } else if (!arg.startsWith('-')) {
             target = arg;
         }
     }
 
-    return { mode, target, opts: { outputDir, noDot, noTaint, noPta, sdkPath } };
+    return {
+        mode, target,
+        opts: {
+            outputDir, noDot, noTaint, noPta, sdkPath,
+            ifdsBatchSize, ifdsMaxEdges, ifdsMaxWorklist, ifdsTimeoutMs,
+            callbackAnalysis, callbackMaxMethods, callbackMaxSources, callbackMaxStates, callbackMaxPathLen
+        }
+    };
 }
 
 // ---- Run modes ----
