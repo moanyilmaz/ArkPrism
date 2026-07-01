@@ -60,8 +60,8 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
             + `${viewTreeResult.stateToUIFlows.length} state flows.`);
     }
 
-    // Read rules
-    let privacyApisPath = path.resolve(__dirname, '..', 'config', 'privacy_apis.json');
+    // Read rules - use sensitive_apis.json for unified privacy API definitions
+    let privacyApisPath = path.resolve(__dirname, '..', 'config', 'sensitive_apis.json');
     let systemPackagesPath = path.resolve(__dirname, '..', 'config', 'system_packages14.json');
     let privacyApis = readPrivacyApis(privacyApisPath);
     let systemPackages = readSystemPackages(systemPackagesPath);
