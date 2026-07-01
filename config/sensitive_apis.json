@@ -12,116 +12,6 @@
     ]
   },
   {
-    "systemPackage": "@kit.AbilityKit",
-    "privacyApis": [
-      {
-        "namespace": "appManager",
-        "method": "getRunningProcessInformation",
-        "permission": "ohos.permission.GET_RUNNING_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "appManager",
-        "method": "getRunningProcessInformation",
-        "permission": "ohos.permission.GET_RUNNING_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfo",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfo",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfo",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfoSync",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfoSync",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleNameByUid",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleNameByUid",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleNameByUidSync",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getAppCloneIdentity",
-        "permission": "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getSignatureInfo",
-        "permission": "ohos.permission.GET_SIGNATURE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getAbilityInfo",
-        "permission": "ohos.permission.GET_ABILITY_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "bundleManager.getBundleInfoForSelf",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": false
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "bundleManager.BundleInfo.getAppInfo",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": false
-      }
-    ]
-  },
-  {
     "systemPackage": "@kit.AccountKit",
     "privacyApis": [
       {
@@ -195,46 +85,6 @@
     ]
   },
   {
-    "systemPackage": "@kit.ArkData",
-    "privacyApis": [
-      {
-        "namespace": "preferences",
-        "method": "getPreferences",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "preferences",
-        "method": "getPreferences",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "preferences",
-        "method": "getPreferences",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "preferences",
-        "method": "getPreferences",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "preferences",
-        "method": "getPreferencesSync",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      }
-    ]
-  },
-  {
     "systemPackage": "@kit.ArkUI",
     "privacyApis": [
       {
@@ -256,13 +106,6 @@
         "method": "display.Display.getAllDisplays",
         "permission": null,
         "profilingCategory": "device_identity.screen",
-        "directCall": false
-      },
-      {
-        "namespace": "FloatingBallController",
-        "method": "restoreMainWindow",
-        "permission": "ohos.permission.AUTO_RESTORE_MAIN_WINDOW",
-        "profilingCategory": "permission_management",
         "directCall": false
       },
       {
@@ -317,13 +160,6 @@
     "privacyApis": [
       {
         "namespace": "audio",
-        "method": "audio.AudioManager.getAudioScene",
-        "permission": "ohos.permission.MICROPHONE",
-        "profilingCategory": "media.audio",
-        "directCall": false
-      },
-      {
-        "namespace": "audio",
         "method": "getAudioScene",
         "permission": null,
         "profilingCategory": "device_status.audio",
@@ -370,32 +206,6 @@
         "permission": "ohos.permission.VIBRATE",
         "profilingCategory": "user_data.audio",
         "directCall": false
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BackgroundTasksKit",
-    "privacyApis": [
-      {
-        "namespace": "backgroundProcessManager",
-        "method": "setPowerSaveMode",
-        "permission": "ohos.permission.BACKGROUND_MANAGER_POWER_SAVE_MODE",
-        "profilingCategory": "device_status.battery",
-        "directCall": true
-      },
-      {
-        "namespace": "backgroundProcessManager",
-        "method": "isPowerSaveMode",
-        "permission": "ohos.permission.BACKGROUND_MANAGER_POWER_SAVE_MODE",
-        "profilingCategory": "device_status.battery",
-        "directCall": true
-      },
-      {
-        "namespace": "backgroundProcessManager",
-        "method": "getPowerSaveMode",
-        "permission": "ohos.permission.BACKGROUND_MANAGER_POWER_SAVE_MODE",
-        "profilingCategory": "device_status.battery",
-        "directCall": true
       }
     ]
   },
@@ -484,41 +294,6 @@
         "method": "getFile",
         "permission": "ohos.permission.GET_WALLPAPER",
         "profilingCategory": "user_preference.settings",
-        "directCall": true
-      },
-      {
-        "namespace": "settings",
-        "method": "getValue",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "settings",
-        "method": "getValue",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "settings",
-        "method": "getValue",
-        "permission": "ohos.permission.MANAGE_SECURE_SETTINGS",
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "settings",
-        "method": "getValueSync",
-        "permission": null,
-        "profilingCategory": "device_status.storage",
-        "directCall": true
-      },
-      {
-        "namespace": "settings",
-        "method": "getValueSync",
-        "permission": "ohos.permission.MANAGE_SECURE_SETTINGS",
-        "profilingCategory": "device_status.storage",
         "directCall": true
       },
       {
@@ -781,76 +556,6 @@
         "directCall": null
       },
       {
-        "namespace": "batteryInfo",
-        "method": "batterySOC",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "chargingStatus",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "healthStatus",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "pluggedType",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "voltage",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "technology",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "batteryTemperature",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "isBatteryPresent",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "batteryCapacityLevel",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "nowCurrent",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": null
-      },
-      {
         "namespace": "osAccount",
         "method": "getOsAccountLocalId",
         "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
@@ -949,55 +654,6 @@
         "directCall": false
       },
       {
-        "namespace": "bundleManager",
-        "method": "getBundleInfoForSelf",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfo",
-        "permission": "ohos.permission.GET_BUNDLE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleInfos",
-        "permission": "ohos.permission.GET_BUNDLE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getBundleNameForUid",
-        "permission": "ohos.permission.GET_BUNDLE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getPermissionDef",
-        "permission": "ohos.permission.GET_BUNDLE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "bundleManager",
-        "method": "getAllGrantedModuleNames",
-        "permission": "ohos.permission.GET_BUNDLE_INFO",
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "i18n",
-        "method": "getSystemLocale",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
         "namespace": "AppAccountManager",
         "method": "setDataSyncEnabled",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
@@ -1059,13 +715,6 @@
         "permission": "ohos.permission.MANAGE_DOMAIN_ACCOUNT_SERVER_CONFIGS",
         "profilingCategory": "user_data.audio",
         "directCall": false
-      },
-      {
-        "namespace": "power",
-        "method": "rebootDevice",
-        "permission": "ohos.permission.REBOOT",
-        "profilingCategory": "device_status.battery",
-        "directCall": true
       },
       {
         "namespace": "SystemPasteboard",
@@ -2561,67 +2210,6 @@
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
         "profilingCategory": "network.connectivity",
         "directCall": true
-      },
-      {
-        "namespace": "fileShare",
-        "method": "persistPermission",
-        "permission": "ohos.permission.FILE_ACCESS_PERSIST",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "fileShare",
-        "method": "revokePermission",
-        "permission": "ohos.permission.FILE_ACCESS_PERSIST",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "fileShare",
-        "method": "activatePermission",
-        "permission": "ohos.permission.FILE_ACCESS_PERSIST",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "fileShare",
-        "method": "deactivatePermission",
-        "permission": "ohos.permission.FILE_ACCESS_PERSIST",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.DataProtectionKit",
-    "privacyApis": [
-      {
-        "namespace": "dlpPermission",
-        "method": "setEnterprisePolicy",
-        "permission": "ohos.permission.ENTERPRISE_ACCESS_DLP_FILE",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "dlpPermission",
-        "method": "generateDlpFileForEnterprise",
-        "permission": "ohos.permission.ENTERPRISE_ACCESS_DLP_FILE",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "dlpPermission",
-        "method": "decryptDlpFile",
-        "permission": "ohos.permission.ENTERPRISE_ACCESS_DLP_FILE",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "dlpPermission",
-        "method": "queryDlpPolicy",
-        "permission": "ohos.permission.ENTERPRISE_ACCESS_DLP_FILE",
-        "profilingCategory": "permission_management",
-        "directCall": true
       }
     ]
   },
@@ -3422,20 +3010,6 @@
         "method": "getAppClipboardPolicy",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_SECURITY",
         "profilingCategory": "user_data.clipboard",
-        "directCall": true
-      },
-      {
-        "namespace": "securityManager",
-        "method": "setPermissionManagedState",
-        "permission": "ohos.permission.ENTERPRISE_MANAGE_USER_GRANT_PERMISSION",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "securityManager",
-        "method": "getPermissionManagedState",
-        "permission": "ohos.permission.ENTERPRISE_MANAGE_USER_GRANT_PERMISSION",
-        "profilingCategory": "permission_management",
         "directCall": true
       },
       {
@@ -4633,18 +4207,6 @@
     ]
   },
   {
-    "systemPackage": "@kit.PerformanceAnalysisKit",
-    "privacyApis": [
-      {
-        "namespace": "performanceService",
-        "method": "getPerformanceInfo",
-        "permission": null,
-        "profilingCategory": "device_status.performance",
-        "directCall": true
-      }
-    ]
-  },
-  {
     "systemPackage": "@kit.PushKit",
     "privacyApis": [
       {
@@ -5765,25 +5327,6 @@
     ]
   },
   {
-    "systemPackage": "@ohos.abilityAccessCtrl",
-    "privacyApis": [
-      {
-        "namespace": "abilityAccessCtrl",
-        "method": "createAtManager",
-        "permission": "ohos.permission.ACCESS_NOTIFICATION_POLICY",
-        "profilingCategory": "permission_management",
-        "directCall": true
-      },
-      {
-        "namespace": "abilityAccessCtrl",
-        "method": "onRequestPermissionsFromUserResult",
-        "permission": null,
-        "profilingCategory": "permission_management",
-        "directCall": true
-      }
-    ]
-  },
-  {
     "systemPackage": "@ohos.account.appAccount",
     "privacyApis": [
       {
@@ -5838,39 +5381,6 @@
         "method": "getOsAccountProfile",
         "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
         "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@ohos.batteryInfo",
-    "privacyApis": [
-      {
-        "namespace": "batteryInfo",
-        "method": "batterySOC",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": true
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "chargingStatus",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": true
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "healthStatus",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
-        "directCall": true
-      },
-      {
-        "namespace": "batteryInfo",
-        "method": "pluggedType",
-        "permission": null,
-        "profilingCategory": "device_status.battery",
         "directCall": true
       }
     ]
@@ -6380,27 +5890,6 @@
   {
     "systemPackage": "@ohos.resourceManager",
     "privacyApis": [
-      {
-        "namespace": "resourceManager",
-        "method": "getString",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "resourceManager",
-        "method": "getStringArray",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
-      {
-        "namespace": "resourceManager",
-        "method": "getConfiguration",
-        "permission": null,
-        "profilingCategory": "app_environment",
-        "directCall": true
-      },
       {
         "namespace": "resourceManager",
         "method": "getDeviceCapability",
