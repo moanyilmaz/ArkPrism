@@ -139,21 +139,61 @@ export function runHapflowAnalysis(
         return [];
     }
 
-    // 5. Execute IFDS analysis
-    console.log('[HAPFLOW] Solving IFDS taint problem...');
-    const solver = new TaintAnalysisSolver(problem, scene, pta);
-    solver.solve();
+    // 5. Execute IFDS analysis (batched to reduce memory pressure)
+    console.log('[HAPFLOW] Solving IFDS taint problem (batched)...');
+
+    const BATCH_SIZE = 50;  // Process 50 sources at a time
+    const allSources = problem.getSources();
+    const totalSources = allSources.size;
+    const allOutcomes: TaintFact[] = [];
+
+    const sourceArray = Array.from(allSources.entries());
+
+    for (let batchStart = 0; batchStart < totalSources; batchStart += BATCH_SIZE) {
+        const batchEnd = Math.min(batchStart + BATCH_SIZE, totalSources);
+        console.log(`[HAPFLOW] Processing batch ${Math.floor(batchStart / BATCH_SIZE) + 1}/${Math.ceil(totalSources / BATCH_SIZE)} (sources ${batchStart + 1}-${batchEnd} of ${totalSources})`);
+
+        // Create a fresh problem for this batch
+        const batchProblem = new TaintAnalysisChecker(entryStmt, entry, pta);
+
+        // Load all sinks (same for all batches)
+        batchProblem.addSinksFromJson(sinksPath);
+
+        // Load only this batch's sources
+        const batchSources = new Map(sourceArray.slice(batchStart, batchEnd));
+        for (const [sig, source] of batchSources) {
+            batchProblem.getSources().set(sig, source);
+        }
+
+        // Solve this batch
+        try {
+            const batchSolver = new TaintAnalysisSolver(batchProblem, scene, pta);
+            batchSolver.solve();
+
+            // Collect results
+            const batchOutcomes = batchProblem.getOutcome();
+            allOutcomes.push(...batchOutcomes);
+            console.log(`[HAPFLOW]   Batch found ${batchOutcomes.length} flows`);
+        } catch (e: any) {
+            console.log(`[HAPFLOW]   Batch failed: ${e.message || e}`);
+        }
+    }
+
+    console.log(`[HAPFLOW] Total flows found: ${allOutcomes.length}`);
 
     // 5b. Execute direct callback data flow analysis
     // This catches callback-based SDK calls that IFDS might miss
     console.log('[HAPFLOW] Running direct callback analysis...');
     problem.analyzeCallbackDataFlows();
 
-    // 6. Convert and return results
-    const outcome = problem.getOutcome();
-    console.log(`[HAPFLOW] Analysis complete. Found ${outcome.length} taint flows.`);
+    // Add callback results to outcomes
+    const callbackOutcomes = problem.getOutcome();
+    allOutcomes.push(...callbackOutcomes);
 
-    return convertOutcome(outcome);
+    // 6. Convert and return results
+    console.log(`[HAPFLOW] Analysis complete. Found ${allOutcomes.length} taint flows.`);
+
+    return convertOutcome(allOutcomes);
 }
 
 /**

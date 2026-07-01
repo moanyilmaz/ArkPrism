@@ -66,6 +66,17 @@ export abstract class DataflowSolver<D extends object> {
     protected laterEdges: Set<PathEdge<D>> = new Set();
     protected pointerAnalysis: PointerAnalysis | undefined;
 
+    // O(1) edge key set for fast duplicate detection
+    private edgeKeys: Set<string> = new Set();
+
+    // Budget limits for IFDS analysis
+    protected maxEdges: number = 1000000;
+    protected maxWorkList: number = 500000;
+    protected maxMillis: number = 300000;  // 5 minutes
+    private startTime: number = 0;
+    protected edgesProcessed: number = 0;
+    protected budgetExceeded: boolean = false;
+
     constructor(problem: DataflowProblem<D>, scene: Scene, pta?: PointerAnalysis, entryFact?: D) {
         this.problem = problem;
         this.scene = scene;
@@ -81,8 +92,15 @@ export abstract class DataflowSolver<D extends object> {
     }
 
     public solve() {
+        this.startTime = Date.now();
+        this.edgesProcessed = 0;
+        this.budgetExceeded = false;
+        this.edgeKeys.clear();
         this.init();
         this.doSolve();
+        if (this.budgetExceeded) {
+            console.log(`[HAPFLOW] IFDS ended early. Edges processed: ${this.edgesProcessed}, Path edges: ${this.pathEdgeSet.size}`);
+        }
     }
 
 
@@ -114,8 +132,8 @@ export abstract class DataflowSolver<D extends object> {
     }
 
     protected buildStmtMapInClass() {
-        const methods = this.scene.getMethods();
-        methods.push(this.problem.getEntryMethod());
+        // Don't modify scene.getMethods() - create a new array instead
+        const methods = [...this.scene.getMethods(), this.problem.getEntryMethod()];
         for (const method of methods) {
             const cfg = method.getCfg();
             const blocks: BasicBlock[] = [];
@@ -269,27 +287,61 @@ export abstract class DataflowSolver<D extends object> {
     }
 
     protected pathEdgeSetHasEdge(edge: PathEdge<D>) {
-        for (const path of this.pathEdgeSet) {
-            if (path.edgeEnd.node == edge.edgeEnd.node && this.problem.factEqual(path.edgeEnd.fact, edge.edgeEnd.fact) &&
-                path.edgeStart.node == edge.edgeStart.node && this.problem.factEqual(path.edgeStart.fact, edge.edgeStart.fact)) {
-                return true;
-            }
-        }
-        return false;
+        // O(1) check using edge key set
+        const key = this.edgeKey(edge);
+        return this.edgeKeys.has(key);
+    }
+
+    /**
+     * Generate a unique key for an edge for O(1) duplicate detection.
+     */
+    protected edgeKey(edge: PathEdge<D>): string {
+        const startNode = edge.edgeStart.node?.toString() || '';
+        const endNode = edge.edgeEnd.node?.toString() || '';
+        const startFact = edge.edgeStart.fact ? (edge.edgeStart.fact as any).getValue?.()?.toString() || '' : '';
+        const endFact = edge.edgeEnd.fact ? (edge.edgeEnd.fact as any).getValue?.()?.toString() || '' : '';
+        return `${startNode}|${startFact}|${endNode}|${endFact}`;
     }
 
     protected propagate(edge: PathEdge<D>) {
-        if (!this.pathEdgeSetHasEdge(edge)) {
-            let index = this.workList.length;
-            for (let i = 0; i < this.workList.length; i++) {
-                if (this.laterEdges.has(this.workList[i])) {
-                    index = i;
-                    break;
-                }
-            }
-            this.workList.splice(index, 0, edge);
-            this.pathEdgeSet.add(edge);
+        // Check budget limits
+        if (this.budgetExceeded) return;
+
+        const key = this.edgeKey(edge);
+        if (this.edgeKeys.has(key)) {
+            return;  // O(1) duplicate check
         }
+
+        // Check budget limits
+        this.edgesProcessed++;
+        if (this.edgesProcessed > this.maxEdges) {
+            console.log('[HAPFLOW] IFDS budget exceeded: max edges reached');
+            this.budgetExceeded = true;
+            return;
+        }
+
+        if (this.workList.length > this.maxWorkList) {
+            console.log('[HAPFLOW] IFDS budget exceeded: max worklist reached');
+            this.budgetExceeded = true;
+            return;
+        }
+
+        if (Date.now() - this.startTime > this.maxMillis) {
+            console.log('[HAPFLOW] IFDS budget exceeded: max time reached');
+            this.budgetExceeded = true;
+            return;
+        }
+
+        this.edgeKeys.add(key);
+        let index = this.workList.length;
+        for (let i = 0; i < this.workList.length; i++) {
+            if (this.laterEdges.has(this.workList[i])) {
+                index = i;
+                break;
+            }
+        }
+        this.workList.splice(index, 0, edge);
+        this.pathEdgeSet.add(edge);
     }
 
     protected getCallEdgePoints(edge: PathEdge<D>): Set<PathEdgePoint<D>> {

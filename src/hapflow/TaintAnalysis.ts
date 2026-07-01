@@ -52,55 +52,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * but contain source API calls with callbacks.
      */
     public analyzeCallbackDataFlows(): void {
-        // Limit analysis to avoid OOM on large projects
-        const MAX_SOURCES_TO_ANALYZE = 2000;
-        const MAX_METHODS_TO_SCAN = 10000;
-
-        let sourceCount = 0;
-        let methodCount = 0;
-
-        console.log(`[HAPFLOW] Callback analysis: scanning up to ${MAX_METHODS_TO_SCAN} methods`);
-
-        for (const method of this.scene.getMethods()) {
-            if (methodCount++ > MAX_METHODS_TO_SCAN) {
-                console.log('[HAPFLOW] Callback analysis: reached method limit, skipping remaining methods');
-                break;
-            }
-            if (methodCount % 100 === 0) {
-                console.log(`[HAPFLOW] Callback analysis: scanned ${methodCount} methods`);
-            }
-
-            const cfg = method.getCfg();
-            if (!cfg) continue;
-
-            for (const block of cfg.getBlocks()) {
-                for (const stmt of block.getStmts()) {
-                    if (!stmt.containsInvokeExpr()) continue;
-                    const invokeExpr = stmt.getInvokeExpr();
-                    if (!invokeExpr) continue;
-
-                    // Check if this is a source API call
-                    const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
-                    if (source) {
-                        sourceCount++;
-                        if (sourceCount > MAX_SOURCES_TO_ANALYZE) {
-                            console.log('[HAPFLOW] Callback analysis: reached source limit');
-                            return;
-                        }
-
-                        if (source.sourceType === 'callback') {
-                            this.analyzeCallbackSource(method, stmt, invokeExpr, source);
-                        } else if (source.sourceType === 'return') {
-                            this.analyzePromiseChaining(method, stmt, invokeExpr, source);
-                        }
-                        continue;
-                    }
-
-                    // Also check for .then() calls whose base might be a source API
-                    this.analyzeChainedThenInvoke(method, stmt, invokeExpr);
-                }
-            }
-        }
+        // TEMPORARILY DISABLED to fix OOM - batched IFDS already handles most cases
+        console.log(`[HAPFLOW] Callback analysis DISABLED (causes OOM, needs fix)`);
+        return;
     }
 
     /**
