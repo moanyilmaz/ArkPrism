@@ -17,7 +17,7 @@
 import {
     Scene, ArkMethod, CallGraph, ArkIfStmt,
     ArkInvokeStmt, ArkAssignStmt, BasicBlock,
-    getCallbackMethodFromStmt,
+    getCallbackMethodFromStmt, Stmt,
     ClassHierarchyAnalysis, DominanceFinder, DominanceTree,
     CallGraphNode
 } from './arkanalyzer';
@@ -29,7 +29,100 @@ import { ENTRY_METHOD_NAMES, getEntryPriority, getEntryType } from './callGraphB
 import { readFileSync, existsSync } from 'fs';
 import * as path from 'path';
 
+// ---- ArkUI callback event registration whitelist ----
+// Only these method names are allowed to trigger getCallbackMethodFromStmt
+const CALLBACK_EVENT_METHODS = new Set([
+    'then', 'catch', 'finally',  // Promise
+    'onClick', 'onChange', 'onSubmit', 'onTouch', 'onAppear', 'onDisappear',  // Common UI events
+    'onPageShow', 'onPageHide', 'onBackPress',  // Page lifecycle
+    'onDragStart', 'onDragMove', 'onDragEnd', 'onDrop',  // Drag events
+    'onLongPress', 'onSwipe', 'onPinchMove', 'onPinchEnd',  // Gesture events
+    'onKeyPress', 'onKeyDown', 'onKeyUp',  // Keyboard events
+    'onFocus', 'onBlur',  // Focus events
+    'onVisibleAreaChange', 'onAreaChange',  // Layout events
+    'onScroll', 'onScrollStop',  // Scroll events
+    'onMouse', 'onHover',  // Mouse events
+    'onCut', 'onPaste', 'onCopy',  // Clipboard events
+]);
+
 // ---- Helper functions ----
+
+/**
+ * Safely parse callback methods from invoke statement arguments.
+ * Only uses FunctionType/ClosureType signatures, no regex fallback.
+ * Returns array of callback ArkMethods found in invoke arguments.
+ */
+function getCallbackMethodsFromInvokeArgs(stmt: Stmt, scene: Scene): ArkMethod[] {
+    const results: ArkMethod[] = [];
+
+    if (!stmt.containsInvokeExpr()) {
+        return results;
+    }
+
+    const invokeExpr = stmt.getInvokeExpr();
+    if (!invokeExpr) {
+        return results;
+    }
+
+    const args = invokeExpr.getArgs();
+    for (const arg of args) {
+        const argType = arg.getType();
+        if (!argType) continue;
+
+        // Handle FunctionType - getMethodSignature returns MethodSignature
+        if (argType.constructor.name === 'FunctionType') {
+            try {
+                const funcType = argType as any;
+                if (funcType.getMethodSignature) {
+                    const sig = funcType.getMethodSignature();
+                    if (sig) {
+                        // Try to find the method by signature string
+                        const sigStr = sig.toString();
+                        const callbackMethod = scene.getMethod(sigStr);
+                        if (callbackMethod) {
+                            results.push(callbackMethod);
+                        }
+                    }
+                }
+            } catch { /* ignore */ }
+        }
+
+        // Handle ClosureType (lambda expressions) - try to find method by closure name pattern
+        if (argType.constructor.name === 'ClosureType') {
+            try {
+                const typeStr = argType.toString();
+                // Extract closure method name from type string: closures: ClassName.%AMn$parentMethod
+                const match = typeStr.match(/closures:\s*([^\s,]+)/);
+                if (match) {
+                    const closureName = match[1].trim();
+                    // Find method by name in the declaring class
+                    const callerMethod = stmt.getCfg()?.getDeclaringMethod();
+                    if (callerMethod) {
+                        const declaringClass = callerMethod.getDeclaringArkClass();
+                        if (declaringClass) {
+                            const allMethods = declaringClass.getMethods();
+                            for (const m of allMethods) {
+                                if (m.getName() === closureName) {
+                                    results.push(m);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch { /* ignore */ }
+        }
+    }
+
+    return results;
+}
+
+/**
+ * Check if a method name is a callback event registration (whitelist check).
+ */
+function isCallbackEventMethod(methodName: string): boolean {
+    return CALLBACK_EVENT_METHODS.has(methodName);
+}
 
 function extractMethodName(sig: string): string {
     let parts = sig.split(".");
@@ -328,51 +421,47 @@ function buildEnhancedReverseCallMap(scene: Scene, callGraph: CallGraph): Map<st
         let body = method.getBody();
         if (!body) continue;
         for (let stmt of body.getCfg().getStmts()) {
-            if (stmt.containsInvokeExpr()) {
-                let invokeExpr = stmt.getInvokeExpr();
-                if (invokeExpr) {
-                    let calleeSig = invokeExpr.getMethodSignature().toString();
-                    ensureKey(calleeSig);
-                    if (!reverseMap.get(calleeSig)!.has(callerSig)) {
-                        reverseMap.get(calleeSig)!.add(callerSig);
-                        invokeEdgeCount++;
-                    }
-                }
+            if (!stmt.containsInvokeExpr()) continue;
+
+            let invokeExpr = stmt.getInvokeExpr();
+            if (!invokeExpr) continue;
+
+            let calleeSig = invokeExpr.getMethodSignature().toString();
+            ensureKey(calleeSig);
+            if (!reverseMap.get(calleeSig)!.has(callerSig)) {
+                reverseMap.get(calleeSig)!.add(callerSig);
+                invokeEdgeCount++;
             }
 
-            // ---- Source 4: Callback parameter edges (%AM references) ----
-            let stmtStr = stmt.toString();
-            if (stmtStr.includes("%AM")) {
-                let amRefs = stmtStr.match(/%AM\d+(?:\$%AM\d+)*(?:\$\w+)*/g);
-                if (amRefs) {
-                    let declaringClass = method.getDeclaringArkClass();
-                    if (declaringClass) {
-                        for (let amRef of amRefs) {
-                            for (let classMethod of declaringClass.getMethods()) {
-                                let cmName = classMethod.getName();
-                                if (cmName === amRef || cmName.endsWith(amRef)) {
-                                    let callbackSig = classMethod.getSignature().toString();
-                                    if (callbackSig !== callerSig) {
-                                        ensureKey(callbackSig);
-                                        reverseMap.get(callbackSig)!.add(callerSig);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // ---- Source 5: getCallbackMethodFromStmt (Promise .then/.catch) ----
+            // ---- Source 4: FunctionType/ClosureType callback edges (NO regex fallback) ----
+            let funcTypeCallbackCount = 0;
             try {
-                let cbMethods = getCallbackMethodFromStmt(stmt, scene);
-                if (cbMethods && Array.isArray(cbMethods)) {
-                    for (let cbMethod of cbMethods) {
-                        if (cbMethod) {
-                            let cbSig = cbMethod.getSignature().toString();
-                            if (cbSig !== callerSig) {
-                                ensureKey(cbSig);
-                                reverseMap.get(cbSig)!.add(callerSig);
+                const callbackMethods = getCallbackMethodsFromInvokeArgs(stmt, scene);
+                for (const cbMethod of callbackMethods) {
+                    const cbSig = cbMethod.getSignature().toString();
+                    if (cbSig !== callerSig && !reverseMap.get(cbSig)!.has(callerSig)) {
+                        ensureKey(cbSig);
+                        reverseMap.get(cbSig)!.add(callerSig);
+                        funcTypeCallbackCount++;
+                    }
+                }
+            } catch { /* ignore */ }
+
+            // ---- Source 5: getCallbackMethodFromStmt (ONLY for whitelisted callback events) ----
+            let getCallbackCallbackCount = 0;
+            try {
+                const invokeMethodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                if (isCallbackEventMethod(invokeMethodName)) {
+                    let cbMethods = getCallbackMethodFromStmt(stmt, scene);
+                    if (cbMethods && Array.isArray(cbMethods)) {
+                        for (let cbMethod of cbMethods) {
+                            if (cbMethod) {
+                                let cbSig = cbMethod.getSignature().toString();
+                                if (cbSig !== callerSig && !reverseMap.get(cbSig)!.has(callerSig)) {
+                                    ensureKey(cbSig);
+                                    reverseMap.get(cbSig)!.add(callerSig);
+                                    getCallbackCallbackCount++;
+                                }
                             }
                         }
                     }

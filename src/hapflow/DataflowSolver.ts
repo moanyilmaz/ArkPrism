@@ -91,6 +91,29 @@ export abstract class DataflowSolver<D extends object> {
         this.stmtNexts = new Map();
     }
 
+    /**
+     * Set budget limits for this solver instance.
+     */
+    public setBudgetOptions(options: {
+        maxEdges?: number;
+        maxWorkList?: number;
+        maxMillis?: number;
+    }): void {
+        if (options.maxEdges !== undefined) this.maxEdges = options.maxEdges;
+        if (options.maxWorkList !== undefined) this.maxWorkList = options.maxWorkList;
+        if (options.maxMillis !== undefined) this.maxMillis = options.maxMillis;
+    }
+
+    /**
+     * Get current solver stats.
+     */
+    public getStats(): { budgetExceeded: boolean; edgesProcessed: number } {
+        return {
+            budgetExceeded: this.budgetExceeded,
+            edgesProcessed: this.edgesProcessed
+        };
+    }
+
     public solve() {
         this.startTime = Date.now();
         this.edgesProcessed = 0;
