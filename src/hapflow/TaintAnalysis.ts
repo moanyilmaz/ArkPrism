@@ -90,9 +90,283 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * but contain source API calls with callbacks.
      */
     public analyzeCallbackDataFlows(): void {
-        // TEMPORARILY DISABLED to fix OOM - batched IFDS already handles most cases
-        console.log(`[HAPFLOW] Callback analysis DISABLED (causes OOM, needs fix)`);
-        return;
+        // Bounded callback analysis - uses conservative settings to prevent OOM
+        const MAX_METHODS = this.callbackBudgetOptions.maxMethods;
+        const MAX_SOURCES = this.callbackBudgetOptions.maxSources;
+        const MAX_STATES = this.callbackBudgetOptions.maxStates;
+        const MAX_PATH_LEN = this.callbackBudgetOptions.maxPathLen;
+
+        console.log(`[HAPFLOW] Running bounded callback analysis...`);
+        console.log(`[HAPFLOW]   maxMethods=${MAX_METHODS}, maxSources=${MAX_SOURCES}, maxStates=${MAX_STATES}, maxPathLen=${MAX_PATH_LEN}`);
+
+        let methodCount = 0;
+        let sourceCount = 0;
+        let stateCount = 0;
+
+        // Collect all callback-type sources first
+        const callbackSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
+
+        for (const method of this.scene.getMethods()) {
+            if (methodCount++ > MAX_METHODS) {
+                console.log(`[HAPFLOW] Callback analysis: reached method limit ${MAX_METHODS}`);
+                break;
+            }
+
+            const cfg = method.getCfg();
+            if (!cfg) continue;
+
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!stmt.containsInvokeExpr()) continue;
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (!invokeExpr) continue;
+
+                    const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
+                    if (source && source.sourceType === 'callback') {
+                        callbackSources.push({ method, stmt, invokeExpr, source });
+                    }
+                }
+            }
+        }
+
+        console.log(`[HAPFLOW]   Found ${callbackSources.length} callback source invocations`);
+
+        if (callbackSources.length === 0) {
+            console.log(`[HAPFLOW] Callback analysis: no callback sources found`);
+            return;
+        }
+
+        // Process callback sources with budget limits
+        for (const { method, stmt, invokeExpr, source } of callbackSources) {
+            if (sourceCount++ > MAX_SOURCES) {
+                console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
+                break;
+            }
+
+            try {
+                this.analyzeCallbackSourceSafe(method, stmt, invokeExpr, source, MAX_STATES, MAX_PATH_LEN, () => {
+                    stateCount++;
+                    return stateCount <= MAX_STATES * 10;
+                });
+            } catch (e) {
+                console.log(`[HAPFLOW]   Callback source failed: ${e}`);
+            }
+        }
+
+        console.log(`[HAPFLOW] Callback analysis complete: sources=${sourceCount}, states=${stateCount}, flows=${this.detectOutcome.length}`);
+    }
+
+    /**
+     * Safe version of analyzeCallbackSource with budget checks.
+     */
+    private analyzeCallbackSourceSafe(
+        method: ArkMethod,
+        stmt: Stmt,
+        invokeExpr: AbstractInvokeExpr,
+        source: Source,
+        maxStates: number,
+        maxPathLen: number,
+        shouldContinue: () => boolean
+    ): number {
+        const args = invokeExpr.getArgs();
+        if (source.callbackIndex < 0 || source.callbackIndex >= args.length) return 0;
+
+        const callbackArg = args[source.callbackIndex];
+        const callbackArgType = callbackArg.getType();
+
+        let callbackMethod: ArkMethod | null = null;
+
+        // Approach 1: FunctionType
+        if (callbackArgType instanceof FunctionType) {
+            const callbackSig = callbackArgType.getMethodSignature();
+            callbackMethod = method.getDeclaringArkClass().getMethod(callbackSig);
+        }
+
+        // Approach 2: ClosureType
+        if (!callbackMethod && callbackArgType && callbackArgType.constructor.name === 'ClosureType') {
+            try {
+                const typeStr = callbackArgType.toString();
+                const match = typeStr.match(/closures:\s*([^\s,]+)/);
+                if (match) {
+                    const closureName = match[1].trim();
+                    const declaringClass = method.getDeclaringArkClass();
+                    for (const m of declaringClass.getMethods()) {
+                        if (m.getName() === closureName) {
+                            callbackMethod = m;
+                            break;
+                        }
+                    }
+                }
+            } catch { /* ignore */ }
+        }
+
+        if (!callbackMethod) {
+            return 0;
+        }
+
+        // Get callback parameters
+        const paramInstances = callbackMethod.getParameterInstances();
+        if (!paramInstances || paramInstances.length === 0) return 0;
+
+        // Skip error parameter if present
+        const startIndex = paramInstances.length > 1 && paramInstances[0]?.toString().includes('err') ? 1 : 0;
+
+        let flowsFound = 0;
+        for (let i = startIndex; i < paramInstances.length; i++) {
+            const param = paramInstances[i];
+            if (param instanceof Local) {
+                const fact = new TaintFact(param);
+                fact.addPath(stmt);
+                const prevOutcomeCount = this.detectOutcome.length;
+                this.traceCallbackParamDataFlowSafe(callbackMethod, param, fact, maxStates, maxPathLen, shouldContinue);
+                flowsFound += this.detectOutcome.length - prevOutcomeCount;
+            }
+        }
+
+        return flowsFound;
+    }
+
+    /**
+     * Safe version of traceCallbackParamDataFlow with budget checks.
+     */
+    private traceCallbackParamDataFlowSafe(
+        method: ArkMethod,
+        startVar: Value,
+        startFact: TaintFact,
+        maxStates: number,
+        maxPathLen: number,
+        shouldContinue: () => boolean
+    ): void {
+        const cfg = method.getCfg();
+        if (!cfg) return;
+
+        const visited = new Set<string>();
+        const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
+
+        // Pre-collect all statements for efficiency
+        let allStmts: Stmt[] = [];
+        if (cfg) {
+            for (const block of cfg.getBlocks()) {
+                allStmts.push(...block.getStmts());
+            }
+        }
+
+        // Debug: show all statements and their structure
+        const startVarStr = startVar.toString();
+
+        // Debug: print all statements that contain the start variable
+        for (const s of allStmts) {
+            const stmtStr = s.toString();
+            if (stmtStr.includes(startVarStr)) {
+            }
+        }
+
+        // Debug: print all invoke/sink statements
+        for (const s of allStmts) {
+            if (s.containsInvokeExpr()) {
+                const invokeExpr = s.getInvokeExpr()!;
+                const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                if (this.callSink(invokeExpr)) {
+                    const args = invokeExpr.getArgs();
+                    const argStrs = args.map(a => a.toString());
+                }
+            }
+        }
+
+        while (worklist.length > 0) {
+            if (!shouldContinue()) {
+                break;
+            }
+
+            const { var: currentVar, fact: currentFact } = worklist.pop()!;
+
+            // Use method signature + variable string for visited key
+            const key = method.getSignature().toString() + '|' + currentVar.toString();
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            // Check path length budget
+            if (currentFact.getPath().length > maxPathLen) {
+                continue;
+            }
+
+            const currentVarStr = currentVar.toString();
+
+            // Check for sink usage
+            for (const s of allStmts) {
+                if (!s.containsInvokeExpr()) continue;
+                const invokeExpr = s.getInvokeExpr();
+                if (!invokeExpr) continue;
+
+                if (this.callSink(invokeExpr)) {
+                    const sinkMethodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                    const sinkArgs = invokeExpr.getArgs();
+
+                    for (let argIdx = 0; argIdx < sinkArgs.length; argIdx++) {
+                        const arg = sinkArgs[argIdx];
+                        const argStr = arg.toString();
+
+                        // Direct match
+                        if (ValueEqual(arg, currentVar)) {
+                            const sinkFact = new TaintFact(currentVar);
+                            sinkFact.addPaths(currentFact.getPath());
+                            sinkFact.addPath(s);
+
+                            let isNew = true;
+                            for (const existing of this.detectOutcome) {
+                                const existingPath = existing.getPath();
+                                const newPath = sinkFact.getPath();
+                                if (existingPath.length > 0 && newPath.length > 0 &&
+                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
+                                    isNew = false;
+                                    break;
+                                }
+                            }
+                            if (isNew) {
+                                this.detectOutcome.push(sinkFact);
+                            } else {
+                            }
+                        }
+                        // Check for string concatenation containing the variable
+                        else if (argStr.includes(currentVarStr)) {
+                            const sinkFact = new TaintFact(currentVar);
+                            sinkFact.addPaths(currentFact.getPath());
+                            sinkFact.addPath(s);
+
+                            let isNew = true;
+                            for (const existing of this.detectOutcome) {
+                                const existingPath = existing.getPath();
+                                const newPath = sinkFact.getPath();
+                                if (existingPath.length > 0 && newPath.length > 0 &&
+                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
+                                    isNew = false;
+                                    break;
+                                }
+                            }
+                            if (isNew) {
+                                this.detectOutcome.push(sinkFact);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Propagate through assignments
+            for (const s of allStmts) {
+                if (!(s instanceof ArkAssignStmt)) continue;
+                const leftOp = s.getLeftOp();
+                const rightOp = s.getRightOp();
+
+                // Check if rightOp uses currentVar
+                const rightOpStr = rightOp.toString();
+                if (rightOpStr.includes(currentVarStr) && leftOp instanceof Local) {
+                    const newFact = new TaintFact(leftOp);
+                    newFact.addPaths(currentFact.getPath());
+                    newFact.addPath(s);
+                    worklist.push({ var: leftOp, fact: newFact });
+                }
+            }
+        }
     }
 
     /**
@@ -770,6 +1044,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         // Also check for common log sink methods
         if (LOG_SINK_METHODS.includes(methodName)) {
+            return true;
+        }
+
+        // console.* methods should always be considered sinks
+        const declaringClass = expr.getMethodSignature().getDeclaringClassSignature().toString();
+        if (declaringClass.includes('console')) {
+            return true;
+        }
+
+        // Also check if methodName is console method (log, info, warn, error, debug)
+        if (['log', 'info', 'warn', 'error', 'debug', 'print'].includes(methodName)) {
             return true;
         }
 
