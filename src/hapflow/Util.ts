@@ -219,7 +219,28 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         methodName = parts[parts.length - 1];
     }
 
-    const fileName = filenamePrefix + module + '.d.ts';
+    // Map @kit.BasicServicesKit to @ohos.* based on namespace
+    let sdkModule = module;
+    if (module === '@kit.BasicServicesKit') {
+        // Map namespace to @ohos file
+        const namespaceMap: { [key: string]: string } = {
+            'osAccount': '@ohos.account.osAccount',
+            'appAccount': '@ohos.account.appAccount',
+            'distributedAccount': '@ohos.account.distributedAccount',
+            'deviceinfo': '@ohos.deviceInfo',
+            'SystemPasteboard': '@ohos.pasteboard',
+            'wallpaper': '@ohos.wallpaper',
+            'geoLocationManager': '@ohos.geoLocationManager',
+            'sim': '@ohos.telephony.sim',
+            'bluetooth': '@ohos.bluetooth',
+            'sensor': '@ohos.sensor',
+        };
+        if (namespaceMap[namespace]) {
+            sdkModule = namespaceMap[namespace];
+        }
+    }
+
+    const fileName = filenamePrefix + sdkModule + '.d.ts';
     const file = scene.getSdkArkFiles().filter(f => f.getName() == fileName)[0];
     if (!file) {
         return methodSignatures;

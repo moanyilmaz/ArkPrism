@@ -560,7 +560,7 @@
         "method": "getOsAccountLocalId",
         "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
         "profilingCategory": "user_data.account",
-        "directCall": true
+        "directCall": false
       },
       {
         "namespace": "osAccount",
@@ -5985,6 +5985,97 @@
         "method": "unsubscribe",
         "permission": "ohos.permission.LOCATION",
         "profilingCategory": "location",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "osAccount",
+        "class": "",
+        "method": "getOsAccountLocalId",
+        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
+        "profilingCategory": "user_data.account",
+        "directCall": false
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "osAccount",
+        "class": "",
+        "method": "getOsAccountList",
+        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
+        "profilingCategory": "user_data.account",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "osAccount",
+        "class": "",
+        "method": "getOsAccountProfile",
+        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
+        "profilingCategory": "user_data.account",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "appAccount",
+        "class": "",
+        "method": "createAccount",
+        "permission": "ohos.permission.CREATE_REMOTE_APP_ACCOUNT",
+        "profilingCategory": "user_data.account",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "appAccount",
+        "class": "",
+        "method": "getAllAccounts",
+        "permission": "ohos.permission.GET_APP_ACCOUNTS",
+        "profilingCategory": "user_data.account",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "appAccount",
+        "class": "",
+        "method": "getAccountsByOwner",
+        "permission": "ohos.permission.GET_APP_ACCOUNTS",
+        "profilingCategory": "user_data.account",
+        "directCall": true
+      }
+    ]
+  },
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "appAccount",
+        "class": "",
+        "method": "getAccountCredential",
+        "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
+        "profilingCategory": "user_data.account",
         "directCall": true
       }
     ]
