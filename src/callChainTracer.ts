@@ -100,7 +100,7 @@ function getCallbackMethodsFromInvokeArgs(stmt: Stmt, scene: Scene): ArkMethod[]
                     if (callerMethod) {
                         const declaringClass = callerMethod.getDeclaringArkClass();
                         if (declaringClass) {
-                            const allMethods = declaringClass.getMethods();
+                            const allMethods = declaringClass.getMethods(true);
                             for (const m of allMethods) {
                                 if (m.getName() === closureName) {
                                     results.push(m);
@@ -125,10 +125,9 @@ function isCallbackEventMethod(methodName: string): boolean {
 }
 
 function extractMethodName(sig: string): string {
-    let parts = sig.split(".");
-    let last = parts[parts.length - 1];
-    let paren = last.indexOf("(");
-    return paren >= 0 ? last.substring(0, paren) : last;
+    const displayName = extractDisplayName(sig);
+    const dotIdx = displayName.lastIndexOf(".");
+    return dotIdx >= 0 ? displayName.substring(dotIdx + 1) : displayName;
 }
 
 function extractDisplayName(sig: string): string {
@@ -179,6 +178,162 @@ function resolveAnonymousName(displayName: string): string | undefined {
         return '[module-level init]';
     }
     return undefined;
+}
+
+function extractAnonymousParentName(methodName: string): string | null {
+    const match = methodName.match(/%AM\d+\$(.+)$/);
+    if (match) return match[1];
+    if (/^%AM\d+$/.test(methodName)) return '%dflt';
+    return null;
+}
+
+function findMethodByNameInClass(method: ArkMethod, methodName: string): ArkMethod | null {
+    try {
+        const cls = method.getDeclaringArkClass();
+        for (const candidate of cls.getMethods(true)) {
+            if (candidate === method) continue;
+            if (candidate.getName() === methodName) {
+                return candidate;
+            }
+        }
+    } catch { /* ignore */ }
+    return null;
+}
+
+function findMethodInFileClass(scene: Scene, fileName: string, className: string, methodName: string): ArkMethod | null {
+    for (const method of scene.getMethods()) {
+        try {
+            const cls = method.getDeclaringArkClass();
+            const file = method.getDeclaringArkFile();
+            if (file?.getName() === fileName && cls.getName() === className && method.getName() === methodName) {
+                return method;
+            }
+        } catch { /* ignore */ }
+    }
+    return null;
+}
+
+function extractAnonymousObjectOwner(className: string): { className: string; ownerMethodName: string } | null {
+    const match = className.match(/^%AC\d+\$([^.]+)\.(.+)$/);
+    if (!match) return null;
+    return { className: match[1], ownerMethodName: match[2] };
+}
+
+function extractThisMethodRefAssignment(stmtText: string): { localName: string; methodName: string } | null {
+    const match = stmtText.match(/^(\S+)\s*=\s*this\.<[^>]+:\s*([^>]+)>/);
+    if (!match) return null;
+    const fieldRef = match[2].trim();
+    const dotIdx = fieldRef.lastIndexOf('.');
+    const methodName = dotIdx >= 0 ? fieldRef.substring(dotIdx + 1) : fieldRef;
+    if (!methodName) return null;
+    return { localName: match[1], methodName };
+}
+
+function extractBuilderFieldAssignmentLocal(stmtText: string): string | null {
+    const match = stmtText.match(/^this\.<[^>]+:\s*[^>]*\.builder>\s*=\s*(\S+)/);
+    return match ? match[1] : null;
+}
+
+function normalizeArkMethodName(methodName: string): string {
+    return methodName.replace(/^\[static\]/, '');
+}
+
+function findMethodsByNameInClass(method: ArkMethod, methodName: string): ArkMethod[] {
+    const results: ArkMethod[] = [];
+    try {
+        const cls = method.getDeclaringArkClass();
+        for (const candidate of cls.getMethods(true)) {
+            if (candidate === method) continue;
+            if (normalizeArkMethodName(candidate.getName()) === methodName) {
+                results.push(candidate);
+            }
+        }
+    } catch { /* ignore */ }
+    return results;
+}
+
+function findWrappedAopMethodsByName(scene: Scene, methodName: string): ArkMethod[] {
+    const results: ArkMethod[] = [];
+    for (const method of scene.getMethods()) {
+        try {
+            const clsName = method.getDeclaringArkClass().getName();
+            if ((clsName.startsWith('Wrapped') || clsName.includes('$AOPUtil.wrap')) &&
+                normalizeArkMethodName(method.getName()) === methodName) {
+                results.push(method);
+            }
+        } catch { /* ignore */ }
+    }
+    return results;
+}
+
+function isGeneratedOrArchiveFile(fileName: string): boolean {
+    const normalized = fileName.replace(/\\/g, '/').toLowerCase();
+    return normalized.includes('/.preview/') ||
+        normalized.includes('/build/') ||
+        normalized.includes('/cache/') ||
+        normalized.includes('/archive_files/');
+}
+
+function findUniqueProjectMethodByName(scene: Scene, methodName: string): ArkMethod[] {
+    const candidates: ArkMethod[] = [];
+    for (const method of scene.getMethods()) {
+        try {
+            const fileName = method.getDeclaringArkFile()?.getName() || '';
+            if (isGeneratedOrArchiveFile(fileName)) continue;
+            if (normalizeArkMethodName(method.getName()) === methodName) {
+                candidates.push(method);
+            }
+        } catch { /* ignore */ }
+    }
+    return candidates.length === 1 ? candidates : [];
+}
+
+function buildProjectMethodNameIndex(scene: Scene): Map<string, ArkMethod[]> {
+    const index = new Map<string, ArkMethod[]>();
+    for (const method of scene.getMethods()) {
+        try {
+            const fileName = method.getDeclaringArkFile()?.getName() || '';
+            if (isGeneratedOrArchiveFile(fileName)) continue;
+            const name = normalizeArkMethodName(method.getName());
+            if (!index.has(name)) {
+                index.set(name, []);
+            }
+            index.get(name)!.push(method);
+        } catch { /* ignore */ }
+    }
+    return index;
+}
+
+function buildWrappedAopMethodNameIndex(scene: Scene): Map<string, ArkMethod[]> {
+    const index = new Map<string, ArkMethod[]>();
+    for (const method of scene.getMethods()) {
+        try {
+            const clsName = method.getDeclaringArkClass().getName();
+            if (!clsName.startsWith('Wrapped') && !clsName.includes('$AOPUtil.wrap')) continue;
+            const name = normalizeArkMethodName(method.getName());
+            if (!index.has(name)) {
+                index.set(name, []);
+            }
+            index.get(name)!.push(method);
+        } catch { /* ignore */ }
+    }
+    return index;
+}
+
+function extractThisFieldCallbackAssignment(stmtText: string): { fieldName: string; callbackName: string } | null {
+    const match = stmtText.match(/^this\.<[^>]+:\s*[^>]*\.([A-Za-z_$][\w$]*)>\s*=\s*(%AM\d+(?:\$[A-Za-z0-9_$%]+)?)/);
+    if (!match) return null;
+    return { fieldName: match[1], callbackName: match[2] };
+}
+
+function extractLocalFromThisField(stmtText: string): { localName: string; fieldName: string } | null {
+    const match = stmtText.match(/^(\S+)\s*=\s*this\.<[^>]+:\s*([^>]+)>/);
+    if (!match) return null;
+    const fieldRef = match[2].trim();
+    const dotIdx = fieldRef.lastIndexOf('.');
+    const fieldName = dotIdx >= 0 ? fieldRef.substring(dotIdx + 1) : fieldRef;
+    if (!fieldName) return null;
+    return { localName: match[1], fieldName };
 }
 
 /** Extract page/component name from file path */
@@ -413,8 +568,12 @@ function buildEnhancedReverseCallMap(scene: Scene, callGraph: CallGraph): Map<st
     }
     console.log(`[CHAIN] Source 2 - CHA resolved edges: ${chaEdgeCount}`);
 
+    const projectMethodsByName = buildProjectMethodNameIndex(scene);
+    const wrappedAopMethodsByName = buildWrappedAopMethodNameIndex(scene);
+
     // ---- Source 3: Standard invoke edges (supplement what CG may have missed) ----
     let invokeEdgeCount = 0;
+    let unresolvedInvokeEdgeCount = 0;
     for (const method of scene.getMethods()) {
         let callerSig = method.getSignature().toString();
         ensureKey(callerSig);
@@ -427,10 +586,29 @@ function buildEnhancedReverseCallMap(scene: Scene, callGraph: CallGraph): Map<st
             if (!invokeExpr) continue;
 
             let calleeSig = invokeExpr.getMethodSignature().toString();
+            let invokeMethodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
             ensureKey(calleeSig);
             if (!reverseMap.get(calleeSig)!.has(callerSig)) {
                 reverseMap.get(calleeSig)!.add(callerSig);
                 invokeEdgeCount++;
+            }
+
+            if (calleeSig.includes('@%unk/%unk')) {
+                const uniqueProjectCandidates = projectMethodsByName.get(invokeMethodName) || [];
+                const candidates = [
+                    ...findMethodsByNameInClass(method, invokeMethodName),
+                    ...(wrappedAopMethodsByName.get(invokeMethodName) || []),
+                    ...(uniqueProjectCandidates.length === 1 ? uniqueProjectCandidates : []),
+                ];
+                for (const candidate of candidates) {
+                    const candidateSig = candidate.getSignature().toString();
+                    if (candidateSig === callerSig) continue;
+                    ensureKey(candidateSig);
+                    if (!reverseMap.get(candidateSig)!.has(callerSig)) {
+                        reverseMap.get(candidateSig)!.add(callerSig);
+                        unresolvedInvokeEdgeCount++;
+                    }
+                }
             }
 
             // ---- Source 4: FunctionType/ClosureType callback edges (NO regex fallback) ----
@@ -470,6 +648,154 @@ function buildEnhancedReverseCallMap(scene: Scene, callGraph: CallGraph): Map<st
         }
     }
     console.log(`[CHAIN] Source 3 - Supplemental invoke edges: ${invokeEdgeCount}`);
+    console.log(`[CHAIN] Source 4 - Unresolved invoke name edges: ${unresolvedInvokeEdgeCount}`);
+
+    // ---- Source 5: Field callback edges ----
+    // Class fields initialized with arrow functions are lowered as
+    // this.field = %AMx$%instInit. Later API calls often pass this.field as a
+    // callback. Reconnect that callback method to the caller method.
+    const fieldCallbacks = new Map<string, Map<string, ArkMethod>>();
+    for (const method of scene.getMethods()) {
+        if (method.getName() !== '%instInit') continue;
+        const body = method.getBody();
+        if (!body) continue;
+
+        let classSig = '';
+        try {
+            classSig = method.getDeclaringArkClass().getSignature().toString();
+        } catch { /* ignore */ }
+        if (!classSig) continue;
+
+        for (const stmt of body.getCfg().getStmts()) {
+            const assignment = extractThisFieldCallbackAssignment(stmt.toString());
+            if (!assignment) continue;
+
+            const callbackMethod = findMethodByNameInClass(method, assignment.callbackName);
+            if (!callbackMethod) continue;
+
+            if (!fieldCallbacks.has(classSig)) {
+                fieldCallbacks.set(classSig, new Map());
+            }
+            fieldCallbacks.get(classSig)!.set(assignment.fieldName, callbackMethod);
+        }
+    }
+
+    let fieldCallbackEdgeCount = 0;
+    for (const method of scene.getMethods()) {
+        let classSig = '';
+        try {
+            classSig = method.getDeclaringArkClass().getSignature().toString();
+        } catch { /* ignore */ }
+        const callbacksForClass = fieldCallbacks.get(classSig);
+        if (!callbacksForClass || callbacksForClass.size === 0) continue;
+
+        const body = method.getBody();
+        if (!body) continue;
+
+        const localToField = new Map<string, string>();
+        const callerSig = method.getSignature().toString();
+        for (const stmt of body.getCfg().getStmts()) {
+            const fieldRead = extractLocalFromThisField(stmt.toString());
+            if (fieldRead) {
+                localToField.set(fieldRead.localName, fieldRead.fieldName);
+            }
+
+            if (!stmt.containsInvokeExpr()) continue;
+            const invokeExpr = stmt.getInvokeExpr();
+            if (!invokeExpr) continue;
+
+            for (const arg of invokeExpr.getArgs()) {
+                const fieldName = localToField.get(arg.toString());
+                if (!fieldName) continue;
+                const callbackMethod = callbacksForClass.get(fieldName);
+                if (!callbackMethod) continue;
+
+                const callbackSig = callbackMethod.getSignature().toString();
+                if (callbackSig === callerSig) continue;
+                ensureKey(callbackSig);
+                if (!reverseMap.get(callbackSig)!.has(callerSig)) {
+                    reverseMap.get(callbackSig)!.add(callerSig);
+                    fieldCallbackEdgeCount++;
+                }
+            }
+        }
+    }
+    console.log(`[CHAIN] Source 5 - Field callback edges: ${fieldCallbackEdgeCount}`);
+
+    // ---- Source 6: Anonymous callback parent edges ----
+    // ArkAnalyzer encodes callbacks as %AMn$parentMethod. Some callback locals
+    // lose FunctionType/ClosureType metadata, so add a conservative structural
+    // edge from the callback method back to its same-class parent method.
+    let anonymousParentEdgeCount = 0;
+    for (const method of scene.getMethods()) {
+        const parentName = extractAnonymousParentName(method.getName());
+        if (!parentName) continue;
+
+        const parentMethod = findMethodByNameInClass(method, parentName);
+        if (!parentMethod) continue;
+
+        const cbSig = method.getSignature().toString();
+        const parentSig = parentMethod.getSignature().toString();
+        if (cbSig === parentSig) continue;
+
+        ensureKey(cbSig);
+        if (!reverseMap.get(cbSig)!.has(parentSig)) {
+            reverseMap.get(cbSig)!.add(parentSig);
+            anonymousParentEdgeCount++;
+        }
+    }
+    console.log(`[CHAIN] Source 6 - Anonymous parent edges: ${anonymousParentEdgeCount}`);
+
+    // ---- Source 7: ArkUI builder option edges ----
+    // ArkUI APIs such as bindPopup({ builder: this.popupBuilder }) are lowered
+    // into anonymous object initializers. Reconstruct the implicit edge from
+    // popupBuilder() back to the owner method that created the option object.
+    let builderOptionEdgeCount = 0;
+    for (const method of scene.getMethods()) {
+        if (method.getName() !== '%instInit') continue;
+
+        let owner: { className: string; ownerMethodName: string } | null = null;
+        let fileName = '';
+        try {
+            owner = extractAnonymousObjectOwner(method.getDeclaringArkClass().getName());
+            fileName = method.getDeclaringArkFile()?.getName() || '';
+        } catch { /* ignore */ }
+        if (!owner || !fileName) continue;
+
+        const body = method.getBody();
+        if (!body) continue;
+
+        const localToMethodRef = new Map<string, string>();
+        for (const stmt of body.getCfg().getStmts()) {
+            const stmtText = stmt.toString();
+            const methodRef = extractThisMethodRefAssignment(stmtText);
+            if (methodRef) {
+                localToMethodRef.set(methodRef.localName, methodRef.methodName);
+                continue;
+            }
+
+            const localName = extractBuilderFieldAssignmentLocal(stmtText);
+            if (!localName) continue;
+
+            const builderMethodName = localToMethodRef.get(localName);
+            if (!builderMethodName) continue;
+
+            const builderMethod = findMethodInFileClass(scene, fileName, owner.className, builderMethodName);
+            const ownerMethod = findMethodInFileClass(scene, fileName, owner.className, owner.ownerMethodName);
+            if (!builderMethod || !ownerMethod) continue;
+
+            const builderSig = builderMethod.getSignature().toString();
+            const ownerSig = ownerMethod.getSignature().toString();
+            if (builderSig === ownerSig) continue;
+
+            ensureKey(builderSig);
+            if (!reverseMap.get(builderSig)!.has(ownerSig)) {
+                reverseMap.get(builderSig)!.add(ownerSig);
+                builderOptionEdgeCount++;
+            }
+        }
+    }
+    console.log(`[CHAIN] Source 7 - ArkUI builder option edges: ${builderOptionEdgeCount}`);
 
     return reverseMap;
 }
@@ -485,8 +811,18 @@ function isEntryMethod(methodName: string): boolean {
     if (ENTRY_METHOD_NAMES.includes(methodName)) return true;
     // Module-level init and default methods
     if (methodName === "%dflt" || methodName === "[static]%dflt") return true;
+    if (methodName === "%statInit" || methodName === "%instInit") return true;
     if (methodName === "initialRender") return true;
     return false;
+}
+
+function getTraceEntryType(methodName: string): "user_interaction" | "component_lifecycle" | "app_lifecycle" | "initialization" | "unknown" {
+    if (methodName === "%dflt" || methodName === "[static]%dflt" ||
+        methodName === "%statInit" || methodName === "%instInit" ||
+        methodName === "initialRender") {
+        return "initialization";
+    }
+    return getEntryType(methodName);
 }
 
 /**
@@ -739,6 +1075,36 @@ function extractSourceSnippet(method: ArkMethod, projectDir?: string): SourceSni
     } catch { return null; }
 }
 
+function buildDeclaringMethodApiChain(
+    apiUsageIndex: number,
+    apiResult: PrivacyDataApiResult,
+    apiMethodSig: string,
+    methodMap: Map<string, ArkMethod>,
+    projectDir?: string
+): CallChainResult {
+    const method = methodMap.get(apiMethodSig);
+    const apiMethodName = extractMethodName(apiMethodSig);
+    const displayName = extractDisplayName(apiMethodSig);
+    const snippet = method ? extractSourceSnippet(method, projectDir) : null;
+
+    return {
+        apiUsageIndex,
+        entryMethod: {
+            name: displayName,
+            type: getTraceEntryType(apiMethodName),
+            file: method ? extractFilePath(method) : apiResult.file,
+            line: method ? extractMethodLine(method) : 0
+        },
+        chain: [{
+            caller: displayName,
+            callee: `${apiResult.namespace}.${apiResult.method}`,
+            callType: "direct"
+        }],
+        controlStructures: method ? extractControlStructures(method) : [],
+        sourceSnippets: snippet ? [snippet] : []
+    };
+}
+
 // ---- Main trace function ----
 
 /**
@@ -784,24 +1150,7 @@ export function traceCallChains(
         let apiMethodName = extractMethodName(apiMethodSig);
         if (isEntryMethod(apiMethodName)) {
             // API is directly in an entry method — create a self-contained chain
-            let method = methodMap.get(apiMethodSig);
-            let snippet = method ? extractSourceSnippet(method, projectDir) : null;
-            callChainResults.push({
-                apiUsageIndex: i,
-                entryMethod: {
-                    name: extractDisplayName(apiMethodSig),
-                    type: getEntryType(apiMethodName),
-                    file: method ? extractFilePath(method) : apiResult.file,
-                    line: method ? extractMethodLine(method) : 0
-                },
-                chain: [{
-                    caller: extractDisplayName(apiMethodSig),
-                    callee: `${apiResult.namespace}.${apiResult.method}`,
-                    callType: "direct"
-                }],
-                controlStructures: method ? extractControlStructures(method) : [],
-                sourceSnippets: snippet ? [snippet] : []
-            });
+            callChainResults.push(buildDeclaringMethodApiChain(i, apiResult, apiMethodSig, methodMap, projectDir));
             continue;
         }
 
@@ -953,17 +1302,10 @@ export function traceCallChains(
 
             callChainResults.push(result);
         } else {
-            // No entry found — still output with fallback info
-            callChainResults.push({
-                apiUsageIndex: i,
-                entryMethod: {
-                    name: extractDisplayName(apiMethodSig),
-                    type: "unknown",
-                    file: apiResult.file,
-                    line: 0
-                },
-                chain: [], controlStructures: [], sourceSnippets: []
-            });
+            // No framework/user-interaction entry found. Keep the chain precise by
+            // reporting the declaring method as the local entry instead of inventing
+            // an upstream caller.
+            callChainResults.push(buildDeclaringMethodApiChain(i, apiResult, apiMethodSig, methodMap, projectDir));
         }
     }
 

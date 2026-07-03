@@ -234,7 +234,7 @@ location.getCurrentLocation() + deviceInfo.deviceId
 工具依赖 OpenHarmony SDK 进行类型推断：
 
 ```
---sdkPath 默认值: D:/DevEco Studio/sdk/default/openharmony/ets
+--sdkPath 默认值: OPENHARMONY_SDK_PATH or E:/OpenHarmony_SDK/20/ets
 ```
 
 ---

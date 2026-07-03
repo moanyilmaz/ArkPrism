@@ -159,6 +159,9 @@ class Cfg {
     buildDefUseStmt(locals) {
         for (const block of this.blocks) {
             for (const stmt of block.getStmts()) {
+                if (stmt == null) {
+                    continue;
+                }
                 const defValue = stmt.getDef();
                 if (defValue && defValue instanceof Local_1.Local && defValue.getDeclaringStmt() === null) {
                     defValue.setDeclaringStmt(stmt);
@@ -187,12 +190,18 @@ class Cfg {
         for (const block of this.blocks) {
             for (let stmtIndex = 0; stmtIndex < block.getStmts().length; stmtIndex++) {
                 const stmt = block.getStmts()[stmtIndex];
+                if (stmt == null) {
+                    continue;
+                }
                 for (const value of stmt.getUses()) {
                     const name = value.toString();
                     const defStmts = [];
                     // 判断本block之前有无对应def
                     for (let i = stmtIndex - 1; i >= 0; i--) {
                         const beforeStmt = block.getStmts()[i];
+                        if (beforeStmt == null) {
+                            continue;
+                        }
                         if (beforeStmt.getDef() && ((_a = beforeStmt.getDef()) === null || _a === void 0 ? void 0 : _a.toString()) === name) {
                             defStmts.push(beforeStmt);
                             break;
@@ -214,6 +223,9 @@ class Cfg {
                             let predecessorHasDef = false;
                             for (let i = predecessorStmts.length - 1; i >= 0; i--) {
                                 const beforeStmt = predecessorStmts[i];
+                                if (beforeStmt == null) {
+                                    continue;
+                                }
                                 if (beforeStmt.getDef() && ((_b = beforeStmt.getDef()) === null || _b === void 0 ? void 0 : _b.toString()) === name) {
                                     defStmts.push(beforeStmt);
                                     predecessorHasDef = true;

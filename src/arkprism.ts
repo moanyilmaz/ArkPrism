@@ -12,7 +12,7 @@
  *   --dot-only            Only generate DOT from existing JSON report
  */
 
-import { SceneConfig } from './arkanalyzer';
+import { Scene, SceneConfig } from './arkanalyzer';
 import {
     getSceneFromJson, readPrivacyApis, readSystemPackages,
     writeJsonOutput, getTimestamp
@@ -32,7 +32,39 @@ import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector'
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
 
-const DEFAULT_SDK_PATH = 'D:/DevEco Studio/sdk/default/openharmony/ets';
+const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
+const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
+const SOURCE_SKIP_DIRS = new Set([
+    'build',
+    'cache',
+    'node_modules',
+    'oh_modules',
+    '.preview',
+    '.git',
+    'hvigor',
+    '.hvigor',
+    'resources',
+    'rawfile',
+    'archive_files',
+]);
+
+function discoverSourceFiles(rootDir: string): string[] {
+    let files: string[] = [];
+    if (!existsSync(rootDir)) return files;
+
+    for (const entry of readdirSync(rootDir, { withFileTypes: true })) {
+        let fullPath = path.join(rootDir, entry.name);
+        if (entry.isDirectory()) {
+            if (!SOURCE_SKIP_DIRS.has(entry.name)) {
+                files = files.concat(discoverSourceFiles(fullPath));
+            }
+        } else if (entry.isFile() && SOURCE_EXTENSIONS.has(path.extname(entry.name))) {
+            files.push(fullPath);
+        }
+    }
+
+    return files;
+}
 
 // ---- Core analysis pipeline (shared by single & batch) ----
 
@@ -61,6 +93,19 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     sceneConfig.buildFromProjectDir(projectDir);
     let scene = getSceneFromJson(sceneConfig);
     let allFiles = scene.getFiles();
+    if (allFiles.length === 0) {
+        const sourceFiles = discoverSourceFiles(projectDir);
+        if (sourceFiles.length > 0) {
+            console.log(`[SCENE] Standard project discovery found 0 files; retrying with ${sourceFiles.length} source files.`);
+            sceneConfig = new SceneConfig();
+            sceneConfig.buildFromProjectFiles(projectName, projectDir, sourceFiles);
+            scene = new Scene();
+            scene.buildBasicInfo(sceneConfig);
+            (scene as any).genArkFiles();
+            scene.inferTypes();
+            allFiles = scene.getFiles();
+        }
+    }
     console.log(`[SCENE] Scene built. Files: ${allFiles.length}`);
 
     // Analyze ViewTrees for UI callback patterns and state usage
@@ -75,7 +120,10 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     let privacyApisPath = path.resolve(__dirname, '..', 'config', 'sensitive_apis.json');
     let systemPackagesPath = path.resolve(__dirname, '..', 'config', 'system_packages14.json');
     let privacyApis = readPrivacyApis(privacyApisPath);
-    let systemPackages = readSystemPackages(systemPackagesPath);
+    let systemPackages = Array.from(new Set([
+        ...readSystemPackages(systemPackagesPath),
+        ...privacyApis.map(pkg => pkg.systemPackage),
+    ]));
 
     // Detect APIs
     let allApiResults: PrivacyDataApiResult[] = [];
@@ -238,20 +286,20 @@ Options:
   --no-dot              Skip DOT graph generation
   --no-taint            Skip HapFlow taint analysis
   --no-pta              Skip pointer analysis (faster but less precise)
-  --sdkPath <dir>       OpenHarmony SDK path (default: D:/DevEco Studio/sdk/default/openharmony/ets)
+  --sdkPath <dir>       OpenHarmony SDK path (default: OPENHARMONY_SDK_PATH or E:/OpenHarmony_SDK/20/ets)
 
 IFDS Options:
-  --ifds-batch-size <n>         Sources per batch (default: 50)
-  --ifds-max-edges <n>          Max IFDS edges (default: 1000000)
-  --ifds-max-worklist <n>       Max worklist size (default: 500000)
-  --ifds-timeout-ms <n>         Timeout in milliseconds (default: 300000)
+  --ifds-batch-size <n>         Sources per batch (default: all sources in one solver run)
+  --ifds-max-edges <n>          Max IFDS edges (default: 10000000)
+  --ifds-max-worklist <n>       Max worklist size (default: 2000000)
+  --ifds-timeout-ms <n>         Timeout in milliseconds (default: 900000)
 
 Callback Analysis Options:
   --callback-analysis <true|false>   Enable direct callback analysis (default: false)
-  --callback-max-methods <n>         Max methods to scan (default: 3000)
-  --callback-max-sources <n>         Max sources to analyze (default: 300)
-  --callback-max-states <n>          Max states per source (default: 2000)
-  --callback-max-path-len <n>        Max path length (default: 50)
+  --callback-max-methods <n>         Max methods to scan (default: 100000)
+  --callback-max-sources <n>         Max sources to analyze (default: 5000)
+  --callback-max-states <n>          Max states per source (default: 10000)
+  --callback-max-path-len <n>        Max path length (default: 100)
 
 Examples:
   # Basic analysis
@@ -317,25 +365,25 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
         }
         // IFDS options
         else if (arg === '--ifds-batch-size') {
-            ifdsBatchSize = parseInt(args[++i]) || 50;
+            ifdsBatchSize = parseInt(args[++i]);
         } else if (arg === '--ifds-max-edges') {
-            ifdsMaxEdges = parseInt(args[++i]) || 1000000;
+            ifdsMaxEdges = parseInt(args[++i]) || 10000000;
         } else if (arg === '--ifds-max-worklist') {
-            ifdsMaxWorklist = parseInt(args[++i]) || 500000;
+            ifdsMaxWorklist = parseInt(args[++i]) || 2000000;
         } else if (arg === '--ifds-timeout-ms') {
-            ifdsTimeoutMs = parseInt(args[++i]) || 300000;
+            ifdsTimeoutMs = parseInt(args[++i]) || 900000;
         }
         // Callback analysis options
         else if (arg === '--callback-analysis') {
             callbackAnalysis = args[++i]?.toLowerCase() === 'true';
         } else if (arg === '--callback-max-methods') {
-            callbackMaxMethods = parseInt(args[++i]) || 3000;
+            callbackMaxMethods = parseInt(args[++i]) || 100000;
         } else if (arg === '--callback-max-sources') {
-            callbackMaxSources = parseInt(args[++i]) || 300;
+            callbackMaxSources = parseInt(args[++i]) || 5000;
         } else if (arg === '--callback-max-states') {
-            callbackMaxStates = parseInt(args[++i]) || 2000;
+            callbackMaxStates = parseInt(args[++i]) || 10000;
         } else if (arg === '--callback-max-path-len') {
-            callbackMaxPathLen = parseInt(args[++i]) || 50;
+            callbackMaxPathLen = parseInt(args[++i]) || 100;
         } else if (!arg.startsWith('-')) {
             target = arg;
         }

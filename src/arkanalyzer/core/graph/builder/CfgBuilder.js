@@ -1106,13 +1106,19 @@ class CfgBuilder {
         }
         const cfg = new Cfg_1.Cfg();
         const startingBasicBlock = blockBuilderToCfgBlock.get(this.blocks[0]);
-        cfg.setStartingStmt(startingBasicBlock.getStmts()[0]);
+        const startingStmt = startingBasicBlock?.getStmts().find(stmt => stmt != null);
+        if (startingStmt) {
+            cfg.setStartingStmt(startingStmt);
+        }
         currBlockId = 0;
         for (const basicBlock of basicBlockSet) {
             basicBlock.setId(currBlockId++);
             cfg.addBlock(basicBlock);
         }
         for (const stmt of cfg.getStmts()) {
+            if (stmt == null) {
+                continue;
+            }
             stmt.setCfg(cfg);
         }
         return cfg;

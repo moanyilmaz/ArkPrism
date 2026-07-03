@@ -23,18 +23,18 @@ export interface HapflowOptions {
     noPta?: boolean;      // Skip pointer analysis (faster but less precise)
     sdkPath?: string;     // OpenHarmony SDK path (required for API signature resolution)
 
-    // IFDS batch options
-    ifdsBatchSize?: number;      // Default: 50
-    ifdsMaxEdges?: number;       // Default: 1000000
-    ifdsMaxWorklist?: number;    // Default: 500000
-    ifdsTimeoutMs?: number;      // Default: 300000 (5 minutes)
+    // IFDS budget options
+    ifdsBatchSize?: number;      // Default: all sources in one solver run
+    ifdsMaxEdges?: number;       // Default: 10000000
+    ifdsMaxWorklist?: number;    // Default: 2000000
+    ifdsTimeoutMs?: number;      // Default: 900000 (15 minutes)
 
     // Callback analysis options
-    callbackAnalysis?: boolean;  // Default: false
-    callbackMaxMethods?: number;    // Default: 3000
-    callbackMaxSources?: number;     // Default: 300
-    callbackMaxStates?: number;      // Default: 2000
-    callbackMaxPathLen?: number;     // Default: 50
+    callbackAnalysis?: boolean;  // Default: true
+    callbackMaxMethods?: number;    // Default: 100000
+    callbackMaxSources?: number;     // Default: 5000
+    callbackMaxStates?: number;      // Default: 10000
+    callbackMaxPathLen?: number;     // Default: 100
 }
 
 /**
@@ -72,7 +72,7 @@ export function runHapflowAnalysis(
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
 
     // 1. Load SDK files for source/sink resolution
-    const sdkPath = opts.sdkPath || 'D:/DevEco Studio/sdk/default/openharmony/ets';
+    const sdkPath = opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
     if (!fs.existsSync(sdkPath)) {
         console.log(`[HAPFLOW][ERROR] SDK path does not exist: ${sdkPath}`);
         console.log('[HAPFLOW][ERROR] Cannot resolve API signatures without SDK. Aborting taint analysis.');
@@ -142,8 +142,8 @@ export function runHapflowAnalysis(
     const sinksPath = path.join(configDir, 'hapflow_sinks.json');
 
     console.log('[HAPFLOW] Loading source/sink definitions...');
-    problem.addSourcesFromJson(sourcesPath);
-    problem.addSinksFromJson(sinksPath);
+    problem.addSourcesFromJson(sourcesPath, sdkPath);
+    problem.addSinksFromJson(sinksPath, sdkPath);
     console.log('[HAPFLOW] Loaded ' + problem.getSources().size + ' sources, ' + problem.getSinks().length + ' sinks.');
 
     if (problem.getSources().size === 0 && problem.getSinks().length === 0) {
@@ -152,15 +152,21 @@ export function runHapflowAnalysis(
         return [];
     }
 
-    // 5. Execute IFDS analysis (batched to reduce memory pressure)
-    const BATCH_SIZE = opts?.ifdsBatchSize ?? 50;
+    // 5. Execute IFDS analysis. By default all sources are analyzed in one solver
+    // run to preserve cross-source/context precision; explicit batching remains
+    // available as an OOM fallback.
     const allSources = problem.getSources();
     const totalSources = allSources.size;
-    const totalBatches = Math.ceil(totalSources / BATCH_SIZE);
+    const requestedBatchSize = opts?.ifdsBatchSize;
+    const useBatching = requestedBatchSize !== undefined && requestedBatchSize > 0 && requestedBatchSize < totalSources;
+    const BATCH_SIZE = useBatching ? requestedBatchSize : totalSources;
+    const totalBatches = useBatching ? Math.ceil(totalSources / BATCH_SIZE) : 1;
 
-    console.log(`[HAPFLOW] Solving IFDS taint problem (batched)...`);
+    console.log(`[HAPFLOW] Solving IFDS taint problem${useBatching ? ' (batched)' : ''}...`);
     console.log(`[HAPFLOW] Input: ${totalSources} sources, ${problem.getSinks().length} sinks`);
-    console.log(`[HAPFLOW] Batch config: size=${BATCH_SIZE}, batches=${totalBatches}`);
+    if (useBatching) {
+        console.log(`[HAPFLOW] Batch config: size=${BATCH_SIZE}, batches=${totalBatches}`);
+    }
 
     const allOutcomes: TaintFact[] = [];
     const sourceArray = Array.from(allSources.entries());
@@ -172,13 +178,17 @@ export function runHapflowAnalysis(
         const batchIndex = Math.floor(batchStart / BATCH_SIZE) + 1;
         const batchStartTime = Date.now();
 
-        console.log(`[HAPFLOW] Batch ${batchIndex}/${totalBatches} (sources ${batchStart + 1}-${batchEnd})`);
+        if (useBatching) {
+            console.log(`[HAPFLOW] Batch ${batchIndex}/${totalBatches} (sources ${batchStart + 1}-${batchEnd})`);
+        } else {
+            console.log(`[HAPFLOW] Single solver run (sources ${batchStart + 1}-${batchEnd})`);
+        }
 
         // Create a fresh problem for this batch
         const batchProblem = new TaintAnalysisChecker(entryStmt, entry, pta);
 
         // Load all sinks (same for all batches)
-        batchProblem.addSinksFromJson(sinksPath);
+        batchProblem.addSinksFromJson(sinksPath, sdkPath);
 
         // Load only this batch's sources
         const batchSources = new Map(sourceArray.slice(batchStart, batchEnd));
@@ -192,9 +202,9 @@ export function runHapflowAnalysis(
 
             // Set budget options for the solver
             batchSolver.setBudgetOptions({
-                maxEdges: opts?.ifdsMaxEdges ?? 1000000,
-                maxWorkList: opts?.ifdsMaxWorklist ?? 500000,
-                maxMillis: opts?.ifdsTimeoutMs ?? 300000
+                maxEdges: opts?.ifdsMaxEdges ?? 10000000,
+                maxWorkList: opts?.ifdsMaxWorklist ?? 2000000,
+                maxMillis: opts?.ifdsTimeoutMs ?? 900000
             });
 
             batchSolver.solve();
@@ -213,22 +223,24 @@ export function runHapflowAnalysis(
             const elapsed = Date.now() - batchStartTime;
             console.log(`[HAPFLOW]   flows=${batchOutcomes.length}, edges=${batchStats?.edgesProcessed ?? 0}, elapsed=${elapsed}ms${batchStats?.budgetExceeded ? ' [BUDGET_EXCEEDED]' : ''}`);
         } catch (e: any) {
-            console.log(`[HAPFLOW]   Batch failed: ${e.message || e}`);
+            console.log(`[HAPFLOW]   Solver run failed: ${e.message || e}`);
         }
     }
 
     console.log(`[HAPFLOW] IFDS complete: flows=${allOutcomes.length}, totalEdges=${totalIfdsEdges}${ifdsBudgetExceeded ? ' [PARTIAL]' : ''}`);
 
-    // 5b. Execute direct callback data flow analysis (only if explicitly enabled)
-    const callbackEnabled = opts?.callbackAnalysis ?? false;
+    // 5b. Execute direct callback data flow analysis. Enabled by default because
+    // ArkTS privacy data often crosses callback and Promise boundaries that IFDS
+    // alone may not recover in incomplete sample projects.
+    const callbackEnabled = opts?.callbackAnalysis ?? true;
     console.log(`[HAPFLOW] Callback analysis: ${callbackEnabled ? 'ENABLED' : 'DISABLED'}`);
 
     if (callbackEnabled) {
         problem.setCallbackBudgetOptions({
-            maxMethods: opts?.callbackMaxMethods ?? 3000,
-            maxSources: opts?.callbackMaxSources ?? 300,
-            maxStates: opts?.callbackMaxStates ?? 2000,
-            maxPathLen: opts?.callbackMaxPathLen ?? 50
+            maxMethods: opts?.callbackMaxMethods ?? 100000,
+            maxSources: opts?.callbackMaxSources ?? 5000,
+            maxStates: opts?.callbackMaxStates ?? 10000,
+            maxPathLen: opts?.callbackMaxPathLen ?? 100
         });
         problem.analyzeCallbackDataFlows();
         const callbackOutcomes = problem.getOutcome();

@@ -789,6 +789,9 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             const candidates = methodCache.get(methodName) || [];
 
             for (const source of candidates) {
+                if (source.sourceType === 'callback' && source.callbackIndex >= val.getArgs().length) {
+                    continue;
+                }
                 const key = Array.from(sources.keys()).find(k => sources.get(k) === source) || '';
                 let score = 1; // Base score for method name match
 

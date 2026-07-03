@@ -8,7 +8,7 @@ import { ArkMethod } from "../arkanalyzer";
 import { Constant } from "../arkanalyzer";
 import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { DataflowSolver } from "./DataflowSolver";
-import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from "../arkanalyzer";
+import { AbstractInvokeExpr, ArkAwaitExpr, ArkInstanceInvokeExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from "../arkanalyzer";
 import { ArrayType, ClassType, ClosureType, FunctionType, LexicalEnvType, UnclearReferenceType, UndefinedType } from "../arkanalyzer";
 import { MethodSignature } from "../arkanalyzer";
 import { PointerAnalysis } from "../arkanalyzer";
@@ -26,6 +26,39 @@ import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
 import { INSTANCE_INIT_METHOD_NAME } from "../arkanalyzer";
 
 const logger = Logger.getLogger(LOG_MODULE_TYPE.ARKANALYZER, 'HapFlow');
+const SDK_PATH_PLACEHOLDER = '${OPENHARMONY_SDK_PATH}';
+const HMS_SDK_PATH_PLACEHOLDER = '${HMS_SDK_PATH}';
+
+function normalizeSdkPathForTypeImports(sdkPath?: string): string {
+    return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
+}
+
+function expandSdkPathPlaceholders(value: unknown, sdkPath?: string): unknown {
+    if (typeof value === 'string') {
+        const normalizedSdkPath = normalizeSdkPathForTypeImports(sdkPath);
+        const normalizedHmsSdkPath = normalizeSdkPathForTypeImports(process.env.HMS_SDK_PATH);
+        let expanded = normalizedSdkPath ? value.split(SDK_PATH_PLACEHOLDER).join(normalizedSdkPath) : value;
+        expanded = normalizedHmsSdkPath ? expanded.split(HMS_SDK_PATH_PLACEHOLDER).join(normalizedHmsSdkPath) : expanded;
+        return expanded;
+    }
+    if (Array.isArray(value)) {
+        return value.map(item => expandSdkPathPlaceholders(item, sdkPath));
+    }
+    if (value && typeof value === 'object') {
+        const expanded: Record<string, unknown> = {};
+        for (const [key, child] of Object.entries(value)) {
+            expanded[key] = expandSdkPathPlaceholders(child, sdkPath);
+        }
+        return expanded;
+    }
+    return value;
+}
+
+function loadRuleObjects(filePath: string, sdkPath?: string): any[] {
+    const data = fs.readFileSync(filePath, 'utf-8');
+    const objects = JSON.parse(data);
+    return expandSdkPathPlaceholders(objects, sdkPath) as any[];
+}
 
 export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private zeroValue: TaintFact;
@@ -40,10 +73,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     // Budget options for callback analysis
     private callbackBudgetOptions = {
-        maxMethods: 3000,
-        maxSources: 300,
-        maxStates: 2000,
-        maxPathLen: 50
+        maxMethods: 100000,
+        maxSources: 5000,
+        maxStates: 10000,
+        maxPathLen: 100
     };
 
     constructor(stmt: Stmt, method: ArkMethod, pta?: PointerAnalysis) {
@@ -105,9 +138,18 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         // Collect all callback-type sources first
         const callbackSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
+        const returnSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
+        const constantSources: Array<{ method: ArkMethod, stmt: ArkAssignStmt, value: Local }> = [];
 
         for (const method of this.scene.getMethods()) {
-            if (methodCount++ > MAX_METHODS) {
+            const fileName = method.getDeclaringArkFile().getName();
+            if (fileName.startsWith('api/') || fileName.includes("build") || fileName.includes("cache") ||
+                fileName.includes("node_modules") || fileName.includes("oh_modules") ||
+                fileName.includes(".preview")) {
+                continue;
+            }
+
+            if (methodCount++ >= MAX_METHODS) {
                 console.log(`[HAPFLOW] Callback analysis: reached method limit ${MAX_METHODS}`);
                 break;
             }
@@ -117,22 +159,32 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             for (const block of cfg.getBlocks()) {
                 for (const stmt of block.getStmts()) {
-                    if (!stmt.containsInvokeExpr()) continue;
-                    const invokeExpr = stmt.getInvokeExpr();
-                    if (!invokeExpr) continue;
+                    if (stmt instanceof ArkAssignStmt && stmt.getLeftOp() instanceof Local &&
+                        /^deviceInfo\.<.*\.[A-Za-z0-9_]+>$/.test(stmt.getRightOp().toString())) {
+                        constantSources.push({ method, stmt, value: stmt.getLeftOp() as Local });
+                    }
 
-                    const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
-                    if (source && source.sourceType === 'callback') {
-                        callbackSources.push({ method, stmt, invokeExpr, source });
+                    if (stmt.containsInvokeExpr()) {
+                        const invokeExpr = stmt.getInvokeExpr();
+                        if (!invokeExpr) continue;
+
+                        const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
+                        if (source && source.sourceType === 'callback') {
+                            callbackSources.push({ method, stmt, invokeExpr, source });
+                        } else if (source && source.sourceType === 'return' && stmt instanceof ArkAssignStmt) {
+                            returnSources.push({ method, stmt, invokeExpr, source });
+                        }
                     }
                 }
             }
         }
 
         console.log(`[HAPFLOW]   Found ${callbackSources.length} callback source invocations`);
+        console.log(`[HAPFLOW]   Found ${returnSources.length} return source invocations`);
+        console.log(`[HAPFLOW]   Found ${constantSources.length} privacy constant reads`);
 
-        if (callbackSources.length === 0) {
-            console.log(`[HAPFLOW] Callback analysis: no callback sources found`);
+        if (callbackSources.length === 0 && returnSources.length === 0 && constantSources.length === 0) {
+            console.log(`[HAPFLOW] Callback analysis: no direct sources found`);
             return;
         }
 
@@ -150,6 +202,34 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 });
             } catch (e) {
                 console.log(`[HAPFLOW]   Callback source failed: ${e}`);
+            }
+        }
+
+        for (const { method, stmt, invokeExpr, source } of returnSources) {
+            if (sourceCount++ >= MAX_SOURCES) {
+                console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
+                break;
+            }
+
+            try {
+                this.analyzePromiseChaining(method, stmt, invokeExpr, source);
+            } catch (e) {
+                console.log(`[HAPFLOW]   Return source failed: ${e}`);
+            }
+        }
+
+        for (const { method, stmt, value } of constantSources) {
+            if (sourceCount++ >= MAX_SOURCES) {
+                console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
+                break;
+            }
+
+            try {
+                const fact = new TaintFact(value);
+                fact.addPath(stmt);
+                this.traceReturnedValueDataFlow(method, value, fact);
+            } catch (e) {
+                console.log(`[HAPFLOW]   Constant source failed: ${e}`);
             }
         }
 
@@ -198,6 +278,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
                 }
             } catch { /* ignore */ }
+        }
+
+        if (!callbackMethod && callbackArg instanceof Local) {
+            callbackMethod = this.findLambdaMethodForLocal(method, callbackArg);
         }
 
         if (!callbackMethod) {
@@ -279,6 +363,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
 
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
+            const currentVarStr = currentVar.toString();
 
             // Use method signature + variable string for visited key
             const key = method.getSignature().toString() + '|' + currentVar.toString();
@@ -289,8 +374,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             if (currentFact.getPath().length > maxPathLen) {
                 continue;
             }
-
-            const currentVarStr = currentVar.toString();
 
             // Check for sink usage
             for (const s of allStmts) {
@@ -711,9 +794,234 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     fact.addPath(sourceStmt);
                     fact.addPath(stmt);
                     this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
+                    this.tracePromiseResolveToAwaitSinks(method, callbackMethod, resolvedParam, fact);
                 }
             }
         }
+    }
+
+    /**
+     * Handles Promise wrapper methods:
+     * source().then(data => resolve(data)); return promise;
+     * const data = await wrapper(); sink(data);
+     */
+    private tracePromiseResolveToAwaitSinks(executorMethod: ArkMethod, callbackMethod: ArkMethod, startVar: Local, startFact: TaintFact): void {
+        const resolveFacts = this.collectResolveFacts(callbackMethod, startVar, startFact);
+        if (resolveFacts.length === 0) return;
+
+        const promiseOwner = this.findPromiseOwnerMethod(executorMethod);
+        if (!promiseOwner) return;
+
+        this.traceAwaitedMethodResultToSinks(promiseOwner, resolveFacts);
+    }
+
+    private collectResolveFacts(method: ArkMethod, startVar: Local, startFact: TaintFact): TaintFact[] {
+        const cfg = method.getCfg();
+        if (!cfg) return [];
+
+        const resolved: TaintFact[] = [];
+        const visited = new Set<string>();
+        const worklist: Array<{ var: Value, fact: TaintFact }> = [{ var: startVar, fact: startFact }];
+        const allStmts: Stmt[] = [];
+        for (const block of cfg.getBlocks()) {
+            allStmts.push(...block.getStmts());
+        }
+
+        let stateCount = 0;
+        while (worklist.length > 0) {
+            stateCount++;
+            if (stateCount > this.callbackBudgetOptions.maxStates) {
+                console.log(`[HAPFLOW] collectResolveFacts: budget exceeded (${stateCount} states)`);
+                break;
+            }
+
+            const { var: currentVar, fact: currentFact } = worklist.pop()!;
+            const currentVarStr = currentVar.toString();
+            const key = method.getSignature().toString() + '|' + currentVarStr;
+            if (visited.has(key)) continue;
+            visited.add(key);
+
+            if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                continue;
+            }
+
+            for (const stmt of allStmts) {
+                if (!stmt.containsInvokeExpr()) continue;
+                const invokeExpr = stmt.getInvokeExpr();
+                if (!invokeExpr) continue;
+
+                const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                if (methodName !== 'resolve') continue;
+
+                for (const arg of invokeExpr.getArgs()) {
+                    if (this.valueDependsOn(arg, currentVar, currentVarStr)) {
+                        const resolveFact = new TaintFact(currentVar);
+                        for (const p of currentFact.getPath()) {
+                            resolveFact.addPath(p);
+                        }
+                        resolveFact.addPath(stmt);
+                        resolved.push(resolveFact);
+                        break;
+                    }
+                }
+            }
+
+            for (const stmt of allStmts) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                const leftOp = stmt.getLeftOp();
+                const rightOp = stmt.getRightOp();
+
+                if (ValueEqual(rightOp, currentVar) && leftOp instanceof Local) {
+                    this.pushTaintWorkItem(worklist, leftOp, currentFact, stmt);
+                }
+
+                if (currentVar instanceof Local && rightOp instanceof ArkInstanceFieldRef && LocalEqual(rightOp.getBase(), currentVar)) {
+                    this.pushTaintWorkItem(worklist, rightOp, currentFact, stmt);
+                }
+
+                if (currentVar instanceof Local && rightOp instanceof ArkArrayRef && LocalEqual(rightOp.getBase(), currentVar)) {
+                    this.pushTaintWorkItem(worklist, rightOp, currentFact, stmt);
+                }
+
+                if (currentVar instanceof ArkArrayRef && rightOp instanceof ArkInstanceFieldRef && ValueEqual(rightOp.getBase(), currentVar)) {
+                    this.pushTaintWorkItem(worklist, rightOp, currentFact, stmt);
+                }
+
+                if (leftOp instanceof Local && this.valueDependsOn(rightOp, currentVar, currentVarStr)) {
+                    this.pushTaintWorkItem(worklist, leftOp, currentFact, stmt);
+                }
+            }
+        }
+
+        return resolved;
+    }
+
+    private pushTaintWorkItem(worklist: Array<{ var: Value, fact: TaintFact }>, value: Value, currentFact: TaintFact, stmt: Stmt): void {
+        const newFact = new TaintFact(value);
+        for (const p of currentFact.getPath()) {
+            newFact.addPath(p);
+        }
+        newFact.addPath(stmt);
+        worklist.push({ var: value, fact: newFact });
+    }
+
+    private valueDependsOn(value: Value, currentVar: Value, currentVarStr: string): boolean {
+        if (ValueEqual(value, currentVar)) return true;
+        const uses = value.getUses ? value.getUses() : [];
+        if (uses.some(use => ValueEqual(use, currentVar))) return true;
+        return value.toString().includes(currentVarStr);
+    }
+
+    private findPromiseOwnerMethod(executorMethod: ArkMethod): ArkMethod | null {
+        const cls = executorMethod.getDeclaringArkClass();
+        const executorName = executorMethod.getName();
+
+        for (const method of cls.getMethods(true)) {
+            if (method === executorMethod) continue;
+            const cfg = method.getCfg();
+            if (!cfg) continue;
+
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!stmt.containsInvokeExpr()) continue;
+                    const invokeExpr = stmt.getInvokeExpr();
+                    if (!(invokeExpr instanceof ArkInstanceInvokeExpr)) continue;
+
+                    const methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
+                    if (methodName !== 'constructor') continue;
+                    if (!invokeExpr.getBase().getType().toString().includes('Promise')) continue;
+                    if (!invokeExpr.getArgs().some(arg => this.callbackArgMatchesMethod(arg, executorMethod, executorName))) continue;
+
+                    if (this.methodReturnsValue(method, invokeExpr.getBase())) {
+                        return method;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    private callbackArgMatchesMethod(arg: Value, method: ArkMethod, methodName: string): boolean {
+        if (arg instanceof Local && arg.getName() === methodName) return true;
+        const argType = arg.getType();
+        if (argType instanceof FunctionType) {
+            return argType.getMethodSignature().toString() === method.getSignature().toString();
+        }
+        return arg.toString() === methodName;
+    }
+
+    private methodReturnsValue(method: ArkMethod, value: Value): boolean {
+        const cfg = method.getCfg();
+        if (!cfg) return false;
+
+        for (const block of cfg.getBlocks()) {
+            for (const stmt of block.getStmts()) {
+                if (stmt instanceof ArkReturnStmt && ValueEqual(stmt.getOp(), value)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private traceAwaitedMethodResultToSinks(sourceMethod: ArkMethod, resolveFacts: TaintFact[]): void {
+        const sourceSig = sourceMethod.getSignature().toString();
+        const cls = sourceMethod.getDeclaringArkClass();
+
+        for (const method of cls.getMethods(true)) {
+            const cfg = method.getCfg();
+            if (!cfg) continue;
+
+            const awaitedResults: Array<{ value: Local, stmt: Stmt, fact: TaintFact }> = [];
+            for (const block of cfg.getBlocks()) {
+                for (const stmt of block.getStmts()) {
+                    if (!(stmt instanceof ArkAssignStmt)) continue;
+                    const leftOp = stmt.getLeftOp();
+                    const rightOp = stmt.getRightOp();
+                    if (!(leftOp instanceof Local)) continue;
+                    if (!(rightOp instanceof ArkAwaitExpr)) continue;
+
+                    const promise = rightOp.getPromise();
+                    const promiseStmt = this.findAssignmentToInvoke(method, promise, sourceSig);
+                    if (!promiseStmt) continue;
+
+                    for (const resolveFact of resolveFacts) {
+                        const awaitedFact = new TaintFact(leftOp);
+                        for (const p of resolveFact.getPath()) {
+                            awaitedFact.addPath(p);
+                        }
+                        awaitedFact.addPath(promiseStmt);
+                        awaitedFact.addPath(stmt);
+                        awaitedResults.push({ value: leftOp, stmt, fact: awaitedFact });
+                    }
+                }
+            }
+
+            for (const result of awaitedResults) {
+                this.traceReturnedValueDataFlow(method, result.value, result.fact);
+            }
+        }
+    }
+
+    private findAssignmentToInvoke(method: ArkMethod, assignedValue: Value, sourceSig: string): ArkAssignStmt | null {
+        const cfg = method.getCfg();
+        if (!cfg) return null;
+
+        for (const block of cfg.getBlocks()) {
+            for (const stmt of block.getStmts()) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                if (!ValueEqual(stmt.getLeftOp(), assignedValue)) continue;
+
+                const rightOp = stmt.getRightOp();
+                if (rightOp instanceof AbstractInvokeExpr && rightOp.getMethodSignature().toString() === sourceSig) {
+                    return stmt;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -758,6 +1066,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
 
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
+            const currentVarStr = currentVar.toString();
 
             // Use method signature + variable string for visited key (no path, to avoid state explosion)
             const key = method.getSignature().toString() + '|' + currentVar.toString();
@@ -779,7 +1088,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (this.callSink(invokeExpr)) {
                         const args = invokeExpr.getArgs();
                         for (const arg of args) {
-                            if (ValueEqual(arg, currentVar)) {
+                            if (ValueEqual(arg, currentVar) || arg.toString().includes(currentVarStr)) {
                                 const sinkFact = new TaintFact(currentVar);
                                 for (const p of currentFact.getPath()) {
                                     sinkFact.addPath(p);
@@ -821,10 +1130,31 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         worklist.push({ var: leftOp, fact: newFact });
                     }
 
+                    if (leftOp instanceof Local && rightOp.toString().includes(currentVarStr)) {
+                        const newFact = new TaintFact(leftOp);
+                        for (const p of currentFact.getPath()) {
+                            newFact.addPath(p);
+                        }
+                        newFact.addPath(stmt);
+                        worklist.push({ var: leftOp, fact: newFact });
+                    }
+
                     // Handle method calls: let result = var.method()
                     if (rightOp instanceof ArkInstanceInvokeExpr && leftOp instanceof Local) {
                         const base = rightOp.getBase();
                         if (ValueEqual(base, currentVar)) {
+                            const newFact = new TaintFact(leftOp);
+                            for (const p of currentFact.getPath()) {
+                                newFact.addPath(p);
+                            }
+                            newFact.addPath(stmt);
+                            worklist.push({ var: leftOp, fact: newFact });
+                        }
+                    }
+
+                    if (rightOp instanceof AbstractInvokeExpr && leftOp instanceof Local) {
+                        const args = rightOp.getArgs();
+                        if (args.some(arg => ValueEqual(arg, currentVar) || arg.toString().includes(currentVarStr))) {
                             const newFact = new TaintFact(leftOp);
                             for (const p of currentFact.getPath()) {
                                 newFact.addPath(p);
@@ -1118,20 +1448,25 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             const invokeExpr = stmt.getInvokeExpr()!;
             if (source.sourceType == 'callback') {
                 const arg = invokeExpr.getArgs()[source.callbackIndex];
+                if (!arg || !(arg.getType() instanceof FunctionType)) {
+                    return;
+                }
                 const methodSignature = (arg.getType() as FunctionType).getMethodSignature();
                 const callbackMethod = stmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass().getMethod(methodSignature);
                 if (callbackMethod) {
                     if (method.getParameters().length <= source.sourceIndex) {
                         return;
                     }
-                    const paramRef = callbackMethod.getParameterInstances()[source.sourceIndex + (method.getParameters()[0].getType() instanceof LexicalEnvType ? 1 : 0)];
+                    const paramOffset = method.getParameters()[0]?.getType() instanceof LexicalEnvType ? 1 : 0;
+                    const paramRef = callbackMethod.getParameterInstances()[source.sourceIndex + paramOffset];
                     if (!paramRef) {
                         return;
                     }
                     propagateFact(paramRef, stmt, ret);
                 }
             } else if (source.sourceType == 'ArgIn') {
-                const param = method.getParameterInstances()[source.sourceIndex + (method.getParameters()[0].getType() instanceof LexicalEnvType ? 1 : 0)];
+                const paramOffset = method.getParameters()[0]?.getType() instanceof LexicalEnvType ? 1 : 0;
+                const param = method.getParameterInstances()[source.sourceIndex + paramOffset];
                 propagateFact(param, stmt, ret);
             }
         }
@@ -1590,9 +1925,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         return ValueEqual(value1, value2);
     }
 
-    public addSinksFromJson(path: string) {
-        const data = fs.readFileSync(path, 'utf-8');
-        const objects = JSON.parse(data);
+    public addSinksFromJson(filePath: string, sdkPath?: string) {
+        const objects = loadRuleObjects(filePath, sdkPath);
         for (const object of objects) {
             let methodSignatures: MethodSignature[] = [];
             methodSignatures = Json2ArkMethodSignature(object.module, object.namespace || '', object.class || '', object.api_name, this.scene, object.parameters);
@@ -1608,9 +1942,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
     }
 
-    public addSourcesFromJson(path: string) {
-        const data = fs.readFileSync(path, 'utf-8');
-        const objects = JSON.parse(data)
+    public addSourcesFromJson(filePath: string, sdkPath?: string) {
+        const objects = loadRuleObjects(filePath, sdkPath)
         for (const object of objects) {
             let methodSignatures: MethodSignature[] = [];
             methodSignatures = Json2ArkMethodSignature(object.module, object.namespace || '', object.class || '', object.api_name, this.scene, object.parameters);
@@ -1629,6 +1962,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     sourceIndex = 1;
                 } else if (VALID_CALLBACK_PATTERN.test(param)) {
                     sourceIndex = 0;
+                }
+                if (callbackIndex < 0 || sourceIndex < 0) {
+                    continue;
                 }
             }
             for (const ms of methodSignatures) {

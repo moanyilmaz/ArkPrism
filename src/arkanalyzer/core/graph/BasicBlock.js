@@ -70,7 +70,7 @@ class BasicBlock {
      * @returns An array of statements in a basic block.
      */
     getStmts() {
-        return this.stmts;
+        return this.stmts.filter(stmt => stmt != null);
     }
     addStmt(stmt) {
         this.stmts.push(stmt);

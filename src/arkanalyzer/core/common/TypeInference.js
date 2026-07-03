@@ -520,6 +520,9 @@ class TypeInference {
     }
     static inferGenericType(types, arkClass) {
         types === null || types === void 0 ? void 0 : types.forEach(type => {
+            if (!type || typeof type.getDefaultType !== 'function' || typeof type.getConstraint !== 'function') {
+                return;
+            }
             const defaultType = type.getDefaultType();
             if (defaultType instanceof Type_1.UnclearReferenceType) {
                 const newDefaultType = TypeInference.inferUnclearRefName(defaultType.getName(), arkClass);

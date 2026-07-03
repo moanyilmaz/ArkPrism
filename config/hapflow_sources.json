@@ -5,7 +5,7 @@
     "class": "AppAccountManager",
     "namespace": "appAccount",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.account.appAccount\").default.AppAccountInfo[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.account.appAccount\").default.AppAccountInfo[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -20,7 +20,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.account.appAccount\").default.AppAccountInfo[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.account.appAccount\").default.AppAccountInfo[], void>"
       }
     ],
     "returnType": "void",
@@ -42,7 +42,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.account.appAccount\").default.AppAccountInfo[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.account.appAccount\").default.AppAccountInfo[], void>"
       }
     ],
     "returnType": "void",
@@ -68,7 +68,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -89,7 +89,7 @@
         "type": "string"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.account.appAccount\").default.AppAccountInfo[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.account.appAccount\").default.AppAccountInfo[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -139,7 +139,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
       }
     ],
     "returnType": "void",
@@ -157,7 +157,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -201,7 +201,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
       }
     ],
     "returnType": "void",
@@ -237,10 +237,10 @@
     "parameters": [
       {
         "name": "profileId",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetoothManager\").default.ProfileId"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.ProfileId"
       }
     ],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetoothManager\").default.A2dpSourceProfile | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetoothManager\").default.HandsFreeAudioGatewayProfile | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetoothManager\").default.HidHostProfile | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetoothManager\").default.PanProfile",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.A2dpSourceProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.HandsFreeAudioGatewayProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.HidHostProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.PanProfile",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -255,11 +255,11 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "contact",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact"
       }
     ],
     "returnType": "Promise<number>",
@@ -277,11 +277,11 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactSelectionOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactSelectionOptions"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -297,7 +297,7 @@
     "class": "",
     "namespace": "contact",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -316,11 +316,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -338,7 +338,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "key",
@@ -346,7 +346,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -368,7 +368,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -390,11 +390,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -412,7 +412,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "key",
@@ -420,11 +420,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -442,7 +442,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "key",
@@ -450,11 +450,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -472,10 +472,10 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactSelectionOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactSelectionOptions"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -494,15 +494,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -520,7 +520,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "key",
@@ -528,14 +528,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -550,7 +550,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -572,14 +572,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -594,7 +594,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -612,11 +612,11 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -634,7 +634,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "key",
@@ -642,15 +642,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -668,15 +668,15 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -694,15 +694,15 @@
     "parameters": [
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -720,14 +720,14 @@
     "parameters": [
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -742,18 +742,18 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -768,11 +768,11 @@
     "parameters": [
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -790,19 +790,19 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -820,7 +820,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "email",
@@ -828,7 +828,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -846,15 +846,15 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -872,11 +872,11 @@
     "parameters": [
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -894,7 +894,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "email",
@@ -902,11 +902,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -928,7 +928,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -950,11 +950,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -976,15 +976,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1006,11 +1006,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1028,7 +1028,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "email",
@@ -1036,15 +1036,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1062,7 +1062,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "email",
@@ -1070,11 +1070,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1096,11 +1096,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1122,14 +1122,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1144,7 +1144,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "phoneNumber",
@@ -1152,11 +1152,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1178,7 +1178,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1200,11 +1200,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1222,7 +1222,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "phoneNumber",
@@ -1230,7 +1230,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1248,7 +1248,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "email",
@@ -1256,14 +1256,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1278,7 +1278,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "phoneNumber",
@@ -1286,11 +1286,11 @@
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1308,7 +1308,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "phoneNumber",
@@ -1316,15 +1316,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1342,11 +1342,11 @@
     "parameters": [
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[], void>"
       }
     ],
     "returnType": "void",
@@ -1368,15 +1368,15 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
       }
     ],
     "returnType": "void",
@@ -1394,7 +1394,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[], void>"
       }
     ],
     "returnType": "void",
@@ -1416,14 +1416,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1438,11 +1438,11 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[], void>"
       }
     ],
     "returnType": "void",
@@ -1460,10 +1460,10 @@
     "parameters": [
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1478,7 +1478,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "phoneNumber",
@@ -1486,14 +1486,14 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1508,14 +1508,14 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1530,7 +1530,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder[], void>"
       }
     ],
     "returnType": "void",
@@ -1548,15 +1548,15 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Group[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Group[], void>"
       }
     ],
     "returnType": "void",
@@ -1574,11 +1574,11 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder[], void>"
       }
     ],
     "returnType": "void",
@@ -1596,10 +1596,10 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1612,7 +1612,7 @@
     "class": "",
     "namespace": "contact",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1631,11 +1631,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -1653,7 +1653,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "id",
@@ -1661,11 +1661,11 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -1687,7 +1687,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -1705,7 +1705,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "id",
@@ -1713,7 +1713,7 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       }
     ],
     "returnType": "Promise<string>",
@@ -1735,7 +1735,7 @@
       },
       {
         "name": "holder",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Holder"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Holder"
       }
     ],
     "returnType": "Promise<string>",
@@ -1753,7 +1753,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -1771,7 +1771,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "id",
@@ -1779,7 +1779,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -1797,11 +1797,11 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -1819,11 +1819,11 @@
     "parameters": [
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -1841,15 +1841,15 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact, void>"
       }
     ],
     "returnType": "void",
@@ -1867,14 +1867,14 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1889,10 +1889,10 @@
     "parameters": [
       {
         "name": "attrs",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.ContactAttributes"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactAttributes"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.contact\").default.Contact>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -1907,7 +1907,7 @@
     "parameters": [
       {
         "name": "context",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/BaseContext\").default"
       },
       {
         "name": "id",
@@ -1915,7 +1915,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -1937,7 +1937,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -1959,7 +1959,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -1977,11 +1977,11 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>, void>"
       }
     ],
     "returnType": "void",
@@ -1999,10 +1999,10 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2017,10 +2017,10 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2035,7 +2035,7 @@
     "parameters": [
       {
         "name": "photoType",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoType"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
       },
       {
         "name": "extension",
@@ -2043,11 +2043,11 @@
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -2065,7 +2065,7 @@
     "parameters": [
       {
         "name": "photoType",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoType"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
       },
       {
         "name": "extension",
@@ -2073,7 +2073,7 @@
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
       }
     ],
     "returnType": "Promise<string>",
@@ -2091,11 +2091,11 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchOptions"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.FetchResult<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoAsset>, void>"
       }
     ],
     "returnType": "void",
@@ -2113,7 +2113,7 @@
     "parameters": [
       {
         "name": "photoType",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.photoAccessHelper\").default.PhotoType"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
       },
       {
         "name": "extension",
@@ -2121,7 +2121,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -2143,7 +2143,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location>"
       }
     ],
     "returnType": "void",
@@ -2165,11 +2165,11 @@
       },
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.LocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.LocationRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location>"
       }
     ],
     "returnType": "void",
@@ -2191,7 +2191,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location[]>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location[]>"
       }
     ],
     "returnType": "void",
@@ -2213,11 +2213,11 @@
       },
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.CachedGnssLocationsRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.CachedGnssLocationsRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location[]>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location[]>"
       }
     ],
     "returnType": "void",
@@ -2239,7 +2239,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.SatelliteStatusInfo>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.SatelliteStatusInfo>"
       }
     ],
     "returnType": "void",
@@ -2261,7 +2261,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<string>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<string>"
       }
     ],
     "returnType": "void",
@@ -2279,11 +2279,11 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.CurrentLocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.CurrentLocationRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location, void>"
       }
     ],
     "returnType": "void",
@@ -2301,7 +2301,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location, void>"
       }
     ],
     "returnType": "void",
@@ -2319,7 +2319,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location, void>"
       }
     ],
     "returnType": "void",
@@ -2350,10 +2350,10 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.CurrentLocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.CurrentLocationRequest"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2366,7 +2366,7 @@
     "class": "",
     "namespace": "geolocation",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.Location>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2381,7 +2381,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -2399,11 +2399,11 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.ReverseGeoCodeRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.ReverseGeoCodeRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.GeoAddress[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoAddress[], void>"
       }
     ],
     "returnType": "void",
@@ -2421,7 +2421,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -2439,7 +2439,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
       }
     ],
     "returnType": "void",
@@ -2457,11 +2457,11 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.GeoCodeRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoCodeRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geolocation\").default.GeoAddress[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoAddress[], void>"
       }
     ],
     "returnType": "void",
@@ -2479,7 +2479,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
       }
     ],
     "returnType": "void",
@@ -2501,7 +2501,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.LocationError>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.LocationError>"
       }
     ],
     "returnType": "void",
@@ -2523,11 +2523,11 @@
       },
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.LocationRequest | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.ContinuousLocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.LocationRequest | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.ContinuousLocationRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location>"
       }
     ],
     "returnType": "void",
@@ -2549,7 +2549,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.LocationError>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.LocationError>"
       }
     ],
     "returnType": "void",
@@ -2571,7 +2571,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<boolean>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<boolean>"
       }
     ],
     "returnType": "void",
@@ -2593,7 +2593,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location[]>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location[]>"
       }
     ],
     "returnType": "void",
@@ -2615,7 +2615,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location>"
       }
     ],
     "returnType": "void",
@@ -2637,7 +2637,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<string>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<string>"
       }
     ],
     "returnType": "void",
@@ -2659,7 +2659,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CountryCode>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode>"
       }
     ],
     "returnType": "void",
@@ -2681,7 +2681,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.SatelliteStatusInfo>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.SatelliteStatusInfo>"
       }
     ],
     "returnType": "void",
@@ -2699,10 +2699,10 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CurrentLocationRequest | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.SingleLocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CurrentLocationRequest | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.SingleLocationRequest"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2717,11 +2717,11 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CurrentLocationRequest | import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.SingleLocationRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CurrentLocationRequest | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.SingleLocationRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location, void>"
       }
     ],
     "returnType": "void",
@@ -2737,7 +2737,7 @@
     "class": "",
     "namespace": "geoLocationManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2756,7 +2756,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.BluetoothScanResult>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.BluetoothScanResult>"
       }
     ],
     "returnType": "void",
@@ -2774,10 +2774,10 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.GeoAddress[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.GeoAddress[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2792,11 +2792,11 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.GeoAddress[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.GeoAddress[], void>"
       }
     ],
     "returnType": "void",
@@ -2814,7 +2814,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
       }
     ],
     "returnType": "void",
@@ -2845,7 +2845,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location, void>"
       }
     ],
     "returnType": "void",
@@ -2863,7 +2863,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<void, void>"
       }
     ],
     "returnType": "void",
@@ -2881,7 +2881,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CountryCode, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode, void>"
       }
     ],
     "returnType": "void",
@@ -2897,7 +2897,7 @@
     "class": "",
     "namespace": "geoLocationManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CountryCode>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2916,11 +2916,11 @@
       },
       {
         "name": "request",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.CachedGnssLocationsRequest"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CachedGnssLocationsRequest"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.Location[]>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location[]>"
       }
     ],
     "returnType": "void",
@@ -2936,7 +2936,7 @@
     "class": "",
     "namespace": "geoLocationManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.geoLocationManager\").default.PoiInfo>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.PoiInfo>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -2977,7 +2977,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -2993,7 +2993,7 @@
     "class": "",
     "namespace": "inputMethodEngine",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.inputMethodEngine\").default.InputMethodAbility",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.inputMethodEngine\").default.InputMethodAbility",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3008,11 +3008,11 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.audio\").default.AudioCapturer, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturer, void>"
       }
     ],
     "returnType": "void",
@@ -3030,10 +3030,10 @@
     "parameters": [
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.audio\").default.AudioCapturer>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturer>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3048,7 +3048,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.audio\").default.AudioScene, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioScene, void>"
       }
     ],
     "returnType": "void",
@@ -3064,7 +3064,7 @@
     "class": "",
     "namespace": "connection",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3079,7 +3079,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[], void>"
       }
     ],
     "returnType": "void",
@@ -3095,7 +3095,7 @@
     "class": "",
     "namespace": "connection",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3110,7 +3110,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle, void>"
       }
     ],
     "returnType": "void",
@@ -3126,7 +3126,7 @@
     "class": "",
     "namespace": "connection",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3139,7 +3139,7 @@
     "class": "",
     "namespace": "connection",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3154,10 +3154,10 @@
     "parameters": [
       {
         "name": "netHandle",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetCapabilities>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetCapabilities>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3172,11 +3172,11 @@
     "parameters": [
       {
         "name": "netHandle",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetHandle"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.connection\").default.NetCapabilities, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetCapabilities, void>"
       }
     ],
     "returnType": "void",
@@ -3192,7 +3192,7 @@
     "class": "",
     "namespace": "pasteboard",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.pasteboard\").default.SystemPasteboard",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.pasteboard\").default.SystemPasteboard",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3220,7 +3220,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.pasteboard\").default.PasteData, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.pasteboard\").default.PasteData, void>"
       }
     ],
     "returnType": "void",
@@ -3236,7 +3236,7 @@
     "class": "SystemPasteboard",
     "namespace": "pasteboard",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.pasteboard\").default.PasteData>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.pasteboard\").default.PasteData>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3251,7 +3251,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.resourceManager\").default.DeviceCapability, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.resourceManager\").default.DeviceCapability, void>"
       }
     ],
     "returnType": "void",
@@ -3267,7 +3267,7 @@
     "class": "ResourceManager",
     "namespace": "resourceManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.resourceManager\").default.DeviceCapability>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.resourceManager\").default.DeviceCapability>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -3282,15 +3282,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.ACCELEROMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.ACCELEROMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.AccelerometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3308,15 +3308,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.ACCELEROMETER_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.ACCELEROMETER_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.AccelerometerUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3334,15 +3334,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.BAROMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.BAROMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.BarometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.BarometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3360,15 +3360,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.GRAVITY"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.GRAVITY"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.GravityResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GravityResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3386,15 +3386,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.GYROSCOPE"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.GYROSCOPE"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.GyroscopeResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3412,15 +3412,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.AMBIENT_LIGHT"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.AMBIENT_LIGHT"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.LightResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.LightResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3438,15 +3438,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.GYROSCOPE_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.GYROSCOPE_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.GyroscopeUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3464,15 +3464,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.HALL"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.HALL"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.HallResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HallResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3490,15 +3490,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.MAGNETIC_FIELD"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.MAGNETIC_FIELD"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.MagneticFieldResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3516,15 +3516,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.ORIENTATION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.ORIENTATION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.OrientationResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.OrientationResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3542,15 +3542,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.HEART_RATE"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.HEART_RATE"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.HeartRateResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HeartRateResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3568,15 +3568,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.MAGNETIC_FIELD_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.MAGNETIC_FIELD_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.MagneticFieldUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3594,15 +3594,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.PEDOMETER_DETECTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.PEDOMETER_DETECTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.PedometerDetectionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerDetectionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3620,15 +3620,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.LINEAR_ACCELEROMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.LINEAR_ACCELEROMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.LinearAccelerometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.LinearAccelerometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3646,15 +3646,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.WEAR_DETECTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.WEAR_DETECTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.WearDetectionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.WearDetectionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3672,15 +3672,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.PROXIMITY"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.PROXIMITY"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.ProximityResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.ProximityResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3698,15 +3698,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.ROTATION_VECTOR"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.ROTATION_VECTOR"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.RotationVectorResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.RotationVectorResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3724,15 +3724,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.PEDOMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.PEDOMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.PedometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3750,15 +3750,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId.SIGNIFICANT_MOTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.SIGNIFICANT_MOTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SignificantMotionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SignificantMotionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3776,15 +3776,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.AccelerometerUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3802,15 +3802,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.AccelerometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3828,15 +3828,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HEART_RATE"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HEART_RATE"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.HeartRateResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HeartRateResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3854,15 +3854,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.GyroscopeResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3880,15 +3880,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_LINEAR_ACCELERATION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_LINEAR_ACCELERATION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.LinearAccelerometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.LinearAccelerometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3906,15 +3906,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HUMIDITY"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HUMIDITY"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.HumidityResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HumidityResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3932,15 +3932,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.MagneticFieldResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3958,15 +3958,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER_DETECTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER_DETECTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.PedometerDetectionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerDetectionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -3984,15 +3984,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PROXIMITY"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PROXIMITY"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.ProximityResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.ProximityResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4010,15 +4010,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ROTATION_VECTOR"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ROTATION_VECTOR"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.RotationVectorResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.RotationVectorResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4036,15 +4036,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_SIGNIFICANT_MOTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_SIGNIFICANT_MOTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SignificantMotionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SignificantMotionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4062,15 +4062,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_WEAR_DETECTION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_WEAR_DETECTION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.WearDetectionResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.WearDetectionResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4088,15 +4088,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.MagneticFieldUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4114,15 +4114,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ORIENTATION"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ORIENTATION"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.OrientationResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.OrientationResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4140,15 +4140,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.PedometerResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4166,15 +4166,15 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE_UNCALIBRATED"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE_UNCALIBRATED"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.GyroscopeUncalibratedResponse>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeUncalibratedResponse>"
       },
       {
         "name": "options",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Options"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
       }
     ],
     "returnType": "void",
@@ -4192,10 +4192,10 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
       }
     ],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4210,14 +4210,14 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
       },
       {
         "name": "deviceId",
         "type": "number"
       }
     ],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4232,10 +4232,10 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4250,11 +4250,11 @@
     "parameters": [
       {
         "name": "type",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorId"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor, void>"
       }
     ],
     "returnType": "void",
@@ -4272,7 +4272,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[], void>"
       }
     ],
     "returnType": "void",
@@ -4288,7 +4288,7 @@
     "class": "",
     "namespace": "sensor",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4301,7 +4301,7 @@
     "class": "",
     "namespace": "sensor",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.Sensor[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4320,7 +4320,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.sensor\").default.SensorStatusEvent>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorStatusEvent>"
       }
     ],
     "returnType": "void",
@@ -4378,7 +4378,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -4400,7 +4400,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<string, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
       }
     ],
     "returnType": "void",
@@ -4422,7 +4422,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.SimState, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.SimState, void>"
       }
     ],
     "returnType": "void",
@@ -4443,7 +4443,7 @@
         "type": "number"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.SimState>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.SimState>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4479,7 +4479,7 @@
         "type": "number"
       }
     ],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.IccAccountInfo>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.IccAccountInfo>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4498,7 +4498,7 @@
       },
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.IccAccountInfo, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.IccAccountInfo, void>"
       }
     ],
     "returnType": "void",
@@ -4516,7 +4516,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.IccAccountInfo[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.IccAccountInfo[], void>"
       }
     ],
     "returnType": "void",
@@ -4532,7 +4532,7 @@
     "class": "",
     "namespace": "sim",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sim\").default.IccAccountInfo[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.IccAccountInfo[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4547,7 +4547,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiScanInfo[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiScanInfo[], void>"
       }
     ],
     "returnType": "void",
@@ -4563,7 +4563,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiScanInfo[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiScanInfo[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4576,7 +4576,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiScanInfo[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiScanInfo[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4589,7 +4589,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiLinkedInfo>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiLinkedInfo>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4602,7 +4602,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiLinkedInfo[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiLinkedInfo[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4617,7 +4617,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiLinkedInfo, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiLinkedInfo, void>"
       }
     ],
     "returnType": "void",
@@ -4633,7 +4633,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiLinkedInfo",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiLinkedInfo",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4646,7 +4646,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiDeviceConfig[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiDeviceConfig[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4672,7 +4672,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.IpInfo",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.IpInfo",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4698,7 +4698,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiDeviceConfig[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiDeviceConfig[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4711,7 +4711,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pLinkedInfo>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pLinkedInfo>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4724,7 +4724,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pGroupInfo>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pGroupInfo>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4739,7 +4739,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pGroupInfo, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pGroupInfo, void>"
       }
     ],
     "returnType": "void",
@@ -4755,7 +4755,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiScanInfo[]",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiScanInfo[]",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4770,7 +4770,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pLinkedInfo, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pLinkedInfo, void>"
       }
     ],
     "returnType": "void",
@@ -4786,7 +4786,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.Ipv6Info",
+    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.Ipv6Info",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4799,7 +4799,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pDevice[]>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pDevice[]>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4814,7 +4814,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pDevice[], void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pDevice[], void>"
       }
     ],
     "returnType": "void",
@@ -4832,7 +4832,7 @@
     "parameters": [
       {
         "name": "callback",
-        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pDevice, void>"
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pDevice, void>"
       }
     ],
     "returnType": "void",
@@ -4848,7 +4848,7 @@
     "class": "",
     "namespace": "wifiManager",
     "parameters": [],
-    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.wifiManager\").default.WifiP2pDevice>",
+    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.wifiManager\").default.WifiP2pDevice>",
     "api_type": "source",
     "source_type": "return",
     "tainted_param_index": -1,
@@ -4863,7 +4863,7 @@
     "parameters": [
       {
         "name": "request",
-        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.ExerciseSequenceReadRequest<Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.SequencePoint[]>>"
+        "type": "import(\"${HMS_SDK_PATH}/api/@hms.health.store\").default.ExerciseSequenceReadRequest<Record<string, import(\"${HMS_SDK_PATH}/api/@hms.health.store\").default.SequencePoint[]>>"
       }
     ],
     "returnType": "Promise<T[]>",
