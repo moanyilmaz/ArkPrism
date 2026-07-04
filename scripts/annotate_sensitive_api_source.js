@@ -13,6 +13,8 @@ const DEFAULT_EXCLUDED_DIRS = new Set([
   'resources',
   'rawfile',
   'archive_files',
+  'deprecated',
+  'legacy',
 ]);
 
 const DEFAULT_EXTENSIONS = new Set(['.ets', '.ts', '.js', '.vue']);
