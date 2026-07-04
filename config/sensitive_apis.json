@@ -181,6 +181,13 @@
       },
       {
         "namespace": "audio",
+        "method": "audio.AudioVolumeManager.getVolumeGroupManager",
+        "permission": null,
+        "profilingCategory": "device_status.audio",
+        "directCall": false
+      },
+      {
+        "namespace": "audio",
         "method": "getRoutingManager",
         "permission": null,
         "profilingCategory": "device_status.audio",
@@ -466,6 +473,13 @@
       },
       {
         "namespace": "appAccount",
+        "method": "appAccount.AppAccountManager.createAccount",
+        "permission": "ohos.permission.CREATE_REMOTE_APP_ACCOUNT",
+        "profilingCategory": "user_data.account",
+        "directCall": false
+      },
+      {
+        "namespace": "appAccount",
         "method": "appAccount.AppAccountManager.getAllAccounts",
         "permission": "ohos.permission.GET_APP_ACCOUNTS",
         "profilingCategory": "user_data.account",
@@ -624,6 +638,13 @@
         "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
         "profilingCategory": "user_data.account",
         "directCall": true
+      },
+      {
+        "namespace": "appAccount",
+        "method": "appAccount.AppAccountManager.getAccountCredential",
+        "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
+        "profilingCategory": "user_data.account",
+        "directCall": false
       },
       {
         "namespace": "pasteboard",
@@ -5356,6 +5377,13 @@
         "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
         "profilingCategory": "user_data.account",
         "directCall": true
+      },
+      {
+        "namespace": "appAccount",
+        "method": "appAccount.AppAccountManager.getAccountCredential",
+        "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
+        "profilingCategory": "user_data.account",
+        "directCall": false
       }
     ]
   },

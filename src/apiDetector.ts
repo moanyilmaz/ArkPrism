@@ -149,7 +149,10 @@ function findMatchedApi(
     stmtText: string
 ): { unit: ImportEntryCheckUnit; api: PrivacyDataAPI } | undefined {
     for (const unit of units) {
-        const matchedApi = unit.relatedApis.find(api => methodMatches(api, invokeMethodName, stmtText));
+        let matchedApi = unit.relatedApis.find(api => api.method === invokeMethodName);
+        if (!matchedApi) {
+            matchedApi = unit.relatedApis.find(api => methodMatches(api, invokeMethodName, stmtText));
+        }
         if (matchedApi) return { unit, api: matchedApi };
     }
     return undefined;
@@ -321,7 +324,7 @@ function checkIndirectCallPrivacyApis(
                 // This handles cases where ArkAnalyzer can't infer the return type of SDK helper methods
                 if (namespacesInCaller.length === 0 && invokeMethodName) {
                     for (const unit of indirectCallCheckUnits) {
-                        const matchedByMethod = unit.relatedApis.find(api => api.method === invokeMethodName);
+                        const matchedByMethod = unit.relatedApis.find(api => methodMatches(api, invokeMethodName, stmtText));
                         if (matchedByMethod) {
                             namespacesInCaller = [unit];
                             break;
@@ -451,6 +454,14 @@ export function analyzeFileForPrivacyApis(
             importClauseName: importInfo.importClauseName,
             relatedApis: apis
         });
+
+        const namespaceDirectApis = indirectCallApis.filter(api => {
+            const normalizedMethod = normalizedRuleMethod(api.method);
+            return normalizedMethod !== api.method && api.method.startsWith(`${api.namespace}.`);
+        });
+        if (namespaceDirectApis.length > 0) {
+            directCallApis = directCallApis.concat(namespaceDirectApis);
+        }
 
         if (directCallApis.length > 0) directCallCheckUnits.push(makeUnit(directCallApis));
         if (indirectCallApis.length > 0) indirectCallCheckUnits.push(makeUnit(indirectCallApis));
