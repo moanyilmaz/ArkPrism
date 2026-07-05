@@ -1,0 +1,553 @@
+{
+  "summary": {
+    "projects": 50,
+    "pred": 438,
+    "gold": 413,
+    "tp": 413,
+    "fp": 25,
+    "fn": 0,
+    "precision": 0.9429223744292238,
+    "recall": 1
+  },
+  "projects": [
+    {
+      "projectName": "CommonAppDevelopment",
+      "pred": 34,
+      "gold": 30,
+      "tp": 30,
+      "fp": 4,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset",
+        "calendarmanager|getCalendar",
+        "netquality|on",
+        "camera|createCameraInput"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "pred": 44,
+      "gold": 43,
+      "tp": 43,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "deviceinfo|sdkApiVersion"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "pred": 38,
+      "gold": 37,
+      "tp": 37,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "pred": 19,
+      "gold": 19,
+      "tp": 19,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "pred": 41,
+      "gold": 41,
+      "tp": 41,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "pred": 33,
+      "gold": 33,
+      "tp": 33,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "applications_settings",
+      "pred": 13,
+      "gold": 12,
+      "tp": 12,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "audio|getVolumeGroupManager"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_ResponsiveLayout",
+      "pred": 1,
+      "gold": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_ZUtils",
+      "pred": 26,
+      "gold": 26,
+      "tp": 26,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_MultiVideoApplication",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "pred": 4,
+      "gold": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos_samples_network-query",
+      "pred": 14,
+      "gold": 12,
+      "tp": 12,
+      "fp": 2,
+      "fn": 0,
+      "fpKeys": [
+        "netquality|on",
+        "netquality|off"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "pred": 20,
+      "gold": 20,
+      "tp": 20,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos_samples_CustomCamera",
+      "pred": 8,
+      "gold": 5,
+      "tp": 5,
+      "fp": 3,
+      "fn": 0,
+      "fpKeys": [
+        "camera|createCameraInput",
+        "camera|getSupportedCameras",
+        "photoaccesshelper|createAsset"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Dictionareow",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Photos",
+      "pred": 3,
+      "gold": 1,
+      "tp": 1,
+      "fp": 2,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset",
+        "photoaccesshelper|getAssets"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "applications_systemui",
+      "pred": 7,
+      "gold": 6,
+      "tp": 6,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "audio|getVolumeGroupManager"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Gramony",
+      "pred": 6,
+      "gold": 6,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Homogram",
+      "pred": 6,
+      "gold": 6,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_readerkit_samplecode_arkts",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "UserAuthentication",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Melotopia-HMOS",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "MultiVideoApplication",
+      "pred": 1,
+      "gold": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_MultiDeviceCommunication",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "uitest",
+      "pred": 1,
+      "gold": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "pred": 4,
+      "gold": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "legado-Harmony-master",
+      "pred": 4,
+      "gold": 3,
+      "tp": 3,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "siyuan-harmony",
+      "pred": 6,
+      "gold": 6,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Spaceow",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "DistributedAuthentication",
+      "pred": 5,
+      "gold": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos_samples_continue-progress",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "pred": 5,
+      "gold": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_HMRouter",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Renameow",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "pred": 7,
+      "gold": 7,
+      "tp": 7,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Aigis",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Audio",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Camera_js",
+      "pred": 5,
+      "gold": 2,
+      "tp": 2,
+      "fp": 3,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset",
+        "camera|getSupportedCameras",
+        "photoaccesshelper|getAssets"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "MNUIKitDemo",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "SmartHome",
+      "pred": 9,
+      "gold": 9,
+      "tp": 9,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Wlan",
+      "pred": 10,
+      "gold": 10,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "pred": 2,
+      "gold": 2,
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "AVCodec",
+      "pred": 4,
+      "gold": 2,
+      "tp": 2,
+      "fp": 2,
+      "fn": 0,
+      "fpKeys": [
+        "photoaccesshelper|createAsset",
+        "camera|createCameraInput"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "FoldableAdaptation",
+      "pred": 1,
+      "gold": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos_samples_graphic-creation",
+      "pred": 5,
+      "gold": 4,
+      "tp": 4,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "camera|createCameraInput"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_transitions-collection",
+      "pred": 1,
+      "gold": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "com.example.myapplication2",
+      "pred": 9,
+      "gold": 7,
+      "tp": 7,
+      "fp": 2,
+      "fn": 0,
+      "fpKeys": [
+        "sms|hasSmsCapability",
+        "sms|getDefaultSmsSimId"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "Exam",
+      "pred": 3,
+      "gold": 2,
+      "tp": 2,
+      "fp": 1,
+      "fn": 0,
+      "fpKeys": [
+        "pasteboard|getData"
+      ],
+      "fnKeys": []
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "pred": 3,
+      "gold": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    },
+    {
+      "projectName": "LiveStreaming",
+      "pred": 5,
+      "gold": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "fpKeys": [],
+      "fnKeys": []
+    }
+  ]
+}

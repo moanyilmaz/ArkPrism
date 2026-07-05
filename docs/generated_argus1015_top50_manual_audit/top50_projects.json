@@ -1,0 +1,352 @@
+[
+  {
+    "projectName": "CommonAppDevelopment",
+    "apis": 128,
+    "chains": 128,
+    "taints": 205,
+    "sinks": 57
+  },
+  {
+    "projectName": "Wechat_HarmonyOS",
+    "apis": 65,
+    "chains": 65,
+    "taints": 43,
+    "sinks": 75
+  },
+  {
+    "projectName": "legado-Harmony-main",
+    "apis": 61,
+    "chains": 61,
+    "taints": 53,
+    "sinks": 81
+  },
+  {
+    "projectName": "Snake_NEXT-main",
+    "apis": 50,
+    "chains": 50,
+    "taints": 63,
+    "sinks": 42
+  },
+  {
+    "projectName": "harmony-next-music-sharing",
+    "apis": 48,
+    "chains": 48,
+    "taints": 28,
+    "sinks": 25
+  },
+  {
+    "projectName": "STUFFS_NEXT-master",
+    "apis": 45,
+    "chains": 45,
+    "taints": 44,
+    "sinks": 64
+  },
+  {
+    "projectName": "applications_settings",
+    "apis": 43,
+    "chains": 43,
+    "taints": 44,
+    "sinks": 7
+  },
+  {
+    "projectName": "harmonyos4me_ResponsiveLayout",
+    "apis": 41,
+    "chains": 41,
+    "taints": 5,
+    "sinks": 52
+  },
+  {
+    "projectName": "harmonyos4me_ZUtils",
+    "apis": 33,
+    "chains": 33,
+    "taints": 29,
+    "sinks": 26
+  },
+  {
+    "projectName": "harmonyos4me_MultiVideoApplication",
+    "apis": 32,
+    "chains": 32,
+    "taints": 3,
+    "sinks": 15
+  },
+  {
+    "projectName": "harmony-arkts-chat-app-ui",
+    "apis": 29,
+    "chains": 29,
+    "taints": 1,
+    "sinks": 0
+  },
+  {
+    "projectName": "harmonyos_samples_network-query",
+    "apis": 26,
+    "chains": 26,
+    "taints": 16,
+    "sinks": 28
+  },
+  {
+    "projectName": "harmonyProject-master",
+    "apis": 26,
+    "chains": 26,
+    "taints": 22,
+    "sinks": 20
+  },
+  {
+    "projectName": "harmonyos_samples_CustomCamera",
+    "apis": 23,
+    "chains": 23,
+    "taints": 8,
+    "sinks": 23
+  },
+  {
+    "projectName": "Dictionareow",
+    "apis": 22,
+    "chains": 22,
+    "taints": 13,
+    "sinks": 30
+  },
+  {
+    "projectName": "Photos",
+    "apis": 22,
+    "chains": 22,
+    "taints": 41,
+    "sinks": 5
+  },
+  {
+    "projectName": "applications_systemui",
+    "apis": 21,
+    "chains": 21,
+    "taints": 2,
+    "sinks": 1
+  },
+  {
+    "projectName": "Gramony",
+    "apis": 19,
+    "chains": 19,
+    "taints": 0,
+    "sinks": 17
+  },
+  {
+    "projectName": "Homogram",
+    "apis": 19,
+    "chains": 19,
+    "taints": 0,
+    "sinks": 11
+  },
+  {
+    "projectName": "harmonyos4me_readerkit_samplecode_arkts",
+    "apis": 18,
+    "chains": 18,
+    "taints": 5,
+    "sinks": 8
+  },
+  {
+    "projectName": "UserAuthentication",
+    "apis": 18,
+    "chains": 18,
+    "taints": 0,
+    "sinks": 36
+  },
+  {
+    "projectName": "Melotopia-HMOS",
+    "apis": 17,
+    "chains": 17,
+    "taints": 1,
+    "sinks": 6
+  },
+  {
+    "projectName": "MultiVideoApplication",
+    "apis": 17,
+    "chains": 17,
+    "taints": 3,
+    "sinks": 13
+  },
+  {
+    "projectName": "harmonyos4me_MultiDeviceCommunication",
+    "apis": 14,
+    "chains": 14,
+    "taints": 0,
+    "sinks": 1
+  },
+  {
+    "projectName": "uitest",
+    "apis": 14,
+    "chains": 14,
+    "taints": 0,
+    "sinks": 2
+  },
+  {
+    "projectName": "ChildrenEducation",
+    "apis": 13,
+    "chains": 13,
+    "taints": 3,
+    "sinks": 7
+  },
+  {
+    "projectName": "legado-Harmony-master",
+    "apis": 13,
+    "chains": 13,
+    "taints": 8,
+    "sinks": 10
+  },
+  {
+    "projectName": "siyuan-harmony",
+    "apis": 13,
+    "chains": 13,
+    "taints": 5,
+    "sinks": 11
+  },
+  {
+    "projectName": "Spaceow",
+    "apis": 13,
+    "chains": 13,
+    "taints": 0,
+    "sinks": 4
+  },
+  {
+    "projectName": "DistributedAuthentication",
+    "apis": 12,
+    "chains": 12,
+    "taints": 5,
+    "sinks": 14
+  },
+  {
+    "projectName": "harmonyos_samples_continue-progress",
+    "apis": 12,
+    "chains": 12,
+    "taints": 10,
+    "sinks": 10
+  },
+  {
+    "projectName": "HarmonyOS-Inno",
+    "apis": 12,
+    "chains": 12,
+    "taints": 27,
+    "sinks": 14
+  },
+  {
+    "projectName": "harmonyos4me_HMRouter",
+    "apis": 12,
+    "chains": 12,
+    "taints": 0,
+    "sinks": 0
+  },
+  {
+    "projectName": "Renameow",
+    "apis": 12,
+    "chains": 12,
+    "taints": 0,
+    "sinks": 1
+  },
+  {
+    "projectName": "Wake-HarmonyOS",
+    "apis": 12,
+    "chains": 12,
+    "taints": 9,
+    "sinks": 13
+  },
+  {
+    "projectName": "Aigis",
+    "apis": 11,
+    "chains": 11,
+    "taints": 12,
+    "sinks": 0
+  },
+  {
+    "projectName": "Audio",
+    "apis": 11,
+    "chains": 11,
+    "taints": 8,
+    "sinks": 10
+  },
+  {
+    "projectName": "Camera_js",
+    "apis": 11,
+    "chains": 11,
+    "taints": 17,
+    "sinks": 16
+  },
+  {
+    "projectName": "MNUIKitDemo",
+    "apis": 11,
+    "chains": 11,
+    "taints": 0,
+    "sinks": 0
+  },
+  {
+    "projectName": "SmartHome",
+    "apis": 11,
+    "chains": 11,
+    "taints": 0,
+    "sinks": 0
+  },
+  {
+    "projectName": "Wlan",
+    "apis": 11,
+    "chains": 11,
+    "taints": 5,
+    "sinks": 9
+  },
+  {
+    "projectName": "aloeplayer_ohos",
+    "apis": 10,
+    "chains": 10,
+    "taints": 29,
+    "sinks": 2
+  },
+  {
+    "projectName": "AVCodec",
+    "apis": 10,
+    "chains": 10,
+    "taints": 19,
+    "sinks": 9
+  },
+  {
+    "projectName": "FoldableAdaptation",
+    "apis": 10,
+    "chains": 10,
+    "taints": 0,
+    "sinks": 2
+  },
+  {
+    "projectName": "harmonyos_samples_graphic-creation",
+    "apis": 10,
+    "chains": 10,
+    "taints": 1,
+    "sinks": 6
+  },
+  {
+    "projectName": "harmonyos4me_transitions-collection",
+    "apis": 10,
+    "chains": 10,
+    "taints": 8,
+    "sinks": 4
+  },
+  {
+    "projectName": "com.example.myapplication2",
+    "apis": 9,
+    "chains": 9,
+    "taints": 0,
+    "sinks": 0
+  },
+  {
+    "projectName": "Exam",
+    "apis": 9,
+    "chains": 9,
+    "taints": 0,
+    "sinks": 2
+  },
+  {
+    "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+    "apis": 9,
+    "chains": 9,
+    "taints": 3,
+    "sinks": 9
+  },
+  {
+    "projectName": "LiveStreaming",
+    "apis": 9,
+    "chains": 9,
+    "taints": 22,
+    "sinks": 2
+  }
+]

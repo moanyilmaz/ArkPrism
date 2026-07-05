@@ -221,6 +221,9 @@ function stripStringsPreservePositions(text) {
     } else if (ch === state) {
       result += ' ';
       state = 'code';
+    } else if ((state === '"' || state === "'") && (ch === '\r' || ch === '\n')) {
+      result += ch;
+      state = 'code';
     } else {
       result += ch === '\r' || ch === '\n' ? ch : ' ';
     }
@@ -443,11 +446,25 @@ function presenceHits(text, projectDir, filePath, imports, rulesByPackage) {
     const receiverRegexes = [
       new RegExp(`\\b(?:let|const|var)\\s+([A-Za-z_$][\\w$]*)\\s*:\\s*(${typePattern})`, 'g'),
       new RegExp(`[,(]\\s*([A-Za-z_$][\\w$]*)\\s*:\\s*(${typePattern})`, 'g'),
+      new RegExp(`\\b(?:private|public|protected|readonly|static|\\s)*([A-Za-z_$][\\w$]*)\\??\\s*:\\s*(${typePattern})`, 'g'),
     ];
     for (const regex of receiverRegexes) {
       let match;
       while ((match = regex.exec(text)) !== null) {
         typedReceivers.set(match[1], match[2].replace(/\s+/g, ''));
+        if (match.index === regex.lastIndex) regex.lastIndex++;
+      }
+    }
+
+    const inferredReceivers = new Set();
+    const factoryRegexes = [
+      new RegExp(`\\b(?:let|const|var)\\s+([A-Za-z_$][\\w$]*)\\s*(?::[^=;]+)?=\\s*(?:await\\s+)?${local}\\s*(?:\\?\\.)?\\.\\s*[A-Za-z_$][\\w$]*\\s*\\(`, 'g'),
+      new RegExp(`\\bthis\\s*\\.\\s*([A-Za-z_$][\\w$]*)\\s*=\\s*(?:await\\s+)?${local}\\s*(?:\\?\\.)?\\.\\s*[A-Za-z_$][\\w$]*\\s*\\(`, 'g'),
+    ];
+    for (const regex of factoryRegexes) {
+      let match;
+      while ((match = regex.exec(text)) !== null) {
+        inferredReceivers.add(match[1]);
         if (match.index === regex.lastIndex) regex.lastIndex++;
       }
     }
@@ -473,11 +490,21 @@ function presenceHits(text, projectDir, filePath, imports, rulesByPackage) {
         );
         if (!methodQualifier || methodCandidate !== methodTail) continue;
         for (const [receiver, receiverType] of typedReceivers) {
-          if (receiverType !== methodQualifier) continue;
+          const receiverTypeTail = receiverType.split('.').filter(Boolean).pop() || receiverType;
+          const methodQualifierTail = methodQualifier.split('.').filter(Boolean).pop() || methodQualifier;
+          if (receiverType !== methodQualifier && receiverTypeTail !== methodQualifierTail) continue;
           const receiverEscaped = escapeRegExp(receiver);
           matches.push(
-            ...findAllMatches(text, new RegExp(`\\b${receiverEscaped}\\s*(?:\\?\\.)?\\.\\s*${method}\\b`, 'g')),
-            ...findAllMatches(text, new RegExp(`\\b${receiverEscaped}\\s*(?:\\?\\.)?\\[\\s*['"]${method}\\s*['"]\\s*\\]`, 'g')),
+            ...findAllMatches(text, new RegExp(`\\b(?:this\\s*\\.\\s*)?${receiverEscaped}\\s*(?:\\?\\.)?\\.\\s*${method}\\b`, 'g')),
+            ...findAllMatches(text, new RegExp(`\\b(?:this\\s*\\.\\s*)?${receiverEscaped}\\s*(?:\\?\\.)?\\[\\s*['"]${method}\\s*['"]\\s*\\]`, 'g')),
+          );
+        }
+
+        for (const receiver of inferredReceivers) {
+          const receiverEscaped = escapeRegExp(receiver);
+          matches.push(
+            ...findAllMatches(text, new RegExp(`\\b(?:this\\s*\\.\\s*)?${receiverEscaped}\\s*(?:\\?\\.)?\\.\\s*${method}\\b`, 'g')),
+            ...findAllMatches(text, new RegExp(`\\b(?:this\\s*\\.\\s*)?${receiverEscaped}\\s*(?:\\?\\.)?\\[\\s*['"]${method}\\s*['"]\\s*\\]`, 'g')),
           );
         }
       }

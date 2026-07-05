@@ -2,13 +2,14 @@
 
 ## 实验设置
 
-- 测试日期: 2026-07-04
+- 测试日期: 2026-07-05
 - 样本集: `E:\Projects\ARGUS\release_20260617\ARGUS-successful-1015-samples-20260617`
 - 样本数量: 1015
 - SDK: `E:\OpenHarmony_SDK\20\ets`
 - ArkPrism 输出: `out_argus_1015_validated_20260704`
-- 源码 benchmark: `docs/generated_argus1015_source_annotations_validated_20260704/source_sensitive_api_annotations.md`
-- 论文式指标: `docs/generated_argus1015_validated_20260704_analysis/paper_experiment_analysis.md`
+- 源码 benchmark: `docs/generated_argus1015_source_annotations_validated_20260705/source_sensitive_api_annotations.md`
+- 论文式指标: `docs/generated_argus1015_validated_20260705_analysis/paper_experiment_analysis.md`
+- Top-50 人工复核 benchmark: `docs/generated_argus1015_top50_manual_audit/manual_top50_benchmark_20260705.md`
 - 运行稳定性: `docs/generated_argus1015_validated_20260704_analysis/runtime_stability_analysis.json`
 
 本轮使用真实 OpenHarmony SDK 运行，不启用 SDK fallback。由于内置 `--batch` 单进程模式在第 20 个样本附近出现跨项目内存累积，正式全量实验改用样本级隔离 runner：每个样本独立 ArkPrism 进程、同一套 detector/IFDS/callback 参数、支持 resume，并发度为 2。该调整只改变实验执行方式，不改变分析算法。
@@ -39,13 +40,13 @@ node scripts\run_argus_batch_isolated.js `
 node scripts\annotate_sensitive_api_source.js `
   --dataset "E:\Projects\ARGUS\release_20260617\ARGUS-successful-1015-samples-20260617" `
   --reports out_argus_1015_validated_20260704 `
-  --output-dir docs\generated_argus1015_source_annotations_validated_20260704
+  --output-dir docs\generated_argus1015_source_annotations_validated_20260705
 
 node scripts\analyze_argus1015_experiment.js `
   --reports out_argus_1015_validated_20260704 `
-  --annotations docs\generated_argus1015_source_annotations_validated_20260704\source_sensitive_api_annotations.json `
-  --aggregate out_argus_1015_validated_20260704\aggregate_summary.json `
-  --output-dir docs\generated_argus1015_validated_20260704_analysis
+  --annotations docs\generated_argus1015_source_annotations_validated_20260705\source_sensitive_api_annotations.json `
+  --aggregate out_argus_1015_validated_20260704\aggregate_summary_20260705.json `
+  --output-dir docs\generated_argus1015_validated_20260705_analysis
 ```
 
 ## Benchmark 标注口径
@@ -78,8 +79,8 @@ node scripts\analyze_argus1015_experiment.js `
 | 标注层级 | 命中数/方法数 | ArkPrism 漏检 |
 |---|---:|---:|
 | Raw method-name hits | 57737 | 不作为真实 API 指标 |
-| Presence source hits | 1353 hits / 725 methods | 0 |
-| Qualified source hits | 1081 hits / 600 methods | 0 |
+| Presence source hits | 1379 hits / 745 methods | 0 |
+| Qualified source hits | 1087 hits / 606 methods | 0 |
 
 ## 敏感 API 定位准确率
 
@@ -87,12 +88,44 @@ node scripts\analyze_argus1015_experiment.js `
 
 | 粒度 | TP | FP* | FN | Micro Precision* | Micro Recall | Micro F1* | Macro Precision* | Macro Recall |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| Namespace + method | 725 | 110 | 0 | 86.83% | 100.00% | 92.95% | 96.15% | 100.00% |
-| Strict package signature | 477 | 377 | 142 | 55.85% | 77.06% | 64.77% | 87.03% | 95.68% |
+| Namespace + method | 745 | 90 | 0 | 89.22% | 100.00% | 94.30% | 96.77% | 100.00% |
+| Strict package signature | 483 | 371 | 142 | 56.56% | 77.28% | 65.31% | 87.10% | 95.68% |
 
-这里的 FP* 不是断言工具误报，而是“相对源码 presence/qualified benchmark 的额外检测”。主要原因是源码 benchmark 按项目级 API 存在去重，而 ArkPrism 报告保留多处 usage、包别名、Kit 包和历史 `@ohos.*` 包的差异。论文主结论应使用 Namespace + method：在当前 benchmark 下，敏感 API 定位召回率为 100%，项目级 exact match 为 945/1015。
+这里的 FP* 不是断言工具误报，而是“相对源码 presence/qualified benchmark 的额外检测”。主要原因是源码 benchmark 按项目级 API 存在去重，而 ArkPrism 报告保留多处 usage、包别名、Kit 包和历史 `@ohos.*` 包的差异。论文主结论应使用 Namespace + method：在当前 hardened benchmark 下，敏感 API 定位召回率为 100%，项目级 exact match 为 953/1015。
 
 Strict package signature 只作为别名敏感性诊断，不适合作为主指标；HarmonyOS 的 `@kit.*` 与 `@ohos.*` 迁移会让同一语义 API 在包签名层看起来不一致。
+
+## Top-50 人工复核 Benchmark
+
+为了回答 precision 是否真的只有 86%-89%，本轮额外抽取 ArkPrism 检出 API usage 数最高的前 50 个样本进行人工复核。该子集覆盖 1127/1757 个 API usages，占全量 usage 的 64.14%，因此比随机小样本更能暴露高结果项目中的误报风险。
+
+复核流程：
+
+1. 先用 hardened source presence benchmark 计算前 50 项目级 `namespace + method` 差异。
+2. 对每个剩余 FP* 回到 ArkPrism report 和源码，要求存在 `.method`、`namespace.method`、manager/helper receiver 调用或字段读取证据。
+3. 只要源码中确实存在 `sensitive_apis.json` 定义的敏感 API 输入，即标为人工 gold；不要求进一步证明运行时一定调用。
+
+| 指标 | Hardened automatic presence | Manual-corrected top50 |
+|---|---:|---:|
+| Top-50 API usages | 1127 | 1127 |
+| Top-50 call chains | 1127 | 1127 |
+| Top-50 data sinks | 800 | 800 |
+| Top-50 taint flows | 820 | 820 |
+| Project-level predicted methods | 438 | 438 |
+| Gold methods | 413 | 438 |
+| TP | 413 | 438 |
+| FP* | 25 | 0 |
+| FN | 0 | 0 |
+| Precision | 94.29% | 100.00% |
+| Recall | 100.00% | 100.00% |
+
+这 25 个剩余 FP* 均已人工确认为 benchmark gap，而不是工具误报。典型例子包括 `helper.createAsset(...)`、`calendarMgr.getCalendar(...)`、`netQuality.on/off(...)`、`cameraManager.createCameraInput(...)`、`systemPasteboard.getData(...)`、`sms.hasSmsCapability()` 等。它们在源码中是明确成员访问，但自动 benchmark 因 helper/manager receiver、callback overload、短 API 名或包别名没有完全覆盖。
+
+因此，不能说“全量 precision 百分百已经被人工证明”，但可以更准确地表述为：
+
+- 全量 hardened 自动 benchmark 下，ArkPrism 主定位 recall 为 100.00%，benchmark-relative precision 为 89.22%。
+- 在检出量最高、最容易出现误报的前 50 个样本上，人工校正 benchmark 后主定位 precision/recall 均为 100.00%。
+- 当前低于 100% 的全量 precision* 主要反映自动 benchmark 仍偏保守，而不是已确认的工具误报；剩余 90 个全量 FP* 需要继续人工复核后才能给出全量人工 precision。
 
 ## 调用链构建
 
