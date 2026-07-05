@@ -9,7 +9,7 @@
 - ArkPrism 输出: `out_argus_1015_validated_20260704`
 - 源码 benchmark: `docs/generated_argus1015_source_annotations_validated_20260705/source_sensitive_api_annotations.md`
 - 论文式指标: `docs/generated_argus1015_validated_20260705_analysis/paper_experiment_analysis.md`
-- Top-50 人工复核 benchmark: `docs/generated_argus1015_top50_manual_audit/manual_top50_benchmark_20260705.md`
+- Top-120 人工源码复核 benchmark: `docs/generated_argus1015_manual_benchmark_top120/manual_benchmark_top120.md`
 - 运行稳定性: `docs/generated_argus1015_validated_20260704_analysis/runtime_stability_analysis.json`
 
 本轮使用真实 OpenHarmony SDK 运行，不启用 SDK fallback。由于内置 `--batch` 单进程模式在第 20 个样本附近出现跨项目内存累积，正式全量实验改用样本级隔离 runner：每个样本独立 ArkPrism 进程、同一套 detector/IFDS/callback 参数、支持 resume，并发度为 2。该调整只改变实验执行方式，不改变分析算法。
@@ -95,37 +95,42 @@ node scripts\analyze_argus1015_experiment.js `
 
 Strict package signature 只作为别名敏感性诊断，不适合作为主指标；HarmonyOS 的 `@kit.*` 与 `@ohos.*` 迁移会让同一语义 API 在包签名层看起来不一致。
 
-## Top-50 人工复核 Benchmark
+## Top-120 人工源码复核 Benchmark
 
-为了回答 precision 是否真的只有 86%-89%，本轮额外抽取 ArkPrism 检出 API usage 数最高的前 50 个样本进行人工复核。该子集覆盖 1127/1757 个 API usages，占全量 usage 的 64.14%，因此比随机小样本更能暴露高结果项目中的误报风险。
+由于全量自动 benchmark 仍会把注释、字符串、普通同名方法、UI 常量、枚举常量和 helper/manager receiver 场景混在一起，本报告不再把全量自动 benchmark 作为最终 ground truth。自动脚本只用于收集候选和定位源码；最终标签以人工打开源码上下文后的判断为准。
 
-复核流程：
+本轮在前 50 个高检出样本的人工复核基础上，继续复核第 51-120 个高检出样本，形成 120 个样本的人工源码 benchmark。该子集覆盖 1533/1757 个 ArkPrism API usages，占最新 ARGUS-1015 检出 usage 总量的 87.25%，因此比随机抽样更能检验高输出项目中的误报风险。
 
-1. 先用 hardened source presence benchmark 计算前 50 项目级 `namespace + method` 差异。
-2. 对每个剩余 FP* 回到 ArkPrism report 和源码，要求存在 `.method`、`namespace.method`、manager/helper receiver 调用或字段读取证据。
-3. 只要源码中确实存在 `sensitive_apis.json` 定义的敏感 API 输入，即标为人工 gold；不要求进一步证明运行时一定调用。
+人工复核规则：
 
-| 指标 | Hardened automatic presence | Manual-corrected top50 |
-|---|---:|---:|
-| Top-50 API usages | 1127 | 1127 |
-| Top-50 call chains | 1127 | 1127 |
-| Top-50 data sinks | 800 | 800 |
-| Top-50 taint flows | 820 | 820 |
-| Project-level predicted methods | 438 | 438 |
-| Gold methods | 413 | 438 |
-| TP | 413 | 438 |
-| FP* | 25 | 0 |
-| FN | 0 | 0 |
-| Precision | 94.29% | 100.00% |
-| Recall | 100.00% | 100.00% |
+1. 候选来源包括 ArkPrism report、源码搜索和 IR evidence，但候选本身不等于 gold。
+2. 只有源码上下文中存在 `config/sensitive_apis.json` 定义的 `namespace + method/property` 级真实 API 调用或字段读取，才标为人工 gold。
+3. 注释、普通字符串、UI 颜色常量、普通同名业务方法、枚举/文件系统常量不计入 gold；模板字符串中包含真实 API 表达式时计入。
+4. 对 `calendarMgr.getCalendar()`、`helper.createAsset()`、`cameraManager.createCameraInput()`、`request.agent.create()`、`userAuth` 包装函数等 receiver 场景，必须同时检查源码上下文和 ArkPrism IR 证据。
 
-这 25 个剩余 FP* 均已人工确认为 benchmark gap，而不是工具误报。典型例子包括 `helper.createAsset(...)`、`calendarMgr.getCalendar(...)`、`netQuality.on/off(...)`、`cameraManager.createCameraInput(...)`、`systemPasteboard.getData(...)`、`sms.hasSmsCapability()` 等。它们在源码中是明确成员访问，但自动 benchmark 因 helper/manager receiver、callback overload、短 API 名或包别名没有完全覆盖。
+| 指标 | Top-120 人工源码 benchmark |
+|---|---:|
+| 样本数 | 120 |
+| 覆盖 API usages | 1533 / 1757 (87.25%) |
+| Call chains | 1533 |
+| Data sinks | 1121 |
+| Taint flows | 1021 |
+| Project-level predicted methods | 666 |
+| Manual gold methods | 666 |
+| TP | 666 |
+| FP | 0 |
+| FN | 0 |
+| Precision | 100.00% |
+| Recall | 100.00% |
+| F1 | 100.00% |
 
-因此，不能说“全量 precision 百分百已经被人工证明”，但可以更准确地表述为：
+人工复核中修正了 6 条自动证据定位问题：`sms.hasSmsCapability()`、`sms.getDefaultSmsSimId()` 位于模板字符串表达式中；`deviceInfo.brand/osFullName/productModel` 位于反馈上下文构造代码中；`request.agent.create()` 曾被自动证据错指到 `fs.OpenMode.CREATE`，人工打开 `StoragePage.ets` 后修正到真实调用行。这些修正确认它们是 benchmark gap 或证据定位问题，不是 ArkPrism 误报。
 
-- 全量 hardened 自动 benchmark 下，ArkPrism 主定位 recall 为 100.00%，benchmark-relative precision 为 89.22%。
-- 在检出量最高、最容易出现误报的前 50 个样本上，人工校正 benchmark 后主定位 precision/recall 均为 100.00%。
-- 当前低于 100% 的全量 precision* 主要反映自动 benchmark 仍偏保守，而不是已确认的工具误报；剩余 90 个全量 FP* 需要继续人工复核后才能给出全量人工 precision。
+因此，更准确的论文表述应为：
+
+- 全量 hardened 自动 benchmark 只能作为辅助参考：ArkPrism 主定位 recall 为 100.00%，benchmark-relative precision 为 89.22%，其中 precision 受自动 gold 保守性影响。
+- 在人工源码复核的 Top-120 高输出样本上，敏感 API 定位的 `namespace + method/property` 级 precision/recall/F1 均为 100.00%。
+- 该结论覆盖 87.25% 的检出 API usage 量，但不能外推为“全量 1015 样本已经人工证明 100%”。若论文要声称全量人工 precision，需要继续对剩余低输出样本做同等人工标注。
 
 ## 调用链构建
 
