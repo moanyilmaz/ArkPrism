@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-07-06T09:57:40.439Z",
+  "assumption": "@kit.* -> @ohos.* mapping assumed available",
+  "ruleLevel": {
+    "totalUniqueApis": 675,
+    "detectable": 251,
+    "indirectInvoke": 229,
+    "privacyConstants": 13,
+    "notInSdk": 182
+  },
+  "benchmarkLevel": {
+    "uniqueApis": 129,
+    "detectableApis": 48,
+    "detectionRate": "37.2%",
+    "byMode": {
+      "direct": {
+        "total": 36,
+        "detectable": 19,
+        "rate": "52.8%"
+      },
+      "assigned": {
+        "total": 62,
+        "detectable": 35,
+        "rate": "56.5%"
+      },
+      "indirect": {
+        "total": 21,
+        "detectable": 3,
+        "rate": "14.3%"
+      },
+      "constant": {
+        "total": 25,
+        "detectable": 0,
+        "rate": "0.0%"
+      }
+    },
+    "usageWeighted": {
+      "total": 666,
+      "detectable": 250,
+      "rate": "37.5%",
+      "byMode": {
+        "direct": {
+          "total": 175,
+          "detectable": 124,
+          "rate": "70.9%"
+        },
+        "assigned": {
+          "total": 438,
+          "detectable": 214,
+          "rate": "48.9%"
+        },
+        "indirect": {
+          "total": 207,
+          "detectable": 40,
+          "rate": "19.3%"
+        },
+        "constant": {
+          "total": 231,
+          "detectable": 0,
+          "rate": "0.0%"
+        }
+      }
+    }
+  }
+}

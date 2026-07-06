@@ -1,0 +1,1290 @@
+{
+  "timestamp": "2026-07-06T08:40:35.256Z",
+  "part1_ruleComparison": {
+    "hapflowUniqueKeys": 1257,
+    "arkprismUniqueKeys": 675,
+    "overlapKeys": 128,
+    "hapflowOnlyKeys": 1129,
+    "arkprismOnlyKeys": 547
+  },
+  "part2_sourceResolution": {
+    "totalApis": 826,
+    "resolvedApis": 124,
+    "resolutionRate": "15.0%",
+    "rootCauses": {
+      "kitPackageMismatch": 232,
+      "namespaceNotInSdk": 0,
+      "methodNotInSdk": 392,
+      "isProperty": 21,
+      "indirectInvoke": 57
+    }
+  },
+  "part3_goldSetDetection": {
+    "uniqueKeysInBenchmark": 129,
+    "hapflowDetectableKeys": 24,
+    "hapflowDetectionRate": "18.6%",
+    "detectionByMode": {
+      "direct": {
+        "total": 23,
+        "detectable": 4,
+        "rate": "17.4%"
+      },
+      "assigned": {
+        "total": 49,
+        "detectable": 12,
+        "rate": "24.5%"
+      },
+      "indirect": {
+        "total": 18,
+        "detectable": 3,
+        "rate": "16.7%"
+      },
+      "constant": {
+        "total": 25,
+        "detectable": 0,
+        "rate": "0.0%"
+      },
+      "mixed": {
+        "total": 14,
+        "detectable": 5,
+        "rate": "35.7%"
+      }
+    },
+    "usageWeighted": {
+      "totalUsages": 666,
+      "detectableUsages": 180,
+      "rate": "27.0%",
+      "byMode": {
+        "direct": {
+          "total": 175,
+          "detectable": 45,
+          "rate": "25.7%"
+        },
+        "assigned": {
+          "total": 438,
+          "detectable": 157,
+          "rate": "35.8%"
+        },
+        "indirect": {
+          "total": 207,
+          "detectable": 59,
+          "rate": "28.5%"
+        },
+        "constant": {
+          "total": 231,
+          "detectable": 0,
+          "rate": "0.0%"
+        }
+      }
+    }
+  },
+  "part4_perProject": [
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "arkPrismApis": 44,
+      "hapFlowApis": 15,
+      "apiRate": "34.1%",
+      "arkPrismUsages": 44,
+      "hapFlowUsages": 15,
+      "usageRate": "34.1%",
+      "arkPrismTaintFlows": 43
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "arkPrismApis": 41,
+      "hapFlowApis": 12,
+      "apiRate": "29.3%",
+      "arkPrismUsages": 41,
+      "hapFlowUsages": 12,
+      "usageRate": "29.3%",
+      "arkPrismTaintFlows": 28
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "arkPrismApis": 38,
+      "hapFlowApis": 12,
+      "apiRate": "31.6%",
+      "arkPrismUsages": 38,
+      "hapFlowUsages": 12,
+      "usageRate": "31.6%",
+      "arkPrismTaintFlows": 53
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "arkPrismApis": 34,
+      "hapFlowApis": 11,
+      "apiRate": "32.4%",
+      "arkPrismUsages": 34,
+      "hapFlowUsages": 11,
+      "usageRate": "32.4%",
+      "arkPrismTaintFlows": 205
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "arkPrismApis": 33,
+      "hapFlowApis": 12,
+      "apiRate": "36.4%",
+      "arkPrismUsages": 33,
+      "hapFlowUsages": 12,
+      "usageRate": "36.4%",
+      "arkPrismTaintFlows": 44
+    },
+    {
+      "projectName": "harmonyos4me_ZUtils",
+      "arkPrismApis": 26,
+      "hapFlowApis": 2,
+      "apiRate": "7.7%",
+      "arkPrismUsages": 26,
+      "hapFlowUsages": 2,
+      "usageRate": "7.7%",
+      "arkPrismTaintFlows": 29
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "arkPrismApis": 20,
+      "hapFlowApis": 12,
+      "apiRate": "60.0%",
+      "arkPrismUsages": 20,
+      "hapFlowUsages": 12,
+      "usageRate": "60.0%",
+      "arkPrismTaintFlows": 22
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "arkPrismApis": 19,
+      "hapFlowApis": 12,
+      "apiRate": "63.2%",
+      "arkPrismUsages": 19,
+      "hapFlowUsages": 12,
+      "usageRate": "63.2%",
+      "arkPrismTaintFlows": 63
+    },
+    {
+      "projectName": "harmonyos_samples_network-query",
+      "arkPrismApis": 14,
+      "hapFlowApis": 1,
+      "apiRate": "7.1%",
+      "arkPrismUsages": 14,
+      "hapFlowUsages": 1,
+      "usageRate": "7.1%",
+      "arkPrismTaintFlows": 16
+    },
+    {
+      "projectName": "applications_settings",
+      "arkPrismApis": 13,
+      "hapFlowApis": 2,
+      "apiRate": "15.4%",
+      "arkPrismUsages": 13,
+      "hapFlowUsages": 2,
+      "usageRate": "15.4%",
+      "arkPrismTaintFlows": 44
+    },
+    {
+      "projectName": "Wlan",
+      "arkPrismApis": 10,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 10,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "SmartHome",
+      "arkPrismApis": 9,
+      "hapFlowApis": 6,
+      "apiRate": "66.7%",
+      "arkPrismUsages": 9,
+      "hapFlowUsages": 6,
+      "usageRate": "66.7%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "com.example.myapplication2",
+      "arkPrismApis": 9,
+      "hapFlowApis": 6,
+      "apiRate": "66.7%",
+      "arkPrismUsages": 9,
+      "hapFlowUsages": 6,
+      "usageRate": "66.7%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos_samples_CustomCamera",
+      "arkPrismApis": 8,
+      "hapFlowApis": 2,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 8,
+      "hapFlowUsages": 2,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "bluetoothSample",
+      "arkPrismApis": 8,
+      "hapFlowApis": 4,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 8,
+      "hapFlowUsages": 4,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "applications_systemui",
+      "arkPrismApis": 7,
+      "hapFlowApis": 1,
+      "apiRate": "14.3%",
+      "arkPrismUsages": 7,
+      "hapFlowUsages": 1,
+      "usageRate": "14.3%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "arkPrismApis": 7,
+      "hapFlowApis": 1,
+      "apiRate": "14.3%",
+      "arkPrismUsages": 7,
+      "hapFlowUsages": 1,
+      "usageRate": "14.3%",
+      "arkPrismTaintFlows": 9
+    },
+    {
+      "projectName": "NetworkObserver",
+      "arkPrismApis": 7,
+      "hapFlowApis": 2,
+      "apiRate": "28.6%",
+      "arkPrismUsages": 7,
+      "hapFlowUsages": 2,
+      "usageRate": "28.6%",
+      "arkPrismTaintFlows": 12
+    },
+    {
+      "projectName": "harmonyos4me_location-service",
+      "arkPrismApis": 7,
+      "hapFlowApis": 1,
+      "apiRate": "14.3%",
+      "arkPrismUsages": 7,
+      "hapFlowUsages": 1,
+      "usageRate": "14.3%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "Gramony",
+      "arkPrismApis": 6,
+      "hapFlowApis": 1,
+      "apiRate": "16.7%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 1,
+      "usageRate": "16.7%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "Homogram",
+      "arkPrismApis": 6,
+      "hapFlowApis": 1,
+      "apiRate": "16.7%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 1,
+      "usageRate": "16.7%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "siyuan-harmony",
+      "arkPrismApis": 6,
+      "hapFlowApis": 3,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 3,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "SensorJsSamples",
+      "arkPrismApis": 6,
+      "hapFlowApis": 1,
+      "apiRate": "16.7%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 1,
+      "usageRate": "16.7%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "arkPrismApis": 6,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "harmonyos4me_exam-project",
+      "arkPrismApis": 6,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "PostpartumCareCenter",
+      "arkPrismApis": 6,
+      "hapFlowApis": 1,
+      "apiRate": "16.7%",
+      "arkPrismUsages": 6,
+      "hapFlowUsages": 1,
+      "usageRate": "16.7%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "DistributedAuthentication",
+      "arkPrismApis": 5,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "arkPrismApis": 5,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 27
+    },
+    {
+      "projectName": "Camera_js",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 17
+    },
+    {
+      "projectName": "harmonyos_samples_graphic-creation",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "LiveStreaming",
+      "arkPrismApis": 5,
+      "hapFlowApis": 2,
+      "apiRate": "40.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 2,
+      "usageRate": "40.0%",
+      "arkPrismTaintFlows": 22
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "arkPrismApis": 5,
+      "hapFlowApis": 2,
+      "apiRate": "40.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 2,
+      "usageRate": "40.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "Notes",
+      "arkPrismApis": 5,
+      "hapFlowApis": 2,
+      "apiRate": "40.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 2,
+      "usageRate": "40.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "AuthorizedButton",
+      "arkPrismApis": 5,
+      "hapFlowApis": 3,
+      "apiRate": "60.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 3,
+      "usageRate": "60.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "arkPrismApis": 5,
+      "hapFlowApis": 2,
+      "apiRate": "40.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 2,
+      "usageRate": "40.0%",
+      "arkPrismTaintFlows": 9
+    },
+    {
+      "projectName": "Sensor",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "WifiHotspotManager",
+      "arkPrismApis": 5,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_hmosworld",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "harmonyos4me_ZeroOneApp",
+      "arkPrismApis": 5,
+      "hapFlowApis": 2,
+      "apiRate": "40.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 2,
+      "usageRate": "40.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "QRCodeScan",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "PedometerApp",
+      "arkPrismApis": 5,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "SecurityComponent",
+      "arkPrismApis": 5,
+      "hapFlowApis": 3,
+      "apiRate": "60.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 3,
+      "usageRate": "60.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "arkPrismApis": 5,
+      "hapFlowApis": 1,
+      "apiRate": "20.0%",
+      "arkPrismUsages": 5,
+      "hapFlowUsages": 1,
+      "usageRate": "20.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "arkPrismApis": 4,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "legado-Harmony-master",
+      "arkPrismApis": 4,
+      "hapFlowApis": 2,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 2,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "AVCodec",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 19
+    },
+    {
+      "projectName": "Application",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "birthday_reminder",
+      "arkPrismApis": 4,
+      "hapFlowApis": 2,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 2,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 10
+    },
+    {
+      "projectName": "CarBeautyCare",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "ComprehensiveMall",
+      "arkPrismApis": 4,
+      "hapFlowApis": 3,
+      "apiRate": "75.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 3,
+      "usageRate": "75.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "DriverLicenseExam",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "DriverLicenseExam-master",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "etohos",
+      "arkPrismApis": 4,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "EnterpriseRecruitment",
+      "arkPrismApis": 4,
+      "hapFlowApis": 1,
+      "apiRate": "25.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 1,
+      "usageRate": "25.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "Express",
+      "arkPrismApis": 4,
+      "hapFlowApis": 2,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 4,
+      "hapFlowUsages": 2,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "Photos",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 41
+    },
+    {
+      "projectName": "Melotopia-HMOS",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "Spaceow",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "Renameow",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "Aigis",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 12
+    },
+    {
+      "projectName": "Audio",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "Exam",
+      "arkPrismApis": 3,
+      "hapFlowApis": 3,
+      "apiRate": "100.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 3,
+      "usageRate": "100.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 7
+    },
+    {
+      "projectName": "harmonyos4me_login-and-logout",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "pasteboard",
+      "arkPrismApis": 3,
+      "hapFlowApis": 3,
+      "apiRate": "100.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 3,
+      "usageRate": "100.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "DistributedFilemanager",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "harmonyos4me_aicharacter-recognition",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_ibest-ui",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "HomeDecoration",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "DistributedNote",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "harmonyos_samples_fluent-news-homepage",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_cloud-foundation-kit_-sample-code_-arkts",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_fluent-news-homepage",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_TaoYao",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "MultiMedia",
+      "arkPrismApis": 3,
+      "hapFlowApis": 1,
+      "apiRate": "33.3%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 1,
+      "usageRate": "33.3%",
+      "arkPrismTaintFlows": 7
+    },
+    {
+      "projectName": "OfficeAttendance",
+      "arkPrismApis": 3,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 3,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "harmonyos4me_MultiVideoApplication",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "Dictionareow",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 13
+    },
+    {
+      "projectName": "harmonyos4me_readerkit_samplecode_arkts",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "UserAuthentication",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_MultiDeviceCommunication",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos_samples_continue-progress",
+      "arkPrismApis": 2,
+      "hapFlowApis": 1,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 1,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 10
+    },
+    {
+      "projectName": "harmonyos4me_HMRouter",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "MNUIKitDemo",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "arkPrismApis": 2,
+      "hapFlowApis": 1,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 1,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 29
+    },
+    {
+      "projectName": "FinVideo",
+      "arkPrismApis": 2,
+      "hapFlowApis": 1,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 1,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "Camera",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "KikaInputMethod",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "ReminderAgentManager",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "BikeTravel",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "delay_related_performance",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "harmonyos4me_SmoothSwitchShortVideos",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 12
+    },
+    {
+      "projectName": "BookRead",
+      "arkPrismApis": 2,
+      "hapFlowApis": 1,
+      "apiRate": "50.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 1,
+      "usageRate": "50.0%",
+      "arkPrismTaintFlows": 4
+    },
+    {
+      "projectName": "CalendarViewSwitch",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "FlameChase",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "WebShortDrama",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 17
+    },
+    {
+      "projectName": "Asset",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "MoneyTrack",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "MoneyTrack-master",
+      "arkPrismApis": 2,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 2,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_ResponsiveLayout",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 5
+    },
+    {
+      "projectName": "MultiVideoApplication",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "uitest",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "FoldableAdaptation",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos4me_transitions-collection",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 8
+    },
+    {
+      "projectName": "harmonyos_samples_LandscapePortraitToggle",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 9
+    },
+    {
+      "projectName": "harmonyos4me_Immersive",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "ArkTSGraphicsDraw",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "AssetStoreArkTS",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "BindSheet",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 2
+    },
+    {
+      "projectName": "FinancialManagement",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos_samples_iapkit-sample-clientdemo-arkts",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "harmonyos_samples_knock-share",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 10
+    },
+    {
+      "projectName": "harmonyos4me_ohos_smart_dialog",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "MultiCommunityApplication",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 1
+    },
+    {
+      "projectName": "Navigation",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 3
+    },
+    {
+      "projectName": "OHAudio",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    },
+    {
+      "projectName": "PixelMap",
+      "arkPrismApis": 1,
+      "hapFlowApis": 0,
+      "apiRate": "0.0%",
+      "arkPrismUsages": 1,
+      "hapFlowUsages": 0,
+      "usageRate": "0.0%",
+      "arkPrismTaintFlows": 0
+    }
+  ],
+  "part5_ablation": {
+    "currentResolved": 124,
+    "wouldResolveWithKitMapping": 207,
+    "potentialResolved": 331,
+    "potentialRate": "40.1%",
+    "stillUnresolvable": 495
+  }
+}

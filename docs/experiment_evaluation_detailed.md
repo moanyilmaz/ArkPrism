@@ -729,6 +729,79 @@ node scripts\analyze_argus1015_experiment.js \
 
 ---
 
+## 消融实验：检测器家族贡献（Top-120 人工基准）
+
+### Leave-One-Out 消融
+
+去掉每个检测器家族，测量 recall 下降：
+
+| 去掉的家族 | 丢失方法数 | 方法 Recall | 丢失 Usage 数 | Usage Recall |
+|---|---:|---:|---:|---:|
+| (无 — 完整 ArkPrism) | 0 | **100.0%** | 0 | **100.0%** |
+| Direct invoke | 23 | 82.2% | 110 | 83.5% |
+| Assigned invoke | 49 | 62.0% | 241 | 63.8% |
+| Indirect invoke | 18 | 86.0% | 103 | 84.5% |
+| Privacy constants | 25 | 80.6% | 148 | 77.8% |
+
+### 增量贡献（按依赖顺序添加）
+
+| 家族 | 增量方法 | 累计方法 | 累计覆盖率 | 增量 Usage | 累计 Usage | 累计覆盖率 |
+|---|---:|---:|---:|---:|---:|---:|
+| Direct invoke | 36 | 36 | 27.9% | 117 | 117 | 17.6% |
+| Assigned invoke | 50 | 86 | 66.7% | 298 | 415 | 62.3% |
+| Indirect invoke | 18 | 104 | 80.6% | 103 | 518 | 77.8% |
+| Privacy constants | 25 | 129 | 100.0% | 148 | 666 | 100.0% |
+
+**关键发现**：
+- 去掉任何单一家族，方法 recall 均降至 86% 以下
+- **Indirect invoke** 贡献 18 个其他家族无法覆盖的 API（如 `photoaccesshelper|createAsset`、`camera|createCameraInput`）
+- **Privacy constants** 贡献 25 个其他家族无法覆盖的 API（如 `deviceInfo|brand`、`deviceInfo|serial`），方法签名匹配完全无法检测
+- 4 个家族互补而非冗余
+
+### 包族归一化消融
+
+不进行 `@kit.*` → `@ohos.*` 映射时：
+
+| 指标 | 数量 | 比率 |
+|---|---:|---:|
+| 仅在 @kit.* 包中的 API 规则 | 594 / 675 | 88.0% |
+| Top-120 中使用 @kit.*-only API 的方法 | 59 / 129 | 45.7% |
+| Top-120 中使用 @kit.*-only API 的 usage | 219 / 666 | 32.9% |
+
+---
+
+## HapFlow 对比实验：API 识别能力
+
+### 实验设计
+
+使用 HapFlow（ACM TOSEM 2026）官方 artifact，配置 ArkPrism 的 `sensitive_apis.json`（826 条规则，675 个唯一 `namespace|method`），在 Top-120 人工基准上测量 HapFlow 的 source 解析率。
+
+HapFlow 的 source 解析机制（`Json2ArkMethodSignature`）通过匹配 SDK `.d.ts` 类型声明中的命名空间和方法名来解析 API。此机制存在两个架构级盲点：
+1. **Indirect invoke**：匹配声明命名空间上的方法签名，无法解析 manager/helper 接收者对象上的方法调用
+2. **Privacy constants**：只处理方法签名，不处理属性/字段访问
+
+`@kit.*` → `@ohos.*` 包名映射和 SDK 版本差异属于可修复的配置问题，不计入架构级盲点。
+
+### Top-120 检测结果
+
+| 模式 | API 数 | HapFlow 可检测 | 检测率 | ArkPrism |
+|---|---:|---:|---:|---:|
+| Direct invoke | 36 | 19 | 52.8% | 36 |
+| Assigned invoke | 62 | 37 | 59.7% | 62 |
+| Indirect invoke | 21 | 1 | 4.8% | 21 |
+| Privacy constants | 25 | 0 | 0.0% | 25 |
+| **Total (unique APIs)** | **129** | **48** | **37.2%** | **129** |
+| **Total (usages)** | **666** | **224** | **33.6%** | **666** |
+
+### 规则级分析
+
+- HapFlow 可检测 428/675（63.4%）规则级 API
+- 两个架构级盲点：Indirect invoke 234/675（34.7%），Privacy constants 13/675（1.9%）
+- HapFlow 的优势是污点流传播（从 source 到 sink 的数据流追踪），ArkPrism 的优势是全面的 API 识别
+- 两者互补：ArkPrism 是 HapFlow source 配置无法替代的上游 API 识别层
+
+---
+
 ## 附录 B：相关文档索引
 
 | 文档 | 路径 |

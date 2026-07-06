@@ -1,0 +1,1375 @@
+{
+  "timestamp": "2026-07-06T10:07:51.850Z",
+  "benchmark": "Top-120 manual benchmark",
+  "totalMethods": 129,
+  "totalUsages": 666,
+  "familyCoverage": {
+    "direct": {
+      "methods": 36,
+      "usages": 117
+    },
+    "assigned": {
+      "methods": 62,
+      "usages": 299
+    },
+    "indirect": {
+      "methods": 21,
+      "usages": 166
+    },
+    "constant": {
+      "methods": 25,
+      "usages": 148
+    }
+  },
+  "leaveOneOut": {
+    "direct": {
+      "lostMethods": 23,
+      "retainedMethods": 106,
+      "methodRecall": "82.2%",
+      "lostUsages": 110,
+      "retainedUsages": 556,
+      "usageRecall": "83.5%",
+      "lostMethodKeys": [
+        "access|disableBluetooth",
+        "access|enableBluetooth",
+        "ble|startBLEScan",
+        "ble|stopBLEScan",
+        "geolocationmanager|off",
+        "geolocationmanager|on",
+        "netquality|on",
+        "sensor|off",
+        "sensor|on",
+        "connection|setDevicePairingConfirmation"
+      ]
+    },
+    "assigned": {
+      "lostMethods": 49,
+      "retainedMethods": 80,
+      "methodRecall": "62.0%",
+      "lostUsages": 241,
+      "retainedUsages": 425,
+      "usageRecall": "63.8%",
+      "lostMethodKeys": [
+        "access|getState",
+        "audio|getAudioManager",
+        "connection|getDefaultNetSync",
+        "connection|getLocalName",
+        "connection|getNetCapabilitiesSync",
+        "connection|hasDefaultNetSync",
+        "pasteboard|getSystemPasteboard",
+        "request|create",
+        "userauth|getUserAuthInstance",
+        "wifimanager|getLinkedInfo"
+      ]
+    },
+    "indirect": {
+      "lostMethods": 18,
+      "retainedMethods": 111,
+      "methodRecall": "86.0%",
+      "lostUsages": 103,
+      "retainedUsages": 563,
+      "usageRecall": "84.5%",
+      "lostMethodKeys": [
+        "calendarmanager|getCalendar",
+        "camera|createCameraInput",
+        "camera|getSupportedCameras",
+        "photoaccesshelper|createAsset",
+        "appaccount|createAccount",
+        "appaccount|getAllAccounts",
+        "distributedaccount|getOsAccountDistributedInfo",
+        "osaccount|getOsAccountLocalId",
+        "pasteboard|getData",
+        "pasteboard|getPrimaryText"
+      ]
+    },
+    "constant": {
+      "lostMethods": 25,
+      "retainedMethods": 104,
+      "methodRecall": "80.6%",
+      "lostUsages": 148,
+      "retainedUsages": 518,
+      "usageRecall": "77.8%",
+      "lostMethodKeys": [
+        "deviceinfo|marketName",
+        "deviceinfo|productModel",
+        "deviceinfo|bootloaderVersion",
+        "deviceinfo|brand",
+        "deviceinfo|deviceType",
+        "deviceinfo|displayVersion",
+        "deviceinfo|incrementalVersion",
+        "deviceinfo|manufacture",
+        "deviceinfo|osFullName",
+        "deviceinfo|productSeries"
+      ]
+    }
+  },
+  "incrementalContribution": {
+    "methodLevel": [
+      {
+        "family": "direct",
+        "incrementalMethods": 36,
+        "cumulativeMethods": 36,
+        "cumulativeMethodRate": "27.9%",
+        "incrementalUsages": 163,
+        "cumulativeUsages": 36
+      },
+      {
+        "family": "assigned",
+        "incrementalMethods": 50,
+        "cumulativeMethods": 86,
+        "cumulativeMethodRate": "66.7%",
+        "incrementalUsages": 252,
+        "cumulativeUsages": 86
+      },
+      {
+        "family": "indirect",
+        "incrementalMethods": 18,
+        "cumulativeMethods": 104,
+        "cumulativeMethodRate": "80.6%",
+        "incrementalUsages": 103,
+        "cumulativeUsages": 104
+      },
+      {
+        "family": "constant",
+        "incrementalMethods": 25,
+        "cumulativeMethods": 129,
+        "cumulativeMethodRate": "100.0%",
+        "incrementalUsages": 148,
+        "cumulativeUsages": 129
+      }
+    ],
+    "usageLevel": [
+      {
+        "family": "direct",
+        "incrementalUsages": 117,
+        "cumulativeUsages": 117,
+        "cumulativeRate": "17.6%"
+      },
+      {
+        "family": "assigned",
+        "incrementalUsages": 298,
+        "cumulativeUsages": 415,
+        "cumulativeRate": "62.3%"
+      },
+      {
+        "family": "indirect",
+        "incrementalUsages": 103,
+        "cumulativeUsages": 518,
+        "cumulativeRate": "77.8%"
+      },
+      {
+        "family": "constant",
+        "incrementalUsages": 148,
+        "cumulativeUsages": 666,
+        "cumulativeRate": "100.0%"
+      }
+    ]
+  },
+  "perProjectAblation": [
+    {
+      "project": "Wechat_HarmonyOS",
+      "totalMethods": 44,
+      "directOnly": 6,
+      "indirectOnly": 7,
+      "constantOnly": 13,
+      "indirectAndConstant": 0,
+      "hasIndirect": 8,
+      "hasConstant": 13
+    },
+    {
+      "project": "harmony-next-music-sharing",
+      "totalMethods": 41,
+      "directOnly": 6,
+      "indirectOnly": 4,
+      "constantOnly": 20,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 20
+    },
+    {
+      "project": "legado-Harmony-main",
+      "totalMethods": 38,
+      "directOnly": 6,
+      "indirectOnly": 8,
+      "constantOnly": 12,
+      "indirectAndConstant": 0,
+      "hasIndirect": 9,
+      "hasConstant": 12
+    },
+    {
+      "project": "CommonAppDevelopment",
+      "totalMethods": 34,
+      "directOnly": 10,
+      "indirectOnly": 4,
+      "constantOnly": 2,
+      "indirectAndConstant": 0,
+      "hasIndirect": 7,
+      "hasConstant": 2
+    },
+    {
+      "project": "STUFFS_NEXT-master",
+      "totalMethods": 33,
+      "directOnly": 6,
+      "indirectOnly": 4,
+      "constantOnly": 12,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 12
+    },
+    {
+      "project": "harmonyos4me_ZUtils",
+      "totalMethods": 26,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 22,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 22
+    },
+    {
+      "project": "harmonyProject-master",
+      "totalMethods": 20,
+      "directOnly": 6,
+      "indirectOnly": 4,
+      "constantOnly": 2,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 2
+    },
+    {
+      "project": "Snake_NEXT-main",
+      "totalMethods": 19,
+      "directOnly": 6,
+      "indirectOnly": 4,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos_samples_network-query",
+      "totalMethods": 14,
+      "directOnly": 3,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "applications_settings",
+      "totalMethods": 13,
+      "directOnly": 3,
+      "indirectOnly": 1,
+      "constantOnly": 5,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 5
+    },
+    {
+      "project": "Wlan",
+      "totalMethods": 10,
+      "directOnly": 4,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "SmartHome",
+      "totalMethods": 9,
+      "directOnly": 6,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "com.example.myapplication2",
+      "totalMethods": 9,
+      "directOnly": 3,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_CustomCamera",
+      "totalMethods": 8,
+      "directOnly": 3,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 0
+    },
+    {
+      "project": "bluetoothSample",
+      "totalMethods": 8,
+      "directOnly": 4,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "applications_systemui",
+      "totalMethods": 7,
+      "directOnly": 2,
+      "indirectOnly": 2,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 1
+    },
+    {
+      "project": "Wake-HarmonyOS",
+      "totalMethods": 7,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "NetworkObserver",
+      "totalMethods": 7,
+      "directOnly": 1,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_location-service",
+      "totalMethods": 7,
+      "directOnly": 3,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "Gramony",
+      "totalMethods": 6,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 4,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 4
+    },
+    {
+      "project": "Homogram",
+      "totalMethods": 6,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 4,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 4
+    },
+    {
+      "project": "siyuan-harmony",
+      "totalMethods": 6,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 2,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 2
+    },
+    {
+      "project": "SensorJsSamples",
+      "totalMethods": 6,
+      "directOnly": 4,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "totalMethods": 6,
+      "directOnly": 6,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_exam-project",
+      "totalMethods": 6,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 1
+    },
+    {
+      "project": "PostpartumCareCenter",
+      "totalMethods": 6,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "DistributedAuthentication",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 4,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 1
+    },
+    {
+      "project": "HarmonyOS-Inno",
+      "totalMethods": 5,
+      "directOnly": 2,
+      "indirectOnly": 0,
+      "constantOnly": 3,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 3
+    },
+    {
+      "project": "Camera_js",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos_samples_graphic-creation",
+      "totalMethods": 5,
+      "directOnly": 2,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "LiveStreaming",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 1
+    },
+    {
+      "project": "readmigo_harmony-app",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 3,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 3
+    },
+    {
+      "project": "Notes",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "AuthorizedButton",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "NetConnection_Manage_case",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "Sensor",
+      "totalMethods": 5,
+      "directOnly": 4,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "WifiHotspotManager",
+      "totalMethods": 5,
+      "directOnly": 1,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_hmosworld",
+      "totalMethods": 5,
+      "directOnly": 1,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_ZeroOneApp",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "QRCodeScan",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 1
+    },
+    {
+      "project": "PedometerApp",
+      "totalMethods": 5,
+      "directOnly": 4,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "SecurityComponent",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "VoiceCallDemo",
+      "totalMethods": 5,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmony-arkts-chat-app-ui",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 3,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 3
+    },
+    {
+      "project": "ChildrenEducation",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "legado-Harmony-master",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "AVCodec",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 4,
+      "hasConstant": 0
+    },
+    {
+      "project": "Application",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 1
+    },
+    {
+      "project": "birthday_reminder",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "CarBeautyCare",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "ComprehensiveMall",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "DriverLicenseExam",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "DriverLicenseExam-master",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "etohos",
+      "totalMethods": 4,
+      "directOnly": 2,
+      "indirectOnly": 0,
+      "constantOnly": 2,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 2
+    },
+    {
+      "project": "EnterpriseRecruitment",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "Express",
+      "totalMethods": 4,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "Photos",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 1
+    },
+    {
+      "project": "Melotopia-HMOS",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "Spaceow",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "Renameow",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "Aigis",
+      "totalMethods": 3,
+      "directOnly": 1,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "Audio",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "Exam",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_login-and-logout",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "pasteboard",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "DeadlinerNEXT",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "DistributedFilemanager",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_aicharacter-recognition",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 2,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_ibest-ui",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "HomeDecoration",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "DistributedNote",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 3,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 3,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_fluent-news-homepage",
+      "totalMethods": 3,
+      "directOnly": 2,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_cloud-foundation-kit_-sample-code_-arkts",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_fluent-news-homepage",
+      "totalMethods": 3,
+      "directOnly": 2,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_TaoYao",
+      "totalMethods": 3,
+      "directOnly": 1,
+      "indirectOnly": 0,
+      "constantOnly": 2,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 2
+    },
+    {
+      "project": "MultiMedia",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "OfficeAttendance",
+      "totalMethods": 3,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_MultiVideoApplication",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "Dictionareow",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_readerkit_samplecode_arkts",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "UserAuthentication",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_MultiDeviceCommunication",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos_samples_continue-progress",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_HMRouter",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "MNUIKitDemo",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "aloeplayer_ohos",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "FinVideo",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "Camera",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "KikaInputMethod",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "ReminderAgentManager",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "BikeTravel",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "delay_related_performance",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_SmoothSwitchShortVideos",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "BookRead",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "CalendarViewSwitch",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 1,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 2,
+      "hasConstant": 0
+    },
+    {
+      "project": "FlameChase",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "WebShortDrama",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "Asset",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "MoneyTrack",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "MoneyTrack-master",
+      "totalMethods": 2,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_ResponsiveLayout",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "MultiVideoApplication",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "uitest",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "FoldableAdaptation",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_transitions-collection",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_LandscapePortraitToggle",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos4me_Immersive",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "ArkTSGraphicsDraw",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "AssetStoreArkTS",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "BindSheet",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "FinancialManagement",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_iapkit-sample-clientdemo-arkts",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 0
+    },
+    {
+      "project": "harmonyos_samples_knock-share",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "harmonyos4me_ohos_smart_dialog",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "MultiCommunityApplication",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "Navigation",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    },
+    {
+      "project": "OHAudio",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 1,
+      "indirectAndConstant": 0,
+      "hasIndirect": 0,
+      "hasConstant": 1
+    },
+    {
+      "project": "PixelMap",
+      "totalMethods": 1,
+      "directOnly": 0,
+      "indirectOnly": 0,
+      "constantOnly": 0,
+      "indirectAndConstant": 0,
+      "hasIndirect": 1,
+      "hasConstant": 0
+    }
+  ],
+  "packageNormalization": {
+    "kitOnlyApiKeys": 594,
+    "top120KitOnlyMethods": 59,
+    "top120KitOnlyUsages": 219
+  }
+}

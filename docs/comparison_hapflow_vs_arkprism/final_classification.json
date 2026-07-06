@@ -1,0 +1,72 @@
+{
+  "timestamp": "2026-07-06T08:48:57.039Z",
+  "entryLevelStats": {
+    "totalEntries": 826,
+    "inHapFlowSources": 234,
+    "resolvedBySdk": 42,
+    "indirectInvoke": 251,
+    "privacyConstant": 21,
+    "sdkResolutionGap": 278
+  },
+  "uniqueKeyStats": {
+    "total": 675,
+    "detectable": 166,
+    "indirectInvoke": 228,
+    "privacyConstant": 14,
+    "sdkResolutionGap": 268
+  },
+  "benchmarkStats": {
+    "uniqueApis": 129,
+    "detectableApis": 35,
+    "detectionRate": "27.1%",
+    "byMode": {
+      "direct": {
+        "total": 36,
+        "detectable": 14,
+        "rate": "38.9%"
+      },
+      "assigned": {
+        "total": 62,
+        "detectable": 26,
+        "rate": "41.9%"
+      },
+      "indirect": {
+        "total": 21,
+        "detectable": 3,
+        "rate": "14.3%"
+      },
+      "constant": {
+        "total": 25,
+        "detectable": 0,
+        "rate": "0.0%"
+      }
+    },
+    "usageWeighted": {
+      "total": 666,
+      "detectable": 221,
+      "rate": "33.2%",
+      "byMode": {
+        "direct": {
+          "total": 175,
+          "detectable": 91,
+          "rate": "52.0%"
+        },
+        "assigned": {
+          "total": 438,
+          "detectable": 183,
+          "rate": "41.8%"
+        },
+        "indirect": {
+          "total": 207,
+          "detectable": 59,
+          "rate": "28.5%"
+        },
+        "constant": {
+          "total": 231,
+          "detectable": 0,
+          "rate": "0.0%"
+        }
+      }
+    }
+  }
+}

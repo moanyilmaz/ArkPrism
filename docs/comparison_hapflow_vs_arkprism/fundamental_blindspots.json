@@ -1,0 +1,907 @@
+{
+  "timestamp": "2026-07-06T10:00:09.844Z",
+  "methodology": "Fundamental blind spot classification. @kit.* mapping and SDK version issues assumed fixable. Only architectural limitations counted as undetectable.",
+  "ruleLevel": {
+    "totalUniqueApis": 675,
+    "detectable": 428,
+    "indirectInvoke": 234,
+    "privacyConstants": 13,
+    "detectionRate": "63.4%"
+  },
+  "benchmarkLevel": {
+    "uniqueApis": 129,
+    "detectableApis": 48,
+    "detectionRate": "37.2%",
+    "byMode": {
+      "direct": {
+        "total": 36,
+        "detectable": 19,
+        "rate": "52.8%"
+      },
+      "assigned": {
+        "total": 62,
+        "detectable": 37,
+        "rate": "59.7%"
+      },
+      "indirect": {
+        "total": 21,
+        "detectable": 1,
+        "rate": "4.8%"
+      },
+      "constant": {
+        "total": 25,
+        "detectable": 0,
+        "rate": "0.0%"
+      }
+    },
+    "usageWeighted": {
+      "total": 666,
+      "detectable": 224,
+      "rate": "33.6%",
+      "byMode": {
+        "direct": {
+          "total": 175,
+          "detectable": 124,
+          "rate": "70.9%"
+        },
+        "assigned": {
+          "total": 438,
+          "detectable": 216,
+          "rate": "49.3%"
+        },
+        "indirect": {
+          "total": 207,
+          "detectable": 7,
+          "rate": "3.4%"
+        },
+        "constant": {
+          "total": 231,
+          "detectable": 0,
+          "rate": "0.0%"
+        }
+      }
+    }
+  },
+  "perProject": [
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "totalApis": 44,
+      "detectableApis": 18,
+      "totalUsages": 44,
+      "detectableUsages": 18
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "totalApis": 41,
+      "detectableApis": 12,
+      "totalUsages": 41,
+      "detectableUsages": 12
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "totalApis": 38,
+      "detectableApis": 12,
+      "totalUsages": 38,
+      "detectableUsages": 12
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "totalApis": 34,
+      "detectableApis": 15,
+      "totalUsages": 34,
+      "detectableUsages": 15
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "totalApis": 33,
+      "detectableApis": 12,
+      "totalUsages": 33,
+      "detectableUsages": 12
+    },
+    {
+      "projectName": "harmonyos4me_ZUtils",
+      "totalApis": 26,
+      "detectableApis": 2,
+      "totalUsages": 26,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "totalApis": 20,
+      "detectableApis": 12,
+      "totalUsages": 20,
+      "detectableUsages": 12
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "totalApis": 19,
+      "detectableApis": 12,
+      "totalUsages": 19,
+      "detectableUsages": 12
+    },
+    {
+      "projectName": "harmonyos_samples_network-query",
+      "totalApis": 14,
+      "detectableApis": 5,
+      "totalUsages": 14,
+      "detectableUsages": 5
+    },
+    {
+      "projectName": "applications_settings",
+      "totalApis": 13,
+      "detectableApis": 5,
+      "totalUsages": 13,
+      "detectableUsages": 5
+    },
+    {
+      "projectName": "Wlan",
+      "totalApis": 10,
+      "detectableApis": 0,
+      "totalUsages": 10,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "SmartHome",
+      "totalApis": 9,
+      "detectableApis": 8,
+      "totalUsages": 9,
+      "detectableUsages": 8
+    },
+    {
+      "projectName": "com.example.myapplication2",
+      "totalApis": 9,
+      "detectableApis": 7,
+      "totalUsages": 9,
+      "detectableUsages": 7
+    },
+    {
+      "projectName": "harmonyos_samples_CustomCamera",
+      "totalApis": 8,
+      "detectableApis": 3,
+      "totalUsages": 8,
+      "detectableUsages": 3
+    },
+    {
+      "projectName": "bluetoothSample",
+      "totalApis": 8,
+      "detectableApis": 8,
+      "totalUsages": 8,
+      "detectableUsages": 8
+    },
+    {
+      "projectName": "applications_systemui",
+      "totalApis": 7,
+      "detectableApis": 2,
+      "totalUsages": 7,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "totalApis": 7,
+      "detectableApis": 2,
+      "totalUsages": 7,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "NetworkObserver",
+      "totalApis": 7,
+      "detectableApis": 4,
+      "totalUsages": 7,
+      "detectableUsages": 4
+    },
+    {
+      "projectName": "harmonyos4me_location-service",
+      "totalApis": 7,
+      "detectableApis": 2,
+      "totalUsages": 7,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "Gramony",
+      "totalApis": 6,
+      "detectableApis": 1,
+      "totalUsages": 6,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Homogram",
+      "totalApis": 6,
+      "detectableApis": 1,
+      "totalUsages": 6,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "siyuan-harmony",
+      "totalApis": 6,
+      "detectableApis": 3,
+      "totalUsages": 6,
+      "detectableUsages": 3
+    },
+    {
+      "projectName": "SensorJsSamples",
+      "totalApis": 6,
+      "detectableApis": 6,
+      "totalUsages": 6,
+      "detectableUsages": 6
+    },
+    {
+      "projectName": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "totalApis": 6,
+      "detectableApis": 0,
+      "totalUsages": 6,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_exam-project",
+      "totalApis": 6,
+      "detectableApis": 3,
+      "totalUsages": 6,
+      "detectableUsages": 3
+    },
+    {
+      "projectName": "PostpartumCareCenter",
+      "totalApis": 6,
+      "detectableApis": 1,
+      "totalUsages": 6,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "DistributedAuthentication",
+      "totalApis": 5,
+      "detectableApis": 0,
+      "totalUsages": 5,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "totalApis": 5,
+      "detectableApis": 2,
+      "totalUsages": 5,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "Camera_js",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos_samples_graphic-creation",
+      "totalApis": 5,
+      "detectableApis": 2,
+      "totalUsages": 5,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "LiveStreaming",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Notes",
+      "totalApis": 5,
+      "detectableApis": 2,
+      "totalUsages": 5,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "AuthorizedButton",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "totalApis": 5,
+      "detectableApis": 5,
+      "totalUsages": 5,
+      "detectableUsages": 5
+    },
+    {
+      "projectName": "Sensor",
+      "totalApis": 5,
+      "detectableApis": 4,
+      "totalUsages": 5,
+      "detectableUsages": 4
+    },
+    {
+      "projectName": "WifiHotspotManager",
+      "totalApis": 5,
+      "detectableApis": 0,
+      "totalUsages": 5,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_hmosworld",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos4me_ZeroOneApp",
+      "totalApis": 5,
+      "detectableApis": 2,
+      "totalUsages": 5,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "QRCodeScan",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "PedometerApp",
+      "totalApis": 5,
+      "detectableApis": 2,
+      "totalUsages": 5,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "SecurityComponent",
+      "totalApis": 5,
+      "detectableApis": 1,
+      "totalUsages": 5,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "totalApis": 5,
+      "detectableApis": 3,
+      "totalUsages": 5,
+      "detectableUsages": 3
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "totalApis": 4,
+      "detectableApis": 0,
+      "totalUsages": 4,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "legado-Harmony-master",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "AVCodec",
+      "totalApis": 4,
+      "detectableApis": 0,
+      "totalUsages": 4,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "Application",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "birthday_reminder",
+      "totalApis": 4,
+      "detectableApis": 2,
+      "totalUsages": 4,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "CarBeautyCare",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "ComprehensiveMall",
+      "totalApis": 4,
+      "detectableApis": 2,
+      "totalUsages": 4,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "DriverLicenseExam",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "DriverLicenseExam-master",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "etohos",
+      "totalApis": 4,
+      "detectableApis": 0,
+      "totalUsages": 4,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "EnterpriseRecruitment",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Express",
+      "totalApis": 4,
+      "detectableApis": 1,
+      "totalUsages": 4,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Photos",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "Melotopia-HMOS",
+      "totalApis": 3,
+      "detectableApis": 2,
+      "totalUsages": 3,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "Spaceow",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Renameow",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Aigis",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Audio",
+      "totalApis": 3,
+      "detectableApis": 3,
+      "totalUsages": 3,
+      "detectableUsages": 3
+    },
+    {
+      "projectName": "Exam",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_login-and-logout",
+      "totalApis": 3,
+      "detectableApis": 2,
+      "totalUsages": 3,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "pasteboard",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "DistributedFilemanager",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_aicharacter-recognition",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_ibest-ui",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "HomeDecoration",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "DistributedNote",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos_samples_fluent-news-homepage",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_cloud-foundation-kit_-sample-code_-arkts",
+      "totalApis": 3,
+      "detectableApis": 2,
+      "totalUsages": 3,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "harmonyos4me_fluent-news-homepage",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_TaoYao",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "MultiMedia",
+      "totalApis": 3,
+      "detectableApis": 1,
+      "totalUsages": 3,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "OfficeAttendance",
+      "totalApis": 3,
+      "detectableApis": 0,
+      "totalUsages": 3,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_MultiVideoApplication",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "Dictionareow",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_readerkit_samplecode_arkts",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "UserAuthentication",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_MultiDeviceCommunication",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos_samples_continue-progress",
+      "totalApis": 2,
+      "detectableApis": 1,
+      "totalUsages": 2,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos4me_HMRouter",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "MNUIKitDemo",
+      "totalApis": 2,
+      "detectableApis": 1,
+      "totalUsages": 2,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "totalApis": 2,
+      "detectableApis": 2,
+      "totalUsages": 2,
+      "detectableUsages": 2
+    },
+    {
+      "projectName": "FinVideo",
+      "totalApis": 2,
+      "detectableApis": 1,
+      "totalUsages": 2,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "Camera",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "KikaInputMethod",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "ReminderAgentManager",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "BikeTravel",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "delay_related_performance",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_SmoothSwitchShortVideos",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "BookRead",
+      "totalApis": 2,
+      "detectableApis": 1,
+      "totalUsages": 2,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "CalendarViewSwitch",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "FlameChase",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "WebShortDrama",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "Asset",
+      "totalApis": 2,
+      "detectableApis": 1,
+      "totalUsages": 2,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "MoneyTrack",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "MoneyTrack-master",
+      "totalApis": 2,
+      "detectableApis": 0,
+      "totalUsages": 2,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_ResponsiveLayout",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "MultiVideoApplication",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "uitest",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "FoldableAdaptation",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_transitions-collection",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos_samples_LandscapePortraitToggle",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_Immersive",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "ArkTSGraphicsDraw",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "AssetStoreArkTS",
+      "totalApis": 1,
+      "detectableApis": 1,
+      "totalUsages": 1,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "BindSheet",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "FinancialManagement",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos_samples_iapkit-sample-clientdemo-arkts",
+      "totalApis": 1,
+      "detectableApis": 1,
+      "totalUsages": 1,
+      "detectableUsages": 1
+    },
+    {
+      "projectName": "harmonyos_samples_knock-share",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "harmonyos4me_ohos_smart_dialog",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "MultiCommunityApplication",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "Navigation",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "OHAudio",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    },
+    {
+      "projectName": "PixelMap",
+      "totalApis": 1,
+      "detectableApis": 0,
+      "totalUsages": 1,
+      "detectableUsages": 0
+    }
+  ]
+}
