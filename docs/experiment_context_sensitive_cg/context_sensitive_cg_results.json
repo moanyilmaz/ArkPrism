@@ -1,0 +1,1792 @@
+{
+  "experimentId": "RQ8_context_sensitive_cg",
+  "timestamp": "2026-07-06T11:58:09.590Z",
+  "datasetDir": "D:/Projects/Argus/dataset",
+  "projectCount": 66,
+  "analyzedProjects": 66,
+  "errors": [],
+  "results": [
+    {
+      "projectName": "AnimateRefresh",
+      "methodCount": 111,
+      "entryPointCount": 31,
+      "k0": {
+        "nodes": 62,
+        "edges": 0,
+        "timeMs": 4
+      },
+      "rta": {
+        "nodes": 62,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "k1": {
+        "timeMs": 19,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 285,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Animation",
+      "methodCount": 99,
+      "entryPointCount": 38,
+      "k0": {
+        "nodes": 71,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 71,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 222,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "ArkTSComponents",
+      "methodCount": 159,
+      "entryPointCount": 63,
+      "k0": {
+        "nodes": 128,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 128,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 11,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 687,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "CanvasComponent",
+      "methodCount": 107,
+      "entryPointCount": 31,
+      "k0": {
+        "nodes": 59,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 59,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 236,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "DistributedContacts",
+      "methodCount": 484,
+      "entryPointCount": 140,
+      "k0": {
+        "nodes": 280,
+        "edges": 0,
+        "timeMs": 4
+      },
+      "rta": {
+        "nodes": 280,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 30,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 32,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1586,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "DistributedMail",
+      "methodCount": 142,
+      "entryPointCount": 50,
+      "k0": {
+        "nodes": 95,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 95,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 500,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "DownloadNotification",
+      "methodCount": 87,
+      "entryPointCount": 26,
+      "k0": {
+        "nodes": 51,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 51,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 251,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "DrawingBook-master",
+      "methodCount": 1717,
+      "entryPointCount": 582,
+      "k0": {
+        "nodes": 1241,
+        "edges": 0,
+        "timeMs": 13
+      },
+      "rta": {
+        "nodes": 1240,
+        "edges": 0,
+        "timeMs": 23
+      },
+      "k1": {
+        "timeMs": 81,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 83,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 5175,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "ElectronicAlbum",
+      "methodCount": 164,
+      "entryPointCount": 55,
+      "k0": {
+        "nodes": 132,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 132,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "k1": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 436,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "FilesManger",
+      "methodCount": 105,
+      "entryPointCount": 36,
+      "k0": {
+        "nodes": 74,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 74,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 446,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "FirstStartDemo_HOS",
+      "methodCount": 133,
+      "entryPointCount": 44,
+      "k0": {
+        "nodes": 86,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 86,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 398,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "FlexLayout",
+      "methodCount": 85,
+      "entryPointCount": 36,
+      "k0": {
+        "nodes": 68,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 68,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 218,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Healthy_life",
+      "methodCount": 1184,
+      "entryPointCount": 323,
+      "k0": {
+        "nodes": 657,
+        "edges": 0,
+        "timeMs": 5
+      },
+      "rta": {
+        "nodes": 657,
+        "edges": 0,
+        "timeMs": 6
+      },
+      "k1": {
+        "timeMs": 48,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 37,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 3320,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "HttpsRequest",
+      "methodCount": 53,
+      "entryPointCount": 20,
+      "k0": {
+        "nodes": 35,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 35,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 1,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 120,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "ImageEdit",
+      "methodCount": 186,
+      "entryPointCount": 48,
+      "k0": {
+        "nodes": 98,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 97,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 546,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "LayoutAlign",
+      "methodCount": 370,
+      "entryPointCount": 150,
+      "k0": {
+        "nodes": 303,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 303,
+        "edges": 0,
+        "timeMs": 10
+      },
+      "k1": {
+        "timeMs": 16,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 13,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 884,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "List",
+      "methodCount": 83,
+      "entryPointCount": 24,
+      "k0": {
+        "nodes": 43,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 43,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 265,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "List-HDC",
+      "methodCount": 241,
+      "entryPointCount": 82,
+      "k0": {
+        "nodes": 166,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 166,
+        "edges": 0,
+        "timeMs": 5
+      },
+      "k1": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 744,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "LoginDemo",
+      "methodCount": 376,
+      "entryPointCount": 137,
+      "k0": {
+        "nodes": 270,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 270,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "k1": {
+        "timeMs": 13,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 15,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1059,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultiCommunityApplication",
+      "methodCount": 870,
+      "entryPointCount": 355,
+      "k0": {
+        "nodes": 740,
+        "edges": 0,
+        "timeMs": 6
+      },
+      "rta": {
+        "nodes": 740,
+        "edges": 0,
+        "timeMs": 11
+      },
+      "k1": {
+        "timeMs": 30,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 58,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 3129,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultiDeviceCommunication",
+      "methodCount": 653,
+      "entryPointCount": 249,
+      "k0": {
+        "nodes": 482,
+        "edges": 0,
+        "timeMs": 4
+      },
+      "rta": {
+        "nodes": 482,
+        "edges": 0,
+        "timeMs": 4
+      },
+      "k1": {
+        "timeMs": 28,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 21,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1790,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultiFinancialManagement",
+      "methodCount": 868,
+      "entryPointCount": 348,
+      "k0": {
+        "nodes": 733,
+        "edges": 0,
+        "timeMs": 11
+      },
+      "rta": {
+        "nodes": 733,
+        "edges": 0,
+        "timeMs": 9
+      },
+      "k1": {
+        "timeMs": 47,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 43,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 4321,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultiShopping",
+      "methodCount": 1785,
+      "entryPointCount": 718,
+      "k0": {
+        "nodes": 1431,
+        "edges": 0,
+        "timeMs": 11
+      },
+      "rta": {
+        "nodes": 1428,
+        "edges": 0,
+        "timeMs": 17
+      },
+      "k1": {
+        "timeMs": 60,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 52,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 4461,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultiVideoApplication",
+      "methodCount": 1248,
+      "entryPointCount": 466,
+      "k0": {
+        "nodes": 943,
+        "edges": 0,
+        "timeMs": 9
+      },
+      "rta": {
+        "nodes": 943,
+        "edges": 0,
+        "timeMs": 11
+      },
+      "k1": {
+        "timeMs": 53,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 47,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 4811,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Multi_device_V2",
+      "methodCount": 367,
+      "entryPointCount": 149,
+      "k0": {
+        "nodes": 301,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "rta": {
+        "nodes": 301,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 12,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 11,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1112,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MultipleDialog",
+      "methodCount": 152,
+      "entryPointCount": 52,
+      "k0": {
+        "nodes": 107,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 107,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 424,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "MusicHome",
+      "methodCount": 950,
+      "entryPointCount": 336,
+      "k0": {
+        "nodes": 675,
+        "edges": 0,
+        "timeMs": 9
+      },
+      "rta": {
+        "nodes": 675,
+        "edges": 0,
+        "timeMs": 5
+      },
+      "k1": {
+        "timeMs": 29,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 36,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 2617,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "NativeTemplateDemo",
+      "methodCount": 59,
+      "entryPointCount": 26,
+      "k0": {
+        "nodes": 49,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 49,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 235,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "NewsDataArkTS",
+      "methodCount": 231,
+      "entryPointCount": 75,
+      "k0": {
+        "nodes": 143,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 143,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 499,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "NewsRelease",
+      "methodCount": 281,
+      "entryPointCount": 81,
+      "k0": {
+        "nodes": 156,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 156,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 12,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 805,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "OxHornCampus",
+      "methodCount": 969,
+      "entryPointCount": 366,
+      "k0": {
+        "nodes": 773,
+        "edges": 0,
+        "timeMs": 8
+      },
+      "rta": {
+        "nodes": 773,
+        "edges": 0,
+        "timeMs": 8
+      },
+      "k1": {
+        "timeMs": 44,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 39,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 2398,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "PagesRouter",
+      "methodCount": 44,
+      "entryPointCount": 12,
+      "k0": {
+        "nodes": 24,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 24,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 99,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "PedometerApp",
+      "methodCount": 188,
+      "entryPointCount": 59,
+      "k0": {
+        "nodes": 112,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 112,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 609,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "PixelConversion",
+      "methodCount": 112,
+      "entryPointCount": 40,
+      "k0": {
+        "nodes": 74,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 74,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 371,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Preferences",
+      "methodCount": 101,
+      "entryPointCount": 31,
+      "k0": {
+        "nodes": 57,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 57,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 203,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "RankingDemo",
+      "methodCount": 102,
+      "entryPointCount": 39,
+      "k0": {
+        "nodes": 70,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 70,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 304,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Rdb",
+      "methodCount": 215,
+      "entryPointCount": 75,
+      "k0": {
+        "nodes": 162,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 161,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 13,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 11,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 656,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Recorder",
+      "methodCount": 232,
+      "entryPointCount": 65,
+      "k0": {
+        "nodes": 133,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 133,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "k1": {
+        "timeMs": 10,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 794,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "methodCount": 3945,
+      "entryPointCount": 1086,
+      "k0": {
+        "nodes": 2267,
+        "edges": 0,
+        "timeMs": 23
+      },
+      "rta": {
+        "nodes": 2267,
+        "edges": 0,
+        "timeMs": 37
+      },
+      "k1": {
+        "timeMs": 168,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 116,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 10024,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SecondLevelLinkage",
+      "methodCount": 80,
+      "entryPointCount": 28,
+      "k0": {
+        "nodes": 54,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 54,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 335,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SetAppFontSize",
+      "methodCount": 166,
+      "entryPointCount": 57,
+      "k0": {
+        "nodes": 116,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 116,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 450,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SimpleCalculator",
+      "methodCount": 92,
+      "entryPointCount": 20,
+      "k0": {
+        "nodes": 39,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 39,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 338,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SimpleVideo",
+      "methodCount": 193,
+      "entryPointCount": 75,
+      "k0": {
+        "nodes": 147,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 147,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 10,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 494,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SliderExample",
+      "methodCount": 71,
+      "entryPointCount": 29,
+      "k0": {
+        "nodes": 51,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 51,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 188,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "methodCount": 770,
+      "entryPointCount": 182,
+      "k0": {
+        "nodes": 393,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "rta": {
+        "nodes": 393,
+        "edges": 0,
+        "timeMs": 6
+      },
+      "k1": {
+        "timeMs": 18,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 17,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1654,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "StageAbilityDemo",
+      "methodCount": 509,
+      "entryPointCount": 192,
+      "k0": {
+        "nodes": 361,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 361,
+        "edges": 0,
+        "timeMs": 3
+      },
+      "k1": {
+        "timeMs": 16,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 14,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 1374,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SwiperArkTS",
+      "methodCount": 276,
+      "entryPointCount": 106,
+      "k0": {
+        "nodes": 202,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 202,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 8,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 674,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "SystemCommonEvent",
+      "methodCount": 85,
+      "entryPointCount": 27,
+      "k0": {
+        "nodes": 50,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 50,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 255,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "TargetManagement",
+      "methodCount": 198,
+      "entryPointCount": 59,
+      "k0": {
+        "nodes": 127,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 127,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "k1": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 7,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 659,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "ThirdPartyLibrary",
+      "methodCount": 124,
+      "entryPointCount": 48,
+      "k0": {
+        "nodes": 91,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 91,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 399,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "ToDoListArkTS",
+      "methodCount": 40,
+      "entryPointCount": 13,
+      "k0": {
+        "nodes": 26,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 26,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 1,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 92,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "TransitionAnimation",
+      "methodCount": 163,
+      "entryPointCount": 60,
+      "k0": {
+        "nodes": 116,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 116,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 412,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "UIAbilityLifeCycle",
+      "methodCount": 37,
+      "entryPointCount": 16,
+      "k0": {
+        "nodes": 21,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 21,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 1,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 59,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "VideoPlayer",
+      "methodCount": 351,
+      "entryPointCount": 113,
+      "k0": {
+        "nodes": 230,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 230,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 13,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 10,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 971,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "WaterFlow",
+      "methodCount": 142,
+      "entryPointCount": 52,
+      "k0": {
+        "nodes": 104,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 104,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 6,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 394,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "WebComponent",
+      "methodCount": 81,
+      "entryPointCount": 34,
+      "k0": {
+        "nodes": 66,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 66,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 228,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "WebCookie",
+      "methodCount": 80,
+      "entryPointCount": 31,
+      "k0": {
+        "nodes": 56,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 56,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 2,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 215,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "methodCount": 6618,
+      "entryPointCount": 1833,
+      "k0": {
+        "nodes": 3680,
+        "edges": 0,
+        "timeMs": 32
+      },
+      "rta": {
+        "nodes": 3680,
+        "edges": 0,
+        "timeMs": 31
+      },
+      "k1": {
+        "timeMs": 154,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 204,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 12942,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "WindowManager",
+      "methodCount": 181,
+      "entryPointCount": 57,
+      "k0": {
+        "nodes": 122,
+        "edges": 0,
+        "timeMs": 2
+      },
+      "rta": {
+        "nodes": 122,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 671,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "XComponent",
+      "methodCount": 49,
+      "entryPointCount": 20,
+      "k0": {
+        "nodes": 32,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "rta": {
+        "nodes": 32,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 1,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 107,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "com.example.myapplication1",
+      "methodCount": 405,
+      "entryPointCount": 44,
+      "k0": {
+        "nodes": 97,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 97,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "k1": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 4,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 376,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "com.example.myapplication2",
+      "methodCount": 424,
+      "entryPointCount": 48,
+      "k0": {
+        "nodes": 106,
+        "edges": 0,
+        "timeMs": 0
+      },
+      "rta": {
+        "nodes": 106,
+        "edges": 0,
+        "timeMs": 1
+      },
+      "k1": {
+        "timeMs": 9,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 5,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 453,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "methodCount": 10315,
+      "entryPointCount": 2680,
+      "k0": {
+        "nodes": 5466,
+        "edges": 0,
+        "timeMs": 45
+      },
+      "rta": {
+        "nodes": 5460,
+        "edges": 0,
+        "timeMs": 36
+      },
+      "k1": {
+        "timeMs": 276,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 260,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 22954,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "methodCount": 2528,
+      "entryPointCount": 919,
+      "k0": {
+        "nodes": 1892,
+        "edges": 0,
+        "timeMs": 17
+      },
+      "rta": {
+        "nodes": 1892,
+        "edges": 0,
+        "timeMs": 14
+      },
+      "k1": {
+        "timeMs": 75,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 73,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 5191,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "harmonyos-games-main",
+      "methodCount": 1168,
+      "entryPointCount": 298,
+      "k0": {
+        "nodes": 634,
+        "edges": 0,
+        "timeMs": 5
+      },
+      "rta": {
+        "nodes": 633,
+        "edges": 0,
+        "timeMs": 5
+      },
+      "k1": {
+        "timeMs": 33,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 25,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 2663,
+        "resolvableCalls": 0
+      }
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "methodCount": 82322,
+      "entryPointCount": 20565,
+      "k0": {
+        "nodes": 41274,
+        "edges": 0,
+        "timeMs": 1491
+      },
+      "rta": {
+        "nodes": 41243,
+        "edges": 0,
+        "timeMs": 771
+      },
+      "k1": {
+        "timeMs": 3130,
+        "ptaStats": {}
+      },
+      "k2": {
+        "timeMs": 3062,
+        "ptaStats": {}
+      },
+      "virtualCalls": {
+        "virtualCallSites": 161479,
+        "resolvableCalls": 0
+      }
+    }
+  ]
+}

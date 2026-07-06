@@ -542,6 +542,94 @@ ArkPrism IR 证据：
 
 ---
 
+## 10.4 Top-50 自动 FP 根因分析
+
+对 Top-50 自动基准中标记为 FP 的 25 项进行根因分类，全部经人工源码复核后确认为真阳性（TP）。
+
+| 根因类别 | 数量 | 占比 | 描述 |
+|---|---:|---:|---|
+| **Indirect invoke（Manager Receiver）** | 18 | 72% | API 通过 manager/helper 对象调用（如 `helper.createAsset()`、`cameraManager.createCameraInput()`），自动基准仅检查 `namespace.method` 直接匹配 |
+| **Privacy constant（属性访问）** | 1 | 4% | API 作为属性/常量访问（如 `deviceInfo.sdkApiVersion`），不是方法调用 |
+| **Namespace-Method 匹配缺口** | 6 | 24% | 直接 `namespace.method()` 调用，但自动基准因别名解析、跨 Kit 映射或链式调用模式而未匹配 |
+
+**关键发现**：自动基准的 94.29% precision 是保守下界，实际 precision 为 100%。72% 的"假阳性"源于 indirect invoke 模式，这恰恰是 ArkPrism 的核心差异化能力——HapFlow 等方法签名匹配工具无法检测此类 API 调用。
+
+---
+
+## 10.5 HapFlow 对比实验
+
+### 实验设计
+
+使用 ArkPrism 的 `sensitive_apis.json`（826 条规则，675 个唯一 `namespace|method` 对）配置 HapFlow 的 source 检测，量化 HapFlow 的 API 识别覆盖范围。
+
+### 规则级检测能力
+
+| 指标 | HapFlow | ArkPrism |
+|---|---:|---:|
+| 可检测唯一 API | 428 / 675 | 675 / 675 |
+| 检测率 | **63.4%** | **100%** |
+| 不可检测 API | 247 | 0 |
+
+### 不可检测 API 根因
+
+| 类别 | 数量 | 占比 | 示例 | 原因 |
+|---|---:|---:|---|---|
+| **Indirect invoke** | 234 | 34.7% | `helper.createAsset()`、`cameraManager.createCameraInput()` | HapFlow 的 `Json2ArkMethodSignature` 仅匹配 SDK 命名空间上的方法签名，无法匹配 manager/helper receiver 上的调用 |
+| **Privacy constants** | 13 | 1.9% | `deviceInfo.brand`、`deviceInfo.serial` | HapFlow 仅解析方法签名，无法处理字段/属性访问 |
+
+### Top-120 Benchmark 对比
+
+| 指标 | HapFlow | ArkPrism |
+|---|---:|---:|
+| 可检测唯一 API | 48 / 129 | 129 / 129 |
+| 检测率 | **37.2%** | **100%** |
+| Usage 加权检测 | 224 / 666 (33.6%) | 666 / 666 (100%) |
+
+### 按检测模式对比
+
+| 模式 | 总 API | HapFlow 可检测 | 检测率 |
+|---|---:|---:|---:|
+| Direct invoke | 36 | 19 | 52.8% |
+| Assigned invoke | 62 | 37 | 59.7% |
+| Indirect invoke | 21 | 1 | 4.8% |
+| Privacy constants | 25 | 0 | 0.0% |
+
+**结论**：HapFlow 的 method-signature-based source 配置无法检测 36.6% 的隐私敏感 API。Indirect invoke 是主要盲区（34.7%），Privacy constants 是另一个结构性盲区（1.9%）。ArkPrism 的 4 模式检测是必要的上游 API 识别层。
+
+---
+
+## 10.6 消融实验
+
+### Leave-One-Out 消融（Top-120 Benchmark）
+
+| 移除模式 | 丢失方法 | 方法召回率 | 丢失 Usage | Usage 召回率 |
+|---|---:|---:|---:|---:|
+| （无 — 完整 ArkPrism） | 0 | **100.0%** | 0 | **100.0%** |
+| Direct invoke | 23 | 82.2% | 110 | 83.5% |
+| Assigned invoke | 49 | 62.0% | 241 | 63.8% |
+| Indirect invoke | 18 | 86.0% | 103 | 84.5% |
+| Privacy constants | 25 | 80.6% | 148 | 77.8% |
+
+### 增量贡献（按依赖顺序添加）
+
+| 模式 | 增量方法 | 累计方法 | 累计率 | 增量 Usage | 累计 Usage | 累计率 |
+|---|---:|---:|---:|---:|---:|---:|
+| Direct invoke | 36 | 36 | 27.9% | 117 | 117 | 17.6% |
+| Assigned invoke | 50 | 86 | 66.7% | 298 | 415 | 62.3% |
+| Indirect invoke | 18 | 104 | 80.6% | 103 | 518 | 77.8% |
+| Privacy constants | 25 | 129 | 100.0% | 148 | 666 | 100.0% |
+
+### 包族归一化消融
+
+594 / 675 条 API 规则使用 `@kit.*` 包名。不进行 `@kit.*` → `@ohos.*` 归一化时：
+
+| 指标 | 数量 | 比率 |
+|---|---:|---:|
+| 使用 @kit.*-only API 的方法 | 59 / 129 | 45.7% |
+| 使用 @kit.*-only API 的 usage | 219 / 666 | 32.9% |
+
+---
+
 ## 11 关键结论
 
 | 结论 | 证据 |
@@ -552,6 +640,9 @@ ArkPrism IR 证据：
 | **污点路径覆盖 100%** | 1792 条污点流均含完整传播路径 |
 | **全量运行零失败** | 1015/1015 样本成功完成分析 |
 | **自动基准 89.22% precision 为保守下界** | 25 项自动 FP 经人工复核全部确认为 TP |
+| **HapFlow 无法检测 36.6% 的隐私 API** | Indirect invoke (34.7%) + Privacy constants (1.9%) 为结构性盲区 |
+| **4 模式检测互不可替代** | 移除任何模式均使方法召回率降至 <86% |
+| **包族归一化不可省略** | 不归一化将丢失 45.7% 的检测方法 |
 
 ---
 
