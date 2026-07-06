@@ -1,6 +1,10 @@
 /**
  * ArkPrism - Layer 3: Call Graph Construction
- * Builds an RTA/CHA call graph with lifecycle edge augmentation.
+ * Builds an RTA/CHA call graph with lifecycle state machine augmentation.
+ *
+ * Enhanced with LifecycleModeler: replaces simplistic LIFECYCLE_ORDER pairs
+ * with a proper 3-layer state machine (Ability → Component → Callback)
+ * that captures cross-layer implicit framework calls.
  *
  * Aligned with ArkAnalyzer's actual CallGraph API:
  *   - CallGraph extends BaseExplicitGraph
@@ -10,23 +14,11 @@
  */
 
 import { Scene, ArkMethod, CallGraph, COMPONENT_LIFECYCLE_METHOD_NAME, LIFECYCLE_METHOD_NAME } from './arkanalyzer';
-
-/** Lifecycle method execution order in HarmonyOS */
-const LIFECYCLE_ORDER: string[][] = [
-    // UIAbility lifecycle
-    ["onCreate", "onWindowStageCreate"],
-    ["onWindowStageCreate", "onForeground"],
-    ["onForeground", "onBackground"],
-    ["onBackground", "onWindowStageDestroy"],
-    // Page/Component lifecycle
-    ["aboutToAppear", "build"],
-    ["build", "onPageShow"],
-    ["onPageShow", "onPageHide"],
-    ["onPageHide", "aboutToDisappear"]
-];
+import { LifecycleModeler, LifecycleModel } from './lifecycleModeler';
 
 /** Entry method names recognized as roots of analysis.
  * Uses ArkAnalyzer's official lifecycle constants + user interaction callbacks.
+ * These serve as a fallback when LifecycleModeler is not used.
  */
 export const ENTRY_METHOD_NAMES: string[] = [
     // User interaction triggers (Priority 1)
@@ -78,20 +70,25 @@ export function getEntryType(methodName: string): "user_interaction" | "componen
 }
 
 /**
- * Build an enhanced call graph for the project.
+ * Build an enhanced call graph for the project using the LifecycleModeler.
  *
  * Strategy:
- *   1. Collect entry methods from scene
- *   2. Try RTA with entry points
- *   3. Fallback to CHA if RTA fails
- *   4. Augment with lifecycle implicit edges
+ *   1. Build lifecycle model (3-layer state machine)
+ *   2. Collect entry methods from lifecycle model
+ *   3. Try RTA with entry points
+ *   4. Fallback to CHA if RTA fails
+ *   5. Augment with lifecycle state machine transitions (intra-layer + cross-layer)
  */
 export function buildCallGraph(scene: Scene): CallGraph {
-    console.log("[CALLGRAPH] Building call graph...");
+    console.log("[CALLGRAPH] Building call graph with lifecycle state machine...");
 
-    // Collect entry method signatures
-    let entryPoints = collectEntryPoints(scene);
-    console.log(`[CALLGRAPH] Found ${entryPoints.length} entry points.`);
+    // Build lifecycle model
+    const modeler = new LifecycleModeler(scene);
+    const lifecycleModel = modeler.buildModel();
+
+    // Collect entry method signatures from lifecycle model
+    let entryPoints = collectEntryPoints(scene, lifecycleModel);
+    console.log(`[CALLGRAPH] Found ${entryPoints.length} entry points (lifecycle-aware).`);
 
     let callGraph: CallGraph;
 
@@ -110,70 +107,153 @@ export function buildCallGraph(scene: Scene): CallGraph {
         }
     }
 
-    // Augment with lifecycle implicit edges
-    augmentLifecycleEdges(callGraph, scene);
+    // Augment with lifecycle state machine transitions
+    augmentLifecycleEdges(callGraph, scene, lifecycleModel);
 
     return callGraph;
 }
 
 /**
- * Collect entry point method signatures from the scene.
+ * Get the LifecycleModeler instance used during call graph construction.
+ * Callers can use this to access the lifecycle model for other analyses.
  */
-function collectEntryPoints(scene: Scene): any[] {
-    let entryPoints: any[] = [];
-    for (const method of scene.getMethods()) {
-        let methodName = method.getName();
-        if (ENTRY_METHOD_NAMES.includes(methodName)) {
-            entryPoints.push(method.getSignature());
-        }
-    }
-    return entryPoints;
+export function buildLifecycleModel(scene: Scene): LifecycleModeler {
+    const modeler = new LifecycleModeler(scene);
+    modeler.buildModel();
+    return modeler;
 }
 
 /**
- * Augment the call graph with lifecycle ordering edges.
- * In HarmonyOS, certain lifecycle methods are called in a fixed order by the framework.
+ * Collect entry point method signatures from the scene.
+ * Uses the lifecycle model for organized entry point collection.
  */
-function augmentLifecycleEdges(cg: CallGraph, scene: Scene): void {
-    let augmentedCount = 0;
+function collectEntryPoints(scene: Scene, lifecycleModel?: LifecycleModel): any[] {
+    let entryPoints: any[] = [];
 
-    for (const method of scene.getMethods()) {
-        let methodName = method.getName();
+    if (lifecycleModel) {
+        // Use lifecycle model entry methods (ordered: ability → component → callback)
+        const lifecycleMethods = [
+            ...lifecycleModel.entryMethodsByLayer.ability,
+            ...lifecycleModel.entryMethodsByLayer.component,
+            ...lifecycleModel.entryMethodsByLayer.callback,
+        ];
+        for (const method of lifecycleMethods) {
+            entryPoints.push(method.getSignature());
+        }
 
-        for (const [from, to] of LIFECYCLE_ORDER) {
-            if (methodName === from) {
-                // Find the 'to' method in the same class
-                let targetMethods = method.getDeclaringArkClass().getMethods().filter(m => m.getName() === to);
-                for (let targetMethod of targetMethods) {
-                    let fromSig = method.getSignature();
-                    let toSig = targetMethod.getSignature();
-                    try {
-                        // Use a dummy stmt for the lifecycle edge
-                        // First check if edge already exists
-                        let fromNode = cg.getCallGraphNodeByMethod(fromSig);
-                        let toNode = cg.getCallGraphNodeByMethod(toSig);
-                        if (fromNode && toNode) {
-                            let existingEdge = cg.getCallEdgeByPair(fromNode.getID(), toNode.getID());
-                            if (!existingEdge) {
-                                // Get first stmt from the 'from' method
-                                let body = method.getBody();
-                                if (body) {
-                                    let cfg = body.getCfg();
-                                    let stmts = cfg.getStmts();
-                                    if (stmts.length > 0) {
-                                        cg.addDirectOrSpecialCallEdge(fromSig, toSig, stmts[0], true);
-                                        augmentedCount++;
-                                    }
-                                }
-                            }
-                        }
-                    } catch (_) {
-                        // Edge addition may fail, skip
-                    }
-                }
+        // Also include any entry points from the legacy list that weren't discovered
+        // by the lifecycle modeler (e.g., constructor, _DEFAULT_ARK_METHOD)
+        for (const method of scene.getMethods()) {
+            let methodName = method.getName();
+            if ((methodName === 'constructor' || methodName === '_DEFAULT_ARK_METHOD') &&
+                !entryPoints.some(ep => ep.toString() === method.getSignature().toString())) {
+                entryPoints.push(method.getSignature());
+            }
+        }
+    } else {
+        // Fallback to legacy entry point collection
+        for (const method of scene.getMethods()) {
+            let methodName = method.getName();
+            if (ENTRY_METHOD_NAMES.includes(methodName)) {
+                entryPoints.push(method.getSignature());
             }
         }
     }
 
-    console.log(`[CALLGRAPH] Augmented ${augmentedCount} lifecycle implicit edges.`);
+    return entryPoints;
+}
+
+/**
+ * Augment the call graph with lifecycle state machine transitions.
+ *
+ * This replaces the old LIFECYCLE_ORDER simple pairs with the full
+ * LifecycleModeler transition graph, including:
+ *   - Intra-layer transitions (Ability→Ability, Component→Component)
+ *   - Cross-layer transitions (Ability→Component, framework implicit calls)
+ */
+function augmentLifecycleEdges(cg: CallGraph, scene: Scene, lifecycleModel?: LifecycleModel): void {
+    let augmentedCount = 0;
+    let crossLayerCount = 0;
+
+    if (lifecycleModel) {
+        // Use the lifecycle model's transition graph
+        for (const transition of lifecycleModel.transitions) {
+            try {
+                let fromSig = transition.fromMethod.getSignature();
+                let toSig = transition.toMethod.getSignature();
+                let fromNode = cg.getCallGraphNodeByMethod(fromSig);
+                let toNode = cg.getCallGraphNodeByMethod(toSig);
+                if (fromNode && toNode) {
+                    let existingEdge = cg.getCallEdgeByPair(fromNode.getID(), toNode.getID());
+                    if (!existingEdge) {
+                        // Get a representative stmt from the 'from' method
+                        let body = transition.fromMethod.getBody();
+                        if (body) {
+                            let cfg = body.getCfg();
+                            let stmts = cfg.getStmts();
+                            if (stmts.length > 0) {
+                                cg.addDirectOrSpecialCallEdge(fromSig, toSig, stmts[0], true);
+                                augmentedCount++;
+                                if (transition.crossLayer) {
+                                    crossLayerCount++;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (_) {
+                // Edge addition may fail, skip
+            }
+        }
+
+        console.log(`[CALLGRAPH] Augmented ${augmentedCount} lifecycle edges (${crossLayerCount} cross-layer) from state machine model.`);
+    } else {
+        // Fallback: use legacy LIFECYCLE_ORDER pairs
+        const LIFECYCLE_ORDER: string[][] = [
+            ["onCreate", "onWindowStageCreate"],
+            ["onWindowStageCreate", "onForeground"],
+            ["onForeground", "onBackground"],
+            ["onBackground", "onWindowStageDestroy"],
+            ["aboutToAppear", "build"],
+            ["build", "onPageShow"],
+            ["onPageShow", "onPageHide"],
+            ["onPageHide", "aboutToDisappear"]
+        ];
+
+        for (const method of scene.getMethods()) {
+            let methodName = method.getName();
+
+            for (const [from, to] of LIFECYCLE_ORDER) {
+                if (methodName === from) {
+                    let targetMethods = method.getDeclaringArkClass().getMethods().filter(m => m.getName() === to);
+                    for (let targetMethod of targetMethods) {
+                        let fromSig = method.getSignature();
+                        let toSig = targetMethod.getSignature();
+                        try {
+                            let fromNode = cg.getCallGraphNodeByMethod(fromSig);
+                            let toNode = cg.getCallGraphNodeByMethod(toSig);
+                            if (fromNode && toNode) {
+                                let existingEdge = cg.getCallEdgeByPair(fromNode.getID(), toNode.getID());
+                                if (!existingEdge) {
+                                    let body = method.getBody();
+                                    if (body) {
+                                        let cfg = body.getCfg();
+                                        let stmts = cfg.getStmts();
+                                        if (stmts.length > 0) {
+                                            cg.addDirectOrSpecialCallEdge(fromSig, toSig, stmts[0], true);
+                                            augmentedCount++;
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (_) {
+                            // Edge addition may fail, skip
+                        }
+                    }
+                }
+            }
+        }
+
+        console.log(`[CALLGRAPH] Augmented ${augmentedCount} lifecycle implicit edges (legacy mode).`);
+    }
 }

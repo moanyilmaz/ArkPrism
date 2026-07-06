@@ -11,11 +11,13 @@
  *   6. Convert results to ArkPrism output format
  */
 
-import { Scene, DummyMainCreater, PointerAnalysis, PointerAnalysisConfig } from './arkanalyzer';
+import { Scene, PointerAnalysis, PointerAnalysisConfig } from './arkanalyzer';
 import { TaintAnalysisChecker } from './hapflow/TaintAnalysis';
 import { TaintAnalysisSolver } from './hapflow/TaintAnalysisSolver';
 import { TaintFact } from './hapflow/TaintFact';
-import { TaintFlowResult, TaintPathStep } from './prototypes';
+import { TaintFlowResult } from './prototypes';
+import { buildLifecycleDummyMain } from './lifecycleDummyMain';
+import { LifecycleModeler } from './lifecycleModeler';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -92,11 +94,11 @@ export function runHapflowAnalysis(
         console.log(`[HAPFLOW] SDK files already loaded: ${existingSdkFiles}`);
     }
 
-    // 2. Build DummyMain (virtual entry method collecting all entry points)
-    const creater = new DummyMainCreater(scene);
-    creater.createDummyMain();
-    const entry = creater.getDummyMain();
-    console.log('[HAPFLOW] DummyMain created.');
+    // 2. Build lifecycle-aware DummyMain (virtual entry method with lifecycle state machine)
+    const lifecycleModeler = new LifecycleModeler(scene);
+    const lifecycleModel = lifecycleModeler.buildModel();
+    const { dummyMain: entry, modeler: creater } = buildLifecycleDummyMain(scene, lifecycleModel);
+    console.log('[HAPFLOW] Lifecycle-aware DummyMain created.');
 
     // 3. Optional pointer analysis for alias resolution
     let pta: PointerAnalysis | undefined = undefined;
