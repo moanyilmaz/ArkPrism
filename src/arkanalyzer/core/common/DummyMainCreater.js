@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -73,7 +73,7 @@ class DummyMainCreater {
     }
     createDummyMain() {
         var _a;
-        const dummyMainFile = new ArkFile_1.ArkFile();
+        const dummyMainFile = new ArkFile_1.ArkFile(ArkFile_1.Language.UNKNOWN);
         dummyMainFile.setScene(this.scene);
         const dummyMainFileSignature = new ArkSignature_1.FileSignature(this.scene.getProjectName(), '@dummyFile');
         dummyMainFile.setFileSignature(dummyMainFileSignature);
@@ -95,22 +95,21 @@ class DummyMainCreater {
         for (const method of this.entryMethods) {
             if (method.getDeclaringArkClass().isDefaultArkClass() || method.isStatic()) {
                 defaultMethods.push(method);
+                continue;
             }
-            else {
-                const declaringArkClass = method.getDeclaringArkClass();
-                let newLocal = null;
-                for (const local of this.classLocalMap.values()) {
-                    if ((local === null || local === void 0 ? void 0 : local.getType()).getClassSignature() === declaringArkClass.getSignature()) {
-                        newLocal = local;
-                        break;
-                    }
+            const declaringArkClass = method.getDeclaringArkClass();
+            let newLocal = null;
+            for (const local of this.classLocalMap.values()) {
+                if ((local === null || local === void 0 ? void 0 : local.getType()).getClassSignature() === declaringArkClass.getSignature()) {
+                    newLocal = local;
+                    break;
                 }
-                if (!newLocal) {
-                    newLocal = new Local_1.Local('%' + this.tempLocalIndex, new Type_1.ClassType(declaringArkClass.getSignature()));
-                    this.tempLocalIndex++;
-                }
-                this.classLocalMap.set(method, newLocal);
             }
+            if (!newLocal) {
+                newLocal = new Local_1.Local('%' + this.tempLocalIndex, new Type_1.ClassType(declaringArkClass.getSignature()));
+                this.tempLocalIndex++;
+            }
+            this.classLocalMap.set(method, newLocal);
         }
         for (const defaultMethod of defaultMethods) {
             this.classLocalMap.set(defaultMethod, null);
@@ -164,7 +163,7 @@ class DummyMainCreater {
                 let superCls = method.getDeclaringArkClass().getSuperClass();
                 let methodInSuperCls = superCls === null || superCls === void 0 ? void 0 : superCls.getMethodWithName(method.getName());
                 if (methodInSuperCls) {
-                    paramType = (_a = methodInSuperCls.getParameters().at(paramIdx)) === null || _a === void 0 ? void 0 : _a.getType();
+                    paramType = (_a = methodInSuperCls.getParameters()[paramIdx]) === null || _a === void 0 ? void 0 : _a.getType();
                     method = methodInSuperCls;
                 }
             }
@@ -172,6 +171,7 @@ class DummyMainCreater {
             paramLocals.push(paramLocal);
             if (paramType instanceof Type_1.ClassType) {
                 const assStmt = new Stmt_1.ArkAssignStmt(paramLocal, new Expr_1.ArkNewExpr(paramType));
+                paramLocal.setDeclaringStmt(assStmt);
                 invokeBlock.addStmt(assStmt);
             }
             paramIdx++;
@@ -228,7 +228,7 @@ class DummyMainCreater {
         const whileStmt = new Stmt_1.ArkIfStmt(conditionTrue);
         firstBlock.addStmt(countAssignStmt);
         dummyCfg.addBlock(firstBlock);
-        dummyCfg.setStartingStmt(firstBlock.getStmts()[0]);
+        dummyCfg.setStartingStmt(firstBlock.getHead());
         const whileBlock = new BasicBlock_1.BasicBlock();
         whileBlock.addStmt(whileStmt);
         dummyCfg.addBlock(whileBlock);
@@ -260,7 +260,8 @@ class DummyMainCreater {
     getEntryMethodsFromComponents() {
         const COMPONENT_BASE_CLASSES = ['CustomComponent', 'ViewPU'];
         let methods = [];
-        this.scene.getClasses()
+        this.scene
+            .getClasses()
             .filter(cls => {
             if (COMPONENT_BASE_CLASSES.includes(cls.getSuperClassName())) {
                 return true;
@@ -291,7 +292,8 @@ class DummyMainCreater {
     }
     getMethodsFromAllAbilities() {
         let methods = [];
-        this.scene.getClasses()
+        this.scene
+            .getClasses()
             .filter(cls => this.classInheritsAbility(cls))
             .forEach(cls => {
             methods.push(...cls.getMethods().filter(mtd => entryMethodUtils_1.LIFECYCLE_METHOD_NAME.includes(mtd.getName())));
@@ -304,13 +306,14 @@ class DummyMainCreater {
             if (!method.getCfg()) {
                 return;
             }
-            method.getCfg().getBlocks().forEach(block => {
-                block.getStmts().forEach(stmt => {
-                    const cbMethod = (0, entryMethodUtils_1.getCallbackMethodFromStmt)(stmt, this.scene);
-                    if (cbMethod && !callbackMethods.includes(cbMethod)) {
-                        callbackMethods.push(cbMethod);
-                    }
-                });
+            method
+                .getCfg()
+                .getStmts()
+                .forEach(stmt => {
+                const cbMethod = (0, entryMethodUtils_1.getCallbackMethodFromStmt)(stmt, this.scene);
+                if (cbMethod && !callbackMethods.includes(cbMethod)) {
+                    callbackMethods.push(cbMethod);
+                }
             });
         });
         return callbackMethods;

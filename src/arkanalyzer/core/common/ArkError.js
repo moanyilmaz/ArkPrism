@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -25,4 +25,4 @@ var ArkErrorCode;
     ArkErrorCode[ArkErrorCode["CFG_HAS_UNREACHABLE_BLOCK"] = -5] = "CFG_HAS_UNREACHABLE_BLOCK";
     ArkErrorCode[ArkErrorCode["METHOD_SIGNATURE_UNDEFINED"] = -6] = "METHOD_SIGNATURE_UNDEFINED";
     ArkErrorCode[ArkErrorCode["METHOD_SIGNATURE_LINE_UNMATCHED"] = -7] = "METHOD_SIGNATURE_LINE_UNMATCHED";
-})(ArkErrorCode = exports.ArkErrorCode || (exports.ArkErrorCode = {}));
+})(ArkErrorCode || (exports.ArkErrorCode = ArkErrorCode = {}));

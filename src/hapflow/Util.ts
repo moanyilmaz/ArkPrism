@@ -740,6 +740,39 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             return sources.get(sigStr)!;
         }
 
+        // HapFlow original: if the declaring class inherits from UIAbility,
+        // match ArgIn sources by method sub-signature (e.g., onCreate's Want param)
+        const declaringCls = scene.getClass(valMethodSignature.getDeclaringClassSignature());
+        if (declaringCls && classInheritsAbility(declaringCls)) {
+            const invokeMethodName = valMethodSignature.getMethodSubSignature().getMethodName();
+            for (const source of sources.values()) {
+                if (source.sourceType == 'ArgIn') {
+                    const sourceMethodName = source.methodSignature.getMethodSubSignature().getMethodName();
+                    if (sourceMethodName != invokeMethodName) continue;
+                    // Compare parameter types by short name (strip file paths)
+                    // Invoke sig: "onCreate(@ohosSdk/api/@ohos.app.ability.Want.d.ts: Want, ...)"
+                    // Source sig:  "onCreate(Want, ...)"
+                    const invokeParamTypes = valMethodSignature.getMethodSubSignature().getParameterTypes();
+                    const sourceParamTypes = source.methodSignature.getMethodSubSignature().getParameterTypes();
+                    if (invokeParamTypes.length !== sourceParamTypes.length) continue;
+                    let paramsMatch = true;
+                    for (let i = 0; i < invokeParamTypes.length; i++) {
+                        const invokeTypeStr = invokeParamTypes[i].getTypeString();
+                        const sourceTypeStr = sourceParamTypes[i].getTypeString();
+                        // Extract short name from invoke type (e.g., "Want" from "@ohosSdk/api/@ohos.app.ability.Want.d.ts: Want")
+                        const invokeShort = invokeTypeStr.includes(':') ? invokeTypeStr.split(':').pop()!.trim() : invokeTypeStr;
+                        if (invokeShort !== sourceTypeStr) {
+                            paramsMatch = false;
+                            break;
+                        }
+                    }
+                    if (paramsMatch) {
+                        return source;
+                    }
+                }
+            }
+        }
+
         // Fuzzy match: when signature is unknown (@%unk), match by method name AND base type
         // This is more precise than just matching method name
         if (sigStr.includes('@%unk') || sigStr.includes('@unk')) {
@@ -748,6 +781,33 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             // Skip non-privacy APIs (system management, event subscription, etc.)
             if (isNonPrivacyApi(methodName)) {
                 return null;
+            }
+
+            // Skip known non-privacy base types (process, console, etc.)
+            // These are Node.js built-in objects or app-level storage that should never match SDK privacy APIs
+            const NON_PRIVACY_BASE_TYPES = new Set([
+                'process', 'console', 'global', 'globalThis',
+                'require', 'module', 'exports', '__dirname', '__filename',
+                'Buffer', 'setTimeout', 'setInterval', 'setImmediate',
+                'clearTimeout', 'clearInterval', 'clearImmediate',
+                'queueMicrotask', 'structuredClone', 'URL', 'URLSearchParams',
+                // HarmonyOS app-level storage (not privacy data)
+                'AppStorage', 'LocalStorage', 'PersistentStorage',
+                // App-level data models (not SDK privacy APIs)
+                'DataModel', 'ViewModel', 'MainViewModel', 'HomeModel',
+                // HTTP libraries (the library itself is not a source)
+                'axios', 'http',
+            ]);
+            if (val instanceof ArkInstanceInvokeExpr) {
+                const base = val.getBase();
+                if (base && base.toString()) {
+                    const baseStr = base.toString().toLowerCase();
+                    for (const nonPrivacyBase of NON_PRIVACY_BASE_TYPES) {
+                        if (baseStr === nonPrivacyBase.toLowerCase() || baseStr.startsWith(nonPrivacyBase.toLowerCase() + '.')) {
+                            return null;
+                        }
+                    }
+                }
             }
 
             // Get the base type if it's an instance invoke
@@ -864,6 +924,14 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                         bestMatch = source;
                     }
                 }
+            }
+
+            // For overly generic method names that appear on many types (get, set, on, etc.),
+            // require at least score >= 2 (namespace or module match) to avoid false matches
+            // like AppStorage.get() matching SingleKVStore.get()
+            const GENERIC_METHOD_NAMES = new Set(['get', 'set', 'on', 'off', 'has', 'delete', 'clear', 'length', 'toString']);
+            if (bestMatch && GENERIC_METHOD_NAMES.has(methodName) && bestMatchScore < 2) {
+                return null;
             }
 
             // Special handling for contact APIs: if we didn't find a match yet, try method name only

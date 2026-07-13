@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BasePrinter = exports.setPrinterOptions = void 0;
+exports.BasePrinter = void 0;
+exports.setPrinterOptions = setPrinterOptions;
 const ArkBaseModel_1 = require("../../core/model/ArkBaseModel");
 const ArkClass_1 = require("../../core/model/ArkClass");
 const Printer_1 = require("../Printer");
@@ -23,19 +24,18 @@ let printerOptions = { pureTs: false, noMethodBody: false };
 function setPrinterOptions(options) {
     printerOptions = Object.assign(Object.assign({}, printerOptions), options);
 }
-exports.setPrinterOptions = setPrinterOptions;
 class BasePrinter extends Printer_1.Printer {
     constructor(indent) {
         super(indent);
     }
     printDecorator(docorator) {
-        docorator.forEach((value) => {
+        docorator.forEach(value => {
             this.printer.writeIndent().writeLine(value.toString());
         });
     }
     printComments(commentsMetadata) {
         const comments = commentsMetadata.getComments();
-        comments.forEach((comment) => {
+        comments.forEach(comment => {
             this.printer.writeIndent().writeLine(comment.content);
         });
     }

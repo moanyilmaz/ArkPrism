@@ -1,7 +1,8 @@
-import { AliasTypeSignature, ClassSignature, MethodSignature, NamespaceSignature } from '../model/ArkSignature';
+import { AliasTypeSignature, ClassSignature, FieldSignature, MethodSignature, NamespaceSignature } from '../model/ArkSignature';
 import { ArkExport, ExportType } from '../model/ArkExport';
 import { ModifierType } from '../model/ArkBaseModel';
 import { Local } from './Local';
+import { Constant } from './Constant';
 /**
  * @category core/base/type
  */
@@ -60,6 +61,15 @@ export declare class NumberType extends PrimitiveType {
     private static readonly INSTANCE;
     private constructor();
     static getInstance(): NumberType;
+}
+/**
+ * bigint type
+ * @category core/base/type
+ */
+export declare class BigIntType extends PrimitiveType {
+    private static readonly INSTANCE;
+    private constructor();
+    static getInstance(): BigIntType;
 }
 export declare class StringType extends PrimitiveType {
     private static readonly INSTANCE;
@@ -269,7 +279,7 @@ export declare class GenericType extends Type {
     private name;
     private defaultType?;
     private constraint?;
-    private index?;
+    private index;
     constructor(name: string, defaultType?: Type, constraint?: Type);
     getName(): string;
     getDefaultType(): Type | undefined;
@@ -304,6 +314,14 @@ export declare class LexicalEnvType extends Type {
     getNestedMethod(): MethodSignature;
     getClosures(): Local[];
     addClosure(closure: Local): void;
+    getTypeString(): string;
+}
+export declare class EnumValueType extends Type {
+    private signature;
+    private constant?;
+    constructor(signature: FieldSignature, constant?: Constant);
+    getFieldSignature(): FieldSignature;
+    getConstant(): Constant | undefined;
     getTypeString(): string;
 }
 //# sourceMappingURL=Type.d.ts.map

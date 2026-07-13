@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,25 +22,13 @@ const DominanceFinder_1 = require("../core/graph/DominanceFinder");
 const DominanceTree_1 = require("../core/graph/DominanceTree");
 class StaticSingleAssignmentFormer {
     transformBody(body) {
-        var _a;
         let cfg = body.getCfg();
         let blockToDefs = new Map();
         let localToBlocks = new Map();
         for (const block of cfg.getBlocks()) {
             let defs = new Set();
             for (const stmt of block.getStmts()) {
-                if (stmt.getDef() != null && stmt.getDef() instanceof Local_1.Local) {
-                    let local = stmt.getDef();
-                    defs.add(local);
-                    if (localToBlocks.has(local)) {
-                        (_a = localToBlocks.get(local)) === null || _a === void 0 ? void 0 : _a.add(block);
-                    }
-                    else {
-                        let blcoks = new Set();
-                        blcoks.add(block);
-                        localToBlocks.set(local, blcoks);
-                    }
-                }
+                this.transformStmt(stmt, defs, localToBlocks, block);
             }
             blockToDefs.set(block, defs);
         }
@@ -50,8 +38,22 @@ class StaticSingleAssignmentFormer {
         let dominanceTree = new DominanceTree_1.DominanceTree(dominanceFinder);
         this.renameLocals(body, dominanceTree, blockToPhiStmts);
     }
+    transformStmt(stmt, defs, localToBlocks, block) {
+        var _a;
+        if (stmt.getDef() != null && stmt.getDef() instanceof Local_1.Local) {
+            let local = stmt.getDef();
+            defs.add(local);
+            if (localToBlocks.has(local)) {
+                (_a = localToBlocks.get(local)) === null || _a === void 0 ? void 0 : _a.add(block);
+            }
+            else {
+                let blcoks = new Set();
+                blcoks.add(block);
+                localToBlocks.set(local, blcoks);
+            }
+        }
+    }
     decideBlockToPhiStmts(body, dominanceFinder, blockToDefs, localToBlocks) {
-        var _a, _b, _c, _d;
         let blockToPhiStmts = new Map();
         let blockToPhiLocals = new Map();
         let localToPhiBlock = new Map();
@@ -60,53 +62,60 @@ class StaticSingleAssignmentFormer {
             let phiBlocks = localToPhiBlock.get(local);
             let blocks = Array.from(localToBlocks.get(local));
             while (blocks.length !== 0) {
-                let block = blocks.splice(0, 1).at(0);
+                let block = blocks.splice(0, 1)[0];
                 let dfs = dominanceFinder.getDominanceFrontiers(block);
                 for (const df of dfs) {
-                    if (!phiBlocks.has(df)) {
-                        phiBlocks.add(df);
-                        let phiStmt = this.createEmptyPhiStmt(local);
-                        if (blockToPhiStmts.has(df)) {
-                            (_a = blockToPhiStmts.get(df)) === null || _a === void 0 ? void 0 : _a.add(phiStmt);
-                            (_b = blockToPhiLocals.get(df)) === null || _b === void 0 ? void 0 : _b.add(local);
-                        }
-                        else {
-                            let phiStmts = new Set();
-                            phiStmts.add(phiStmt);
-                            blockToPhiStmts.set(df, phiStmts);
-                            let phiLocals = new Set();
-                            phiLocals.add(local);
-                            blockToPhiLocals.set(df, phiLocals);
-                        }
-                        (_c = blockToDefs.get(df)) === null || _c === void 0 ? void 0 : _c.add(local);
-                        if (!((_d = blockToDefs.get(df)) === null || _d === void 0 ? void 0 : _d.has(local))) {
-                            blocks.push(df);
-                        }
-                    }
+                    this.handleDf(blockToPhiStmts, blockToPhiLocals, phiBlocks, df, local, blockToDefs, blocks);
                 }
             }
         }
         return blockToPhiStmts;
     }
-    addPhiStmts(blockToPhiStmts, cfg, blockToDefs) {
+    handleDf(blockToPhiStmts, blockToPhiLocals, phiBlocks, df, local, blockToDefs, blocks) {
+        var _a, _b, _c, _d;
+        if (!phiBlocks.has(df)) {
+            phiBlocks.add(df);
+            let phiStmt = this.createEmptyPhiStmt(local);
+            if (blockToPhiStmts.has(df)) {
+                (_a = blockToPhiStmts.get(df)) === null || _a === void 0 ? void 0 : _a.add(phiStmt);
+                (_b = blockToPhiLocals.get(df)) === null || _b === void 0 ? void 0 : _b.add(local);
+            }
+            else {
+                let phiStmts = new Set();
+                phiStmts.add(phiStmt);
+                blockToPhiStmts.set(df, phiStmts);
+                let phiLocals = new Set();
+                phiLocals.add(local);
+                blockToPhiLocals.set(df, phiLocals);
+            }
+            (_c = blockToDefs.get(df)) === null || _c === void 0 ? void 0 : _c.add(local);
+            if (!((_d = blockToDefs.get(df)) === null || _d === void 0 ? void 0 : _d.has(local))) {
+                blocks.push(df);
+            }
+        }
+    }
+    handleBlockWithSucc(blockToPhiStmts, succ, blockToDefs, block, phiArgsNum) {
         var _a;
+        for (const phi of blockToPhiStmts.get(succ)) {
+            let local = phi.getDef();
+            if ((_a = blockToDefs.get(block)) === null || _a === void 0 ? void 0 : _a.has(local)) {
+                if (phiArgsNum.has(phi)) {
+                    let num = phiArgsNum.get(phi);
+                    phiArgsNum.set(phi, num + 1);
+                }
+                else {
+                    phiArgsNum.set(phi, 1);
+                }
+            }
+        }
+    }
+    addPhiStmts(blockToPhiStmts, cfg, blockToDefs) {
         let phiArgsNum = new Map();
         for (const block of cfg.getBlocks()) {
             let succs = Array.from(block.getSuccessors());
             for (const succ of succs) {
                 if (blockToPhiStmts.has(succ)) {
-                    for (const phi of blockToPhiStmts.get(succ)) {
-                        let local = phi.getDef();
-                        if ((_a = blockToDefs.get(block)) === null || _a === void 0 ? void 0 : _a.has(local)) {
-                            if (phiArgsNum.has(phi)) {
-                                let num = phiArgsNum.get(phi);
-                                phiArgsNum.set(phi, num + 1);
-                            }
-                            else {
-                                phiArgsNum.set(phi, 1);
-                            }
-                        }
-                    }
+                    this.handleBlockWithSucc(blockToPhiStmts, succ, blockToDefs, block, phiArgsNum);
                 }
             }
         }
@@ -123,8 +132,35 @@ class StaticSingleAssignmentFormer {
             }
         }
     }
+    renameUseAndDef(stmt, localToNameStack, nextFreeIdx, newLocals, newPhiStmts) {
+        var _a;
+        let uses = stmt.getUses();
+        if (uses.length > 0 && !this.constainsPhiExpr(stmt)) {
+            for (const use of uses) {
+                if (use instanceof Local_1.Local) {
+                    let nameStack = localToNameStack.get(use);
+                    let newUse = nameStack[nameStack.length - 1];
+                    stmt.replaceUse(use, newUse);
+                }
+            }
+        }
+        // rename def
+        let def = stmt.getDef();
+        if (def != null && def instanceof Local_1.Local) {
+            let newName = def.getName() + '#' + nextFreeIdx;
+            nextFreeIdx++;
+            let newDef = new Local_1.Local(newName);
+            newDef.setOriginalValue(def);
+            newLocals.add(newDef);
+            (_a = localToNameStack.get(def)) === null || _a === void 0 ? void 0 : _a.push(newDef);
+            stmt.setLeftOp(newDef);
+            if (this.constainsPhiExpr(stmt)) {
+                newPhiStmts.add(stmt);
+            }
+        }
+        return nextFreeIdx;
+    }
     renameLocals(body, dominanceTree, blockToPhiStmts) {
-        var _a, _b;
         let newLocals = new Set(body.getLocals().values());
         let localToNameStack = new Map();
         for (const local of newLocals) {
@@ -137,31 +173,8 @@ class StaticSingleAssignmentFormer {
         for (const block of dfsBlocks) {
             let newPhiStmts = new Set();
             for (const stmt of block.getStmts()) {
-                // rename uses
-                let uses = stmt.getUses();
-                if (uses.length > 0 && !this.constainsPhiExpr(stmt)) {
-                    for (const use of uses) {
-                        if (use instanceof Local_1.Local) {
-                            let nameStack = localToNameStack.get(use);
-                            let newUse = nameStack[nameStack.length - 1];
-                            stmt.replaceUse(use, newUse);
-                        }
-                    }
-                }
-                // rename def
-                let def = stmt.getDef();
-                if (def != null && def instanceof Local_1.Local) {
-                    let newName = def.getName() + '#' + nextFreeIdx;
-                    nextFreeIdx++;
-                    let newDef = new Local_1.Local(newName);
-                    newDef.setOriginalValue(def);
-                    newLocals.add(newDef);
-                    (_a = localToNameStack.get(def)) === null || _a === void 0 ? void 0 : _a.push(newDef);
-                    stmt.setLeftOp(newDef);
-                    if (this.constainsPhiExpr(stmt)) {
-                        newPhiStmts.add(stmt);
-                    }
-                }
+                // rename uses and def
+                nextFreeIdx = this.renameUseAndDef(stmt, localToNameStack, nextFreeIdx, newLocals, newPhiStmts);
             }
             visited.add(block);
             blockStack.push(block);
@@ -171,40 +184,45 @@ class StaticSingleAssignmentFormer {
             // rename phiStmts' args
             let succs = Array.from(block.getSuccessors());
             for (const succ of succs) {
-                if (blockToPhiStmts.has(succ)) {
-                    let phiStmts = blockToPhiStmts.get(succ);
-                    for (const phiStmt of phiStmts) {
-                        let def = phiStmt.getDef();
-                        let oriDef = this.getOriginalLocal(def, new Set(localToNameStack.keys()));
-                        let nameStack = localToNameStack.get(oriDef);
-                        let arg = nameStack[nameStack.length - 1];
-                        this.addNewArgToPhi(phiStmt, arg, block);
-                    }
+                if (!blockToPhiStmts.has(succ)) {
+                    continue;
+                }
+                let phiStmts = blockToPhiStmts.get(succ);
+                for (const phiStmt of phiStmts) {
+                    let def = phiStmt.getDef();
+                    let oriDef = this.getOriginalLocal(def, new Set(localToNameStack.keys()));
+                    let nameStack = localToNameStack.get(oriDef);
+                    let arg = nameStack[nameStack.length - 1];
+                    this.addNewArgToPhi(phiStmt, arg, block);
                 }
             }
             // if a block's children in dominance tree are visited, remove it
-            let top = blockStack[blockStack.length - 1];
-            let children = dominanceTree.getChildren(top);
-            while (this.containsAllChildren(visited, children)) {
-                blockStack.pop();
-                for (const stmt of top.getStmts()) {
-                    let def = stmt.getDef();
-                    if (def != null && def instanceof Local_1.Local) {
-                        let oriDef = this.getOriginalLocal(def, new Set(localToNameStack.keys()));
-                        (_b = localToNameStack.get(oriDef)) === null || _b === void 0 ? void 0 : _b.pop();
-                    }
-                }
-                // next block to check
-                if (blockStack.length > 0) {
-                    top = blockStack[blockStack.length - 1];
-                    children = dominanceTree.getChildren(top);
-                }
-                else {
-                    break;
-                }
-            }
+            this.removeVisitedTree(blockStack, dominanceTree, visited, localToNameStack);
         }
         body.setLocals(newLocals);
+    }
+    removeVisitedTree(blockStack, dominanceTree, visited, localToNameStack) {
+        var _a;
+        let top = blockStack[blockStack.length - 1];
+        let children = dominanceTree.getChildren(top);
+        while (this.containsAllChildren(visited, children)) {
+            blockStack.pop();
+            for (const stmt of top.getStmts()) {
+                let def = stmt.getDef();
+                if (def != null && def instanceof Local_1.Local) {
+                    let oriDef = this.getOriginalLocal(def, new Set(localToNameStack.keys()));
+                    (_a = localToNameStack.get(oriDef)) === null || _a === void 0 ? void 0 : _a.pop();
+                }
+            }
+            // next block to check
+            if (blockStack.length > 0) {
+                top = blockStack[blockStack.length - 1];
+                children = dominanceTree.getChildren(top);
+            }
+            else {
+                break;
+            }
+        }
     }
     constainsPhiExpr(stmt) {
         if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getUses().length > 0) {

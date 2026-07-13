@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,7 +17,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildImportInfo = void 0;
+exports.buildImportInfo = buildImportInfo;
 const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
 const Position_1 = require("../../base/Position");
 const ArkImport_1 = require("../ArkImport");
@@ -32,7 +32,6 @@ function buildImportInfo(node, sourceFile, arkFile) {
     }
     return [];
 }
-exports.buildImportInfo = buildImportInfo;
 function buildImportDeclarationNode(node, sourceFile, arkFile) {
     const originTsPosition = Position_1.LineColPosition.buildFromNode(node, sourceFile);
     const tsSourceCode = node.getText(sourceFile);
@@ -54,50 +53,56 @@ function buildImportDeclarationNode(node, sourceFile, arkFile) {
         importInfo.setTsSourceCode(tsSourceCode);
         IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
         importInfos.push(importInfo);
+        return importInfos;
     }
     //just like: import fs from 'fs'
-    if (node.importClause && node.importClause.name && ohos_typescript_1.default.isIdentifier(node.importClause.name)) {
+    if (node.importClause.name && ohos_typescript_1.default.isIdentifier(node.importClause.name)) {
         let importClauseName = node.importClause.name.text;
+        const pos = Position_1.LineColPosition.buildFromNode(node.importClause.name, sourceFile);
         let importType = 'Identifier';
         let importInfo = new ArkImport_1.ImportInfo();
-        importInfo.build(importClauseName, importType, importFrom, originTsPosition, modifiers);
+        importInfo.build(importClauseName, importType, importFrom, pos, modifiers);
         importInfo.setTsSourceCode(tsSourceCode);
         IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
         importInfos.push(importInfo);
     }
+    if (node.importClause.namedBindings === undefined) {
+        return importInfos;
+    }
     // just like: import {xxx} from './yyy'
-    if (node.importClause && node.importClause.namedBindings && ohos_typescript_1.default.isNamedImports(node.importClause.namedBindings)) {
-        let importType = 'NamedImports';
-        if (node.importClause.namedBindings.elements) {
-            node.importClause.namedBindings.elements.forEach((element) => {
-                if (element.name && ohos_typescript_1.default.isIdentifier(element.name)) {
-                    let importClauseName = element.name.text;
-                    if (element.propertyName && ohos_typescript_1.default.isIdentifier(element.propertyName)) {
-                        let importInfo = new ArkImport_1.ImportInfo();
-                        importInfo.build(importClauseName, importType, importFrom, originTsPosition, modifiers, element.propertyName.text);
-                        importInfo.setTsSourceCode(tsSourceCode);
-                        IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
-                        importInfos.push(importInfo);
-                    }
-                    else {
-                        let importInfo = new ArkImport_1.ImportInfo();
-                        importInfo.build(importClauseName, importType, importFrom, originTsPosition, modifiers);
-                        importInfo.setTsSourceCode(tsSourceCode);
-                        IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
-                        importInfos.push(importInfo);
-                    }
-                }
-            });
+    if (ohos_typescript_1.default.isNamedImports(node.importClause.namedBindings)) {
+        const elements = node.importClause.namedBindings.elements;
+        if (elements === undefined) {
+            return importInfos;
         }
+        let importType = 'NamedImports';
+        elements.forEach(element => {
+            if (element.name === undefined || !ohos_typescript_1.default.isIdentifier(element.name)) {
+                return;
+            }
+            let importClauseName = element.name.text;
+            const pos = Position_1.LineColPosition.buildFromNode(element, sourceFile);
+            let importInfo = new ArkImport_1.ImportInfo();
+            if (element.propertyName && ohos_typescript_1.default.isIdentifier(element.propertyName)) {
+                importInfo.build(importClauseName, importType, importFrom, pos, modifiers, element.propertyName.text);
+            }
+            else {
+                importInfo.build(importClauseName, importType, importFrom, pos, modifiers);
+            }
+            importInfo.setTsSourceCode(tsSourceCode);
+            IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
+            importInfos.push(importInfo);
+        });
     }
     // just like: import * as ts from 'ohos-typescript'
-    if (node.importClause && node.importClause.namedBindings && ohos_typescript_1.default.isNamespaceImport(node.importClause.namedBindings)) {
+    if (ohos_typescript_1.default.isNamespaceImport(node.importClause.namedBindings)) {
         let importType = 'NamespaceImport';
         if (node.importClause.namedBindings.name && ohos_typescript_1.default.isIdentifier(node.importClause.namedBindings.name)) {
             let importClauseName = node.importClause.namedBindings.name.text;
             let importInfo = new ArkImport_1.ImportInfo();
             let nameBeforeAs = '*';
-            importInfo.build(importClauseName, importType, importFrom, originTsPosition, modifiers, nameBeforeAs);
+            const pos = Position_1.LineColPosition.buildFromNode(node.importClause.namedBindings.name, sourceFile);
+            importInfo.build(importClauseName, importType, importFrom, pos, modifiers, nameBeforeAs);
             importInfo.setTsSourceCode(tsSourceCode);
             IRUtils_1.IRUtils.setComments(importInfo, node, sourceFile, arkFile.getScene().getOptions());
             importInfos.push(importInfo);
@@ -114,8 +119,10 @@ function buildImportEqualsDeclarationNode(node, sourceFile, arkFile) {
     if (node.modifiers) {
         modifiers = (0, builderUtils_1.buildModifiers)(node);
     }
-    if (node.moduleReference && ohos_typescript_1.default.isExternalModuleReference(node.moduleReference) &&
-        node.moduleReference.expression && ohos_typescript_1.default.isStringLiteral(node.moduleReference.expression)) {
+    if (node.moduleReference &&
+        ohos_typescript_1.default.isExternalModuleReference(node.moduleReference) &&
+        node.moduleReference.expression &&
+        ohos_typescript_1.default.isStringLiteral(node.moduleReference.expression)) {
         let importFrom = node.moduleReference.expression.text;
         let importClauseName = node.name.text;
         let importInfo = new ArkImport_1.ImportInfo();

@@ -31,8 +31,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ArkClass = exports.ArkNamespace = exports.ArkFile = exports.SCCDetection = exports.BaseExplicitGraph = exports.BaseNode = exports.BaseEdge = exports.DominanceTree = exports.DominanceFinder = exports.Cfg = exports.BasicBlock = exports.UndefinedVariableSolver = exports.UndefinedVariableChecker = exports.Fact = exports.PathEdge = exports.PathEdgePoint = exports.DataflowSolver = exports.DataflowResult = exports.DataflowProblem = exports.Scope = exports.VisibleValue = exports.ValueUtil = exports.TypeInference = exports.StmtUseReplacer = exports.RefUseReplacer = exports.IRUtils = exports.ExprUseReplacer = exports.DummyMainCreater = exports.ModelUtils = exports.FullPosition = exports.LineColPosition = exports.Local = exports.DefUseChain = exports.Decorator = exports.Constant = exports.DiffPTData = exports.PtsSet = exports.PointerAnalysisConfig = exports.PointerAnalysis = exports.PagBuilder = exports.CSFuncID = exports.DummyCallCreator = exports.KLimitedContextSensitive = exports.CallGraphBuilder = exports.CGStat = exports.PAGStat = exports.PTAStat = exports.RapidTypeAnalysis = exports.ClassHierarchyAnalysis = exports.AbstractAnalysis = void 0;
-exports.ts = exports.Logger = exports.LOG_MODULE_TYPE = exports.LOG_LEVEL = exports.ViewTreePrinter = exports.GraphPrinter = exports.JsonPrinter = exports.SourceFilePrinter = exports.SourceNamespacePrinter = exports.SourceClassPrinter = exports.SourceMethodPrinter = exports.DotFilePrinter = exports.DotNamespacePrinter = exports.DotClassPrinter = exports.DotMethodPrinter = exports.PrinterBuilder = exports.Printer = exports.Scene = exports.SceneConfig = exports.ArkBody = exports.ImportInfo = exports.ExportInfo = exports.ArkField = exports.ArkMethod = void 0;
+exports.ArkNamespace = exports.ArkFile = exports.SCCDetection = exports.BaseExplicitGraph = exports.BaseNode = exports.BaseEdge = exports.DominanceTree = exports.DominanceFinder = exports.Cfg = exports.BasicBlock = exports.UndefinedVariableSolver = exports.UndefinedVariableChecker = exports.Fact = exports.PathEdge = exports.PathEdgePoint = exports.DataflowSolver = exports.DataflowResult = exports.DataflowProblem = exports.Scope = exports.VisibleValue = exports.ValueUtil = exports.TypeInference = exports.StmtUseReplacer = exports.RefUseReplacer = exports.IRUtils = exports.ExprUseReplacer = exports.DummyMainCreater = exports.ModelUtils = exports.FullPosition = exports.LineColPosition = exports.Local = exports.DefUseChain = exports.Decorator = exports.Constant = exports.DVFGBuilder = exports.DVFG = exports.DiffPTData = exports.PtsSet = exports.PointerAnalysisConfig = exports.PointerAnalysis = exports.PagBuilder = exports.CSFuncID = exports.DummyCallCreator = exports.CallGraphBuilder = exports.CGStat = exports.PAGStat = exports.PTAStat = exports.RapidTypeAnalysis = exports.ClassHierarchyAnalysis = exports.AbstractAnalysis = void 0;
+exports.ts = exports.Logger = exports.LOG_MODULE_TYPE = exports.LOG_LEVEL = exports.ViewTreePrinter = exports.GraphPrinter = exports.JsonPrinter = exports.SourceFilePrinter = exports.SourceNamespacePrinter = exports.SourceClassPrinter = exports.SourceMethodPrinter = exports.DotFilePrinter = exports.DotNamespacePrinter = exports.DotClassPrinter = exports.DotMethodPrinter = exports.PrinterBuilder = exports.Printer = exports.Scene = exports.SceneConfig = exports.ArkBody = exports.ImportInfo = exports.ExportInfo = exports.ArkField = exports.ArkMethod = exports.ArkClass = void 0;
 // callgraph/algorithm
 var AbstractAnalysis_1 = require("./callgraph/algorithm/AbstractAnalysis");
 Object.defineProperty(exports, "AbstractAnalysis", { enumerable: true, get: function () { return AbstractAnalysis_1.AbstractAnalysis; } });
@@ -50,8 +50,6 @@ __exportStar(require("./callgraph/model/CallGraph"), exports);
 var CallGraphBuilder_1 = require("./callgraph/model/builder/CallGraphBuilder");
 Object.defineProperty(exports, "CallGraphBuilder", { enumerable: true, get: function () { return CallGraphBuilder_1.CallGraphBuilder; } });
 // callgraph/pointerAnalysis
-var Context_1 = require("./callgraph/pointerAnalysis/Context");
-Object.defineProperty(exports, "KLimitedContextSensitive", { enumerable: true, get: function () { return Context_1.KLimitedContextSensitive; } });
 var DummyCallCreator_1 = require("./callgraph/pointerAnalysis/DummyCallCreator");
 Object.defineProperty(exports, "DummyCallCreator", { enumerable: true, get: function () { return DummyCallCreator_1.DummyCallCreator; } });
 __exportStar(require("./callgraph/pointerAnalysis/Pag"), exports);
@@ -65,6 +63,10 @@ Object.defineProperty(exports, "PointerAnalysisConfig", { enumerable: true, get:
 var PtsDS_1 = require("./callgraph/pointerAnalysis/PtsDS");
 Object.defineProperty(exports, "PtsSet", { enumerable: true, get: function () { return PtsDS_1.PtsSet; } });
 Object.defineProperty(exports, "DiffPTData", { enumerable: true, get: function () { return PtsDS_1.DiffPTData; } });
+var DVFG_1 = require("./VFG/DVFG");
+Object.defineProperty(exports, "DVFG", { enumerable: true, get: function () { return DVFG_1.DVFG; } });
+var DVFGBuilder_1 = require("./VFG/builder/DVFGBuilder");
+Object.defineProperty(exports, "DVFGBuilder", { enumerable: true, get: function () { return DVFGBuilder_1.DVFGBuilder; } });
 // core/base
 var Constant_1 = require("./core/base/Constant");
 Object.defineProperty(exports, "Constant", { enumerable: true, get: function () { return Constant_1.Constant; } });

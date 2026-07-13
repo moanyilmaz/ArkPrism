@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@ const ArkSignatureBuilder_1 = require("../model/builder/ArkSignatureBuilder");
 const Const_1 = require("../common/Const");
 const ArkBaseModel_1 = require("../model/ArkBaseModel");
 const ModelUtils_1 = require("../common/ModelUtils");
+const TSConst_1 = require("../common/TSConst");
 /**
  * @category core/base
  */
@@ -36,11 +37,20 @@ class Local {
     }
     inferType(arkMethod) {
         var _a, _b;
-        if (TypeInference_1.TypeInference.isUnclearType(this.type)) {
-            const type = (_a = TypeInference_1.TypeInference.inferUnclearRefName(this.name, arkMethod.getDeclaringArkClass())) !== null && _a !== void 0 ? _a : (_b = ModelUtils_1.ModelUtils.findDeclaredLocal(this, arkMethod)) === null || _b === void 0 ? void 0 : _b.getType();
+        if (this.name === TSConst_1.THIS_NAME && this.type instanceof Type_1.UnknownType) {
+            const declaringArkClass = arkMethod.getDeclaringArkClass();
+            this.type = new Type_1.ClassType(declaringArkClass.getSignature(), declaringArkClass.getRealTypes());
+        }
+        else if (!this.name.startsWith(Const_1.NAME_PREFIX) && TypeInference_1.TypeInference.isUnclearType(this.type)) {
+            const type = (_a = TypeInference_1.TypeInference.inferBaseType(this.name, arkMethod.getDeclaringArkClass())) !== null && _a !== void 0 ? _a : (_b = ModelUtils_1.ModelUtils.findDeclaredLocal(this, arkMethod)) === null || _b === void 0 ? void 0 : _b.getType();
             if (type) {
                 this.type = type;
             }
+        }
+        if (this.type instanceof Type_1.FunctionType) {
+            this.type.getMethodSignature().getMethodSubSignature().getParameters()
+                .forEach(p => TypeInference_1.TypeInference.inferParameterType(p, arkMethod));
+            TypeInference_1.TypeInference.inferSignatureReturnType(this.type.getMethodSignature(), arkMethod);
         }
         return this;
     }
@@ -158,7 +168,7 @@ class Local {
     }
     getSignature() {
         var _a;
-        return (_a = this.signature) !== null && _a !== void 0 ? _a : new ArkSignature_1.LocalSignature(this.name, new ArkSignature_1.MethodSignature(ArkSignature_1.ClassSignature.DEFAULT, ArkSignatureBuilder_1.ArkSignatureBuilder.buildMethodSubSignatureFromMethodName(Const_1.UNKNOWN_METHOD_NAME)));
+        return ((_a = this.signature) !== null && _a !== void 0 ? _a : new ArkSignature_1.LocalSignature(this.name, new ArkSignature_1.MethodSignature(ArkSignature_1.ClassSignature.DEFAULT, ArkSignatureBuilder_1.ArkSignatureBuilder.buildMethodSubSignatureFromMethodName(Const_1.UNKNOWN_METHOD_NAME))));
     }
     setSignature(signature) {
         this.signature = signature;

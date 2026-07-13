@@ -1,7 +1,7 @@
 import { SceneConfig, SceneOptions, Sdk } from './Config';
 import { VisibleValue } from './core/common/VisibleValue';
 import { ArkClass } from './core/model/ArkClass';
-import { ArkFile } from './core/model/ArkFile';
+import { ArkFile, Language } from './core/model/ArkFile';
 import { ArkMethod } from './core/model/ArkMethod';
 import { ArkNamespace } from './core/model/ArkNamespace';
 import { ClassSignature, FileSignature, MethodSignature, NamespaceSignature } from './core/model/ArkSignature';
@@ -10,11 +10,11 @@ import { ArkExport } from './core/model/ArkExport';
 import { CallGraph } from './callgraph/model/CallGraph';
 declare enum SceneBuildStage {
     BUILD_INIT = 0,
-    CLASS_DONE = 1,
-    METHOD_DONE = 2,
-    CLASS_COLLECTED = 3,
-    METHOD_COLLECTED = 4,
-    SDK_INFERRED = 5,
+    SDK_INFERRED = 1,
+    CLASS_DONE = 2,
+    METHOD_DONE = 3,
+    CLASS_COLLECTED = 4,
+    METHOD_COLLECTED = 5,
     TYPE_INFERRED = 6
 }
 /**
@@ -44,11 +44,12 @@ export declare class Scene {
     private globalModule2PathMapping?;
     private baseUrl?;
     private buildStage;
+    private fileLanguages;
     private options;
-    private indexPathArray;
     private unhandledFilePaths;
     private unhandledSdkFilePaths;
     constructor();
+    dispose(): void;
     getOptions(): SceneOptions;
     getOverRides(): Map<string, string>;
     getOverRideDependencyMap(): Map<string, unknown>;
@@ -85,7 +86,7 @@ export declare class Scene {
     private parseOhPackage;
     private findTsConfigInfoDeeply;
     private addTsConfigInfo;
-    private addDefaultConstructors;
+    private updateOrAddDefaultConstructors;
     private buildAllMethodBody;
     private genArkFiles;
     private getFilesOrderByDependency;
@@ -163,7 +164,7 @@ export declare class Scene {
      * @example
      * 1. In inferSimpleTypes() to check arkClass and arkMethod.
      * ```typescript
-     * public inferSimpleTypes() {
+     * public inferSimpleTypes(): void {
      *   for (let arkFile of this.getFiles()) {
      *       for (let arkClass of arkFile.getClasses()) {
      *           for (let arkMethod of arkClass.getMethods()) {
@@ -185,6 +186,7 @@ export declare class Scene {
      *```
      */
     getFiles(): ArkFile[];
+    getFileLanguages(): Map<string, Language>;
     getSdkArkFiles(): ArkFile[];
     getModuleSdkMap(): Map<string, Sdk[]>;
     getProjectSdkMap(): Map<string, Sdk>;
@@ -234,14 +236,14 @@ export declare class Scene {
     removeNamespace(namespace: ArkNamespace): boolean;
     removeFile(file: ArkFile): boolean;
     hasMainMethod(): boolean;
-    getEntryPoints(): never[];
+    getEntryPoints(): MethodSignature[];
     /** get values that is visible in curr scope */
     getVisibleValue(): VisibleValue;
     getOhPkgContent(): {
-        [k: string]: unknown;
+        [p: string]: unknown;
     };
     getOhPkgContentMap(): Map<string, {
-        [k: string]: unknown;
+        [p: string]: unknown;
     }>;
     getOhPkgFilePath(): string;
     makeCallGraphCHA(entryPoints: MethodSignature[]): CallGraph;
@@ -274,7 +276,14 @@ export declare class Scene {
      ```
      */
     inferSimpleTypes(): void;
+    private addNSClasses;
+    private addNSExportedClasses;
+    private addFileImportedClasses;
     getClassMap(): Map<FileSignature | NamespaceSignature, ArkClass[]>;
+    private addNSLocals;
+    private addNSExportedLocals;
+    private addFileImportLocals;
+    private handleNestedNSLocals;
     getGlobalVariableMap(): Map<FileSignature | NamespaceSignature, Local[]>;
     getStaticInitMethods(): ArkMethod[];
     buildClassDone(): boolean;
@@ -307,7 +316,7 @@ export declare class ModuleScene {
     getModulePath(): string;
     getOhPkgFilePath(): string;
     getOhPkgContent(): {
-        [k: string]: unknown;
+        [p: string]: unknown;
     };
     getModuleFilesMap(): Map<string, ArkFile>;
     addArkFile(arkFile: ArkFile): void;

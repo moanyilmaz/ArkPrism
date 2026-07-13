@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cfg = void 0;
 const DefUseChain_1 = require("../base/DefUseChain");
@@ -45,6 +55,8 @@ const ArkError_1 = require("../common/ArkError");
 const ArkMethod_1 = require("../model/ArkMethod");
 const logger_1 = __importStar(require("../../utils/logger"));
 const Expr_1 = require("../base/Expr");
+const ValueAsserts_1 = require("../../utils/ValueAsserts");
+const Ref_1 = require("../base/Ref");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'BasicBlock');
 /**
  * @category core/graph
@@ -135,7 +147,9 @@ class Cfg {
         return this.blocks;
     }
     getStartingBlock() {
-        return this.stmtToBlock.get(this.startingStmt);
+        const startingBlock = this.stmtToBlock.get(this.startingStmt);
+        ValueAsserts_1.ValueAsserts.assertDefined(startingBlock, 'starting block getting with starting stmt is undefined');
+        return startingBlock;
     }
     getStartingStmt() {
         return this.startingStmt;
@@ -156,19 +170,22 @@ class Cfg {
     toString() {
         return 'cfg';
     }
-    buildDefUseStmt(locals) {
-        for (const block of this.blocks) {
-            for (const stmt of block.getStmts()) {
-                if (stmt == null) {
-                    continue;
-                }
-                const defValue = stmt.getDef();
-                if (defValue && defValue instanceof Local_1.Local && defValue.getDeclaringStmt() === null) {
-                    defValue.setDeclaringStmt(stmt);
-                }
-                for (const value of stmt.getUses()) {
-                    this.buildUseStmt(value, locals, stmt);
-                }
+    // 若提供globals列表，则需要将locals中实际为global的部分排除，否则会在该method中将为global赋值的语句识别成global的赋值语句，出现错误
+    buildDefUseStmt(locals, globals) {
+        for (const stmt of this.getStmts()) {
+            for (const value of stmt.getUses()) {
+                this.buildUseStmt(value, locals, stmt);
+            }
+            const defValue = stmt.getDef();
+            if (!(defValue instanceof Local_1.Local)) {
+                continue;
+            }
+            if (globals !== undefined && globals.has(defValue.getName())) {
+                // local实际为global，其实际定义语句在最外层default方法中，此处不存在定义语句
+                continue;
+            }
+            if (defValue.getDeclaringStmt() === null) {
+                defValue.setDeclaringStmt(stmt);
             }
         }
     }
@@ -184,66 +201,70 @@ class Cfg {
                 }
             }
         }
+        else if (value instanceof Ref_1.AbstractFieldRef) {
+            // here is used for adding this stmt to array/tuple index local, such as a = arr[i]
+            for (const local of locals) {
+                if (local.getName() === value.getFieldName()) {
+                    local.addUsedStmt(stmt);
+                    return;
+                }
+            }
+        }
+    }
+    handleDefUseForValue(value, block, stmt, stmtIndex) {
+        var _a, _b;
+        const name = value.toString();
+        const defStmts = [];
+        // 判断本block之前有无对应def
+        for (let i = stmtIndex - 1; i >= 0; i--) {
+            const beforeStmt = block.getStmts()[i];
+            if (beforeStmt.getDef() && ((_a = beforeStmt.getDef()) === null || _a === void 0 ? void 0 : _a.toString()) === name) {
+                defStmts.push(beforeStmt);
+                break;
+            }
+        }
+        // 本block有对应def直接结束,否则找所有的前序block
+        if (defStmts.length !== 0) {
+            this.defUseChains.push(new DefUseChain_1.DefUseChain(value, defStmts[0], stmt));
+            return;
+        }
+        const needWalkBlocks = [...block.getPredecessors()];
+        const walkedBlocks = new Set();
+        while (needWalkBlocks.length > 0) {
+            const predecessor = needWalkBlocks.pop();
+            if (!predecessor) {
+                return;
+            }
+            const predecessorStmts = predecessor.getStmts();
+            let predecessorHasDef = false;
+            for (let i = predecessorStmts.length - 1; i >= 0; i--) {
+                const beforeStmt = predecessorStmts[i];
+                if (beforeStmt.getDef() && ((_b = beforeStmt.getDef()) === null || _b === void 0 ? void 0 : _b.toString()) === name) {
+                    defStmts.push(beforeStmt);
+                    predecessorHasDef = true;
+                    break;
+                }
+            }
+            walkedBlocks.add(predecessor);
+            if (predecessorHasDef) {
+                continue;
+            }
+            for (const morePredecessor of predecessor.getPredecessors()) {
+                if (!walkedBlocks.has(morePredecessor) && !needWalkBlocks.includes(morePredecessor)) {
+                    needWalkBlocks.unshift(morePredecessor);
+                }
+            }
+        }
+        for (const def of defStmts) {
+            this.defUseChains.push(new DefUseChain_1.DefUseChain(value, def, stmt));
+        }
     }
     buildDefUseChain() {
-        var _a, _b;
         for (const block of this.blocks) {
             for (let stmtIndex = 0; stmtIndex < block.getStmts().length; stmtIndex++) {
                 const stmt = block.getStmts()[stmtIndex];
-                if (stmt == null) {
-                    continue;
-                }
                 for (const value of stmt.getUses()) {
-                    const name = value.toString();
-                    const defStmts = [];
-                    // 判断本block之前有无对应def
-                    for (let i = stmtIndex - 1; i >= 0; i--) {
-                        const beforeStmt = block.getStmts()[i];
-                        if (beforeStmt == null) {
-                            continue;
-                        }
-                        if (beforeStmt.getDef() && ((_a = beforeStmt.getDef()) === null || _a === void 0 ? void 0 : _a.toString()) === name) {
-                            defStmts.push(beforeStmt);
-                            break;
-                        }
-                    }
-                    // 本block有对应def直接结束,否则找所有的前序block
-                    if (defStmts.length !== 0) {
-                        this.defUseChains.push(new DefUseChain_1.DefUseChain(value, defStmts[0], stmt));
-                    }
-                    else {
-                        const needWalkBlocks = [...block.getPredecessors()];
-                        const walkedBlocks = new Set();
-                        while (needWalkBlocks.length > 0) {
-                            const predecessor = needWalkBlocks.pop();
-                            if (!predecessor) {
-                                return;
-                            }
-                            const predecessorStmts = predecessor.getStmts();
-                            let predecessorHasDef = false;
-                            for (let i = predecessorStmts.length - 1; i >= 0; i--) {
-                                const beforeStmt = predecessorStmts[i];
-                                if (beforeStmt == null) {
-                                    continue;
-                                }
-                                if (beforeStmt.getDef() && ((_b = beforeStmt.getDef()) === null || _b === void 0 ? void 0 : _b.toString()) === name) {
-                                    defStmts.push(beforeStmt);
-                                    predecessorHasDef = true;
-                                    break;
-                                }
-                            }
-                            if (!predecessorHasDef) {
-                                for (const morePredecessor of predecessor.getPredecessors()) {
-                                    if (!walkedBlocks.has(morePredecessor) && !needWalkBlocks.includes(morePredecessor))
-                                        needWalkBlocks.unshift(morePredecessor);
-                                }
-                            }
-                            walkedBlocks.add(predecessor);
-                        }
-                        for (const def of defStmts) {
-                            this.defUseChains.push(new DefUseChain_1.DefUseChain(value, def, stmt));
-                        }
-                    }
+                    this.handleDefUseForValue(value, block, stmt, stmtIndex);
                 }
             }
         }
@@ -267,15 +288,21 @@ class Cfg {
         if (!startBB) {
             let errMsg = `Not found starting block}`;
             logger.error(errMsg);
-            return { errCode: ArkError_1.ArkErrorCode.CFG_NOT_FOUND_START_BLOCK, errMsg: errMsg };
+            return {
+                errCode: ArkError_1.ArkErrorCode.CFG_NOT_FOUND_START_BLOCK,
+                errMsg: errMsg,
+            };
         }
         let unreachable = this.getUnreachableBlocks();
         if (unreachable.size !== 0) {
             let errMsg = `Unreachable blocks: ${Array.from(unreachable)
-                .map((value) => value.toString())
+                .map(value => value.toString())
                 .join('\n')}`;
             logger.error(errMsg);
-            return { errCode: ArkError_1.ArkErrorCode.CFG_HAS_UNREACHABLE_BLOCK, errMsg: errMsg };
+            return {
+                errCode: ArkError_1.ArkErrorCode.CFG_HAS_UNREACHABLE_BLOCK,
+                errMsg: errMsg,
+            };
         }
         return { errCode: ArkError_1.ArkErrorCode.OK };
     }

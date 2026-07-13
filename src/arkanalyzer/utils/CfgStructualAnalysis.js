@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -31,7 +31,7 @@ var CodeBlockType;
     CodeBlockType[CodeBlockType["TRY"] = 10] = "TRY";
     CodeBlockType[CodeBlockType["CATCH"] = 11] = "CATCH";
     CodeBlockType[CodeBlockType["FINALLY"] = 12] = "FINALLY";
-})(CodeBlockType = exports.CodeBlockType || (exports.CodeBlockType = {}));
+})(CodeBlockType || (exports.CodeBlockType = CodeBlockType = {}));
 class AbstractFlowGraph {
     constructor(cfg, traps) {
         this.nodes = [];
@@ -145,20 +145,23 @@ class AbstractFlowGraph {
             this.structTypes.set(region, rtype);
             let blocks = new Set();
             for (const s of nset) {
-                if (!this.structOf.has(s)) {
-                    this.structOf.set(s, region);
-                }
-                if (this.structBlocks.has(s)) {
-                    for (const b of this.structBlocks.get(s)) {
-                        blocks.add(b);
-                    }
-                }
-                else {
-                    blocks.add(s);
-                }
+                this.handleRegion(s, region, blocks);
             }
             this.structBlocks.set(region, blocks);
             this.loopMap.set(region.header, region);
+        }
+    }
+    handleRegion(s, region, blocks) {
+        if (!this.structOf.has(s)) {
+            this.structOf.set(s, region);
+        }
+        if (this.structBlocks.has(s)) {
+            for (const b of this.structBlocks.get(s)) {
+                blocks.add(b);
+            }
+        }
+        else {
+            blocks.add(s);
         }
     }
     prepareBuildLoops() {
@@ -388,10 +391,7 @@ class AbstractFlowGraph {
             nodeSet.add(node);
             return true;
         }
-        if (m.getSucc().length === 1 &&
-            loop.control.has(m.getSucc()[0]) &&
-            !loop.control.has(n) &&
-            !this.isIfElseRegion(node, nodeSet)) {
+        if (m.getSucc().length === 1 && loop.control.has(m.getSucc()[0]) && !loop.control.has(n) && !this.isIfElseRegion(node, nodeSet)) {
             nodeSet.add(node).add(m);
             return true;
         }
@@ -411,9 +411,7 @@ class AbstractFlowGraph {
         if (loop.header === node && loop.getType() === RegionType.FOR_LOOP_REGION) {
             let forLoop = loop;
             let blocks = node.getSucc()[0];
-            if (forLoop.inc.getPred().length === 1 &&
-                forLoop.inc.getPred()[0] === blocks &&
-                blocks.getSucc().length === 1) {
+            if (forLoop.inc.getPred().length === 1 && forLoop.inc.getPred()[0] === blocks && blocks.getSucc().length === 1) {
                 nodeSet.add(node).add(forLoop.inc).add(blocks);
                 return true;
             }
@@ -580,9 +578,7 @@ class AbstractFlowGraph {
             this.loopMap.set(doWhileLoop.header, doWhileLoop);
             node = doWhileLoop;
         }
-        else if (rtype === RegionType.TRY_CATCH_REGION ||
-            rtype === RegionType.TRY_FINALLY_REGION ||
-            rtype === RegionType.TRY_CATCH_FINALLY_REGION) {
+        else if (rtype === RegionType.TRY_CATCH_REGION || rtype === RegionType.TRY_FINALLY_REGION || rtype === RegionType.TRY_CATCH_FINALLY_REGION) {
             node = new TrapRegion(nodeSet, rtype);
         }
         return node;
@@ -590,22 +586,23 @@ class AbstractFlowGraph {
     reduce(rtype, nodeSet) {
         let region = this.createRegion(rtype, nodeSet);
         region === null || region === void 0 ? void 0 : region.replace();
-        if (region) {
-            this.structTypes.set(region, rtype);
-            let blocks = new Set();
-            for (const s of nodeSet) {
-                this.structOf.set(s, region);
-                if (this.structBlocks.has(s)) {
-                    for (const b of this.structBlocks.get(s)) {
-                        blocks.add(b);
-                    }
-                }
-                else {
-                    blocks.add(s);
+        if (region === undefined) {
+            return undefined;
+        }
+        this.structTypes.set(region, rtype);
+        let blocks = new Set();
+        for (const s of nodeSet) {
+            this.structOf.set(s, region);
+            if (this.structBlocks.has(s)) {
+                for (const b of this.structBlocks.get(s)) {
+                    blocks.add(b);
                 }
             }
-            this.structBlocks.set(region, blocks);
+            else {
+                blocks.add(s);
+            }
         }
+        this.structBlocks.set(region, blocks);
         return region;
     }
     setIntersect(a, b) {
@@ -630,9 +627,7 @@ class AbstractFlowGraph {
         if (!traps) {
             return [];
         }
-        traps.sort((a, b) => a.getTryBlocks().length +
-            a.getCatchBlocks().length -
-            (b.getTryBlocks().length + b.getCatchBlocks().length));
+        traps.sort((a, b) => a.getTryBlocks().length + a.getCatchBlocks().length - (b.getTryBlocks().length + b.getCatchBlocks().length));
         let trapRegions = [];
         for (const trap of traps) {
             let region = new NaturalTrapRegion(trap, this.block2NodeMap);
@@ -956,10 +951,7 @@ class NaturalLoopRegion extends Region {
         // add node to loop sets
         for (const node of this.nset) {
             for (const succ of node.getSucc()) {
-                if (!this.nset.has(succ) &&
-                    succ !== this.getExitNode() &&
-                    succ.getSucc().length === 1 &&
-                    succ.getSucc()[0] === this.getExitNode()) {
+                if (!this.nset.has(succ) && succ !== this.getExitNode() && succ.getSucc().length === 1 && succ.getSucc()[0] === this.getExitNode()) {
                     this.nset.add(succ);
                 }
             }

@@ -15,6 +15,7 @@ export declare class PrinterUtils {
     static getOriginType(cls: ArkClass): number;
     static isComponentPop(invokeExpr: ArkStaticInvokeExpr): boolean;
     static isComponentCreate(invokeExpr: ArkStaticInvokeExpr): boolean;
+    static isConstructorInvoke(invokeExpr: ArkInstanceInvokeExpr): boolean;
     static isComponentAttributeInvoke(invokeExpr: ArkInstanceInvokeExpr, visitor?: Set<ArkInstanceInvokeExpr>): boolean;
     static isComponentIfBranchInvoke(invokeExpr: ArkStaticInvokeExpr): boolean;
     static isComponentIfElseInvoke(invokeExpr: ArkStaticInvokeExpr): boolean;

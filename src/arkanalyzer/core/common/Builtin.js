@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -43,6 +43,9 @@ class Builtin {
         builtInClassSignatureMap.set(this.REGEXP, this.REGEXP_CLASS_SIGNATURE);
         return builtInClassSignatureMap;
     }
+    static isBuiltinClass(className) {
+        return this.BUILT_IN_CLASSES.has(className);
+    }
 }
 exports.Builtin = Builtin;
 _a = Builtin;
@@ -57,8 +60,9 @@ Builtin.BUILT_IN_CLASSES = _a.buildBuiltInClasses();
 // signature for built-in class
 Builtin.DUMMY_PROJECT_NAME = 'ES2015';
 Builtin.DUMMY_FILE_NAME = 'BuiltinClass';
-Builtin.BUILT_IN_CLASSES_FILE_SIGNATURE = Builtin.buildBuiltInClassesFileSignature();
+Builtin.BUILT_IN_CLASSES_FILE_SIGNATURE = _a.buildBuiltInClassesFileSignature();
 Builtin.OBJECT_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.OBJECT);
+Builtin.OBJECT_CLASS_TYPE = new Type_1.ClassType(_a.OBJECT_CLASS_SIGNATURE);
 Builtin.ARRAY_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.ARRAY);
 Builtin.SET_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.SET);
 Builtin.MAP_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.MAP);
@@ -66,16 +70,19 @@ Builtin.REGEXP_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.REGEXP);
 Builtin.REGEXP_CLASS_TYPE = new Type_1.ClassType(_a.REGEXP_CLASS_SIGNATURE);
 Builtin.BUILT_IN_CLASS_SIGNATURE_MAP = _a.buildBuiltInClassSignatureMap();
 // constants for iterator
-Builtin.ITERATOR_FUNCTION = 'iterator';
-Builtin.ITERATOR = 'Iterator';
+Builtin.ITERATOR_FUNCTION = 'Symbol.iterator';
+Builtin.ITERATOR = 'IterableIterator';
 Builtin.ITERATOR_NEXT = 'next';
 Builtin.ITERATOR_RESULT = 'IteratorResult';
 Builtin.ITERATOR_RESULT_DONE = 'done';
 Builtin.ITERATOR_RESULT_VALUE = 'value';
 Builtin.ITERATOR_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.ITERATOR);
 Builtin.ITERATOR_RESULT_CLASS_SIGNATURE = _a.buildBuiltInClassSignature(_a.ITERATOR_RESULT);
-Builtin.ITERATOR_CLASS_TYPE = new Type_1.ClassType(_a.ITERATOR_CLASS_SIGNATURE);
-Builtin.ITERATOR_RESULT_CLASS_TYPE = new Type_1.ClassType(_a.ITERATOR_RESULT_CLASS_SIGNATURE);
+Builtin.ITERATOR_CLASS_TYPE = new Type_1.ClassType(_a.ITERATOR_CLASS_SIGNATURE, [new Type_1.GenericType('T')]);
+Builtin.ITERATOR_RESULT_CLASS_TYPE = new Type_1.ClassType(_a.ITERATOR_RESULT_CLASS_SIGNATURE, [new Type_1.GenericType('T')]);
 // constants for string
 Builtin.TO_STRING = 'toString';
 Builtin.TO_STRING_METHOD_SIGNATURE = new ArkSignature_1.MethodSignature(ArkSignature_1.ClassSignature.DEFAULT, new ArkSignature_1.MethodSubSignature(_a.TO_STRING, [], Type_1.StringType.getInstance(), false));
+// constants for array
+Builtin.SLICE = 'slice';
+Builtin.CONCAT = 'concat';

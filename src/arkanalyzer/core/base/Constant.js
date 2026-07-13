@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UndefinedConstant = exports.NullConstant = exports.StringConstant = exports.NumberConstant = exports.BooleanConstant = exports.Constant = void 0;
+exports.UndefinedConstant = exports.NullConstant = exports.StringConstant = exports.BigIntConstant = exports.NumberConstant = exports.BooleanConstant = exports.Constant = void 0;
 const Type_1 = require("./Type");
 const TSConst_1 = require("../common/TSConst");
 /**
@@ -49,7 +49,7 @@ class Constant {
     toString() {
         let str = '';
         if (this.type instanceof Type_1.StringType) {
-            str = '\'' + this.value + '\'';
+            str = "'" + this.value + "'";
         }
         else {
             str = this.value;
@@ -71,10 +71,16 @@ BooleanConstant.FALSE = new BooleanConstant(false);
 BooleanConstant.TRUE = new BooleanConstant(true);
 class NumberConstant extends Constant {
     constructor(value) {
-        super(value.toString(), Type_1.NumberType.getInstance());
+        super(value, Type_1.NumberType.getInstance());
     }
 }
 exports.NumberConstant = NumberConstant;
+class BigIntConstant extends Constant {
+    constructor(value) {
+        super(value.toString(), Type_1.BigIntType.getInstance());
+    }
+}
+exports.BigIntConstant = BigIntConstant;
 class StringConstant extends Constant {
     constructor(value) {
         super(value.toString(), Type_1.StringType.getInstance());

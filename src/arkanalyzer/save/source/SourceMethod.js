@@ -45,7 +45,7 @@ class SourceMethod extends SourceBase_1.SourceBase {
         const commentsMetadata = this.method.getMetadata(ArkMetadata_1.ArkMetadataKind.LEADING_COMMENTS);
         if (commentsMetadata instanceof ArkMetadata_1.CommentsMetadata) {
             const comments = commentsMetadata.getComments();
-            comments.forEach((comment) => {
+            comments.forEach(comment => {
                 this.printer.writeIndent().writeLine(comment.content);
             });
         }
@@ -73,7 +73,7 @@ class SourceMethod extends SourceBase_1.SourceBase {
         if (cfg) {
             cfg.getStmts()
                 .reverse()
-                .forEach((stmt) => stmts.push(stmt));
+                .forEach(stmt => stmts.push(stmt));
         }
         for (const stmt of stmts) {
             if (stmt.getOriginPositionInfo().getLineNo() > 0) {
@@ -140,9 +140,9 @@ class SourceMethod extends SourceBase_1.SourceBase {
         methodSig
             .getMethodSubSignature()
             .getParameters()
-            .forEach((parameter) => {
+            .forEach(parameter => {
             let str = parameter.getName();
-            if (parameter.hasDotDotDotToken()) {
+            if (parameter.isRest()) {
                 str = `...${parameter.getName()}`;
             }
             if (parameter.isOptional()) {
@@ -157,8 +157,7 @@ class SourceMethod extends SourceBase_1.SourceBase {
         });
         code.write(`(${parameters.join(', ')})`);
         const returnType = methodSig.getMethodSubSignature().getReturnType();
-        if (methodSig.getMethodSubSignature().getMethodName() !== 'constructor' &&
-            !(returnType instanceof Type_1.UnknownType)) {
+        if (methodSig.getMethodSubSignature().getMethodName() !== 'constructor' && !(returnType instanceof Type_1.UnknownType)) {
             code.write(`: ${this.transformer.typeToString(returnType)}`);
         }
         if (PrinterUtils_1.PrinterUtils.isAnonymousMethod(methodSig.getMethodSubSignature().getMethodName())) {
@@ -169,7 +168,7 @@ class SourceMethod extends SourceBase_1.SourceBase {
     toArrowFunctionTypeString() {
         let code = new ArkStream_1.ArkCodeBuffer();
         let parameters = [];
-        this.method.getParameters().forEach((parameter) => {
+        this.method.getParameters().forEach(parameter => {
             let str = parameter.getName();
             if (parameter.isOptional()) {
                 str += '?';

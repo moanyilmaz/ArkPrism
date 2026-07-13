@@ -2,6 +2,7 @@ import ts from 'ohos-typescript';
 import { LineColPosition } from '../../base/Position';
 import { ArkExport, ExportInfo, FromInfo } from '../ArkExport';
 import { ArkFile } from '../ArkFile';
+import { ArkNamespace } from '../ArkNamespace';
 export { buildExportInfo, buildExportAssignment, buildExportDeclaration };
 declare function buildExportInfo(arkInstance: ArkExport, arkFile: ArkFile, line: LineColPosition): ExportInfo;
 export declare function buildDefaultExportInfo(im: FromInfo, file: ArkFile, arkExport?: ArkExport): ExportInfo;
@@ -13,7 +14,7 @@ declare function buildExportAssignment(node: ts.ExportAssignment, sourceFile: ts
  * @param sourceFile
  * @param arkFile
  */
-export declare function buildExportVariableStatement(node: ts.VariableStatement, sourceFile: ts.SourceFile, arkFile: ArkFile): ExportInfo[];
+export declare function buildExportVariableStatement(node: ts.VariableStatement, sourceFile: ts.SourceFile, arkFile: ArkFile, namespace?: ArkNamespace): ExportInfo[];
 /**
  * export type MyType = string;
  * @param node

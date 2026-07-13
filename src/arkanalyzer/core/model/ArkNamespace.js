@@ -20,6 +20,7 @@ const ArkSignature_1 = require("./ArkSignature");
 const TSConst_1 = require("../common/TSConst");
 const Position_1 = require("../base/Position");
 const ArkBaseModel_1 = require("./ArkBaseModel");
+const Const_1 = require("../common/Const");
 /**
  * @category core/model
  */
@@ -34,6 +35,12 @@ class ArkNamespace extends ArkBaseModel_1.ArkBaseModel {
         this.namespaces = new Map(); // don't contain nested namespace
         this.classes = new Map();
         this.anonymousClassNumber = 0;
+    }
+    /**
+     * Returns the program language of the file where this namespace defined.
+     */
+    getLanguage() {
+        return this.getDeclaringArkFile().getLanguage();
     }
     addNamespace(namespace) {
         this.namespaces.set(namespace.getName(), namespace);
@@ -126,18 +133,25 @@ class ArkNamespace extends ArkBaseModel_1.ArkBaseModel {
         this.declaringArkNamespace = declaringArkNamespace;
     }
     getClass(classSignature) {
-        const className = classSignature instanceof ArkSignature_1.AliasClassSignature ? classSignature.getOriginName()
-            : classSignature.getClassName();
+        const className = classSignature instanceof ArkSignature_1.AliasClassSignature ? classSignature.getOriginName() : classSignature.getClassName();
         return this.getClassWithName(className);
     }
     getClassWithName(Class) {
         return this.classes.get(Class) || null;
     }
     getClasses() {
-        return Array.from(this.classes.values());
+        return Array.from(new Set(this.classes.values()));
     }
-    addArkClass(arkClass) {
-        this.classes.set(arkClass.getName(), arkClass);
+    addArkClass(arkClass, originName) {
+        const name = originName !== null && originName !== void 0 ? originName : arkClass.getName();
+        this.classes.set(name, arkClass);
+        if (!originName && !arkClass.isAnonymousClass()) {
+            const index = name.indexOf(Const_1.NAME_DELIMITER);
+            if (index > 0) {
+                const originName = name.substring(0, index);
+                this.addArkClass(arkClass, originName);
+            }
+        }
     }
     getExportInfos() {
         const exportInfos = [];
@@ -162,10 +176,10 @@ class ArkNamespace extends ArkBaseModel_1.ArkBaseModel {
     }
     getAllMethodsUnderThisNamespace() {
         let methods = [];
-        this.classes.forEach((cls) => {
+        this.classes.forEach(cls => {
             methods.push(...cls.getMethods());
         });
-        this.namespaces.forEach((ns) => {
+        this.namespaces.forEach(ns => {
             methods.push(...ns.getAllMethodsUnderThisNamespace());
         });
         return methods;
@@ -173,7 +187,7 @@ class ArkNamespace extends ArkBaseModel_1.ArkBaseModel {
     getAllClassesUnderThisNamespace() {
         let classes = [];
         classes.push(...this.classes.values());
-        this.namespaces.forEach((ns) => {
+        this.namespaces.forEach(ns => {
             classes.push(...ns.getAllClassesUnderThisNamespace());
         });
         return classes;
@@ -181,7 +195,7 @@ class ArkNamespace extends ArkBaseModel_1.ArkBaseModel {
     getAllNamespacesUnderThisNamespace() {
         let namespaces = [];
         namespaces.push(...this.namespaces.values());
-        this.namespaces.forEach((ns) => {
+        this.namespaces.forEach(ns => {
             namespaces.push(...ns.getAllNamespacesUnderThisNamespace());
         });
         return namespaces;

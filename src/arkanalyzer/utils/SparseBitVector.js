@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -72,7 +72,7 @@ class SparseBitVectorElement {
     // Count the number of set bits in this element
     count() {
         let numBits = 0;
-        this.bits.forEach((word) => {
+        this.bits.forEach(word => {
             numBits += this.countBits(word);
         });
         return numBits;
@@ -270,8 +270,9 @@ class SparseBitVector {
     }
     // Find the first set bit in the vector
     findFirst() {
-        if (this.elements.size === 0)
+        if (this.elements.size === 0) {
             return -1;
+        }
         const firstElement = this.elements.entries().next().value;
         if (firstElement) {
             const firstBit = firstElement[1].findFirst();
@@ -405,7 +406,7 @@ class SparseBitVector {
             }
         }
         if (needDeleteIdx.size > 0) {
-            needDeleteIdx.forEach((idx) => this.elements.delete(idx));
+            needDeleteIdx.forEach(idx => this.elements.delete(idx));
             changed = true;
         }
         return changed;
@@ -431,12 +432,11 @@ class SparseBitVector {
             }
         }
         if (needDeleteIdx.size > 0) {
-            needDeleteIdx.forEach((idx) => this.elements.delete(idx));
+            needDeleteIdx.forEach(idx => this.elements.delete(idx));
             changed = true;
         }
         return changed;
     }
-    // Dump as string
     toString() {
         let ar = [...this];
         return ar.toString();

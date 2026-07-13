@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,18 +29,30 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildGetAccessor2ArkField = exports.buildIndexSignature2ArkField = exports.buildProperty2ArkField = void 0;
+exports.buildProperty2ArkField = buildProperty2ArkField;
+exports.buildIndexSignature2ArkField = buildIndexSignature2ArkField;
+exports.buildGetAccessor2ArkField = buildGetAccessor2ArkField;
 const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
 const ArkField_1 = require("../ArkField");
 const logger_1 = __importStar(require("../../../utils/logger"));
@@ -66,7 +78,7 @@ function buildProperty2ArkField(member, sourceFile, cls) {
             fieldName = (0, builderUtils_1.handlePropertyAccessExpression)(member.name.expression);
         }
         else {
-            logger.warn("Other property expression type found!");
+            logger.warn(`Other property expression type found: ${member.name.expression.getText()}!`);
         }
     }
     else if (member.name && (ohos_typescript_1.default.isIdentifier(member.name) || ohos_typescript_1.default.isLiteralExpression(member.name))) {
@@ -78,26 +90,25 @@ function buildProperty2ArkField(member, sourceFile, cls) {
         field.addModifier(ArkBaseModel_1.ModifierType.PRIVATE);
     }
     else {
-        logger.warn("Other type of property name found!");
-    }
-    if ((ohos_typescript_1.default.isPropertyDeclaration(member) || ohos_typescript_1.default.isPropertySignature(member)) && member.modifiers) {
-        let modifiers = (0, builderUtils_1.buildModifiers)(member);
-        field.addModifier(modifiers);
-        field.setDecorators((0, builderUtils_1.buildDecorators)(member, sourceFile));
+        logger.warn(`Other type of property name found: ${member.getText()}!`);
     }
     let fieldType = Type_1.UnknownType.getInstance();
-    if ((ohos_typescript_1.default.isPropertyDeclaration(member) || ohos_typescript_1.default.isPropertySignature(member)) && member.type) {
-        fieldType = (0, builderUtils_1.buildGenericType)((0, builderUtils_1.tsNode2Type)(member.type, sourceFile, cls), field);
+    if (ohos_typescript_1.default.isPropertyDeclaration(member) || ohos_typescript_1.default.isPropertySignature(member)) {
+        if (member.modifiers) {
+            field.addModifier((0, builderUtils_1.buildModifiers)(member));
+        }
+        field.addModifier(0);
+        field.setDecorators((0, builderUtils_1.buildDecorators)(member, sourceFile));
+        field.setQuestionToken(member.questionToken !== undefined);
+        if (member.type) {
+            fieldType = (0, builderUtils_1.buildGenericType)((0, builderUtils_1.tsNode2Type)(member.type, sourceFile, cls), field);
+        }
     }
     if (ohos_typescript_1.default.isEnumMember(member)) {
         field.addModifier(ArkBaseModel_1.ModifierType.STATIC);
         fieldType = new Type_1.ClassType(cls.getSignature());
     }
-    const fieldSignature = new ArkSignature_1.FieldSignature(fieldName, cls.getSignature(), fieldType, field.isStatic());
-    field.setSignature(fieldSignature);
-    if ((ohos_typescript_1.default.isPropertyDeclaration(member) || ohos_typescript_1.default.isPropertySignature(member)) && member.questionToken) {
-        field.setQuestionToken(true);
-    }
+    field.setSignature(new ArkSignature_1.FieldSignature(fieldName, cls.getSignature(), fieldType, field.isStatic()));
     if (ohos_typescript_1.default.isPropertyDeclaration(member) && member.exclamationToken) {
         field.setExclamationToken(true);
     }
@@ -105,7 +116,6 @@ function buildProperty2ArkField(member, sourceFile, cls) {
     cls.addField(field);
     return field;
 }
-exports.buildProperty2ArkField = buildProperty2ArkField;
 function buildIndexSignature2ArkField(member, sourceFile, cls) {
     const field = new ArkField_1.ArkField();
     field.setCode(member.getText(sourceFile));
@@ -123,7 +133,6 @@ function buildIndexSignature2ArkField(member, sourceFile, cls) {
     IRUtils_1.IRUtils.setComments(field, member, sourceFile, cls.getDeclaringArkFile().getScene().getOptions());
     cls.addField(field);
 }
-exports.buildIndexSignature2ArkField = buildIndexSignature2ArkField;
 function buildGetAccessor2ArkField(member, mthd, sourceFile) {
     let cls = mthd.getDeclaringArkClass();
     let field = new ArkField_1.ArkField();
@@ -147,18 +156,17 @@ function buildGetAccessor2ArkField(member, mthd, sourceFile) {
             fieldName = member.name.expression.text;
         }
         else {
-            logger.warn("Other type of computed property name found!");
+            logger.warn('Other type of computed property name found!');
         }
     }
     else {
-        logger.warn("Please contact developers to support new type of GetAccessor name!");
+        logger.warn('Please contact developers to support new type of GetAccessor name!');
     }
     const fieldType = mthd.getReturnType();
     const fieldSignature = new ArkSignature_1.FieldSignature(fieldName, cls.getSignature(), fieldType, false);
     field.setSignature(fieldSignature);
     cls.addField(field);
 }
-exports.buildGetAccessor2ArkField = buildGetAccessor2ArkField;
 function mapSyntaxKindToFieldOriginType(syntaxKind) {
     let fieldOriginType = null;
     switch (syntaxKind) {
@@ -187,7 +195,6 @@ function mapSyntaxKindToFieldOriginType(syntaxKind) {
             fieldOriginType = ArkField_1.FieldCategory.GET_ACCESSOR;
             break;
         default:
-            ;
     }
     return fieldOriginType;
 }

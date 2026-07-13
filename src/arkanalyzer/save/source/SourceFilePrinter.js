@@ -31,6 +31,16 @@ class SourceFilePrinter extends Printer_1.Printer {
         this.items = [];
         this.arkFile = arkFile;
     }
+    printDefaultClassInFile(cls) {
+        for (let method of cls.getMethods()) {
+            if (method.isDefaultArkMethod()) {
+                this.items.push(...new SourceMethod_1.SourceMethod(method, this.printer.getIndent()).dumpDefaultMethod());
+            }
+            else if (!PrinterUtils_1.PrinterUtils.isAnonymousMethod(method.getName())) {
+                this.items.push(new SourceMethod_1.SourceMethod(method));
+            }
+        }
+    }
     dump() {
         this.printer.clear();
         // print imports
@@ -42,14 +52,7 @@ class SourceFilePrinter extends Printer_1.Printer {
         // print class
         for (let cls of this.arkFile.getClasses()) {
             if (cls.isDefaultArkClass()) {
-                for (let method of cls.getMethods()) {
-                    if (method.isDefaultArkMethod()) {
-                        this.items.push(...new SourceMethod_1.SourceMethod(method, this.printer.getIndent()).dumpDefaultMethod());
-                    }
-                    else if (!PrinterUtils_1.PrinterUtils.isAnonymousMethod(method.getName())) {
-                        this.items.push(new SourceMethod_1.SourceMethod(method));
-                    }
-                }
+                this.printDefaultClassInFile(cls);
             }
             else if (!PrinterUtils_1.PrinterUtils.isAnonymousClass(cls.getName())) {
                 this.items.push(new SourceClass_1.SourceClass(cls));

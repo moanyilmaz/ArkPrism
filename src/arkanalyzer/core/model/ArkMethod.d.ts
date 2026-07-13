@@ -6,13 +6,15 @@ import { Cfg } from '../graph/Cfg';
 import { ViewTree } from '../graph/ViewTree';
 import { ArkBody } from './ArkBody';
 import { ArkClass } from './ArkClass';
-import { MethodSignature } from './ArkSignature';
+import { MethodSignature, MethodSubSignature } from './ArkSignature';
 import { BodyBuilder } from './builder/BodyBuilder';
 import { ArkExport, ExportType } from './ArkExport';
 import { LineCol } from '../base/Position';
 import { ArkBaseModel } from './ArkBaseModel';
 import { ArkError } from '../common/ArkError';
 import { Local } from '../base/Local';
+import { ArkFile, Language } from './ArkFile';
+import { MethodParameter } from './builder/ArkMethodBuilder';
 export declare const arkMethodNodeKind: string[];
 /**
  * @category core/model
@@ -31,7 +33,12 @@ export declare class ArkMethod extends ArkBaseModel implements ArkExport {
     private bodyBuilder?;
     private isGeneratedFlag;
     private asteriskToken;
+    private questionToken;
     constructor();
+    /**
+     * Returns the program language of the file where this method defined.
+     */
+    getLanguage(): Language;
     getExportType(): ExportType;
     getName(): string;
     /**
@@ -110,10 +117,10 @@ export declare class ArkMethod extends ArkBaseModel implements ArkExport {
      */
     getDeclaringArkClass(): ArkClass;
     setDeclaringArkClass(declaringArkClass: ArkClass): void;
-    getDeclaringArkFile(): import("./ArkFile").ArkFile;
+    getDeclaringArkFile(): ArkFile;
     isDefaultArkMethod(): boolean;
     isAnonymousMethod(): boolean;
-    getParameters(): import("./builder/ArkMethodBuilder").MethodParameter[];
+    getParameters(): MethodParameter[];
     getReturnType(): Type;
     /**
      * Get all declare signatures.
@@ -172,7 +179,7 @@ export declare class ArkMethod extends ArkBaseModel implements ArkExport {
      * @returns
      */
     setImplementationSignature(signature: MethodSignature): void;
-    getSubSignature(): import("./ArkSignature").MethodSubSignature;
+    getSubSignature(): MethodSubSignature;
     getGenericTypes(): GenericType[] | undefined;
     isGenericsMethod(): boolean;
     setGenericTypes(genericTypes: GenericType[]): void;
@@ -254,9 +261,14 @@ export declare class ArkMethod extends ArkBaseModel implements ArkExport {
     setAsteriskToken(asteriskToken: boolean): void;
     validate(): ArkError;
     matchMethodSignature(args: Value[]): MethodSignature;
+    private isMatched;
     private matchParam;
+    private static parseArg;
     getOuterMethod(): ArkMethod | undefined;
     setOuterMethod(method: ArkMethod): void;
     getFunctionLocal(name: string): Local | null;
+    setQuestionToken(questionToken: boolean): void;
+    getQuestionToken(): boolean;
+    isPublic(): boolean;
 }
 //# sourceMappingURL=ArkMethod.d.ts.map

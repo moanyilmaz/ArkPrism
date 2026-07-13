@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -18,7 +18,7 @@ exports.DominanceFinder = void 0;
 class DominanceFinder {
     constructor(cfg) {
         this.blocks = [];
-        this.blockToIdx = new Map;
+        this.blockToIdx = new Map();
         this.idoms = [];
         this.domFrontiers = [];
         this.blocks = Array.from(cfg.getBlocks());
@@ -43,17 +43,16 @@ class DominanceFinder {
                 let blockIdx = this.blockToIdx.get(block);
                 let preds = Array.from(block.getPredecessors());
                 let newIdom = this.getFirstDefinedBlockPredIdx(preds);
-                if (preds.length > 0 && newIdom !== -1) {
-                    for (const pred of preds) {
-                        let predIdx = this.blockToIdx.get(pred);
-                        if (this.idoms[predIdx] !== -1) {
-                            newIdom = this.intersect(newIdom, predIdx);
-                        }
-                    }
-                    if (this.idoms[blockIdx] !== newIdom) {
-                        this.idoms[blockIdx] = newIdom;
-                        isChanged = true;
-                    }
+                if (preds.length <= 0 || newIdom === -1) {
+                    continue;
+                }
+                for (const pred of preds) {
+                    let predIdx = this.blockToIdx.get(pred);
+                    this.idoms[predIdx] !== -1 ? (newIdom = this.intersect(newIdom, predIdx)) : null;
+                }
+                if (this.idoms[blockIdx] !== newIdom) {
+                    this.idoms[blockIdx] = newIdom;
+                    isChanged = true;
                 }
             }
         }
@@ -64,21 +63,22 @@ class DominanceFinder {
         }
         for (const block of this.blocks) {
             let preds = Array.from(block.getPredecessors());
-            if (preds.length > 1) {
-                let blockIdx = this.blockToIdx.get(block);
-                for (const pred of preds) {
-                    let predIdx = this.blockToIdx.get(pred);
-                    while (predIdx !== this.idoms[blockIdx]) {
-                        this.domFrontiers[predIdx].push(blockIdx);
-                        predIdx = this.idoms[predIdx];
-                    }
+            if (preds.length <= 1) {
+                continue;
+            }
+            let blockIdx = this.blockToIdx.get(block);
+            for (const pred of preds) {
+                let predIdx = this.blockToIdx.get(pred);
+                while (predIdx !== this.idoms[blockIdx]) {
+                    this.domFrontiers[predIdx].push(blockIdx);
+                    predIdx = this.idoms[predIdx];
                 }
             }
         }
     }
     getDominanceFrontiers(block) {
         if (!this.blockToIdx.has(block)) {
-            throw new Error("The given block: " + block + " is not in Cfg!");
+            throw new Error('The given block: ' + block + ' is not in Cfg!');
         }
         let idx = this.blockToIdx.get(block);
         let dfs = new Set();

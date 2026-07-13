@@ -6,11 +6,12 @@ export declare class CallGraphBuilder {
     private scene;
     constructor(c: CallGraph, s: Scene);
     buildDirectCallGraphForScene(): void;
+    buildCGNodes(methods: ArkMethod[]): void;
     buildDirectCallGraph(methods: ArkMethod[]): void;
     buildClassHierarchyCallGraph(entries: Method[], displayGeneratedMethod?: boolean): void;
+    buildCHA4WholeProject(displayGeneratedMethod?: boolean): void;
     buildRapidTypeCallGraph(entries: Method[], displayGeneratedMethod?: boolean): void;
     private getDCCallee;
-    private isConstructor;
     setEntries(): void;
 }
 //# sourceMappingURL=CallGraphBuilder.d.ts.map

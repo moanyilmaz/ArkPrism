@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -60,9 +60,7 @@ class DotMethodPrinter extends Printer_1.Printer {
             let name = prefix + index++;
             blockToNode.set(block, name);
             /** Node0 [label="entry"]; */
-            this.printer
-                .writeIndent()
-                .writeLine(`${name} [label="${this.getBlockContent(block, this.printer.getIndent())}"];`);
+            this.printer.writeIndent().writeLine(`${name} [label="${this.getBlockContent(block, this.printer.getIndent())}"];`);
         }
         for (let block of blocks) {
             for (let nextBlock of block.getSuccessors()) {

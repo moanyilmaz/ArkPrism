@@ -45,7 +45,7 @@ class ArkIRClassPrinter extends BasePrinter_1.BasePrinter {
         this.printer.write(this.cls.getName());
         const genericsTypes = this.cls.getGenericsTypes();
         if (genericsTypes) {
-            this.printer.write(`<${genericsTypes.map((v) => v.toString()).join(', ')}>`);
+            this.printer.write(`<${genericsTypes.map(v => v.toString()).join(', ')}>`);
         }
         if (this.cls.getSuperClassName() && !this.cls.hasComponentDecorator()) {
             this.printer.write(` extends ${this.cls.getSuperClassName()}`);
@@ -56,10 +56,26 @@ class ArkIRClassPrinter extends BasePrinter_1.BasePrinter {
         this.printer.writeLine(' {');
         this.printer.incIndent();
         let items = [];
-        items.push(...this.printFields());
-        items.push(...this.printMethods());
-        items.sort((a, b) => a.getLine() - b.getLine());
+        let fieldItems = this.printFields();
+        fieldItems.sort((a, b) => a.getLine() - b.getLine());
+        items.push(...fieldItems);
+        let methodItems = this.printMethods();
+        methodItems.sort((a, b) => a.getLine() - b.getLine());
+        items.push(...methodItems);
+        let isFirstMethod = true;
+        let hasField = false;
         items.forEach((v) => {
+            if (v instanceof ArkIRMethodPrinter_1.ArkIRMethodPrinter) {
+                if (!isFirstMethod || hasField) {
+                    this.printer.writeLine('');
+                }
+                else {
+                    isFirstMethod = false;
+                }
+            }
+            else if (v instanceof ArkIRFieldPrinter_1.ArkIRFieldPrinter) {
+                hasField = true;
+            }
             this.printer.write(v.dump());
         });
         this.printer.decIndent();
@@ -68,16 +84,8 @@ class ArkIRClassPrinter extends BasePrinter_1.BasePrinter {
     }
     printMethods() {
         let items = [];
-        for (let method of this.cls.getMethods()) {
+        for (let method of this.cls.getMethods(true)) {
             items.push(new ArkIRMethodPrinter_1.ArkIRMethodPrinter(method, this.printer.getIndent()));
-        }
-        let instanceInitMethod = this.cls.getInstanceInitMethod();
-        if (instanceInitMethod.getImplementationSignature()) {
-            items.push(new ArkIRMethodPrinter_1.ArkIRMethodPrinter(this.cls.getInstanceInitMethod(), this.printer.getIndent()));
-        }
-        let staticInitMethod = this.cls.getStaticInitMethod();
-        if (staticInitMethod.getImplementationSignature()) {
-            items.push(new ArkIRMethodPrinter_1.ArkIRMethodPrinter(this.cls.getStaticInitMethod(), this.printer.getIndent()));
         }
         return items;
     }

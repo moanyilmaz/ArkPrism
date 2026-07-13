@@ -16,7 +16,7 @@
  * Uses ArkAnalyzer's CallGraph edges + CHA for accurate path finding.
  */
 
-import { Scene, CallGraph, CallGraphNode, ClassHierarchyAnalysis, getCallbackMethodFromStmt } from './arkanalyzer';
+import { Scene, CallGraph, CallGraphNode, ClassHierarchyAnalysis, CallGraphBuilder, getCallbackMethodFromStmt } from './arkanalyzer';
 import {
     PrivacyDataApiResult, MultiSourceCollaboration, CallChainLink,
     DataSinkInfo, CallChainResult, MultiSourceSubgraph, MultiSourceBranch
@@ -68,7 +68,8 @@ function buildCallMaps(scene: Scene, callGraph: CallGraph): {
 
     // Source 2: CHA virtual call resolution
     try {
-        let cha = new ClassHierarchyAnalysis(scene, callGraph);
+        let cgBuilder = new CallGraphBuilder(callGraph, scene);
+        let cha = new ClassHierarchyAnalysis(scene, callGraph, cgBuilder);
         for (const method of scene.getMethods()) {
             let callerSig = method.getSignature().toString();
             ensureKey(callerSig);

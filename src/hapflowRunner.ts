@@ -11,16 +11,21 @@
  *   6. Convert results to ArkPrism output format
  */
 
-import { Scene, DummyMainCreater, PointerAnalysis, PointerAnalysisConfig } from './arkanalyzer';
+import { Scene, PointerAnalysis, PointerAnalysisConfig, ClassHierarchyAnalysis, CallGraphBuilder, ArkMethod } from './arkanalyzer';
 import { TaintAnalysisChecker } from './hapflow/TaintAnalysis';
 import { TaintAnalysisSolver } from './hapflow/TaintAnalysisSolver';
 import { TaintFact } from './hapflow/TaintFact';
-import { TaintFlowResult, TaintPathStep } from './prototypes';
+import { TaintFlowResult } from './prototypes';
+import { buildLifecycleDummyMain, buildLifecycleStructuredDummyMain } from './lifecycleDummyMain';
+import { LifecycleModeler } from './lifecycleModeler';
+import { buildCallGraph } from './callGraphBuilder';
 import * as path from 'path';
 import * as fs from 'fs';
 
 export interface HapflowOptions {
     noPta?: boolean;      // Skip pointer analysis (faster but less precise)
+    noLifecycle?: boolean; // Skip lifecycle state machine (use flat DummyMain)
+    lifecycleLevel?: 1 | 2; // Lifecycle DummyMain level: 1 = ordered entry, 2 = structured CFG (default: 2)
     sdkPath?: string;     // OpenHarmony SDK path (required for API signature resolution)
 
     // IFDS budget options
@@ -92,11 +97,47 @@ export function runHapflowAnalysis(
         console.log(`[HAPFLOW] SDK files already loaded: ${existingSdkFiles}`);
     }
 
-    // 2. Build DummyMain (virtual entry method collecting all entry points)
-    const creater = new DummyMainCreater(scene);
-    creater.createDummyMain();
-    const entry = creater.getDummyMain();
-    console.log('[HAPFLOW] DummyMain created.');
+    // 1b. Infer types — HapFlow original calls scene.inferTypes() before analysis.
+    // This is critical for source detection: callSource() uses baseTypeName for fuzzy matching,
+    // and without inferTypes(), types remain "unknown" causing source matching to fail.
+    try {
+        console.log('[HAPFLOW] Running type inference...');
+        scene.inferTypes();
+        console.log('[HAPFLOW] Type inference complete.');
+    } catch (e: any) {
+        console.log(`[HAPFLOW][WARN] Type inference failed (stack overflow in UnionType.flatType): ${e.message?.substring(0, 100)}`);
+        console.log('[HAPFLOW][WARN] Continuing without type inference — source detection may be less precise.');
+    }
+
+    // 2. Build DummyMain (lifecycle-aware or flat)
+    let entry: ArkMethod;
+    const lifecycleLevel = opts.lifecycleLevel ?? 2; // Default to Level 2 (structured CFG)
+
+    if (opts.noLifecycle) {
+        // Flat DummyMain: use standard DummyMainCreater without lifecycle ordering
+        console.log('[HAPFLOW] Building flat DummyMain (no lifecycle state machine)...');
+        const lifecycleModeler = new LifecycleModeler(scene);
+        const lifecycleModel = lifecycleModeler.buildModel();
+        const { dummyMain } = buildLifecycleDummyMain(scene, lifecycleModel);
+        entry = dummyMain;
+        console.log('[HAPFLOW] Flat DummyMain created (Level 1 without ordering).');
+    } else if (lifecycleLevel === 2) {
+        // Level 2: Lifecycle-structured CFG with sequential startup chain
+        console.log('[HAPFLOW] Building lifecycle-structured DummyMain (Level 2)...');
+        const lifecycleModeler = new LifecycleModeler(scene);
+        const lifecycleModel = lifecycleModeler.buildModel();
+        const { dummyMain, stats } = buildLifecycleStructuredDummyMain(scene, lifecycleModel);
+        entry = dummyMain;
+        console.log(`[HAPFLOW] Level 2 DummyMain created: ${stats.totalBlocks} blocks, ${stats.crossPhaseEdges} cross-phase edges.`);
+    } else {
+        // Level 1: Pre-ordered entry methods in standard DummyMainCreater
+        console.log('[HAPFLOW] Building lifecycle-ordered DummyMain (Level 1)...');
+        const lifecycleModeler = new LifecycleModeler(scene);
+        const lifecycleModel = lifecycleModeler.buildModel();
+        const { dummyMain } = buildLifecycleDummyMain(scene, lifecycleModel);
+        entry = dummyMain;
+        console.log('[HAPFLOW] Level 1 DummyMain created.');
+    }
 
     // 3. Optional pointer analysis for alias resolution
     let pta: PointerAnalysis | undefined = undefined;
@@ -111,6 +152,30 @@ export function runHapflowAnalysis(
         }
     } else {
         console.log('[HAPFLOW] Pointer analysis skipped (--no-pta).');
+    }
+
+    // 3b. Build call graph for IFDS (lifecycle-enhanced or basic)
+    let externalCG: ClassHierarchyAnalysis | undefined = undefined;
+    try {
+        if (opts.noLifecycle) {
+            // Basic CG without lifecycle augmentation
+            console.log('[HAPFLOW] Building basic call graph (no lifecycle edges)...');
+            const callGraph = buildCallGraph(scene, { noLifecycle: true });
+            const cgBuilder = new CallGraphBuilder(callGraph, scene);
+            externalCG = new ClassHierarchyAnalysis(scene, callGraph, cgBuilder);
+            externalCG.start(true);
+            console.log('[HAPFLOW] Basic CG ready (nodes=' + callGraph.getNodeNum() + ').');
+        } else {
+            console.log('[HAPFLOW] Building lifecycle-enhanced call graph...');
+            const callGraph = buildCallGraph(scene);
+            const cgBuilder = new CallGraphBuilder(callGraph, scene);
+            externalCG = new ClassHierarchyAnalysis(scene, callGraph, cgBuilder);
+            externalCG.start(true);
+            console.log('[HAPFLOW] Lifecycle-enhanced CG ready (nodes=' + callGraph.getNodeNum() + ').');
+        }
+    } catch (e) {
+        console.log(`[HAPFLOW][WARN] CG construction failed, solver will build default CHA CG: ${e}`);
+        externalCG = undefined;
     }
 
     // 4. Configure taint analysis problem
@@ -198,7 +263,7 @@ export function runHapflowAnalysis(
 
         // Solve this batch
         try {
-            const batchSolver = new TaintAnalysisSolver(batchProblem, scene, pta);
+            const batchSolver = new TaintAnalysisSolver(batchProblem, scene, pta, undefined, externalCG);
 
             // Set budget options for the solver
             batchSolver.setBudgetOptions({
@@ -248,7 +313,7 @@ export function runHapflowAnalysis(
     }
 
     // 6. Convert and return results
-    const finalStatus = ifdsBudgetExceeded ? 'PARTIAL_SUCCESS' : (callbackEnabled ? 'SUCCESS' : 'SUCCESS');
+    const finalStatus = ifdsBudgetExceeded ? 'PARTIAL_SUCCESS' : 'SUCCESS';
     console.log(`[HAPFLOW] Analysis complete. Found ${allOutcomes.length} taint flows. Status: ${finalStatus}`);
 
     return convertOutcome(allOutcomes);
@@ -256,14 +321,29 @@ export function runHapflowAnalysis(
 
 /**
  * Convert HapFlow TaintFact[] output to ArkPrism TaintFlowResult[] format.
+ * Deduplicates by (source method, sink method) pair — same as HapBench semantics:
+ * one source→sink channel counts as one flow, regardless of how many fields/params propagate.
  */
 function convertOutcome(facts: TaintFact[]): TaintFlowResult[] {
-    return facts.map(fact => {
+    const seen = new Set<string>();
+    const results: TaintFlowResult[] = [];
+
+    for (const fact of facts) {
         const pathStmts = fact.getPath();
         const sourceStmt = pathStmts.length > 0 ? pathStmts[0] : null;
         const sinkStmt = pathStmts.length > 0 ? pathStmts[pathStmts.length - 1] : null;
 
-        return {
+        // Dedup key: source method + sink method (the channel, not individual fields)
+        const sourceMethod = sourceStmt?.getCfg()?.getDeclaringMethod()?.getSignature()?.toString() || '';
+        const sinkMethod = sinkStmt?.getCfg()?.getDeclaringMethod()?.getSignature()?.toString() || '';
+        const sourceApiNorm = normalizeApiName(sourceStmt?.toString() || '');
+        const sinkApiNorm = normalizeApiName(sinkStmt?.toString() || '');
+        const dedupKey = `${sourceMethod}::${sourceApiNorm}→${sinkMethod}::${sinkApiNorm}`;
+
+        if (seen.has(dedupKey)) continue;
+        seen.add(dedupKey);
+
+        results.push({
             sourceApi: sourceStmt?.toString() || 'unknown',
             sourceFile: sourceStmt?.getOriginPositionInfo()?.toString() || 'unknown',
             sourceLine: sourceStmt?.getOriginPositionInfo()?.getLineNo() || 0,
@@ -277,6 +357,20 @@ function convertOutcome(facts: TaintFact[]): TaintFlowResult[] {
                 line: s.getOriginPositionInfo()?.getLineNo() || 0,
                 method: s.getCfg()?.getDeclaringMethod()?.getName() || ''
             }))
-        };
-    });
+        });
+    }
+    return results;
+}
+
+/**
+ * Normalize API name for dedup: strip %AM* anonymous method refs and %N parameter refs.
+ * e.g. "sensor.on(%1, %AM0$sensor, %2)" → "sensor.on"
+ *      "console.info(%7)" → "console.info"
+ */
+function normalizeApiName(apiStr: string): string {
+    return apiStr
+        .replace(/\(%[^)]*\)/, '')   // strip (...%AM0...%2...) parens
+        .replace(/%AM\d+\$\w+/g, '') // strip %AM0$name refs
+        .replace(/%\d+/g, '')        // strip %1, %2 etc
+        .trim();
 }

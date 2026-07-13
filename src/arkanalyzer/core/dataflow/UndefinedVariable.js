@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UndefinedVariableSolver = exports.UndefinedVariableChecker = void 0;
 const DataflowProblem_1 = require("./DataflowProblem");
@@ -78,7 +88,7 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
     }
     getNormalFlowFunction(srcStmt, tgtStmt) {
         let checkerInstance = this;
-        return new class {
+        return new (class {
             getDataFacts(dataFact) {
                 let ret = new Set();
                 if (checkerInstance.getEntryPoint() === srcStmt && checkerInstance.getZeroValue() === dataFact) {
@@ -90,7 +100,7 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
                 }
                 return ret;
             }
-        };
+        })();
     }
     insideNormalFlowFunction(ret, srcStmt, dataFact) {
         if (!this.factEqual(srcStmt.getDef(), dataFact)) {
@@ -111,7 +121,7 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
         }
         else if (rightOp instanceof Ref_1.ArkInstanceFieldRef) {
             const base = rightOp.getBase();
-            if (base === dataFact || !base.getDeclaringStmt() && base.getName() === dataFact.toString()) {
+            if (base === dataFact || (!base.getDeclaringStmt() && base.getName() === dataFact.toString())) {
                 this.outcomes.push(new Outcome(rightOp, ass));
                 logger.info('undefined base');
                 logger.info(srcStmt.toString());
@@ -125,7 +135,7 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
     }
     getCallFlowFunction(srcStmt, method) {
         let checkerInstance = this;
-        return new class {
+        return new (class {
             getDataFacts(dataFact) {
                 const ret = new Set();
                 if (checkerInstance.getZeroValue() === dataFact) {
@@ -133,19 +143,23 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
                 }
                 else {
                     const callExpr = srcStmt.getExprs()[0];
-                    if (callExpr instanceof Expr_1.ArkInstanceInvokeExpr && dataFact instanceof Ref_1.ArkInstanceFieldRef && callExpr.getBase().getName() === dataFact.getBase().getName()) {
+                    if (callExpr instanceof Expr_1.ArkInstanceInvokeExpr &&
+                        dataFact instanceof Ref_1.ArkInstanceFieldRef &&
+                        callExpr.getBase().getName() === dataFact.getBase().getName()) {
                         // todo:base转this
                         const thisRef = new Ref_1.ArkInstanceFieldRef(new Local_1.Local('this', new Type_1.ClassType(method.getDeclaringArkClass().getSignature())), dataFact.getFieldSignature());
                         ret.add(thisRef);
                     }
-                    else if (callExpr instanceof Expr_1.ArkStaticInvokeExpr && dataFact instanceof Ref_1.ArkStaticFieldRef && callExpr.getMethodSignature().getDeclaringClassSignature() === dataFact.getFieldSignature().getDeclaringSignature()) {
+                    else if (callExpr instanceof Expr_1.ArkStaticInvokeExpr &&
+                        dataFact instanceof Ref_1.ArkStaticFieldRef &&
+                        callExpr.getMethodSignature().getDeclaringClassSignature() === dataFact.getFieldSignature().getDeclaringSignature()) {
                         ret.add(dataFact);
                     }
                 }
                 checkerInstance.addParameters(srcStmt, dataFact, method, ret);
                 return ret;
             }
-        };
+        })();
     }
     insideCallFlowFunction(ret, method) {
         ret.add(this.getZeroValue());
@@ -183,14 +197,14 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
         const callStmt = srcStmt;
         const args = callStmt.getInvokeExpr().getArgs();
         for (let i = 0; i < args.length; i++) {
-            if (args[i] === dataFact || this.isUndefined(args[i]) && this.getZeroValue() === dataFact) {
-                const realParameter = [...method.getCfg().getBlocks()][0].getStmts()[i].getDef();
+            if (args[i] === dataFact || (this.isUndefined(args[i]) && this.getZeroValue() === dataFact)) {
+                const realParameter = method.getCfg().getStartingBlock().getStmts()[i].getDef();
                 if (realParameter) {
                     ret.add(realParameter);
                 }
             }
             else if (dataFact instanceof Ref_1.ArkInstanceFieldRef && dataFact.getBase().getName() === args[i].toString()) {
-                const realParameter = [...method.getCfg().getBlocks()][0].getStmts()[i].getDef();
+                const realParameter = method.getCfg().getStartingBlock().getStmts()[i].getDef();
                 if (realParameter) {
                     const retRef = new Ref_1.ArkInstanceFieldRef(realParameter, dataFact.getFieldSignature());
                     ret.add(retRef);
@@ -200,44 +214,19 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
     }
     getExitToReturnFlowFunction(srcStmt, tgtStmt, callStmt) {
         let checkerInstance = this;
-        return new class {
+        return new (class {
             getDataFacts(dataFact) {
                 let ret = new Set();
                 if (dataFact === checkerInstance.getZeroValue()) {
                     ret.add(checkerInstance.getZeroValue());
                 }
-                if (dataFact instanceof Ref_1.ArkInstanceFieldRef && dataFact.getBase().getName() === "this") {
-                    // todo:this转base。
-                    const expr = callStmt.getExprs()[0];
-                    if (expr instanceof Expr_1.ArkInstanceInvokeExpr) {
-                        const fieldRef = new Ref_1.ArkInstanceFieldRef(expr.getBase(), dataFact.getFieldSignature());
-                        ret.add(fieldRef);
-                    }
-                }
-                if (!(callStmt instanceof Stmt_1.ArkAssignStmt)) {
-                    return ret;
-                }
-                if (srcStmt instanceof Stmt_1.ArkReturnStmt) {
-                    let ass = callStmt;
-                    let leftOp = ass.getLeftOp();
-                    let retVal = srcStmt.getOp();
-                    if (dataFact === checkerInstance.getZeroValue()) {
-                        ret.add(checkerInstance.getZeroValue());
-                        if (checkerInstance.isUndefined(retVal)) {
-                            ret.add(leftOp);
-                        }
-                    }
-                    else if (retVal === dataFact) {
-                        ret.add(leftOp);
-                    }
-                }
                 return ret;
             }
-        };
+        })();
     }
     getCallToReturnFlowFunction(srcStmt, tgtStmt) {
         let checkerInstance = this;
-        return new class {
+        return new (class {
             getDataFacts(dataFact) {
                 const ret = new Set();
                 if (checkerInstance.getZeroValue() === dataFact) {
@@ -249,7 +238,7 @@ class UndefinedVariableChecker extends DataflowProblem_1.DataflowProblem {
                 }
                 return ret;
             }
-        };
+        })();
     }
     createZeroValue() {
         return this.zeroValue;

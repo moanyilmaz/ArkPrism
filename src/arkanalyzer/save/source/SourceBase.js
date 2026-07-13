@@ -52,9 +52,7 @@ class SourceBase extends BasePrinter_1.BasePrinter {
                 continue;
             }
             if (keyword.endsWith('Keyword')) {
-                keyword = keyword
-                    .substring(0, keyword.length - 'Keyword'.length)
-                    .toLowerCase();
+                keyword = keyword.substring(0, keyword.length - 'Keyword'.length).toLowerCase();
             }
             types.push(keyword);
         }

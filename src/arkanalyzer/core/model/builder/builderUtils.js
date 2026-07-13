@@ -29,18 +29,38 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTypeFromPreStr = exports.tsNode2Type = exports.buildReturnType = exports.buildGenericType = exports.buildParameters = exports.buildTypeParameters = exports.buildHeritageClauses = exports.buildModifiers = exports.buildDecorators = exports.handlePropertyAccessExpression = exports.handleQualifiedName = void 0;
+exports.handleQualifiedName = handleQualifiedName;
+exports.handlePropertyAccessExpression = handlePropertyAccessExpression;
+exports.buildDecorators = buildDecorators;
+exports.buildModifiers = buildModifiers;
+exports.buildHeritageClauses = buildHeritageClauses;
+exports.buildTypeParameters = buildTypeParameters;
+exports.buildParameters = buildParameters;
+exports.buildGenericType = buildGenericType;
+exports.buildReturnType = buildReturnType;
+exports.tsNode2Type = tsNode2Type;
+exports.buildTypeFromPreStr = buildTypeFromPreStr;
 const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
 const Type_1 = require("../../base/Type");
 const TypeInference_1 = require("../../common/TypeInference");
@@ -72,7 +92,6 @@ function handleQualifiedName(node) {
     let qualifiedName = left + '.' + right;
     return qualifiedName;
 }
-exports.handleQualifiedName = handleQualifiedName;
 function handlePropertyAccessExpression(node) {
     let right = node.name.text;
     let left = '';
@@ -88,10 +107,9 @@ function handlePropertyAccessExpression(node) {
     let propertyAccessExpressionName = left + '.' + right;
     return propertyAccessExpressionName;
 }
-exports.handlePropertyAccessExpression = handlePropertyAccessExpression;
 function buildDecorators(node, sourceFile) {
     let decorators = new Set();
-    ohos_typescript_1.default.getAllDecorators(node).forEach((decoratorNode) => {
+    ohos_typescript_1.default.getAllDecorators(node).forEach(decoratorNode => {
         let decorator = parseDecorator(decoratorNode);
         if (decorator) {
             decorator.setContent(decoratorNode.expression.getText(sourceFile));
@@ -100,7 +118,6 @@ function buildDecorators(node, sourceFile) {
     });
     return decorators;
 }
-exports.buildDecorators = buildDecorators;
 function parseDecorator(node) {
     if (!node.expression) {
         return undefined;
@@ -125,17 +142,16 @@ function buildModifiers(node) {
     var _a;
     let modifiers = 0;
     if (ohos_typescript_1.default.canHaveModifiers(node)) {
-        (_a = ohos_typescript_1.default.getModifiers(node)) === null || _a === void 0 ? void 0 : _a.forEach((modifier) => {
+        (_a = ohos_typescript_1.default.getModifiers(node)) === null || _a === void 0 ? void 0 : _a.forEach(modifier => {
             modifiers |= (0, ArkBaseModel_1.modifierKind2Enum)(modifier.kind);
         });
     }
     return modifiers;
 }
-exports.buildModifiers = buildModifiers;
 function buildHeritageClauses(heritageClauses) {
     let heritageClausesMap = new Map();
-    heritageClauses === null || heritageClauses === void 0 ? void 0 : heritageClauses.forEach((heritageClause) => {
-        heritageClause.types.forEach((type) => {
+    heritageClauses === null || heritageClauses === void 0 ? void 0 : heritageClauses.forEach(heritageClause => {
+        heritageClause.types.forEach(type => {
             let heritageClauseName = '';
             if (type.typeArguments) {
                 heritageClauseName = type.getText();
@@ -154,7 +170,6 @@ function buildHeritageClauses(heritageClauses) {
     });
     return heritageClausesMap;
 }
-exports.buildHeritageClauses = buildHeritageClauses;
 function buildTypeParameters(typeParameters, sourceFile, arkInstance) {
     var _a;
     const genericTypes = [];
@@ -165,7 +180,7 @@ function buildTypeParameters(typeParameters, sourceFile, arkInstance) {
             index = len;
         }
     }
-    typeParameters.forEach((typeParameter) => {
+    typeParameters.forEach(typeParameter => {
         const genericType = tsNode2Type(typeParameter, sourceFile, arkInstance);
         if (genericType instanceof Type_1.GenericType) {
             genericType.setIndex(index++);
@@ -180,81 +195,89 @@ function buildTypeParameters(typeParameters, sourceFile, arkInstance) {
     });
     return genericTypes;
 }
-exports.buildTypeParameters = buildTypeParameters;
+function buildObjectBindingPatternParam(methodParameter, paramNameNode) {
+    methodParameter.setName('ObjectBindingPattern');
+    let elements = [];
+    paramNameNode.elements.forEach(element => {
+        let paraElement = new ArkMethodBuilder_1.ObjectBindingPatternParameter();
+        if (element.propertyName) {
+            if (ohos_typescript_1.default.isIdentifier(element.propertyName)) {
+                paraElement.setPropertyName(element.propertyName.text);
+            }
+            else {
+                logger.warn('New propertyName of ObjectBindingPattern found, please contact developers to support this!');
+            }
+        }
+        if (element.name) {
+            if (ohos_typescript_1.default.isIdentifier(element.name)) {
+                paraElement.setName(element.name.text);
+            }
+            else {
+                logger.warn('New name of ObjectBindingPattern found, please contact developers to support this!');
+            }
+        }
+        if (element.initializer) {
+            logger.warn('TODO: support ObjectBindingPattern initializer.');
+        }
+        if (element.dotDotDotToken) {
+            paraElement.setOptional(true);
+        }
+        elements.push(paraElement);
+    });
+    methodParameter.setObjElements(elements);
+}
+function buildBindingElementOfBindingPatternParam(element, paraElement) {
+    if (element.propertyName) {
+        if (ohos_typescript_1.default.isIdentifier(element.propertyName)) {
+            paraElement.setPropertyName(element.propertyName.text);
+        }
+        else {
+            logger.warn('New propertyName of ArrayBindingPattern found, please contact developers to support this!');
+        }
+    }
+    if (element.name) {
+        if (ohos_typescript_1.default.isIdentifier(element.name)) {
+            paraElement.setName(element.name.text);
+        }
+        else {
+            logger.warn('New name of ArrayBindingPattern found, please contact developers to support this!');
+        }
+    }
+    if (element.initializer) {
+        logger.warn('TODO: support ArrayBindingPattern initializer.');
+    }
+    if (element.dotDotDotToken) {
+        paraElement.setOptional(true);
+    }
+}
+function buildArrayBindingPatternParam(methodParameter, paramNameNode) {
+    methodParameter.setName('ArrayBindingPattern');
+    let elements = [];
+    paramNameNode.elements.forEach(element => {
+        let paraElement = new ArkMethodBuilder_1.ArrayBindingPatternParameter();
+        if (ohos_typescript_1.default.isBindingElement(element)) {
+            buildBindingElementOfBindingPatternParam(element, paraElement);
+        }
+        else if (ohos_typescript_1.default.isOmittedExpression(element)) {
+            logger.warn('TODO: support OmittedExpression for ArrayBindingPattern parameter name.');
+        }
+        elements.push(paraElement);
+    });
+    methodParameter.setArrayElements(elements);
+}
 function buildParameters(params, arkInstance, sourceFile) {
     let parameters = [];
-    params.forEach((parameter) => {
+    params.forEach(parameter => {
         let methodParameter = new ArkMethodBuilder_1.MethodParameter();
         // name
         if (ohos_typescript_1.default.isIdentifier(parameter.name)) {
             methodParameter.setName(parameter.name.text);
         }
         else if (ohos_typescript_1.default.isObjectBindingPattern(parameter.name)) {
-            methodParameter.setName('ObjectBindingPattern');
-            let elements = [];
-            parameter.name.elements.forEach((element) => {
-                let paraElement = new ArkMethodBuilder_1.ObjectBindingPatternParameter();
-                if (element.propertyName) {
-                    if (ohos_typescript_1.default.isIdentifier(element.propertyName)) {
-                        paraElement.setPropertyName(element.propertyName.text);
-                    }
-                    else {
-                        logger.warn('New propertyName of ObjectBindingPattern found, please contact developers to support this!');
-                    }
-                }
-                if (element.name) {
-                    if (ohos_typescript_1.default.isIdentifier(element.name)) {
-                        paraElement.setName(element.name.text);
-                    }
-                    else {
-                        logger.warn('New name of ObjectBindingPattern found, please contact developers to support this!');
-                    }
-                }
-                if (element.initializer) {
-                    logger.warn('TODO: support ObjectBindingPattern initializer.');
-                }
-                if (element.dotDotDotToken) {
-                    paraElement.setOptional(true);
-                }
-                elements.push(paraElement);
-            });
-            methodParameter.setObjElements(elements);
+            buildObjectBindingPatternParam(methodParameter, parameter.name);
         }
         else if (ohos_typescript_1.default.isArrayBindingPattern(parameter.name)) {
-            methodParameter.setName('ArrayBindingPattern');
-            let elements = [];
-            parameter.name.elements.forEach((element) => {
-                let paraElement = new ArkMethodBuilder_1.ArrayBindingPatternParameter();
-                if (ohos_typescript_1.default.isBindingElement(element)) {
-                    if (element.propertyName) {
-                        if (ohos_typescript_1.default.isIdentifier(element.propertyName)) {
-                            paraElement.setPropertyName(element.propertyName.text);
-                        }
-                        else {
-                            logger.warn('New propertyName of ArrayBindingPattern found, please contact developers to support this!');
-                        }
-                    }
-                    if (element.name) {
-                        if (ohos_typescript_1.default.isIdentifier(element.name)) {
-                            paraElement.setName(element.name.text);
-                        }
-                        else {
-                            logger.warn('New name of ArrayBindingPattern found, please contact developers to support this!');
-                        }
-                    }
-                    if (element.initializer) {
-                        logger.warn('TODO: support ArrayBindingPattern initializer.');
-                    }
-                    if (element.dotDotDotToken) {
-                        paraElement.setOptional(true);
-                    }
-                }
-                else if (ohos_typescript_1.default.isOmittedExpression(element)) {
-                    logger.warn('TODO: support OmittedExpression for ArrayBindingPattern parameter name.');
-                }
-                elements.push(paraElement);
-            });
-            methodParameter.setArrayElements(elements);
+            buildArrayBindingPatternParam(methodParameter, parameter.name);
         }
         else {
             logger.warn('Parameter name is not identifier, ObjectBindingPattern nor ArrayBindingPattern, please contact developers to support this!');
@@ -272,11 +295,12 @@ function buildParameters(params, arkInstance, sourceFile) {
         }
         // initializer
         if (parameter.initializer) {
-            //TODO?
+            // For param with initializer, it is actually optional param. The cfgBuilder will do the last initializer things.
+            methodParameter.setOptional(true);
         }
         // dotDotDotToken
         if (parameter.dotDotDotToken) {
-            methodParameter.setDotDotDotToken(true);
+            methodParameter.setRestFlag(true);
         }
         // modifiers
         if (parameter.modifiers) {
@@ -286,7 +310,6 @@ function buildParameters(params, arkInstance, sourceFile) {
     });
     return parameters;
 }
-exports.buildParameters = buildParameters;
 function buildGenericType(type, arkInstance) {
     function replace(urType) {
         var _a, _b, _c;
@@ -300,7 +323,9 @@ function buildGenericType(type, arkInstance) {
                 gType = (_b = arkInstance.getGenericTypes()) === null || _b === void 0 ? void 0 : _b.find(f => f.getName() === typeName);
             }
             if (!gType) {
-                gType = (_c = arkInstance.getDeclaringArkClass().getGenericsTypes()) === null || _c === void 0 ? void 0 : _c.find(f => f.getName() === typeName);
+                gType = (_c = arkInstance
+                    .getDeclaringArkClass()
+                    .getGenericsTypes()) === null || _c === void 0 ? void 0 : _c.find(f => f.getName() === typeName);
             }
         }
         if (gType) {
@@ -344,7 +369,6 @@ function buildGenericType(type, arkInstance) {
     }
     return type;
 }
-exports.buildGenericType = buildGenericType;
 function buildReturnType(node, sourceFile, method) {
     if (node) {
         return tsNode2Type(node, sourceFile, method);
@@ -353,7 +377,6 @@ function buildReturnType(node, sourceFile, method) {
         return Type_1.UnknownType.getInstance();
     }
 }
-exports.buildReturnType = buildReturnType;
 function tsNode2Type(typeNode, sourceFile, arkInstance) {
     if (ohos_typescript_1.default.isTypeReferenceNode(typeNode)) {
         const genericTypes = [];
@@ -369,12 +392,15 @@ function tsNode2Type(typeNode, sourceFile, arkInstance) {
         }
         else {
             let parameterTypeStr = referenceNodeName.text;
+            if (parameterTypeStr === Builtin_1.Builtin.OBJECT) {
+                return Builtin_1.Builtin.OBJECT_CLASS_TYPE;
+            }
             return new Type_1.UnclearReferenceType(parameterTypeStr, genericTypes);
         }
     }
     else if (ohos_typescript_1.default.isUnionTypeNode(typeNode) || ohos_typescript_1.default.isIntersectionTypeNode(typeNode)) {
         let multipleTypePara = [];
-        typeNode.types.forEach((tmpType) => {
+        typeNode.types.forEach(tmpType => {
             multipleTypePara.push(tsNode2Type(tmpType, sourceFile, arkInstance));
         });
         if (ohos_typescript_1.default.isUnionTypeNode(typeNode)) {
@@ -456,74 +482,76 @@ function tsNode2Type(typeNode, sourceFile, arkInstance) {
         return buildTypeFromTypeQuery(typeNode, sourceFile, arkInstance);
     }
     else if (typeNode.kind === ohos_typescript_1.default.SyntaxKind.ObjectKeyword) {
-        return new Type_1.ClassType(Builtin_1.Builtin.OBJECT_CLASS_SIGNATURE);
+        // TODO: type object which is different from Object is needed to support, such as let a: object = {}
+        return new Type_1.UnclearReferenceType('object');
     }
     else {
         return buildTypeFromPreStr(ohos_typescript_1.default.SyntaxKind[typeNode.kind]);
     }
 }
-exports.tsNode2Type = tsNode2Type;
 function buildTypeFromPreStr(preStr) {
     let postStr = '';
     switch (preStr) {
         case 'BooleanKeyword':
-            postStr = 'boolean';
+            postStr = TSConst_1.BOOLEAN_KEYWORD;
             break;
         case 'FalseKeyword':
-            postStr = 'boolean';
+            postStr = TSConst_1.BOOLEAN_KEYWORD;
             break;
         case 'TrueKeyword':
-            postStr = 'boolean';
+            postStr = TSConst_1.BOOLEAN_KEYWORD;
             break;
         case 'NumberKeyword':
-            postStr = 'number';
+            postStr = TSConst_1.NUMBER_KEYWORD;
             break;
         case 'NumericLiteral':
-            postStr = 'number';
+            postStr = TSConst_1.NUMBER_KEYWORD;
             break;
         case 'FirstLiteralToken':
-            postStr = 'number';
+            postStr = TSConst_1.NUMBER_KEYWORD;
             break;
         case 'StringKeyword':
-            postStr = 'string';
+            postStr = TSConst_1.STRING_KEYWORD;
             break;
         case 'StringLiteral':
-            postStr = 'string';
+            postStr = TSConst_1.STRING_KEYWORD;
             break;
         case 'UndefinedKeyword':
-            postStr = 'undefined';
+            postStr = TSConst_1.UNDEFINED_KEYWORD;
             break;
         case 'NullKeyword':
-            postStr = 'null';
+            postStr = TSConst_1.NULL_KEYWORD;
             break;
         case 'AnyKeyword':
-            postStr = 'any';
+            postStr = TSConst_1.ANY_KEYWORD;
             break;
         case 'VoidKeyword':
-            postStr = 'void';
+            postStr = TSConst_1.VOID_KEYWORD;
             break;
         case 'NeverKeyword':
-            postStr = 'never';
+            postStr = TSConst_1.NEVER_KEYWORD;
+            break;
+        case 'BigIntKeyword':
+            postStr = TSConst_1.BIGINT_KEYWORD;
             break;
         default:
             postStr = preStr;
     }
     return TypeInference_1.TypeInference.buildTypeFromStr(postStr);
 }
-exports.buildTypeFromPreStr = buildTypeFromPreStr;
 function buildTypeFromTypeOperator(typeOperatorNode, sourceFile, arkInstance) {
     const typeNode = typeOperatorNode.type;
     let type = tsNode2Type(typeNode, sourceFile, arkInstance);
     switch (typeOperatorNode.operator) {
-        case (ohos_typescript_1.default.SyntaxKind.ReadonlyKeyword): {
+        case ohos_typescript_1.default.SyntaxKind.ReadonlyKeyword: {
             if (type instanceof Type_1.ArrayType || type instanceof Type_1.TupleType) {
                 type.setReadonlyFlag(true);
             }
             return type;
         }
-        case (ohos_typescript_1.default.SyntaxKind.KeyOfKeyword):
+        case ohos_typescript_1.default.SyntaxKind.KeyOfKeyword:
             return new TypeExpr_1.KeyofTypeExpr(type);
-        case (ohos_typescript_1.default.SyntaxKind.UniqueKeyword):
+        case ohos_typescript_1.default.SyntaxKind.UniqueKeyword:
             return Type_1.UnknownType.getInstance();
         default:
             return Type_1.UnknownType.getInstance();

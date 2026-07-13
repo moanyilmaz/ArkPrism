@@ -19,4 +19,5 @@ export declare const UNKNOWN_FIELD_NAME = "";
 export declare const UNKNOWN_METHOD_NAME = "";
 export declare const TEMP_LOCAL_PREFIX = "%";
 export declare const LEXICAL_ENV_NAME_PREFIX: string;
+export declare const ARKTS_STATIC_MARK = "use static";
 //# sourceMappingURL=Const.d.ts.map

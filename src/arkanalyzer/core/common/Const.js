@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LEXICAL_ENV_NAME_PREFIX = exports.TEMP_LOCAL_PREFIX = exports.UNKNOWN_METHOD_NAME = exports.UNKNOWN_FIELD_NAME = exports.UNKNOWN_CLASS_NAME = exports.UNKNOWN_NAMESPACE_NAME = exports.UNKNOWN_FILE_NAME = exports.UNKNOWN_PROJECT_NAME = exports.CALL_SIGNATURE_NAME = exports.ANONYMOUS_METHOD_PREFIX = exports.STATIC_BLOCK_METHOD_NAME_PREFIX = exports.STATIC_INIT_METHOD_NAME = exports.INSTANCE_INIT_METHOD_NAME = exports.DEFAULT_ARK_METHOD_NAME = exports.ANONYMOUS_CLASS_DELIMITER = exports.ANONYMOUS_CLASS_PREFIX = exports.DEFAULT_ARK_CLASS_NAME = exports.DEFAULT_NAME = exports.UNKNOWN_NAME = exports.NAME_PREFIX = exports.NAME_DELIMITER = void 0;
+exports.ARKTS_STATIC_MARK = exports.LEXICAL_ENV_NAME_PREFIX = exports.TEMP_LOCAL_PREFIX = exports.UNKNOWN_METHOD_NAME = exports.UNKNOWN_FIELD_NAME = exports.UNKNOWN_CLASS_NAME = exports.UNKNOWN_NAMESPACE_NAME = exports.UNKNOWN_FILE_NAME = exports.UNKNOWN_PROJECT_NAME = exports.CALL_SIGNATURE_NAME = exports.ANONYMOUS_METHOD_PREFIX = exports.STATIC_BLOCK_METHOD_NAME_PREFIX = exports.STATIC_INIT_METHOD_NAME = exports.INSTANCE_INIT_METHOD_NAME = exports.DEFAULT_ARK_METHOD_NAME = exports.ANONYMOUS_CLASS_DELIMITER = exports.ANONYMOUS_CLASS_PREFIX = exports.DEFAULT_ARK_CLASS_NAME = exports.DEFAULT_NAME = exports.UNKNOWN_NAME = exports.NAME_PREFIX = exports.NAME_DELIMITER = void 0;
 // names
 exports.NAME_DELIMITER = '$';
 exports.NAME_PREFIX = '%';
@@ -41,3 +41,5 @@ exports.UNKNOWN_METHOD_NAME = ''; // temp for being compatible with existing typ
 // IR const
 exports.TEMP_LOCAL_PREFIX = exports.NAME_PREFIX;
 exports.LEXICAL_ENV_NAME_PREFIX = exports.TEMP_LOCAL_PREFIX + 'closures';
+// ArkTS version
+exports.ARKTS_STATIC_MARK = 'use static';

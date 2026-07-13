@@ -56,6 +56,8 @@ export declare class SourceAssignStmt extends SourceStmt {
      * temp1.constructor(10)
      */
     private transferRightNewExpr;
+    private handleConstructorInvoke;
+    private transferConstructorInvokeExpr;
     /**
      * $temp0 = newarray[4]
      * $temp0[0] = 1
@@ -90,6 +92,7 @@ export declare class SourceWhileStmt extends SourceStmt {
      * @returns
      */
     private forOf2ts;
+    private getForOf2ts;
     transfer2ts(): void;
     protected valueToString(value: Value): string;
 }

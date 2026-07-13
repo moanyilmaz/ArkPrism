@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.TSCONFIG_JSON = exports.NEVER_KEYWORD = exports.VOID_KEYWORD = exports.STRING_KEYWORD = exports.NUMBER_KEYWORD = exports.BOOLEAN_KEYWORD = exports.UNKNOWN_KEYWORD = exports.ANY_KEYWORD = exports.UNDEFINED_KEYWORD = exports.NULL_KEYWORD = exports.DECLARE_KEYWORD = exports.FUNCTION = exports.PROMISE = exports.IMPORT = exports.ALL = exports.DEFAULT = exports.GLOBAL_THIS_NAME = exports.THIS_NAME = exports.SUPER_NAME = exports.CONSTRUCTOR_NAME = void 0;
+exports.TSCONFIG_JSON = exports.BIGINT_KEYWORD = exports.NEVER_KEYWORD = exports.VOID_KEYWORD = exports.STRING_KEYWORD = exports.NUMBER_KEYWORD = exports.BOOLEAN_KEYWORD = exports.UNKNOWN_KEYWORD = exports.ANY_KEYWORD = exports.UNDEFINED_KEYWORD = exports.NULL_KEYWORD = exports.DECLARE_KEYWORD = exports.FUNCTION = exports.PROMISE = exports.IMPORT = exports.ALL = exports.DEFAULT = exports.GLOBAL_THIS_NAME = exports.THIS_NAME = exports.SUPER_NAME = exports.CONSTRUCTOR_NAME = void 0;
 exports.CONSTRUCTOR_NAME = 'constructor';
 exports.SUPER_NAME = 'super';
 exports.THIS_NAME = 'this';
@@ -35,4 +35,5 @@ exports.NUMBER_KEYWORD = 'number';
 exports.STRING_KEYWORD = 'string';
 exports.VOID_KEYWORD = 'void';
 exports.NEVER_KEYWORD = 'never';
+exports.BIGINT_KEYWORD = 'bigint';
 exports.TSCONFIG_JSON = 'tsconfig.json';

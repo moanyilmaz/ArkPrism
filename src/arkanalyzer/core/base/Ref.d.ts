@@ -134,7 +134,6 @@ export declare class ArkParameterRef extends AbstractRef {
 export declare class ArkThisRef extends AbstractRef {
     private type;
     constructor(type: ClassType);
-    inferType(arkMethod: ArkMethod): AbstractRef;
     getType(): ClassType;
     getUses(): Value[];
     toString(): string;
@@ -170,5 +169,6 @@ export declare class ClosureFieldRef extends AbstractRef {
     getType(): Type;
     getFieldName(): string;
     toString(): string;
+    inferType(arkMethod: ArkMethod): AbstractRef;
 }
 //# sourceMappingURL=Ref.d.ts.map

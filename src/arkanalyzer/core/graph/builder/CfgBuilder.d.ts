@@ -143,6 +143,7 @@ export declare class CfgBuilder {
     getDotEdges(stmt: StatementBuilder): void;
     errorTest(stmt: StatementBuilder): void;
     buildStatementBuilder4ArrowFunction(stmt: ts.Node): void;
+    private getParamNodeWithInitializerOrModifier;
     buildCfgBuilder(): void;
     private handleBuilder;
     isBodyEmpty(): boolean;
@@ -167,8 +168,10 @@ export declare class CfgBuilder {
         aliasTypeMap: Map<string, [AliasType, ArkAliasTypeDefineStmt]>;
         traps: Trap[];
     };
+    private removeEmptyBlocks;
     private initializeBuild;
     private processBlocks;
+    private generateReturnStmt;
     private adjustBlocks;
     private createCfg;
     private linkBasicBlocks;

@@ -38,6 +38,8 @@ export declare class ArkIRTransformer {
     tsNodeToValueAndStmts(node: ts.Node): ValueAndStmts;
     private functionDeclarationToStmts;
     private classDeclarationToStmts;
+    private parameterPropertyToStmts;
+    private parameterToStmts;
     private returnStatementToStmts;
     private blockToStmts;
     private expressionStatementToStmts;

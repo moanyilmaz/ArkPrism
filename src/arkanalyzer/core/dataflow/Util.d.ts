@@ -1,7 +1,7 @@
-import { ArkInvokeStmt } from "../base/Stmt";
-import { ArkMethod } from "../model/ArkMethod";
-import { Local } from "../base/Local";
-import { AbstractRef } from "../base/Ref";
+import { ArkInvokeStmt } from '../base/Stmt';
+import { ArkMethod } from '../model/ArkMethod';
+import { Local } from '../base/Local';
+import { AbstractRef } from '../base/Ref';
 export declare const INTERNAL_PARAMETER_SOURCE: string[];
 export declare const INTERNAL_SINK_METHOD: string[];
 export declare function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod | null;

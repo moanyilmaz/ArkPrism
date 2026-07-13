@@ -7,7 +7,7 @@ export interface Value {
      * Return a list of values which are contained in this {@link Value}.
      * Value is a core interface in ArkAnalyzer, which may represent any value or expression.
      * @returns An **array** of values used by this value.
-    */
+     */
     getUses(): Value[];
     /**
      * Return the type of this value. The interface is encapsulated in {@link Value}.

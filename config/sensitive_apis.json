@@ -5316,14 +5316,14 @@
         "namespace": "userAuth",
         "method": "getAvailableStatus",
         "permission": "ohos.permission.ACCESS_BIOMETRIC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.biometric",
         "directCall": true
       },
       {
         "namespace": "UserAuth",
         "method": "getAvailableStatus",
         "permission": "ohos.permission.ACCESS_BIOMETRIC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.biometric",
         "directCall": false
       }
     ]

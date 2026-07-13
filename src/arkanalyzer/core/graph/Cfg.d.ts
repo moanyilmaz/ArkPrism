@@ -4,6 +4,7 @@ import { Stmt } from '../base/Stmt';
 import { ArkError } from '../common/ArkError';
 import { ArkMethod } from '../model/ArkMethod';
 import { BasicBlock } from './BasicBlock';
+import { GlobalRef } from '../base/Ref';
 /**
  * @category core/graph
  */
@@ -50,8 +51,9 @@ export declare class Cfg {
     setDeclaringMethod(method: ArkMethod): void;
     getDefUseChains(): DefUseChain[];
     toString(): string;
-    buildDefUseStmt(locals: Set<Local>): void;
+    buildDefUseStmt(locals: Set<Local>, globals?: Map<string, GlobalRef>): void;
     private buildUseStmt;
+    private handleDefUseForValue;
     buildDefUseChain(): void;
     getUnreachableBlocks(): Set<BasicBlock>;
     validate(): ArkError;

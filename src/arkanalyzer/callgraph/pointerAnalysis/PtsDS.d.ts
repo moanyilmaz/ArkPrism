@@ -58,7 +58,7 @@ export declare class DiffPTData<K, D extends Idx, DS extends IPtsCollection<D>> 
     private DSCreator;
     private diffPtsMap;
     private propaPtsMap;
-    constructor(DSCreator: (new () => DS));
+    constructor(DSCreator: new () => DS);
     clear(): void;
     addPts(v: K, elem: D): boolean;
     resetElem(v: K): boolean;

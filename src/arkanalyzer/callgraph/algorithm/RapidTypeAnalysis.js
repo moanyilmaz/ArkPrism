@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,28 +29,36 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RapidTypeAnalysis = void 0;
 const Expr_1 = require("../../core/base/Expr");
-const CallGraph_1 = require("../model/CallGraph");
 const AbstractAnalysis_1 = require("./AbstractAnalysis");
 const logger_1 = __importStar(require("../../utils/logger"));
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'RTA');
 class RapidTypeAnalysis extends AbstractAnalysis_1.AbstractAnalysis {
     constructor(scene, cg) {
-        super(scene);
+        super(scene, cg);
         // TODO: signature duplicated check
         this.instancedClasses = new Set();
         // TODO: Set duplicated check
         this.ignoredCalls = new Map();
-        this.cg = cg;
     }
     resolveCall(callerMethod, invokeStmt) {
         let invokeExpr = invokeStmt.getInvokeExpr();
@@ -60,7 +68,7 @@ class RapidTypeAnalysis extends AbstractAnalysis_1.AbstractAnalysis {
         }
         // process anonymous method call
         this.getParamAnonymousMethod(invokeExpr).forEach(method => {
-            resolveResult.push(new CallGraph_1.CallSite(invokeStmt, undefined, this.cg.getCallGraphNodeByMethod(method).getID(), callerMethod));
+            resolveResult.push(this.cg.getCallSiteManager().newCallSite(invokeStmt, undefined, this.cg.getCallGraphNodeByMethod(method).getID(), callerMethod));
         });
         let calleeMethod = this.resolveInvokeExpr(invokeExpr);
         if (!calleeMethod) {
@@ -68,28 +76,27 @@ class RapidTypeAnalysis extends AbstractAnalysis_1.AbstractAnalysis {
         }
         if (invokeExpr instanceof Expr_1.ArkStaticInvokeExpr) {
             // get specific method
-            resolveResult.push(new CallGraph_1.CallSite(invokeStmt, undefined, this.cg.getCallGraphNodeByMethod(calleeMethod.getSignature()).getID(), callerMethod));
+            resolveResult.push(this.cg.getCallSiteManager().newCallSite(invokeStmt, undefined, this.cg.getCallGraphNodeByMethod(calleeMethod.getSignature()).getID(), callerMethod));
         }
         else {
             let declareClass = calleeMethod.getDeclaringArkClass();
             // TODO: super class method should be placed at the end
             this.getClassHierarchy(declareClass).forEach((arkClass) => {
-                if (arkClass.isAbstract()) {
-                    return;
-                }
                 let possibleCalleeMethod = arkClass.getMethodWithName(calleeMethod.getName());
                 if (possibleCalleeMethod && possibleCalleeMethod.isGenerated() &&
                     arkClass.getSignature().toString() !== declareClass.getSignature().toString()) {
                     // remove the generated method in extended classes
                     return;
                 }
-                if (possibleCalleeMethod && !possibleCalleeMethod.isAbstract()) {
-                    if (!this.instancedClasses.has(arkClass.getSignature())) {
-                        this.addIgnoredCalls(arkClass.getSignature(), callerMethod, this.cg.getCallGraphNodeByMethod(possibleCalleeMethod.getSignature()).getID(), invokeStmt);
-                    }
-                    else {
-                        resolveResult.push(new CallGraph_1.CallSite(invokeStmt, undefined, this.cg.getCallGraphNodeByMethod(possibleCalleeMethod.getSignature()).getID(), callerMethod));
-                    }
+                if (!(possibleCalleeMethod && !possibleCalleeMethod.isAbstract())) {
+                    return;
+                }
+                let calleeNode = this.cg.getCallGraphNodeByMethod(possibleCalleeMethod.getSignature());
+                if (!this.instancedClasses.has(arkClass.getSignature())) {
+                    this.addIgnoredCalls(arkClass.getSignature(), callerMethod, calleeNode.getID(), invokeStmt);
+                }
+                else {
+                    resolveResult.push(this.cg.getCallSiteManager().newCallSite(invokeStmt, undefined, calleeNode.getID(), callerMethod));
                 }
             });
         }
@@ -102,9 +109,9 @@ class RapidTypeAnalysis extends AbstractAnalysis_1.AbstractAnalysis {
         newlyInstancedClasses.forEach(sig => {
             let ignoredCalls = this.ignoredCalls.get(sig);
             if (ignoredCalls) {
-                ignoredCalls.forEach((call) => {
+                ignoredCalls.forEach(call => {
                     this.cg.addDynamicCallEdge(call.caller, call.callee, call.callStmt);
-                    newCallSites.push(new CallGraph_1.CallSite(call.callStmt, undefined, call.callee, call.caller));
+                    newCallSites.push(this.cg.getCallSiteManager().newCallSite(call.callStmt, undefined, call.callee, call.caller));
                 });
             }
             this.instancedClasses.add(sig);

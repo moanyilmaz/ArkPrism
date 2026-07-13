@@ -44,6 +44,7 @@ export declare abstract class BaseImplicitGraph<Node> implements GraphTraits<Nod
      * @throws Throws an error if idToNodeMap is not initialized or if the node is not found.
      */
     getNode(id: NodeID): Node;
+    getNodeID(s: Node): NodeID;
     /**
      * Checks whether the graph contains a specific node ID.
      * @param id The node ID.

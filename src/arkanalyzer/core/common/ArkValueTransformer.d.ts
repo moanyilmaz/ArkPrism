@@ -6,7 +6,7 @@ import { GlobalRef } from '../base/Ref';
 import { ArkMethod } from '../model/ArkMethod';
 import { ArkIRTransformer, ValueAndStmts } from './ArkIRTransformer';
 export declare class ArkValueTransformer {
-    private conditionalOperatorNo;
+    conditionalOperatorNo: number;
     private tempLocalNo;
     private sourceFile;
     private locals;
@@ -26,6 +26,7 @@ export declare class ArkValueTransformer {
     tsNodeToValueAndStmts(node: ts.Node): ValueAndStmts;
     private tsNodeToSingleAddressValueAndStmts;
     private thisExpressionToValueAndStmts;
+    private superExpressionToValueAndStmts;
     private conditionalExpressionToValueAndStmts;
     private objectLiteralExpresionToValueAndStmts;
     private generateSystemComponentStmt;
@@ -44,12 +45,19 @@ export declare class ArkValueTransformer {
     private elementAccessExpressionToValueAndStmts;
     private callExpressionToValueAndStmts;
     private generateInvokeValueAndStmts;
+    private handleFieldRefInvoke;
+    private handleLocalInvoke;
+    private isCustomViewCall;
+    private isSystemComponentCall;
+    private handleArrayRefInvoke;
+    private handleDefaultInvoke;
     private parseArgumentsOfCallExpression;
     private parseArguments;
     private callableNodeToValueAndStmts;
     private newExpressionToValueAndStmts;
     private newArrayExpressionToValueAndStmts;
     private arrayLiteralExpressionToValueAndStmts;
+    private generateArrayExprFromLiteral;
     private generateArrayExprAndStmts;
     private prefixUnaryExpressionToValueAndStmts;
     private postfixUnaryExpressionToValueAndStmts;

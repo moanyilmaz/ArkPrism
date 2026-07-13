@@ -2,6 +2,7 @@ import { ArkInvokeStmt, Stmt } from "../arkanalyzer";
 import { DataflowProblem, FlowFunction } from "../arkanalyzer";
 import { PathEdge, PathEdgePoint } from "../arkanalyzer";
 import { Scene } from "../arkanalyzer";
+import { ClassHierarchyAnalysis, RapidTypeAnalysis } from "../arkanalyzer";
 import { DataflowSolver } from "./DataflowSolver";
 import { TaintAnalysisChecker } from "./TaintAnalysis";
 import { TaintFact } from "./TaintFact";
@@ -13,14 +14,14 @@ import { LightTaintAnalysisChecker } from "./LightTaintAnalysis";
 
 export class TaintAnalysisSolver extends DataflowSolver<TaintFact> {
     protected problem!: TaintAnalysisChecker;
-    constructor(problem: TaintAnalysisChecker | LightTaintAnalysisChecker, scene: Scene, pta?: PointerAnalysis, entryFact?: TaintFact) {
-        super(problem, scene, pta, entryFact);
+    constructor(problem: TaintAnalysisChecker | LightTaintAnalysisChecker, scene: Scene, pta?: PointerAnalysis, entryFact?: TaintFact, externalCG?: ClassHierarchyAnalysis | RapidTypeAnalysis) {
+        super(problem, scene, pta, entryFact, externalCG);
     }
 }
 
 export class LightTaintAnalysisSolver extends TaintAnalysisSolver {
-    constructor(problem: TaintAnalysisChecker | LightTaintAnalysisChecker, scene: Scene, pta?: PointerAnalysis, entryFact?: TaintFact) {
-        super(problem, scene, pta, entryFact);
+    constructor(problem: TaintAnalysisChecker | LightTaintAnalysisChecker, scene: Scene, pta?: PointerAnalysis, entryFact?: TaintFact, externalCG?: ClassHierarchyAnalysis | RapidTypeAnalysis) {
+        super(problem, scene, pta, entryFact, externalCG);
     }
 
 

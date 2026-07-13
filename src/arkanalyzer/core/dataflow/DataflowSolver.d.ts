@@ -32,6 +32,7 @@ export declare abstract class DataflowSolver<D> {
     protected pathEdgeSetHasEdge(edge: PathEdge<D>): boolean;
     protected propagate(edge: PathEdge<D>): void;
     protected processExitNode(edge: PathEdge<D>): void;
+    private handleFacts;
     protected processNormalNode(edge: PathEdge<D>): void;
     protected processCallNode(edge: PathEdge<D>): void;
     protected callNodeFactPropagate(edge: PathEdge<D>, firstStmt: Stmt, fact: D, returnSite: Stmt): void;

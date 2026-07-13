@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,6 +22,7 @@ const CallGraph_1 = require("../../callgraph/model/CallGraph");
 const ClassHierarchyAnalysis_1 = require("../../callgraph/algorithm/ClassHierarchyAnalysis");
 const entryMethodUtils_1 = require("../../utils/entryMethodUtils");
 const Util_1 = require("./Util");
+const CallGraphBuilder_1 = require("../../callgraph/model/builder/CallGraphBuilder");
 class DataflowSolver {
     constructor(problem, scene) {
         this.laterEdges = new Set();
@@ -58,7 +59,7 @@ class DataflowSolver {
         this.pathEdgeSet.add(edge);
         // build CHA
         let cg = new CallGraph_1.CallGraph(this.scene);
-        this.CHA = new ClassHierarchyAnalysis_1.ClassHierarchyAnalysis(this.scene, cg);
+        this.CHA = new ClassHierarchyAnalysis_1.ClassHierarchyAnalysis(this.scene, cg, new CallGraphBuilder_1.CallGraphBuilder(cg, this.scene));
         this.buildStmtMapInClass();
         this.setCfg4AllStmt();
         return;
@@ -87,7 +88,7 @@ class DataflowSolver {
             else {
                 const set = new Set();
                 for (const successor of block.getSuccessors()) {
-                    set.add(successor.getStmts()[0]);
+                    set.add(successor.getHead());
                 }
                 this.stmtNexts.set(stmt, set);
             }
@@ -117,13 +118,15 @@ class DataflowSolver {
     getStartOfCallerMethod(call) {
         const cfg = call.getCfg();
         const paraNum = cfg.getDeclaringMethod().getParameters().length;
-        return [...cfg.getBlocks()][0].getStmts()[paraNum];
+        return cfg.getStartingBlock().getStmts()[paraNum];
     }
     pathEdgeSetHasEdge(edge) {
         for (const path of this.pathEdgeSet) {
             this.problem.factEqual(path.edgeEnd.fact, edge.edgeEnd.fact);
-            if (path.edgeEnd.node === edge.edgeEnd.node && this.problem.factEqual(path.edgeEnd.fact, edge.edgeEnd.fact) &&
-                path.edgeStart.node === edge.edgeStart.node && this.problem.factEqual(path.edgeStart.fact, edge.edgeStart.fact)) {
+            if (path.edgeEnd.node === edge.edgeEnd.node &&
+                this.problem.factEqual(path.edgeEnd.fact, edge.edgeEnd.fact) &&
+                path.edgeStart.node === edge.edgeStart.node &&
+                this.problem.factEqual(path.edgeStart.fact, edge.edgeStart.fact)) {
                 return true;
             }
         }
@@ -163,24 +166,28 @@ class DataflowSolver {
         for (let callEdgePoint of callEdgePoints) {
             let returnSite = this.getReturnSiteOfCall(callEdgePoint.node);
             let returnFlowFunc = this.problem.getExitToReturnFlowFunction(exitEdgePoint.node, returnSite, callEdgePoint.node);
-            for (let fact of returnFlowFunc.getDataFacts(exitEdgePoint.fact)) {
-                let returnSitePoint = new Edge_1.PathEdgePoint(returnSite, fact);
-                let cacheEdge = new Edge_1.PathEdge(callEdgePoint, returnSitePoint);
-                let summaryEdgeHasCacheEdge = false;
-                for (const sEdge of this.summaryEdge) {
-                    if (sEdge.edgeStart === callEdgePoint && sEdge.edgeEnd.node === returnSite && sEdge.edgeEnd.fact === fact) {
-                        summaryEdgeHasCacheEdge = true;
-                        break;
-                    }
+            this.handleFacts(returnFlowFunc, returnSite, exitEdgePoint, callEdgePoint);
+        }
+    }
+    handleFacts(returnFlowFunc, returnSite, exitEdgePoint, callEdgePoint) {
+        for (let fact of returnFlowFunc.getDataFacts(exitEdgePoint.fact)) {
+            let returnSitePoint = new Edge_1.PathEdgePoint(returnSite, fact);
+            let cacheEdge = new Edge_1.PathEdge(callEdgePoint, returnSitePoint);
+            let summaryEdgeHasCacheEdge = false;
+            for (const sEdge of this.summaryEdge) {
+                if (sEdge.edgeStart === callEdgePoint && sEdge.edgeEnd.node === returnSite && sEdge.edgeEnd.fact === fact) {
+                    summaryEdgeHasCacheEdge = true;
+                    break;
                 }
-                if (!summaryEdgeHasCacheEdge) {
-                    this.summaryEdge.add(cacheEdge);
-                    let startOfCaller = this.getStartOfCallerMethod(callEdgePoint.node);
-                    for (let pathEdge of this.pathEdgeSet) {
-                        if (pathEdge.edgeStart.node === startOfCaller && pathEdge.edgeEnd === callEdgePoint) {
-                            this.propagate(new Edge_1.PathEdge(pathEdge.edgeStart, returnSitePoint));
-                        }
-                    }
+            }
+            if (summaryEdgeHasCacheEdge) {
+                continue;
+            }
+            this.summaryEdge.add(cacheEdge);
+            let startOfCaller = this.getStartOfCallerMethod(callEdgePoint.node);
+            for (let pathEdge of this.pathEdgeSet) {
+                if (pathEdge.edgeStart.node === startOfCaller && pathEdge.edgeEnd === callEdgePoint) {
+                    this.propagate(new Edge_1.PathEdge(pathEdge.edgeStart, returnSitePoint));
                 }
             }
         }
@@ -217,7 +224,7 @@ class DataflowSolver {
             if (!callee.getCfg()) {
                 continue;
             }
-            let firstStmt = [...callee.getCfg().getBlocks()][0].getStmts()[callee.getParameters().length];
+            let firstStmt = callee.getCfg().getStartingBlock().getStmts()[callee.getParameters().length];
             let facts = callFlowFunc.getDataFacts(callEdgePoint.fact);
             for (let fact of facts) {
                 this.callNodeFactPropagate(edge, firstStmt, fact, returnSite);

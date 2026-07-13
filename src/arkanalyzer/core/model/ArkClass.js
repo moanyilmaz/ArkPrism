@@ -30,7 +30,7 @@ var ClassCategory;
     ClassCategory[ClassCategory["ENUM"] = 3] = "ENUM";
     ClassCategory[ClassCategory["TYPE_LITERAL"] = 4] = "TYPE_LITERAL";
     ClassCategory[ClassCategory["OBJECT"] = 5] = "OBJECT";
-})(ClassCategory = exports.ClassCategory || (exports.ClassCategory = {}));
+})(ClassCategory || (exports.ClassCategory = ClassCategory = {}));
 /**
  * @category core/model
  */
@@ -55,6 +55,12 @@ class ArkClass extends ArkBaseModel_1.ArkBaseModel {
         this.staticInitMethod = new ArkMethod_1.ArkMethod();
         this.anonymousMethodNumber = 0;
         this.indexSignatureNumber = 0;
+    }
+    /**
+     * Returns the program language of the file where this class defined.
+     */
+    getLanguage() {
+        return this.getDeclaringArkFile().getLanguage();
     }
     /**
      * Returns the **string**name of this class.
@@ -160,17 +166,17 @@ class ArkClass extends ArkBaseModel_1.ArkBaseModel {
         return null;
     }
     getHeritageClass(heritageClassName) {
+        var _a;
         if (!heritageClassName) {
             return null;
         }
         let superClass = this.heritageClasses.get(heritageClassName);
         if (superClass === undefined) {
-            let type = TypeInference_1.TypeInference.inferUnclearRefName(heritageClassName, this);
+            let type = (_a = TypeInference_1.TypeInference.inferUnclearRefName(heritageClassName, this)) !== null && _a !== void 0 ? _a : TypeInference_1.TypeInference.inferUnclearRefName(heritageClassName, this.getDeclaringArkFile().getDefaultClass());
             if (type) {
                 type = TypeInference_1.TypeInference.replaceAliasType(type);
             }
-            if (type instanceof Type_1.ClassType &&
-                (superClass = this.declaringArkFile.getScene().getClass(type.getClassSignature()))) {
+            if (type instanceof Type_1.ClassType && (superClass = this.declaringArkFile.getScene().getClass(type.getClassSignature()))) {
                 superClass.addExtendedClass(this);
                 const realGenericTypes = type.getRealGenericTypes();
                 if (realGenericTypes) {
@@ -251,15 +257,15 @@ class ArkClass extends ArkBaseModel_1.ArkBaseModel {
         }
     }
     addFields(fields) {
-        fields.forEach((field) => {
+        fields.forEach(field => {
             this.addField(field);
         });
     }
     getRealTypes() {
-        return this.realTypes;
+        return this.realTypes ? Array.from(this.realTypes) : undefined;
     }
     getGenericsTypes() {
-        return this.genericsTypes;
+        return this.genericsTypes ? Array.from(this.genericsTypes) : undefined;
     }
     addGenericType(gType) {
         if (!this.genericsTypes) {
@@ -284,10 +290,9 @@ class ArkClass extends ArkBaseModel_1.ArkBaseModel {
      ```
      */
     getMethods(generated) {
-        const allMethods = Array.from(this.methods.values())
-            .filter(f => !generated && !f.isGenerated() || generated);
+        const allMethods = Array.from(this.methods.values()).filter(f => (!generated && !f.isGenerated()) || generated);
         allMethods.push(...this.staticMethods.values());
-        return allMethods;
+        return [...new Set(allMethods)];
     }
     getMethod(methodSignature) {
         var _a;
@@ -316,12 +321,25 @@ class ArkClass extends ArkBaseModel_1.ArkBaseModel {
     getStaticMethodWithName(methodName) {
         return this.staticMethods.get(methodName) || null;
     }
-    addMethod(method) {
+    /**
+     * add a method in class.
+     * when a nested method with declare name, add both the declare origin name and signature name
+     * %${declare name}$${outer method name} in class.
+     */
+    addMethod(method, originName) {
+        const name = originName !== null && originName !== void 0 ? originName : method.getName();
         if (method.isStatic()) {
-            this.staticMethods.set(method.getName(), method);
+            this.staticMethods.set(name, method);
         }
         else {
-            this.methods.set(method.getName(), method);
+            this.methods.set(name, method);
+        }
+        if (!originName && !method.isAnonymousMethod() && name.startsWith(Const_1.NAME_PREFIX)) {
+            const index = name.indexOf(Const_1.NAME_DELIMITER);
+            if (index > 1) {
+                const originName = name.substring(1, index);
+                this.addMethod(method, originName);
+            }
         }
     }
     setDefaultArkMethod(defaultMethod) {

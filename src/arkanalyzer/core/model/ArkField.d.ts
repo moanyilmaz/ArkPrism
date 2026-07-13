@@ -5,6 +5,7 @@ import { FieldSignature } from './ArkSignature';
 import { Type } from '../base/Type';
 import { ArkBaseModel } from './ArkBaseModel';
 import { ArkError } from '../common/ArkError';
+import { Language } from './ArkFile';
 export declare enum FieldCategory {
     PROPERTY_DECLARATION = 0,
     PROPERTY_ASSIGNMENT = 1,
@@ -13,7 +14,8 @@ export declare enum FieldCategory {
     PROPERTY_SIGNATURE = 4,
     ENUM_MEMBER = 5,
     INDEX_SIGNATURE = 6,
-    GET_ACCESSOR = 7
+    GET_ACCESSOR = 7,
+    PARAMETER_PROPERTY = 8
 }
 /**
  * @category core/model
@@ -28,6 +30,10 @@ export declare class ArkField extends ArkBaseModel {
     private originPosition?;
     private initializer;
     constructor();
+    /**
+     * Returns the program language of the file where this field's class defined.
+     */
+    getLanguage(): Language;
     getDeclaringArkClass(): ArkClass;
     setDeclaringArkClass(declaringClass: ArkClass): void;
     /**
@@ -59,5 +65,6 @@ export declare class ArkField extends ArkBaseModel {
      */
     getOriginPosition(): LineColPosition;
     validate(): ArkError;
+    isPublic(): boolean;
 }
 //# sourceMappingURL=ArkField.d.ts.map

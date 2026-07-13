@@ -31,7 +31,10 @@ export declare class BooleanConstant extends Constant {
     static getInstance(value: boolean): NullConstant;
 }
 export declare class NumberConstant extends Constant {
-    constructor(value: number);
+    constructor(value: string);
+}
+export declare class BigIntConstant extends Constant {
+    constructor(value: bigint);
 }
 export declare class StringConstant extends Constant {
     constructor(value: string);

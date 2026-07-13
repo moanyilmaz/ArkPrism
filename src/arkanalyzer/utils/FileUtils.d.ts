@@ -1,3 +1,4 @@
+import { Language } from '../core/model/ArkFile';
 export declare class FileUtils {
     static readonly FILE_FILTER: {
         ignores: string[];
@@ -9,6 +10,7 @@ export declare class FileUtils {
     static generateModuleMap(ohPkgContentMap: Map<string, {
         [k: string]: unknown;
     }>): Map<string, ModulePath>;
+    static getFileLanguage(file: string, fileTags?: Map<string, Language>): Language;
 }
 export declare class ModulePath {
     path: string;

@@ -33,7 +33,7 @@ export declare class SourceBody implements StmtPrinterContext {
     isLocalDefined(local: Local): boolean;
     getStmtReader(): StmtReader;
     setTempCode(temp: string, code: string): void;
-    transTemp2Code(temp: Local): string;
+    transTemp2Code(temp: Local, isLeftOp?: boolean): string;
     getTempCodeMap(): Map<string, string>;
     hasTempVisit(temp: string): boolean;
     setTempVisit(temp: string): void;

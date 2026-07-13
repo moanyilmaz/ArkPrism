@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,9 +17,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.transfer2UnixPath = void 0;
+exports.transfer2UnixPath = transfer2UnixPath;
 const path_1 = __importDefault(require("path"));
 function transfer2UnixPath(path2Do) {
     return path_1.default.posix.join(...path2Do.split(/\\/));
 }
-exports.transfer2UnixPath = transfer2UnixPath;

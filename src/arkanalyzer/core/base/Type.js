@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LexicalEnvType = exports.AnnotationTypeQueryType = exports.AnnotationNamespaceType = exports.AnnotationType = exports.GenericType = exports.AliasType = exports.TupleType = exports.ArrayType = exports.ClassType = exports.ClosureType = exports.FunctionType = exports.NeverType = exports.VoidType = exports.IntersectionType = exports.UnionType = exports.LiteralType = exports.UndefinedType = exports.NullType = exports.StringType = exports.NumberType = exports.BooleanType = exports.PrimitiveType = exports.UnclearReferenceType = exports.UnknownType = exports.AnyType = exports.Type = void 0;
+exports.EnumValueType = exports.LexicalEnvType = exports.AnnotationTypeQueryType = exports.AnnotationNamespaceType = exports.AnnotationType = exports.GenericType = exports.AliasType = exports.TupleType = exports.ArrayType = exports.ClassType = exports.ClosureType = exports.FunctionType = exports.NeverType = exports.VoidType = exports.IntersectionType = exports.UnionType = exports.LiteralType = exports.UndefinedType = exports.NullType = exports.StringType = exports.BigIntType = exports.NumberType = exports.BooleanType = exports.PrimitiveType = exports.UnclearReferenceType = exports.UnknownType = exports.AnyType = exports.Type = void 0;
 const ArkSignature_1 = require("../model/ArkSignature");
 const ArkExport_1 = require("../model/ArkExport");
 const ArkBaseModel_1 = require("../model/ArkBaseModel");
@@ -124,6 +124,20 @@ class NumberType extends PrimitiveType {
 }
 exports.NumberType = NumberType;
 NumberType.INSTANCE = new NumberType();
+/**
+ * bigint type
+ * @category core/base/type
+ */
+class BigIntType extends PrimitiveType {
+    constructor() {
+        super(TSConst_1.BIGINT_KEYWORD);
+    }
+    static getInstance() {
+        return this.INSTANCE;
+    }
+}
+exports.BigIntType = BigIntType;
+BigIntType.INSTANCE = new BigIntType();
 class StringType extends PrimitiveType {
     constructor() {
         super(TSConst_1.STRING_KEYWORD);
@@ -202,7 +216,7 @@ class UnionType extends Type {
     }
     getTypeString() {
         let typesString = [];
-        this.getTypes().forEach((t) => {
+        this.getTypes().forEach(t => {
             if (t instanceof UnionType || t instanceof IntersectionType) {
                 typesString.push(`(${t.toString()})`);
             }
@@ -241,7 +255,7 @@ class IntersectionType extends Type {
     }
     getTypeString() {
         let typesString = [];
-        this.getTypes().forEach((t) => {
+        this.getTypes().forEach(t => {
             if (t instanceof UnionType || t instanceof IntersectionType) {
                 typesString.push(`(${t.toString()})`);
             }
@@ -538,6 +552,7 @@ exports.AliasType = AliasType;
 class GenericType extends Type {
     constructor(name, defaultType, constraint) {
         super();
+        this.index = 0;
         this.name = name;
         this.defaultType = defaultType;
         this.constraint = constraint;
@@ -637,3 +652,20 @@ class LexicalEnvType extends Type {
     }
 }
 exports.LexicalEnvType = LexicalEnvType;
+class EnumValueType extends Type {
+    constructor(signature, constant) {
+        super();
+        this.signature = signature;
+        this.constant = constant;
+    }
+    getFieldSignature() {
+        return this.signature;
+    }
+    getConstant() {
+        return this.constant;
+    }
+    getTypeString() {
+        return this.signature.toString();
+    }
+}
+exports.EnumValueType = EnumValueType;

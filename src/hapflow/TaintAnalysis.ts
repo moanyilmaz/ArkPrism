@@ -1667,6 +1667,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             ref = new MultiRef(_this as Local, dataValue.getFieldSignatures())
                         }
                         propagateFact(ref, srcStmt, ret, dataFact);
+                        // Debug: log cross-method field taint propagation (call direction)
+                        if (process.env.HAPFLOW_DEBUG) {
+                            const fieldName = dataValue instanceof ArkInstanceFieldRef ? dataValue.getFieldSignature().getFieldName() : dataValue.getFieldSignatures().map(f=>f.getFieldName()).join('.');
+                            const refFieldName = ref instanceof ArkInstanceFieldRef ? ref.getFieldSignature().getFieldName() : '?';
+                            console.log(`[HAPFLOW-DEBUG][call] ${dataValue.getBase()}.${fieldName} → this.${refFieldName} (callee=${method.getName()}, callStmt=${srcStmt.toString().substring(0,60)})`);
+                        }
                     } else if (callExpr instanceof ArkStaticInvokeExpr && dataValue instanceof ArkStaticFieldRef && callExpr.getMethodSignature().getDeclaringClassSignature() == dataValue.getFieldSignature().getDeclaringSignature()) {
                         ret.add(dataFact);
                     }
@@ -1779,6 +1785,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         if (expr instanceof ArkInstanceInvokeExpr) {
                             const fieldRef = new ArkInstanceFieldRef(expr.getBase(), dataValue.getFieldSignature());
                             const newFact = propagateFact(fieldRef, srcStmt, ret, dataFact);
+                            // Debug: log cross-method field taint propagation
+                            if (process.env.HAPFLOW_DEBUG) {
+                                console.log(`[HAPFLOW-DEBUG][exit→return] this.${dataValue.getFieldSignature().getFieldName()} → ${expr.getBase()}.${fieldRef.getFieldSignature().getFieldName()} (method=${srcStmt.getCfg()?.getDeclaringMethod()?.getName()}, callStmt=${callStmt.toString().substring(0,60)})`);
+                            }
                             if (newFact && dataFact.getLast() && ValueEqual(fieldRef, dataFact.getLast()!.getValue())) {
                                 newFact.setLast(dataFact.getLast()!.getLast());
                                 newFact.getPath().pop();

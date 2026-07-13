@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BUILD_PROFILE_JSON5 = exports.OH_PACKAGE_JSON5 = exports.ON_OFF = exports.CALL_BACK = exports.COMPONENT_ATTRIBUTE = exports.COMPONENT_INSTANCE = exports.COMPONENT_COMMON = exports.SPECIAL_CONTAINER_COMPONENT = exports.COMPONENT_BUILD_FUNCTION = exports.COMPONENT_BRANCH_FUNCTION = exports.COMPONENT_IF_BRANCH = exports.COMPONENT_IF = exports.COMPONENT_REPEAT = exports.COMPONENT_CUSTOMVIEW = exports.COMPONENT_POP_FUNCTION = exports.COMPONENT_CREATE_FUNCTION = exports.isEtsContainerComponent = exports.isEtsSystemComponent = exports.isEtsAtomicComponent = exports.BUILDER_PARAM_DECORATOR = exports.BUILDER_DECORATOR = exports.ENTRY_DECORATOR = exports.COMPONENT_DECORATOR = exports.BUILDIN_ATOMIC_COMPONENT = exports.BUILDIN_SYSTEM_COMPONENT = exports.COMPONENT_LAZY_FOR_EACH = exports.COMPONENT_FOR_EACH = exports.ETS_COMPILER_OPTIONS = void 0;
+exports.BUILD_PROFILE_JSON5 = exports.OH_PACKAGE_JSON5 = exports.ON_OFF = exports.CALL_BACK = exports.COMPONENT_ATTRIBUTE = exports.COMPONENT_INSTANCE = exports.COMPONENT_COMMON = exports.SPECIAL_CONTAINER_COMPONENT = exports.COMPONENT_BUILD_FUNCTION = exports.COMPONENT_BRANCH_FUNCTION = exports.COMPONENT_IF_BRANCH = exports.COMPONENT_IF = exports.COMPONENT_REPEAT = exports.COMPONENT_CUSTOMVIEW = exports.COMPONENT_POP_FUNCTION = exports.COMPONENT_CREATE_FUNCTION = exports.BUILDER_PARAM_DECORATOR = exports.BUILDER_DECORATOR = exports.ENTRY_DECORATOR = exports.COMPONENT_DECORATOR = exports.BUILDIN_ATOMIC_COMPONENT = exports.BUILDIN_SYSTEM_COMPONENT = exports.COMPONENT_LAZY_FOR_EACH = exports.COMPONENT_FOR_EACH = exports.ETS_COMPILER_OPTIONS = void 0;
+exports.isEtsAtomicComponent = isEtsAtomicComponent;
+exports.isEtsSystemComponent = isEtsSystemComponent;
+exports.isEtsContainerComponent = isEtsContainerComponent;
 exports.ETS_COMPILER_OPTIONS = {
     ets: {
         emitDecorators: [
@@ -923,11 +926,7 @@ exports.ETS_COMPILER_OPTIONS = {
 };
 exports.COMPONENT_FOR_EACH = 'ForEach';
 exports.COMPONENT_LAZY_FOR_EACH = 'LazyForEach';
-exports.BUILDIN_SYSTEM_COMPONENT = new Set([
-    ...exports.ETS_COMPILER_OPTIONS.ets.components,
-    exports.COMPONENT_FOR_EACH,
-    exports.COMPONENT_LAZY_FOR_EACH,
-]);
+exports.BUILDIN_SYSTEM_COMPONENT = new Set([...exports.ETS_COMPILER_OPTIONS.ets.components, exports.COMPONENT_FOR_EACH, exports.COMPONENT_LAZY_FOR_EACH]);
 exports.BUILDIN_ATOMIC_COMPONENT = new Set([
     'AbilityComponent',
     'AlphabetIndexer',
@@ -989,15 +988,12 @@ exports.BUILDER_PARAM_DECORATOR = 'BuilderParam';
 function isEtsAtomicComponent(name) {
     return exports.BUILDIN_ATOMIC_COMPONENT.has(name);
 }
-exports.isEtsAtomicComponent = isEtsAtomicComponent;
 function isEtsSystemComponent(name) {
     return exports.BUILDIN_SYSTEM_COMPONENT.has(name);
 }
-exports.isEtsSystemComponent = isEtsSystemComponent;
 function isEtsContainerComponent(name) {
     return isEtsSystemComponent(name) && !isEtsAtomicComponent(name);
 }
-exports.isEtsContainerComponent = isEtsContainerComponent;
 exports.COMPONENT_CREATE_FUNCTION = 'create';
 exports.COMPONENT_POP_FUNCTION = 'pop';
 exports.COMPONENT_CUSTOMVIEW = 'View';
@@ -1006,12 +1002,7 @@ exports.COMPONENT_IF = 'If';
 exports.COMPONENT_IF_BRANCH = 'IfBranch';
 exports.COMPONENT_BRANCH_FUNCTION = 'branch';
 exports.COMPONENT_BUILD_FUNCTION = 'build';
-exports.SPECIAL_CONTAINER_COMPONENT = new Set([
-    exports.COMPONENT_IF,
-    exports.COMPONENT_IF_BRANCH,
-    exports.COMPONENT_CUSTOMVIEW,
-    exports.COMPONENT_REPEAT,
-]);
+exports.SPECIAL_CONTAINER_COMPONENT = new Set([exports.COMPONENT_IF, exports.COMPONENT_IF_BRANCH, exports.COMPONENT_CUSTOMVIEW, exports.COMPONENT_REPEAT]);
 exports.COMPONENT_COMMON = 'Common';
 exports.COMPONENT_INSTANCE = 'Instance';
 exports.COMPONENT_ATTRIBUTE = 'Attribute';

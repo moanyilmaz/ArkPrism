@@ -23,14 +23,14 @@ var LOG_LEVEL;
     LOG_LEVEL["INFO"] = "INFO";
     LOG_LEVEL["DEBUG"] = "DEBUG";
     LOG_LEVEL["TRACE"] = "TRACE";
-})(LOG_LEVEL = exports.LOG_LEVEL || (exports.LOG_LEVEL = {}));
+})(LOG_LEVEL || (exports.LOG_LEVEL = LOG_LEVEL = {}));
 var LOG_MODULE_TYPE;
 (function (LOG_MODULE_TYPE) {
     LOG_MODULE_TYPE["DEFAULT"] = "default";
     LOG_MODULE_TYPE["ARKANALYZER"] = "ArkAnalyzer";
     LOG_MODULE_TYPE["HOMECHECK"] = "HomeCheck";
     LOG_MODULE_TYPE["TOOL"] = "Tool";
-})(LOG_MODULE_TYPE = exports.LOG_MODULE_TYPE || (exports.LOG_MODULE_TYPE = {}));
+})(LOG_MODULE_TYPE || (exports.LOG_MODULE_TYPE = LOG_MODULE_TYPE = {}));
 class ConsoleLogger {
     static configure(logFilePath, arkanalyzer_level = LOG_LEVEL.ERROR, tool_level = LOG_LEVEL.INFO, use_console = false) {
         let appendersTypes = [];

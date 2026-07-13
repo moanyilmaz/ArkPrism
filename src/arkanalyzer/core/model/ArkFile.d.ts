@@ -4,11 +4,20 @@ import { ImportInfo } from './ArkImport';
 import { ArkClass } from './ArkClass';
 import { ArkNamespace } from './ArkNamespace';
 import { ClassSignature, FileSignature, NamespaceSignature } from './ArkSignature';
+import { ts } from '../../index';
 export declare const notStmtOrExprKind: string[];
+export declare enum Language {
+    TYPESCRIPT = 0,
+    ARKTS1_1 = 1,
+    ARKTS1_2 = 2,
+    JAVASCRIPT = 3,
+    UNKNOWN = -1
+}
 /**
  * @category core/model
  */
 export declare class ArkFile {
+    private language;
     private absoluteFilePath;
     private projectDir;
     private code;
@@ -22,7 +31,13 @@ export declare class ArkFile {
     private fileSignature;
     private ohPackageJson5Path;
     private anonymousClassNumber;
-    constructor();
+    private ast;
+    constructor(language: Language);
+    /**
+     * Returns the program language of the file.
+     */
+    getLanguage(): Language;
+    setLanguage(language: Language): void;
     /**
      * Returns the **string** name of the file, which also acts as the file's relative path.
      * @returns The file's name (also means its relative path).
@@ -46,9 +61,9 @@ export declare class ArkFile {
      * @example
      * 1. Read source code based on file path.
 
-    ```typescript
-    let str = fs.readFileSync(arkFile.getFilePath(), 'utf8');
-    ```
+     ```typescript
+     let str = fs.readFileSync(arkFile.getFilePath(), 'utf8');
+     ```
      */
     getFilePath(): string;
     setFilePath(absoluteFilePath: string): void;
@@ -58,7 +73,7 @@ export declare class ArkFile {
      * @returns the codes of file.
      */
     getCode(): string;
-    addArkClass(arkClass: ArkClass): void;
+    addArkClass(arkClass: ArkClass, originName?: string): void;
     getDefaultClass(): ArkClass;
     setDefaultClass(defaultClass: ArkClass): void;
     getNamespace(namespaceSignature: NamespaceSignature): ArkNamespace | null;
@@ -128,5 +143,7 @@ export declare class ArkFile {
     setFileSignature(fileSignature: FileSignature): void;
     getAllNamespacesUnderThisFile(): ArkNamespace[];
     getAnonymousClassNumber(): number;
+    getAST(): ts.SourceFile | null;
+    setAST(value: ts.SourceFile | null): void;
 }
 //# sourceMappingURL=ArkFile.d.ts.map

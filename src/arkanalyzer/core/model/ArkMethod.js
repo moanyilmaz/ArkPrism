@@ -27,8 +27,20 @@ const ArkError_1 = require("../common/ArkError");
 const EtsConst_1 = require("../common/EtsConst");
 const Constant_1 = require("../base/Constant");
 const Local_1 = require("../base/Local");
-exports.arkMethodNodeKind = ['MethodDeclaration', 'Constructor', 'FunctionDeclaration', 'GetAccessor',
-    'SetAccessor', 'ArrowFunction', 'FunctionExpression', 'MethodSignature', 'ConstructSignature', 'CallSignature'];
+const TSConst_1 = require("../common/TSConst");
+const TypeInference_1 = require("../common/TypeInference");
+exports.arkMethodNodeKind = [
+    'MethodDeclaration',
+    'Constructor',
+    'FunctionDeclaration',
+    'GetAccessor',
+    'SetAccessor',
+    'ArrowFunction',
+    'FunctionExpression',
+    'MethodSignature',
+    'ConstructSignature',
+    'CallSignature',
+];
 /**
  * @category core/model
  */
@@ -37,6 +49,13 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
         super();
         this.isGeneratedFlag = false;
         this.asteriskToken = false;
+        this.questionToken = false;
+    }
+    /**
+     * Returns the program language of the file where this method defined.
+     */
+    getLanguage() {
+        return this.getDeclaringArkClass().getLanguage();
     }
     getExportType() {
         return ArkExport_1.ExportType.METHOD;
@@ -378,13 +397,12 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
         return undefined;
     }
     getParameterRefs() {
-        var _a;
+        var _a, _b;
         let paramRefs = [];
-        const blocks = (_a = this.getBody()) === null || _a === void 0 ? void 0 : _a.getCfg().getBlocks();
-        if (blocks === undefined) {
+        const stmts = (_b = (_a = this.getBody()) === null || _a === void 0 ? void 0 : _a.getCfg().getStartingBlock()) === null || _b === void 0 ? void 0 : _b.getStmts();
+        if (stmts === undefined) {
             return null;
         }
-        const stmts = Array.from(blocks)[0].getStmts();
         for (let stmt of stmts) {
             if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Ref_1.ArkParameterRef) {
                 paramRefs.push(stmt.getRightOp());
@@ -440,7 +458,8 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
         return resultValues;
     }
     getReturnStmt() {
-        return this.getCfg().getStmts().filter(stmt => stmt instanceof Stmt_1.ArkReturnStmt);
+        var _a, _b;
+        return (_b = (_a = this.getCfg()) === null || _a === void 0 ? void 0 : _a.getStmts().filter(stmt => stmt instanceof Stmt_1.ArkReturnStmt)) !== null && _b !== void 0 ? _b : [];
     }
     setViewTree(viewTree) {
         this.viewTree = viewTree;
@@ -492,25 +511,25 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
         if (declareSignatures === null && signature === null) {
             return {
                 errCode: ArkError_1.ArkErrorCode.METHOD_SIGNATURE_UNDEFINED,
-                errMsg: 'methodDeclareSignatures and methodSignature are both undefined.'
+                errMsg: 'methodDeclareSignatures and methodSignature are both undefined.',
             };
         }
         if ((declareSignatures === null) !== (declareLineCols === null)) {
             return {
                 errCode: ArkError_1.ArkErrorCode.METHOD_SIGNATURE_LINE_UNMATCHED,
-                errMsg: 'methodDeclareSignatures and methodDeclareLineCols are not matched.'
+                errMsg: 'methodDeclareSignatures and methodDeclareLineCols are not matched.',
             };
         }
         if (declareSignatures !== null && declareLineCols !== null && declareSignatures.length !== declareLineCols.length) {
             return {
                 errCode: ArkError_1.ArkErrorCode.METHOD_SIGNATURE_LINE_UNMATCHED,
-                errMsg: 'methodDeclareSignatures and methodDeclareLineCols are not matched.'
+                errMsg: 'methodDeclareSignatures and methodDeclareLineCols are not matched.',
             };
         }
         if ((signature === null) !== (lineCol === null)) {
             return {
                 errCode: ArkError_1.ArkErrorCode.METHOD_SIGNATURE_LINE_UNMATCHED,
-                errMsg: 'methodSignature and lineCol are not matched.'
+                errMsg: 'methodSignature and lineCol are not matched.',
             };
         }
         return this.validateFields(['declaringArkClass']);
@@ -526,56 +545,77 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
             }
             return args.length >= min && args.length <= max;
         });
-        const scene = this.getDeclaringArkFile().getScene();
-        return (_c = (_b = signatures === null || signatures === void 0 ? void 0 : signatures.find(p => {
-            const parameters = p.getMethodSubSignature().getParameters();
-            for (let i = 0; i < parameters.length; i++) {
-                if (!args[i]) {
-                    return parameters[i].isOptional();
-                }
-                const isMatched = this.matchParam(parameters[i].getType(), args[i], scene);
-                if (!isMatched) {
-                    return false;
-                }
-            }
-            return true;
-        })) !== null && _b !== void 0 ? _b : signatures === null || signatures === void 0 ? void 0 : signatures[0]) !== null && _c !== void 0 ? _c : this.getSignature();
+        return ((_c = (_b = signatures === null || signatures === void 0 ? void 0 : signatures.find(p => this.isMatched(p.getMethodSubSignature().getParameters(), args))) !== null && _b !== void 0 ? _b : signatures === null || signatures === void 0 ? void 0 : signatures[0]) !== null && _c !== void 0 ? _c : this.getSignature());
     }
-    matchParam(paramType, arg, scene) {
-        var _a;
+    isMatched(parameters, args, isArrowFunc = false) {
+        for (let i = 0; i < parameters.length; i++) {
+            if (!args[i]) {
+                return isArrowFunc ? true : parameters[i].isOptional();
+            }
+            const paramType = parameters[i].getType();
+            const isMatched = this.matchParam(paramType, args[i]);
+            if (!isMatched) {
+                return false;
+            }
+            else if (paramType instanceof Type_1.EnumValueType || paramType instanceof Type_1.LiteralType) {
+                return true;
+            }
+        }
+        return true;
+    }
+    matchParam(paramType, arg) {
+        var _a, _b;
+        if (paramType instanceof Type_1.EnumValueType || paramType instanceof Type_1.LiteralType) {
+            arg = ArkMethod.parseArg(arg);
+        }
         const argType = arg.getType();
+        if (paramType instanceof Type_1.AliasType && !(argType instanceof Type_1.AliasType)) {
+            paramType = TypeInference_1.TypeInference.replaceAliasType(paramType);
+        }
+        if (paramType instanceof Type_1.UnionType) {
+            return !!paramType.getTypes().find(p => this.matchParam(p, arg));
+        }
+        else if (argType instanceof Type_1.FunctionType && paramType instanceof Type_1.FunctionType) {
+            if (argType.getMethodSignature().getParamLength() > paramType.getMethodSignature().getParamLength()) {
+                return false;
+            }
+            const parameters = paramType.getMethodSignature().getMethodSubSignature().getParameters();
+            const args = argType.getMethodSignature().getMethodSubSignature().getParameters().filter(p => !p.getName().startsWith(Const_1.LEXICAL_ENV_NAME_PREFIX));
+            return this.isMatched(parameters, args, true);
+        }
+        else if (paramType instanceof Type_1.ClassType && paramType.getClassSignature().getClassName().includes(EtsConst_1.CALL_BACK)) {
+            return argType instanceof Type_1.FunctionType;
+        }
+        else if (paramType instanceof Type_1.LiteralType) {
+            const argStr = arg instanceof Constant_1.Constant ? arg.getValue() : argType.getTypeString();
+            return argStr.replace(/[\"|\']/g, '') ===
+                paramType.getTypeString().replace(/[\"|\']/g, '');
+        }
+        else if (paramType instanceof Type_1.ClassType && argType instanceof Type_1.EnumValueType) {
+            return paramType.getClassSignature() === argType.getFieldSignature().getDeclaringSignature();
+        }
+        else if (paramType instanceof Type_1.EnumValueType) {
+            if (argType instanceof Type_1.EnumValueType) {
+                return paramType.getFieldSignature() === argType.getFieldSignature();
+            }
+            else if (argType.constructor === ((_a = paramType.getConstant()) === null || _a === void 0 ? void 0 : _a.getType().constructor) && arg instanceof Constant_1.Constant) {
+                return ((_b = paramType.getConstant()) === null || _b === void 0 ? void 0 : _b.getValue()) === arg.getValue();
+            }
+        }
+        return argType.constructor === paramType.constructor;
+    }
+    static parseArg(arg) {
         if (arg instanceof Local_1.Local) {
             const stmt = arg.getDeclaringStmt();
-            if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Constant_1.Constant) {
+            const argType = arg.getType();
+            if (argType instanceof Type_1.EnumValueType && argType.getConstant()) {
+                arg = argType.getConstant();
+            }
+            else if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Constant_1.Constant) {
                 arg = stmt.getRightOp();
             }
         }
-        if (paramType instanceof Type_1.UnionType) {
-            let matched = false;
-            for (const e of paramType.getTypes()) {
-                if (argType.constructor === e.constructor) {
-                    matched = true;
-                    break;
-                }
-            }
-            return matched;
-        }
-        else if (argType instanceof Type_1.FunctionType && paramType instanceof Type_1.FunctionType) {
-            return argType.getMethodSignature().getParamLength() === paramType.getMethodSignature().getParamLength();
-        }
-        else if (argType instanceof Type_1.FunctionType && paramType instanceof Type_1.ClassType &&
-            paramType.getClassSignature().getClassName().includes(EtsConst_1.CALL_BACK)) {
-            return true;
-        }
-        else if (paramType instanceof Type_1.LiteralType && arg instanceof Constant_1.Constant) {
-            return arg.getValue().replace(/[\"|\']/g, '') === paramType.getLiteralName()
-                .toString().replace(/[\"|\']/g, '');
-        }
-        else if (paramType instanceof Type_1.NumberType && argType instanceof Type_1.ClassType && ArkClass_1.ClassCategory.ENUM ===
-            ((_a = scene.getClass(argType.getClassSignature())) === null || _a === void 0 ? void 0 : _a.getCategory())) {
-            return true;
-        }
-        return argType.constructor === paramType.constructor;
+        return arg;
     }
     getOuterMethod() {
         return this.outerMethod;
@@ -587,6 +627,26 @@ class ArkMethod extends ArkBaseModel_1.ArkBaseModel {
         var _a;
         const local = (_a = this.getBody()) === null || _a === void 0 ? void 0 : _a.getLocals().get(name);
         return (local === null || local === void 0 ? void 0 : local.getType()) instanceof Type_1.FunctionType ? local : null;
+    }
+    setQuestionToken(questionToken) {
+        this.questionToken = questionToken;
+    }
+    getQuestionToken() {
+        return this.questionToken;
+    }
+    // For class method, if there is no public/private/protected access modifier, it is actually public
+    isPublic() {
+        if (!this.containsModifier(ArkBaseModel_1.ModifierType.PUBLIC) &&
+            !this.containsModifier(ArkBaseModel_1.ModifierType.PRIVATE) &&
+            !this.containsModifier(ArkBaseModel_1.ModifierType.PROTECTED) &&
+            !this.getDeclaringArkClass().isDefaultArkClass() &&
+            !this.isGenerated() &&
+            !this.isAnonymousMethod() &&
+            this.getName() !== TSConst_1.CONSTRUCTOR_NAME &&
+            this.getDeclaringArkClass().getCategory() === ArkClass_1.ClassCategory.CLASS) {
+            return true;
+        }
+        return this.containsModifier(ArkBaseModel_1.ModifierType.PUBLIC);
     }
 }
 exports.ArkMethod = ArkMethod;

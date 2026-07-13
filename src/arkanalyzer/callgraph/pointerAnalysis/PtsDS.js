@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DiffPTData = exports.PtsCollectionType = exports.PtsBV = exports.PtsSet = exports.createPtsCollectionCtor = void 0;
+exports.DiffPTData = exports.PtsCollectionType = exports.PtsBV = exports.PtsSet = void 0;
+exports.createPtsCollectionCtor = createPtsCollectionCtor;
 const SparseBitVector_1 = require("../../utils/SparseBitVector");
 /*
  * Return PtsSet or PtsBV 's constructor by input type
@@ -28,7 +29,6 @@ function createPtsCollectionCtor(type) {
     }
     throw new Error(`Unsupported pts collection type: ${type}`);
 }
-exports.createPtsCollectionCtor = createPtsCollectionCtor;
 /*
  * A simple set to store pts data
  */
@@ -173,8 +173,7 @@ var PtsCollectionType;
 (function (PtsCollectionType) {
     PtsCollectionType[PtsCollectionType["Set"] = 0] = "Set";
     PtsCollectionType[PtsCollectionType["BitVector"] = 1] = "BitVector";
-})(PtsCollectionType = exports.PtsCollectionType || (exports.PtsCollectionType = {}));
-;
+})(PtsCollectionType || (exports.PtsCollectionType = PtsCollectionType = {}));
 class DiffPTData {
     constructor(DSCreator) {
         this.DSCreator = DSCreator;
@@ -268,8 +267,9 @@ class DiffPTData {
         return this.propaPtsMap.get(v);
     }
     flush(v) {
-        if (!this.diffPtsMap.has(v))
+        if (!this.diffPtsMap.has(v)) {
             return;
+        }
         let diff = this.diffPtsMap.get(v);
         let propa = this.getPropaPtsMut(v);
         // do not clear origin propa, only copy the pt and add it to diff
@@ -278,21 +278,25 @@ class DiffPTData {
     }
     clearPts(v) {
         let diff = this.diffPtsMap.get(v);
-        if (diff)
+        if (diff) {
             diff.clear();
+        }
         let propa = this.propaPtsMap.get(v);
-        if (propa)
+        if (propa) {
             propa.clear();
+        }
     }
     clearDiffPts(v) {
         let diff = this.diffPtsMap.get(v);
-        if (diff)
+        if (diff) {
             diff.clear();
+        }
     }
     clearPropaPts(v) {
         let propa = this.propaPtsMap.get(v);
-        if (propa)
+        if (propa) {
             propa.clear();
+        }
     }
     calculateDiff(src, dst) {
         let srcDiff = this.diffPtsMap.get(src);

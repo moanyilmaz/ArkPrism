@@ -32,6 +32,7 @@ export declare class AbstractFlowGraph {
     private structuralAnalysis;
     private dfsPostOrder;
     private buildCyclicStructural;
+    private handleRegion;
     private prepareBuildLoops;
     private buildDominator;
     private getBackEdges;

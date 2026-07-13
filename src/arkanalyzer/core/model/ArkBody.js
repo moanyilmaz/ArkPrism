@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -15,6 +15,7 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArkBody = void 0;
+const ArkSignature_1 = require("./ArkSignature");
 class ArkBody {
     constructor(locals, cfg, aliasTypeMap, traps) {
         this.cfg = cfg;
@@ -60,6 +61,15 @@ class ArkBody {
     }
     getTraps() {
         return this.traps;
+    }
+    getExportLocalByName(name) {
+        var _a;
+        const local = (_a = this.locals) === null || _a === void 0 ? void 0 : _a.get(name);
+        if (local) {
+            local.setSignature(new ArkSignature_1.LocalSignature(name, this.cfg.getDeclaringMethod().getSignature()));
+            return local;
+        }
+        return null;
     }
 }
 exports.ArkBody = ArkBody;

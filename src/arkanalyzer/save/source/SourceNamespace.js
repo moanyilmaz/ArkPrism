@@ -32,16 +32,25 @@ class SourceNamespace extends SourceBase_1.SourceBase {
     getLine() {
         return this.ns.getLine();
     }
+    printDefaultClassInNamespace(items, cls) {
+        for (let method of cls.getMethods()) {
+            if (method.isDefaultArkMethod()) {
+                items.push(...new SourceMethod_1.SourceMethod(method, this.printer.getIndent()).dumpDefaultMethod());
+            }
+            else if (!PrinterUtils_1.PrinterUtils.isAnonymousMethod(method.getName())) {
+                items.push(new SourceMethod_1.SourceMethod(method, this.printer.getIndent()));
+            }
+        }
+    }
     dump() {
         const commentsMetadata = this.ns.getMetadata(ArkMetadata_1.ArkMetadataKind.LEADING_COMMENTS);
         if (commentsMetadata instanceof ArkMetadata_1.CommentsMetadata) {
             const comments = commentsMetadata.getComments();
-            comments.forEach((comment) => {
+            comments.forEach(comment => {
                 this.printer.writeIndent().writeLine(comment.content);
             });
         }
-        this.printer.writeIndent().writeSpace(this.modifiersToString(this.ns.getModifiers()))
-            .writeLine(`namespace ${this.ns.getName()} {`);
+        this.printer.writeIndent().writeSpace(this.modifiersToString(this.ns.getModifiers())).writeLine(`namespace ${this.ns.getName()} {`);
         this.printer.incIndent();
         let items = [];
         // print class
@@ -50,14 +59,7 @@ class SourceNamespace extends SourceBase_1.SourceBase {
                 continue;
             }
             if (cls.isDefaultArkClass()) {
-                for (let method of cls.getMethods()) {
-                    if (method.isDefaultArkMethod()) {
-                        items.push(...new SourceMethod_1.SourceMethod(method, this.printer.getIndent()).dumpDefaultMethod());
-                    }
-                    else if (!PrinterUtils_1.PrinterUtils.isAnonymousMethod(method.getName())) {
-                        items.push(new SourceMethod_1.SourceMethod(method, this.printer.getIndent()));
-                    }
-                }
+                this.printDefaultClassInNamespace(items, cls);
             }
             else {
                 items.push(new SourceClass_1.SourceClass(cls, this.printer.getIndent()));

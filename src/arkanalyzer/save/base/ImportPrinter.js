@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.printImports = exports.ImportPrinter = void 0;
+exports.ImportPrinter = void 0;
+exports.printImports = printImports;
 const ArkMetadata_1 = require("../../core/model/ArkMetadata");
 const BasePrinter_1 = require("./BasePrinter");
 class ImportPrinter extends BasePrinter_1.BasePrinter {
@@ -52,9 +53,7 @@ class ImportPrinter extends BasePrinter_1.BasePrinter {
             }
             else if (info.getImportType() === 'EqualsImport') {
                 // sample: import mmmm = require('./xxx')
-                this.printer
-                    .writeIndent()
-                    .writeLine(`import ${info.getImportClauseName()} =  require('${info.getFrom()}');`);
+                this.printer.writeIndent().writeLine(`import ${info.getImportClauseName()} =  require('${info.getFrom()}');`);
             }
             else {
                 // sample: import '../xxx'
@@ -64,9 +63,7 @@ class ImportPrinter extends BasePrinter_1.BasePrinter {
         if (namedImports.length > 0) {
             clauseNames.push(`{${namedImports.join(', ')}}`);
         }
-        this.printer
-            .writeIndent()
-            .writeLine(`import ${clauseNames.join(', ')} from '${this.infos[0].getFrom()}';`);
+        this.printer.writeIndent().writeLine(`import ${clauseNames.join(', ')} from '${this.infos[0].getFrom()}';`);
         return this.printer.toString();
     }
 }
@@ -89,4 +86,3 @@ function printImports(imports, indent) {
     }
     return items;
 }
-exports.printImports = printImports;

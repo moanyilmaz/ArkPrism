@@ -18,7 +18,7 @@ import {
     Scene, ArkMethod, CallGraph, ArkIfStmt,
     ArkInvokeStmt, ArkAssignStmt, BasicBlock,
     getCallbackMethodFromStmt, Stmt,
-    ClassHierarchyAnalysis, DominanceFinder, DominanceTree,
+    ClassHierarchyAnalysis, CallGraphBuilder, DominanceFinder, DominanceTree,
     CallGraphNode
 } from './arkanalyzer';
 import {
@@ -536,7 +536,8 @@ function buildEnhancedReverseCallMap(scene: Scene, callGraph: CallGraph): Map<st
     // ---- Source 2: CHA virtual call resolution ----
     let chaEdgeCount = 0;
     try {
-        let cha = new ClassHierarchyAnalysis(scene, callGraph);
+        let cgBuilder = new CallGraphBuilder(callGraph, scene);
+        let cha = new ClassHierarchyAnalysis(scene, callGraph, cgBuilder);
         for (const method of scene.getMethods()) {
             let callerSig = method.getSignature().toString();
             ensureKey(callerSig);

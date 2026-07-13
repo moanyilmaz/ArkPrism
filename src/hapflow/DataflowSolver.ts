@@ -65,6 +65,7 @@ export abstract class DataflowSolver<D extends object> {
     protected stmtNexts: Map<Stmt, Set<Stmt>>;
     protected laterEdges: Set<PathEdge<D>> = new Set();
     protected pointerAnalysis: PointerAnalysis | undefined;
+    private externalCG?: ClassHierarchyAnalysis | RapidTypeAnalysis;
 
     // O(1) edge key set for fast duplicate detection
     private edgeKeys: Set<string> = new Set();
@@ -77,11 +78,12 @@ export abstract class DataflowSolver<D extends object> {
     protected edgesProcessed: number = 0;
     protected budgetExceeded: boolean = false;
 
-    constructor(problem: DataflowProblem<D>, scene: Scene, pta?: PointerAnalysis, entryFact?: D) {
+    constructor(problem: DataflowProblem<D>, scene: Scene, pta?: PointerAnalysis, entryFact?: D, externalCG?: ClassHierarchyAnalysis | RapidTypeAnalysis) {
         this.problem = problem;
         this.scene = scene;
         this.pointerAnalysis = pta;
         this.entryFact = entryFact;
+        this.externalCG = externalCG;
         this.zeroFact = problem.createZeroValue();
         this.workList = new Array<PathEdge<D>>();
         this.pathEdgeSet = new Set<PathEdge<D>>();
@@ -141,13 +143,18 @@ export abstract class DataflowSolver<D extends object> {
         this.workList.push(edge);
         this.pathEdgeSet.add(edge);
 
-        // build CG using CallGraphBuilder + CHA
-        let callGraph = new CallGraph(this.scene);
-        let cgBuilder = new CallGraphBuilder(callGraph, this.scene);
-        cgBuilder.buildDirectCallGraphForScene();
-        cgBuilder.setEntries();
-        this.CG = new ClassHierarchyAnalysis(this.scene, callGraph);
-        this.CG.start(true);
+        // Use externally provided CG (e.g., lifecycle-enhanced CG) if available,
+        // otherwise build a fresh CHA CG from scratch.
+        if (this.externalCG) {
+            this.CG = this.externalCG;
+            console.log('[HAPFLOW] Using externally provided CallGraph.');
+        } else {
+            let callGraph = new CallGraph(this.scene);
+            let cgBuilder = new CallGraphBuilder(callGraph, this.scene);
+            cgBuilder.buildDirectCallGraphForScene();
+            this.CG = new ClassHierarchyAnalysis(this.scene, callGraph, cgBuilder);
+            this.CG.start(true);
+        }
 
         this.buildStmtMapInClass();
         this.setCfg4AllStmt();
@@ -173,7 +180,10 @@ export abstract class DataflowSolver<D extends object> {
         const exceptionalSuccessorBlocks = block.getExceptionalSuccessorBlocks();
         if (exceptionalSuccessorBlocks && exceptionalSuccessorBlocks.length > 0) {
             for (const successor of exceptionalSuccessorBlocks) {
-                set.add(successor.getStmts()[0]);
+                const stmts = successor.getStmts();
+                if (stmts.length > 0) {
+                    set.add(stmts[0]);
+                }
             }
         }
         this.stmtNexts.set(stmt, set);
@@ -243,22 +253,20 @@ export abstract class DataflowSolver<D extends object> {
             if (this.scene.getFile(invokeMethodFileSignature) && !this.scene.hasSdkFile(invokeMethodFileSignature)) {
                 callees = this.getAllCalleeMethodsFromCG(invokeStmt, paramFuncs);
             } else {
-                // For SDK calls, include any found paramFuncs or callbacks
-                if (paramFuncs.length > 0) {
-                    for (const pf of paramFuncs) {
-                        callees.add(pf);
-                    }
-                }
+                callees = new Set(paramFuncs);
             }
         }
         return callees;
     }
 
     protected getAllCalleeMethodsFromCG(callNode: ArkInvokeStmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
-        const callSite = this.CG.getCallGraph().getCallSiteByStmt(callNode);
+        const entryNodeID = this.CG.getCallGraph().getCallGraphNodeByMethod(this.problem.getEntryMethod().getSignature()).getID();
+        const callSites = this.CG.resolveCall(entryNodeID, callNode);
         let methods: Set<ArkMethod> = new Set();
-        if (callSite) {
-            const method = this.scene.getMethod(this.CG.getCallGraph().getMethodByFuncID(callSite.calleeFuncID)!);
+        for (const callSite of callSites) {
+            const methodSig = this.CG.getCallGraph().getMethodByFuncID(callSite.calleeFuncID);
+            if (!methodSig) continue;
+            const method = this.scene.getMethod(methodSig);
             if (method && !paramFuncs.includes(method)) {
                 methods.add(method);
             }
@@ -275,9 +283,13 @@ export abstract class DataflowSolver<D extends object> {
             const calleeCallsites: Set<any> = new Set();
             method.getCfg()?.getStmts().forEach((stmt: Stmt) => {
                 if (stmt.containsInvokeExpr()) {
-                    let cs = this.CG.getCallGraph().getCallSiteByStmt(stmt);
-                    if (cs) {
-                        calleeCallsites.add(cs);
+                    const csResult = this.CG.getCallGraph().getCallSiteByStmt(stmt);
+                    if (Array.isArray(csResult)) {
+                        for (const cs of csResult) {
+                            calleeCallsites.add(cs);
+                        }
+                    } else if (csResult) {
+                        calleeCallsites.add(csResult);
                     }
                 }
             });
@@ -302,7 +314,12 @@ export abstract class DataflowSolver<D extends object> {
     }
 
     protected getReturnSiteOfCall(call: Stmt): Stmt {
-        return [...this.stmtNexts.get(call)!][0];
+        const nexts = this.stmtNexts.get(call);
+        if (!nexts || nexts.size === 0) {
+            // Fallback: return the call itself if no successor is recorded
+            return call;
+        }
+        return [...nexts][0];
     }
 
     protected getStartStmt(call: Stmt): Stmt {
@@ -319,11 +336,13 @@ export abstract class DataflowSolver<D extends object> {
      * Generate a unique key for an edge for O(1) duplicate detection.
      */
     protected edgeKey(edge: PathEdge<D>): string {
+        const startMethod = edge.edgeStart.node?.getCfg()?.getDeclaringMethod()?.getSignature()?.toString() || '';
+        const endMethod = edge.edgeEnd.node?.getCfg()?.getDeclaringMethod()?.getSignature()?.toString() || '';
         const startNode = edge.edgeStart.node?.toString() || '';
         const endNode = edge.edgeEnd.node?.toString() || '';
         const startFact = edge.edgeStart.fact ? (edge.edgeStart.fact as any).getValue?.()?.toString() || '' : '';
         const endFact = edge.edgeEnd.fact ? (edge.edgeEnd.fact as any).getValue?.()?.toString() || '' : '';
-        return `${startNode}|${startFact}|${endNode}|${endFact}`;
+        return `${startMethod}::${startNode}|${startFact}|${endMethod}::${endNode}|${endFact}`;
     }
 
     protected propagate(edge: PathEdge<D>) {
@@ -371,7 +390,8 @@ export abstract class DataflowSolver<D extends object> {
         let startEdgePoint = edge.edgeStart;
         let callEdgePoints = this.inComing.get(startEdgePoint);
         if (callEdgePoints == undefined) {
-            if (startEdgePoint.node.getCfg()!.getDeclaringMethod() == this.problem.getEntryMethod()) {
+            const cfg = startEdgePoint.node.getCfg();
+            if (cfg && cfg.getDeclaringMethod() == this.problem.getEntryMethod()) {
                 return new Set();
             }
             throw new Error('incoming does not have ' + startEdgePoint.node.getCfg()?.getDeclaringMethod().toString());

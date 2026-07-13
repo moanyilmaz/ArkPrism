@@ -21,5 +21,6 @@ export declare class ArkBody {
     getAliasTypeMap(): Map<string, [AliasType, ArkAliasTypeDefineStmt]> | undefined;
     getAliasTypeByName(name: string): AliasType | null;
     getTraps(): Trap[] | undefined;
+    getExportLocalByName(name: string): Local | null;
 }
 //# sourceMappingURL=ArkBody.d.ts.map

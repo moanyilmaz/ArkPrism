@@ -29,19 +29,28 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ClosureFieldRef = exports.GlobalRef = exports.ArkCaughtExceptionRef = exports.ArkThisRef = exports.ArkParameterRef = exports.ArkStaticFieldRef = exports.ArkInstanceFieldRef = exports.AbstractFieldRef = exports.ArkArrayRef = exports.AbstractRef = void 0;
 const logger_1 = __importStar(require("../../utils/logger"));
 const Type_1 = require("./Type");
 const TypeInference_1 = require("../common/TypeInference");
-const Const_1 = require("../common/Const");
 const Stmt_1 = require("./Stmt");
 const IRInference_1 = require("../common/IRInference");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'Ref');
@@ -243,19 +252,7 @@ class ArkParameterRef extends AbstractRef {
         this.paramType = newType;
     }
     inferType(arkMethod) {
-        var _a;
-        if (this.paramType instanceof Type_1.UnknownType || this.paramType instanceof Type_1.UnclearReferenceType) {
-            const type1 = (_a = arkMethod.getSignature().getMethodSubSignature().getParameters()[this.index]) === null || _a === void 0 ? void 0 : _a.getType();
-            if (!TypeInference_1.TypeInference.isUnclearType(type1)) {
-                this.paramType = type1;
-                return this;
-            }
-        }
-        let type = TypeInference_1.TypeInference.inferUnclearedType(this.paramType, arkMethod.getDeclaringArkClass());
-        if (type) {
-            this.paramType = type;
-        }
-        return this;
+        return IRInference_1.IRInference.inferParameterRef(this, arkMethod);
     }
     getUses() {
         return [];
@@ -269,16 +266,6 @@ class ArkThisRef extends AbstractRef {
     constructor(type) {
         super();
         this.type = type;
-    }
-    inferType(arkMethod) {
-        const classSignature = this.type.getClassSignature();
-        if (classSignature.getClassName().startsWith(Const_1.ANONYMOUS_CLASS_PREFIX)) {
-            let type = TypeInference_1.TypeInference.inferBaseType(classSignature.getDeclaringClassName(), arkMethod.getDeclaringArkClass());
-            if (type instanceof Type_1.ClassType) {
-                this.type = type;
-            }
-        }
-        return this;
     }
     getType() {
         return this.type;
@@ -368,6 +355,21 @@ class ClosureFieldRef extends AbstractRef {
     }
     toString() {
         return this.base.toString() + '.' + this.getFieldName();
+    }
+    inferType(arkMethod) {
+        var _a;
+        if (TypeInference_1.TypeInference.isUnclearType(this.type)) {
+            let type = this.base.getType();
+            if (type instanceof Type_1.LexicalEnvType) {
+                type = (_a = type
+                    .getClosures()
+                    .find(c => c.getName() === this.fieldName)) === null || _a === void 0 ? void 0 : _a.getType();
+            }
+            if (type && !TypeInference_1.TypeInference.isUnclearType(type)) {
+                this.type = type;
+            }
+        }
+        return this;
     }
 }
 exports.ClosureFieldRef = ClosureFieldRef;

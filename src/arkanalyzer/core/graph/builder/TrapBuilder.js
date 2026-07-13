@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TrapBuilder = void 0;
 const BasicBlock_1 = require("../BasicBlock");
@@ -50,63 +60,189 @@ const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 
  * Builder for traps from try...catch
  */
 class TrapBuilder {
-    buildTraps(blockBuilderToCfgBlock, blockBuildersBeforeTry, arkIRTransformer, basicBlockSet) {
-        var _a, _b, _c;
+    constructor(blockBuildersBeforeTry, blockBuilderToCfgBlock, arkIRTransformer, basicBlockSet) {
+        this.blockBuildersBeforeTry = blockBuildersBeforeTry;
+        this.processedBlockBuildersBeforeTry = new Set();
+        this.arkIRTransformer = arkIRTransformer;
+        this.basicBlockSet = basicBlockSet;
+        this.blockBuilderToCfgBlock = blockBuilderToCfgBlock;
+    }
+    buildTraps() {
         const traps = [];
+        const blockBuildersBeforeTry = Array.from(this.blockBuildersBeforeTry);
         for (const blockBuilderBeforeTry of blockBuildersBeforeTry) {
-            if (blockBuilderBeforeTry.nexts.length === 0) {
-                logger.error(`can't find try block.`);
-                continue;
-            }
-            const blockBuilderContainTry = blockBuilderBeforeTry.nexts[0];
-            const stmtsCnt = blockBuilderBeforeTry.stmts.length;
-            const tryStmtBuilder = blockBuilderBeforeTry.stmts[stmtsCnt - 1];
-            const finallyBlockBuilder = (_a = tryStmtBuilder.finallyStatement) === null || _a === void 0 ? void 0 : _a.block;
-            if (!finallyBlockBuilder) {
-                logger.error(`can't find finally block or dummy finally block.`);
-                continue;
-            }
-            const { bfsBlocks: tryBfsBlocks, tailBlocks: tryTailBlocks } = this.getAllBlocksBFS(blockBuilderToCfgBlock, blockBuilderContainTry, finallyBlockBuilder);
-            let catchBfsBlocks = [];
-            let catchTailBlocks = [];
-            const catchBlockBuilder = (_b = tryStmtBuilder.catchStatement) === null || _b === void 0 ? void 0 : _b.block;
-            if (catchBlockBuilder) {
-                ({ bfsBlocks: catchBfsBlocks, tailBlocks: catchTailBlocks } = this.getAllBlocksBFS(blockBuilderToCfgBlock, catchBlockBuilder));
-            }
-            const finallyStmts = finallyBlockBuilder.stmts;
-            const blockBuilderAfterFinally = (_c = tryStmtBuilder.afterFinal) === null || _c === void 0 ? void 0 : _c.block;
-            if (!blockBuilderAfterFinally) {
-                logger.error(`can't find block after try...catch.`);
-                continue;
-            }
-            if (finallyStmts.length === 1 && finallyStmts[0].code === 'dummyFinally') { // no finally block
-                const trapsIfNoFinally = this.buildTrapsIfNoFinally(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally, basicBlockSet, blockBuilderToCfgBlock);
-                if (trapsIfNoFinally) {
-                    traps.push(...trapsIfNoFinally);
-                }
-            }
-            else {
-                const trapsIfFinallyExist = this.buildTrapsIfFinallyExist(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally, basicBlockSet, arkIRTransformer, blockBuilderToCfgBlock);
-                traps.push(...trapsIfFinallyExist);
-            }
+            traps.push(...this.buildTrapGroup(blockBuilderBeforeTry).traps);
         }
         return traps;
     }
-    buildTrapsIfNoFinally(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally, basicBlockSet, blockBuilderToCfgBlock) {
+    buildTrapGroup(blockBuilderBeforeTry) {
+        if (this.shouldSkipProcessing(blockBuilderBeforeTry)) {
+            return { traps: [], headBlockBuilder: null };
+        }
+        const tryStmtBuilder = this.getTryStatementBuilder(blockBuilderBeforeTry);
+        if (!tryStmtBuilder) {
+            return { traps: [], headBlockBuilder: null };
+        }
+        const finallyBlockBuilder = this.getFinallyBlock(tryStmtBuilder);
+        if (!finallyBlockBuilder) {
+            return { traps: [], headBlockBuilder: null };
+        }
+        const headBlockBuilderWithinTry = this.prepareHeadBlock(blockBuilderBeforeTry);
+        const traps = [];
+        const tryResult = this.processTryBlock(headBlockBuilderWithinTry, finallyBlockBuilder);
+        traps.push(...tryResult.traps);
+        const updatedHeadBlock = tryResult.newStartBlockBuilder;
+        const catchResult = this.processCatchBlock(tryStmtBuilder);
+        traps.push(...catchResult.traps);
+        const blockBuilderAfterFinally = this.getAfterFinallyBlock(tryStmtBuilder);
+        if (!blockBuilderAfterFinally) {
+            return { traps: [], headBlockBuilder: null };
+        }
+        const singleTraps = this.buildSingleTraps(tryResult.bfsBlocks, tryResult.tailBlocks, catchResult.bfsBlocks, catchResult.tailBlocks, finallyBlockBuilder, blockBuilderAfterFinally);
+        traps.push(...singleTraps);
+        return { traps, headBlockBuilder: updatedHeadBlock };
+    }
+    shouldSkipProcessing(blockBuilderBeforeTry) {
+        if (this.processedBlockBuildersBeforeTry.has(blockBuilderBeforeTry)) {
+            return true;
+        }
+        this.processedBlockBuildersBeforeTry.add(blockBuilderBeforeTry);
+        if (blockBuilderBeforeTry.nexts.length === 0) {
+            logger.error(`can't find try block.`);
+            return true;
+        }
+        return false;
+    }
+    getTryStatementBuilder(blockBuilderBeforeTry) {
+        const stmtsCnt = blockBuilderBeforeTry.stmts.length;
+        const tryStmtBuilder = blockBuilderBeforeTry.stmts[stmtsCnt - 1];
+        return tryStmtBuilder;
+    }
+    getFinallyBlock(tryStmtBuilder) {
+        var _a;
+        const finallyBlockBuilder = (_a = tryStmtBuilder.finallyStatement) === null || _a === void 0 ? void 0 : _a.block;
+        if (!finallyBlockBuilder) {
+            logger.error(`can't find finally block or dummy finally block.`);
+            return null;
+        }
+        return finallyBlockBuilder;
+    }
+    prepareHeadBlock(blockBuilderBeforeTry) {
+        const headBlockBuilderWithinTry = blockBuilderBeforeTry.nexts[0];
+        this.removeEmptyBlockBeforeTry(blockBuilderBeforeTry);
+        return headBlockBuilderWithinTry;
+    }
+    processTryBlock(headBlockBuilderWithinTry, finallyBlockBuilder) {
+        const result = this.buildTrapsRecursively(headBlockBuilderWithinTry, finallyBlockBuilder);
+        const { bfsBlocks, tailBlocks } = this.getAllBlocksBFS(result.newStartBlockBuilder, finallyBlockBuilder);
+        return {
+            traps: result.traps,
+            newStartBlockBuilder: result.newStartBlockBuilder,
+            bfsBlocks,
+            tailBlocks
+        };
+    }
+    processCatchBlock(tryStmtBuilder) {
+        var _a;
+        const catchBlockBuilder = (_a = tryStmtBuilder.catchStatement) === null || _a === void 0 ? void 0 : _a.block;
+        if (!catchBlockBuilder) {
+            return { traps: [], bfsBlocks: [], tailBlocks: [] };
+        }
+        const result = this.buildTrapsRecursively(catchBlockBuilder);
+        const { bfsBlocks, tailBlocks } = this.getAllBlocksBFS(result.newStartBlockBuilder);
+        return {
+            traps: result.traps,
+            bfsBlocks,
+            tailBlocks
+        };
+    }
+    getAfterFinallyBlock(tryStmtBuilder) {
+        var _a;
+        const blockBuilderAfterFinally = (_a = tryStmtBuilder.afterFinal) === null || _a === void 0 ? void 0 : _a.block;
+        if (!blockBuilderAfterFinally) {
+            logger.error(`can't find block after try...catch.`);
+            return null;
+        }
+        return blockBuilderAfterFinally;
+    }
+    buildSingleTraps(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally) {
+        const finallyStmts = finallyBlockBuilder.stmts;
+        if (finallyStmts.length === 1 && finallyStmts[0].code === 'dummyFinally') {
+            return this.buildTrapsIfNoFinally(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder);
+        }
+        else {
+            return this.buildTrapsIfFinallyExist(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally);
+        }
+    }
+    buildTrapsRecursively(startBlockBuilder, endBlockBuilder) {
+        const queue = [];
+        const visitedBlockBuilders = new Set();
+        queue.push(startBlockBuilder);
+        while (queue.length !== 0) {
+            const currBlockBuilder = queue.splice(0, 1)[0];
+            if (visitedBlockBuilders.has(currBlockBuilder)) {
+                continue;
+            }
+            visitedBlockBuilders.add(currBlockBuilder);
+            const childList = currBlockBuilder.nexts;
+            for (const child of childList) {
+                if (child !== endBlockBuilder) {
+                    queue.push(child);
+                }
+            }
+        }
+        const allTraps = [];
+        for (const blockBuilder of visitedBlockBuilders) {
+            if (this.blockBuildersBeforeTry.has(blockBuilder)) {
+                const { traps, headBlockBuilder } = this.buildTrapGroup(blockBuilder);
+                allTraps.push(...traps);
+                if (blockBuilder === startBlockBuilder && this.shouldRemoveEmptyBlockBeforeTry(blockBuilder)) {
+                    startBlockBuilder = headBlockBuilder;
+                }
+            }
+        }
+        return { traps: allTraps, newStartBlockBuilder: startBlockBuilder };
+    }
+    removeEmptyBlockBeforeTry(blockBuilderBeforeTry) {
+        if (!this.shouldRemoveEmptyBlockBeforeTry(blockBuilderBeforeTry)) {
+            return;
+        }
+        const headBlockBuilderWithinTry = blockBuilderBeforeTry.nexts[0];
+        const headBlockWithinTry = this.blockBuilderToCfgBlock.get(headBlockBuilderWithinTry);
+        headBlockWithinTry.getPredecessors().splice(0, 1);
+        const prevsOfBlockBuilderBeforeTry = blockBuilderBeforeTry.lasts;
+        for (const prevBlockBuilder of prevsOfBlockBuilderBeforeTry) {
+            const prevBlock = this.blockBuilderToCfgBlock.get(prevBlockBuilder);
+            for (let j = 0; j < prevBlockBuilder.nexts.length; j++) {
+                if (prevBlockBuilder.nexts[j] === blockBuilderBeforeTry) {
+                    prevBlockBuilder.nexts[j] = headBlockBuilderWithinTry;
+                    prevBlock.setSuccessorBlock(j, headBlockWithinTry);
+                    break;
+                }
+            }
+            headBlockWithinTry.addPredecessorBlock(prevBlock);
+        }
+        headBlockBuilderWithinTry.lasts.splice(0, 1, ...prevsOfBlockBuilderBeforeTry);
+        this.basicBlockSet.delete(this.blockBuilderToCfgBlock.get(blockBuilderBeforeTry));
+        this.blockBuilderToCfgBlock.delete(blockBuilderBeforeTry);
+    }
+    shouldRemoveEmptyBlockBeforeTry(blockBuilderBeforeTry) {
+        const stmtsCnt = blockBuilderBeforeTry.stmts.length;
+        // This BlockBuilder contains only one redundant TryStatementBuilder, so the BlockBuilder can be deleted.
+        return stmtsCnt === 1;
+    }
+    buildTrapsIfNoFinally(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder) {
         if (catchBfsBlocks.length === 0) {
             logger.error(`catch block expected.`);
-            return null;
+            return [];
         }
-        if (!blockBuilderToCfgBlock.has(blockBuilderAfterFinally)) {
+        const blockBuilderAfterFinally = finallyBlockBuilder.nexts[0];
+        let blockAfterFinally = this.blockBuilderToCfgBlock.get(blockBuilderAfterFinally);
+        if (!this.blockBuilderToCfgBlock.has(finallyBlockBuilder)) {
             logger.error(`can't find basicBlock corresponding to the blockBuilder.`);
-            return null;
+            return [];
         }
-        let blockAfterFinally = blockBuilderToCfgBlock.get(blockBuilderAfterFinally);
-        if (!blockBuilderToCfgBlock.has(finallyBlockBuilder)) {
-            logger.error(`can't find basicBlock corresponding to the blockBuilder.`);
-            return null;
-        }
-        const finallyBlock = blockBuilderToCfgBlock.get(finallyBlockBuilder);
+        const finallyBlock = this.blockBuilderToCfgBlock.get(finallyBlockBuilder);
         let dummyFinallyIdxInPredecessors = -1;
         for (let i = 0; i < blockAfterFinally.getPredecessors().length; i++) {
             if (blockAfterFinally.getPredecessors()[i] === finallyBlock) {
@@ -115,14 +251,15 @@ class TrapBuilder {
             }
         }
         if (dummyFinallyIdxInPredecessors === -1) {
-            return null;
+            logger.error(`Dummy finally block isn't a predecessor of block after finally block.`);
+            return [];
         }
         blockAfterFinally.getPredecessors().splice(dummyFinallyIdxInPredecessors, 1);
         for (const tryTailBlock of tryTailBlocks) {
             tryTailBlock.setSuccessorBlock(0, blockAfterFinally);
             blockAfterFinally.addPredecessorBlock(tryTailBlock);
         }
-        basicBlockSet.delete(finallyBlock);
+        this.basicBlockSet.delete(finallyBlock);
         for (const catchTailBlock of catchTailBlocks) {
             catchTailBlock.addSuccessorBlock(blockAfterFinally);
             blockAfterFinally.addPredecessorBlock(catchTailBlock);
@@ -132,10 +269,14 @@ class TrapBuilder {
         }
         return [new Trap_1.Trap(tryBfsBlocks, catchBfsBlocks)];
     }
-    buildTrapsIfFinallyExist(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally, basicBlockSet, arkIRTransformer, blockBuilderToCfgBlock) {
-        const { bfsBlocks: finallyBfsBlocks, tailBlocks: finallyTailBlocks } = this.getAllBlocksBFS(blockBuilderToCfgBlock, finallyBlockBuilder, blockBuilderAfterFinally);
-        const copyFinallyBfsBlocks = this.copyFinallyBlocks(finallyBfsBlocks, finallyTailBlocks, basicBlockSet, arkIRTransformer, blockBuilderToCfgBlock);
+    buildTrapsIfFinallyExist(tryBfsBlocks, tryTailBlocks, catchBfsBlocks, catchTailBlocks, finallyBlockBuilder, blockBuilderAfterFinally) {
         const traps = [];
+        const { traps: trapsInFinally, newStartBlockBuilder: newStartBlockBuilder, } = this.buildTrapsRecursively(finallyBlockBuilder, blockBuilderAfterFinally);
+        traps.push(...trapsInFinally);
+        // May update head blockBuilder with catch statement.
+        finallyBlockBuilder = newStartBlockBuilder;
+        const { bfsBlocks: finallyBfsBlocks, tailBlocks: finallyTailBlocks } = this.getAllBlocksBFS(finallyBlockBuilder, blockBuilderAfterFinally);
+        const copyFinallyBfsBlocks = this.copyFinallyBlocks(finallyBfsBlocks, finallyTailBlocks);
         if (catchBfsBlocks.length !== 0) {
             for (const catchTailBlock of catchTailBlocks) {
                 catchTailBlock.addSuccessorBlock(finallyBfsBlocks[0]);
@@ -161,65 +302,61 @@ class TrapBuilder {
         }
         return traps;
     }
-    getAllBlocksBFS(blockBuilderToCfgBlock, startBlockBuilder, endBlockBuilder) {
+    getAllBlocksBFS(startBlockBuilder, endBlockBuilder) {
         const bfsBlocks = [];
         const tailBlocks = [];
+        const startBlock = this.blockBuilderToCfgBlock.get(startBlockBuilder);
+        const endBlock = endBlockBuilder ? this.blockBuilderToCfgBlock.get(endBlockBuilder) : undefined;
         const queue = [];
-        const visitedBlockBuilders = new Set();
-        queue.push(startBlockBuilder);
+        const visitedBlocks = new Set();
+        queue.push(startBlock);
         while (queue.length !== 0) {
-            const currBlockBuilder = queue.splice(0, 1)[0];
-            if (visitedBlockBuilders.has(currBlockBuilder)) {
+            const currBlock = queue.splice(0, 1)[0];
+            if (visitedBlocks.has(currBlock)) {
                 continue;
             }
-            visitedBlockBuilders.add(currBlockBuilder);
-            if (!blockBuilderToCfgBlock.has(currBlockBuilder)) {
-                logger.error(`can't find basicBlock corresponding to the blockBuilder.`);
-                continue;
-            }
-            const currBlock = blockBuilderToCfgBlock.get(currBlockBuilder);
+            visitedBlocks.add(currBlock);
             bfsBlocks.push(currBlock);
-            const childList = currBlockBuilder.nexts;
-            if (childList.length === 0 || (childList.length !== 0 && (childList[0] === endBlockBuilder))) {
-                if (childList[0] === endBlockBuilder) {
-                    tailBlocks.push(currBlock);
-                    continue;
+            const successors = currBlock.getSuccessors();
+            if (successors.length !== 0) {
+                for (const successor of successors) {
+                    if (successor === endBlock) {
+                        tailBlocks.push(currBlock);
+                    }
+                    else {
+                        // A tail block's successor may be within the traversal range
+                        queue.push(successor);
+                    }
                 }
             }
-            if (childList.length !== 0) {
-                for (const child of childList) {
-                    queue.push(child);
-                }
+            else {
+                tailBlocks.push(currBlock);
             }
         }
         return { bfsBlocks, tailBlocks };
     }
-    copyFinallyBlocks(finallyBfsBlocks, finallyTailBlocks, basicBlockSet, arkIRTransformer, blockBuilderToCfgBlock) {
-        var _a;
+    copyFinallyBlocks(finallyBfsBlocks, finallyTailBlocks) {
         const copyFinallyBfsBlocks = this.copyBlocks(finallyBfsBlocks);
         const caughtExceptionRef = new Ref_1.ArkCaughtExceptionRef(Type_1.UnknownType.getInstance());
-        const { value: exceptionValue, stmts: exceptionAssignStmts, } = arkIRTransformer.generateAssignStmtForValue(caughtExceptionRef, [Position_1.FullPosition.DEFAULT]);
+        const { value: exceptionValue, stmts: exceptionAssignStmts, } = this.arkIRTransformer.generateAssignStmtForValue(caughtExceptionRef, [Position_1.FullPosition.DEFAULT]);
         copyFinallyBfsBlocks[0].addHead(exceptionAssignStmts);
         const finallyPredecessorsCnt = copyFinallyBfsBlocks[0].getPredecessors().length;
         copyFinallyBfsBlocks[0].getPredecessors().splice(0, finallyPredecessorsCnt);
         const throwStmt = new Stmt_1.ArkThrowStmt(exceptionValue);
         let copyFinallyTailBlocks = copyFinallyBfsBlocks.splice(copyFinallyBfsBlocks.length - finallyTailBlocks.length, finallyTailBlocks.length);
-        copyFinallyTailBlocks.forEach((copyFinallyTailBlock) => {
-            const successorsCnt = copyFinallyTailBlock.getSuccessors().length;
-            copyFinallyTailBlock.getSuccessors().splice(0, successorsCnt);
-        });
         if (copyFinallyTailBlocks.length > 1) {
             const newCopyFinallyTailBlock = new BasicBlock_1.BasicBlock();
             copyFinallyTailBlocks.forEach((copyFinallyTailBlock) => {
                 copyFinallyTailBlock.addSuccessorBlock(newCopyFinallyTailBlock);
                 newCopyFinallyTailBlock.addPredecessorBlock(copyFinallyTailBlock);
             });
+            copyFinallyBfsBlocks.push(...copyFinallyTailBlocks);
             copyFinallyTailBlocks = [newCopyFinallyTailBlock];
         }
-        (_a = copyFinallyTailBlocks[0]) === null || _a === void 0 ? void 0 : _a.addStmt(throwStmt);
+        copyFinallyTailBlocks[0].addStmt(throwStmt);
         copyFinallyBfsBlocks.push(...copyFinallyTailBlocks);
         copyFinallyBfsBlocks.forEach((copyFinallyBfsBlock) => {
-            basicBlockSet.add(copyFinallyBfsBlock);
+            this.basicBlockSet.add(copyFinallyBfsBlock);
         });
         return copyFinallyBfsBlocks;
     }
@@ -238,11 +375,17 @@ class TrapBuilder {
             const targetBlock = sourceToTarget.get(sourceBlock);
             for (const predecessor of sourceBlock.getPredecessors()) {
                 const targetPredecessor = sourceToTarget.get(predecessor);
-                targetBlock.addPredecessorBlock(targetPredecessor);
+                // Only include blocks within the copy range, so that predecessor and successor relationships to
+                // external blocks can be trimmed
+                if (targetPredecessor) {
+                    targetBlock.addPredecessorBlock(targetPredecessor);
+                }
             }
             for (const successor of sourceBlock.getSuccessors()) {
                 const targetSuccessor = sourceToTarget.get(successor);
-                targetBlock.addSuccessorBlock(targetSuccessor);
+                if (targetSuccessor) {
+                    targetBlock.addSuccessorBlock(targetSuccessor);
+                }
             }
         }
         return targetBlocks;

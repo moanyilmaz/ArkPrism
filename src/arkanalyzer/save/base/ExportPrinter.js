@@ -32,17 +32,14 @@ class ExportPrinter extends BasePrinter_1.BasePrinter {
         if (commentsMetadata instanceof ArkMetadata_1.CommentsMetadata) {
             this.printComments(commentsMetadata);
         }
-        if (!this.info.getFrom() && (this.info.isExport() ||
-            this.info.getExportClauseType() === ArkExport_1.ExportType.LOCAL ||
-            this.info.getExportClauseType() === ArkExport_1.ExportType.TYPE)) {
+        if (!this.info.getFrom() &&
+            (this.info.isExport() || this.info.getExportClauseType() === ArkExport_1.ExportType.LOCAL || this.info.getExportClauseType() === ArkExport_1.ExportType.TYPE)) {
             return this.printer.toString();
         }
         if (this.info.getExportClauseName() === '*') {
             // just like: export * as xx from './yy'
             if (this.info.getNameBeforeAs() && this.info.getNameBeforeAs() !== '*') {
-                this.printer
-                    .writeIndent()
-                    .write(`export ${this.info.getNameBeforeAs()} as ${this.info.getExportClauseName()}`);
+                this.printer.writeIndent().write(`export ${this.info.getNameBeforeAs()} as ${this.info.getExportClauseName()}`);
             }
             else {
                 this.printer.writeIndent().write(`export ${this.info.getExportClauseName()}`);

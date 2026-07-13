@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -106,7 +106,7 @@ class SCCDetection {
         this.setRep(v, v);
         this.setVisited(v);
         let node = this.getNode(v);
-        node.getOutgoingEdges().forEach((e) => {
+        node.getOutgoingEdges().forEach(e => {
             let w = e.getDstID();
             if (!this.isVisited(w)) {
                 this.visit(w);
@@ -124,7 +124,7 @@ class SCCDetection {
         if (this.getRep(v) === v) {
             this.setInSCC(v);
             while (this._S.length > 0) {
-                let w = this._S.at(this._S.length - 1);
+                let w = this._S[this._S.length - 1];
                 if (this._D.get(w) <= this._D.get(v)) {
                     break;
                 }

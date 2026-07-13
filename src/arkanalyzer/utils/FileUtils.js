@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,23 +29,35 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFileRecursively = exports.ModulePath = exports.FileUtils = void 0;
+exports.ModulePath = exports.FileUtils = void 0;
+exports.getFileRecursively = getFileRecursively;
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const logger_1 = __importStar(require("./logger"));
 const pathTransfer_1 = require("./pathTransfer");
 const EtsConst_1 = require("../core/common/EtsConst");
+const ArkFile_1 = require("../core/model/ArkFile");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'FileUtils');
 class FileUtils {
     static getIndexFileName(srcPath) {
@@ -60,8 +72,7 @@ class FileUtils {
         try {
             return fs_1.default.statSync(srcPath).isDirectory();
         }
-        catch (e) {
-        }
+        catch (e) { }
         return false;
     }
     static isAbsolutePath(path) {
@@ -73,37 +84,60 @@ class FileUtils {
             const moduleName = content.name;
             if (moduleName && moduleName.startsWith('@')) {
                 const modulePath = path_1.default.dirname(filePath);
-                moduleMap.set(moduleName, new ModulePath(modulePath, content.main ?
-                    path_1.default.resolve(modulePath, content.main) : ''));
+                moduleMap.set(moduleName, new ModulePath(modulePath, content.main ? path_1.default.resolve(modulePath, content.main) : ''));
             }
         });
         ohPkgContentMap.forEach((content, filePath) => {
-            if (content.dependencies) {
-                Object.entries(content.dependencies).forEach(([name, value]) => {
-                    if (!moduleMap.get(name)) {
-                        const modulePath = path_1.default.resolve(path_1.default.dirname(filePath), value.replace('file:', ''));
-                        const key = path_1.default.resolve(modulePath, EtsConst_1.OH_PACKAGE_JSON5);
-                        const target = ohPkgContentMap.get(key);
-                        if (target) {
-                            moduleMap.set(name, new ModulePath(modulePath, target.main ?
-                                path_1.default.resolve(modulePath, target.main) : ''));
-                        }
-                    }
-                });
+            if (!content.dependencies) {
+                return;
             }
+            Object.entries(content.dependencies).forEach(([name, value]) => {
+                if (moduleMap.get(name)) {
+                    return;
+                }
+                const dir = path_1.default.dirname(filePath);
+                let modulePath = path_1.default.resolve(dir, value.replace('file:', ''));
+                let main = '';
+                if (this.isDirectory(modulePath)) {
+                    const target = ohPkgContentMap.get(path_1.default.resolve(modulePath, EtsConst_1.OH_PACKAGE_JSON5));
+                    if (target === null || target === void 0 ? void 0 : target.main) {
+                        main = path_1.default.resolve(modulePath, target.main);
+                    }
+                }
+                else {
+                    modulePath = path_1.default.resolve(dir, 'oh_modules', name);
+                }
+                moduleMap.set(name, new ModulePath(modulePath, main));
+            });
         });
         return moduleMap;
+    }
+    static getFileLanguage(file, fileTags) {
+        if (fileTags && fileTags.has(file)) {
+            return fileTags.get(file);
+        }
+        const extension = path_1.default.extname(file).toLowerCase();
+        switch (extension) {
+            case '.ts':
+                return ArkFile_1.Language.TYPESCRIPT;
+            case '.ets':
+                return ArkFile_1.Language.ARKTS1_1;
+            case '.js':
+                return ArkFile_1.Language.JAVASCRIPT;
+            default:
+                return ArkFile_1.Language.UNKNOWN;
+        }
     }
 }
 exports.FileUtils = FileUtils;
 FileUtils.FILE_FILTER = {
     ignores: ['.git', '.preview', '.hvigor', '.idea', 'test', 'ohosTest'],
-    include: /(?<!\.d)\.(ets|ts|json5)$/
+    include: /(?<!\.d)\.(ets|ts|json5)$/,
 };
 class ModulePath {
     constructor(path, main) {
         this.path = (0, pathTransfer_1.transfer2UnixPath)(path);
-        this.main = (0, pathTransfer_1.transfer2UnixPath)(main);
+        this.main = main ? (0, pathTransfer_1.transfer2UnixPath)(main) : main;
     }
 }
 exports.ModulePath = ModulePath;
@@ -129,7 +163,7 @@ function getFileRecursively(srcDir, fileName, visited = new Set()) {
         }
         const tmpDir = path_1.default.resolve(srcDir, '../');
         res = getFileRecursively(tmpDir, fileName, visited);
+        return res;
     });
     return res;
 }
-exports.getFileRecursively = getFileRecursively;

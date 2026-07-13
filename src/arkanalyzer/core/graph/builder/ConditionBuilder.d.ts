@@ -1,9 +1,10 @@
 import { BasicBlock } from '../BasicBlock';
+import { BlockBuilder } from './CfgBuilder';
 /**
  * Builder for condition in CFG
  */
 export declare class ConditionBuilder {
-    rebuildBlocksContainConditionalOperator(basicBlockSet: Set<BasicBlock>, isArkUIBuilder: boolean): void;
+    rebuildBlocksContainConditionalOperator(blockBuilderToCfgBlock: Map<BlockBuilder, BasicBlock>, basicBlockSet: Set<BasicBlock>, isArkUIBuilder: boolean): void;
     private relinkPrevAndSuccOfBlockContainConditionalOperator;
     private generateBlocksContainConditionalOperatorGroup;
     private generateBlocksContainSingleConditionalOperator;

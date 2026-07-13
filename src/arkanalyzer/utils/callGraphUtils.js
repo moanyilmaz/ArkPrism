@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,15 +29,29 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.extractLastBracketContent = exports.printCallGraphDetails = exports.splitStringWithRegex = exports.isItemRegistered = exports.SceneManager = exports.MethodSignatureManager = void 0;
+exports.SceneManager = exports.MethodSignatureManager = void 0;
+exports.isItemRegistered = isItemRegistered;
+exports.splitStringWithRegex = splitStringWithRegex;
+exports.printCallGraphDetails = printCallGraphDetails;
+exports.extractLastBracketContent = extractLastBracketContent;
 const logger_1 = __importStar(require("./logger"));
 const ModelUtils_1 = require("../core/common/ModelUtils");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'callGraphUtils');
@@ -63,7 +77,7 @@ class MethodSignatureManager {
     }
     findInProcessedList(signature) {
         let result = this.processedList.find(item => item.toString() === signature.toString());
-        return typeof result !== "undefined";
+        return typeof result !== 'undefined';
     }
     addToWorkList(signature) {
         if (!isItemRegistered(signature, this.workList, (a, b) => a.toString() === b.toString())) {
@@ -92,32 +106,35 @@ class SceneManager {
     }
     getMethod(method) {
         let targetMethod = this._scene.getMethod(method);
-        if (targetMethod == null) {
-            // 支持SDK调用解析
-            let file = this._scene.getFile(method.getDeclaringClassSignature().getDeclaringFileSignature());
-            if (file) {
-                const methods = ModelUtils_1.ModelUtils.getAllMethodsInFile(file);
-                for (let methodUnderFile of methods) {
-                    if (method.toString() === methodUnderFile.getSignature().toString()) {
-                        return methodUnderFile;
-                    }
+        if (targetMethod != null) {
+            return targetMethod;
+        }
+        // 支持SDK调用解析
+        let file = this._scene.getFile(method.getDeclaringClassSignature().getDeclaringFileSignature());
+        if (file) {
+            const methods = ModelUtils_1.ModelUtils.getAllMethodsInFile(file);
+            for (let methodUnderFile of methods) {
+                if (method.toString() === methodUnderFile.getSignature().toString()) {
+                    return methodUnderFile;
                 }
             }
         }
         return targetMethod;
     }
     getClass(arkClass) {
-        if (typeof arkClass.getClassName() === "undefined")
+        if (typeof arkClass.getClassName() === 'undefined') {
             return null;
+        }
         let classInstance = this._scene.getClass(arkClass);
-        if (classInstance == null) {
-            let sdkOrTargetProjectFile = this._scene.getFile(arkClass.getDeclaringFileSignature());
-            // TODO: support get sdk class, targetProject class waiting to be supported
-            if (sdkOrTargetProjectFile != null) {
-                for (let classUnderFile of ModelUtils_1.ModelUtils.getAllClassesInFile(sdkOrTargetProjectFile)) {
-                    if (classUnderFile.getSignature().toString() === arkClass.toString()) {
-                        return classUnderFile;
-                    }
+        if (classInstance != null) {
+            return classInstance;
+        }
+        let sdkOrTargetProjectFile = this._scene.getFile(arkClass.getDeclaringFileSignature());
+        // TODO: support get sdk class, targetProject class waiting to be supported
+        if (sdkOrTargetProjectFile != null) {
+            for (let classUnderFile of ModelUtils_1.ModelUtils.getAllClassesInFile(sdkOrTargetProjectFile)) {
+                if (classUnderFile.getSignature().toString() === arkClass.toString()) {
+                    return classUnderFile;
                 }
             }
         }
@@ -129,15 +146,17 @@ class SceneManager {
         let extendedClasses = []; // 已经处理的类
         while (classList.length > 0) {
             let tempClass = classList.shift();
-            if (tempClass == null)
+            if (tempClass == null) {
                 continue;
+            }
             let firstLevelSubclasses = Array.from(tempClass.getExtendedClasses().values());
-            if (firstLevelSubclasses) {
-                for (let subclass of firstLevelSubclasses) {
-                    if (!isItemRegistered(subclass, extendedClasses, (a, b) => a.getSignature().toString() === b.getSignature().toString())) {
-                        // 子类未处理，加入到classList
-                        classList.push(subclass);
-                    }
+            if (!firstLevelSubclasses) {
+                continue;
+            }
+            for (let subclass of firstLevelSubclasses) {
+                if (!isItemRegistered(subclass, extendedClasses, (a, b) => a.getSignature().toString() === b.getSignature().toString())) {
+                    // 子类未处理，加入到classList
+                    classList.push(subclass);
                 }
             }
             // 当前类处理完毕，标记为已处理
@@ -157,7 +176,6 @@ function isItemRegistered(item, array, compareFunc) {
     }
     return false;
 }
-exports.isItemRegistered = isItemRegistered;
 function splitStringWithRegex(input) {
     // 正则表达式匹配 "a.b.c()" 并捕获 "a" "b" "c"
     const regex = /^(\w+)\.(\w+)\.(\w+)\(\)$/;
@@ -171,10 +189,9 @@ function splitStringWithRegex(input) {
         return [];
     }
 }
-exports.splitStringWithRegex = splitStringWithRegex;
 function printCallGraphDetails(methods, calls, rootDir) {
     // 打印 Methods
-    logger.info("Call Graph:\n");
+    logger.info('Call Graph:\n');
     logger.info('\tMethods:');
     methods.forEach(method => {
         logger.info(`\t\t${method}`);
@@ -190,16 +207,14 @@ function printCallGraphDetails(methods, calls, rootDir) {
             const modifiedCalledMethod = `\t\t<${calledMethods[i]}`;
             logger.info(`\t\t${modifiedCalledMethod}`);
         }
-        logger.info("\n");
+        logger.info('\n');
     });
 }
-exports.printCallGraphDetails = printCallGraphDetails;
 function extractLastBracketContent(input) {
     // 正则表达式匹配最后一个尖括号内的内容，直到遇到左圆括号
     const match = input.match(/<([^<>]*)\(\)>$/);
     if (match && match[1]) {
         return match[1].trim();
     }
-    return "";
+    return '';
 }
-exports.extractLastBracketContent = extractLastBracketContent;

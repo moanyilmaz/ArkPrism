@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,18 +29,30 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ArkBaseModel = exports.modifiers2stringArray = exports.modifierKind2Enum = exports.MODIFIER_TYPE_MASK = exports.ModifierType = void 0;
+exports.ArkBaseModel = exports.MODIFIER_TYPE_MASK = exports.ModifierType = void 0;
+exports.modifierKind2Enum = modifierKind2Enum;
+exports.modifiers2stringArray = modifiers2stringArray;
 const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
 const EtsConst_1 = require("../common/EtsConst");
 const ArkError_1 = require("../common/ArkError");
@@ -81,7 +93,7 @@ var ModifierType;
     ModifierType[ModifierType["OUT"] = 4096] = "OUT";
     ModifierType[ModifierType["OVERRIDE"] = 8192] = "OVERRIDE";
     ModifierType[ModifierType["DECLARE"] = 16384] = "DECLARE";
-})(ModifierType = exports.ModifierType || (exports.ModifierType = {}));
+})(ModifierType || (exports.ModifierType = ModifierType = {}));
 exports.MODIFIER_TYPE_MASK = 0xffff;
 const MODIFIER_TYPE_STRINGS = [
     'private',
@@ -120,7 +132,6 @@ const MODIFIER_KIND_2_ENUM = new Map([
 function modifierKind2Enum(kind) {
     return MODIFIER_KIND_2_ENUM.get(kind);
 }
-exports.modifierKind2Enum = modifierKind2Enum;
 function modifiers2stringArray(modifiers) {
     let strs = [];
     for (let idx = 0; idx < MODIFIER_TYPE_STRINGS.length; idx++) {
@@ -131,7 +142,6 @@ function modifiers2stringArray(modifiers) {
     }
     return strs;
 }
-exports.modifiers2stringArray = modifiers2stringArray;
 class ArkBaseModel {
     getMetadata(kind) {
         var _a;
@@ -220,7 +230,7 @@ class ArkBaseModel {
     }
     removeDecorator(kind) {
         var _a;
-        (_a = this.decorators) === null || _a === void 0 ? void 0 : _a.forEach((value) => {
+        (_a = this.decorators) === null || _a === void 0 ? void 0 : _a.forEach(value => {
             var _a;
             if (value.getKind() === kind) {
                 (_a = this.decorators) === null || _a === void 0 ? void 0 : _a.delete(value);
@@ -234,7 +244,7 @@ class ArkBaseModel {
         if (!this.decorators) {
             return [];
         }
-        return Array.from(this.decorators).filter((item) => {
+        return Array.from(this.decorators).filter(item => {
             return COMPONENT_MEMBER_DECORATORS.has(item.getKind());
         });
     }
@@ -249,7 +259,7 @@ class ArkBaseModel {
     }
     hasDecorator(kind) {
         let decorators = this.getDecorators();
-        return (decorators.filter((value) => {
+        return (decorators.filter(value => {
             if (kind instanceof Set) {
                 return kind.has(value.getKind());
             }
@@ -268,7 +278,10 @@ class ArkBaseModel {
             return { errCode: ArkError_1.ArkErrorCode.OK };
         }
         logger.error(`class fields: ${errs.join(',')} is undefined.`);
-        return { errCode: ArkError_1.ArkErrorCode.CLASS_INSTANCE_FIELD_UNDEFINDED, errMsg: `${errs.join(',')} is undefined.` };
+        return {
+            errCode: ArkError_1.ArkErrorCode.CLASS_INSTANCE_FIELD_UNDEFINDED,
+            errMsg: `${errs.join(',')} is undefined.`,
+        };
     }
 }
 exports.ArkBaseModel = ArkBaseModel;

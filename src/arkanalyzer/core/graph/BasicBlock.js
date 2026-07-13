@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,18 +29,29 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BasicBlock = void 0;
 const Stmt_1 = require("../base/Stmt");
 const ArkError_1 = require("../common/ArkError");
 const logger_1 = __importStar(require("../../utils/logger"));
+const ValueAsserts_1 = require("../../utils/ValueAsserts");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'BasicBlock');
 /**
  * @category core/graph
@@ -70,7 +81,7 @@ class BasicBlock {
      * @returns An array of statements in a basic block.
      */
     getStmts() {
-        return this.stmts.filter(stmt => stmt != null);
+        return this.stmts;
     }
     addStmt(stmt) {
         this.stmts.push(stmt);
@@ -150,17 +161,21 @@ class BasicBlock {
         this.stmts.splice(this.stmts.length - 1, 1);
     }
     getHead() {
-        if (this.stmts.length === 0) {
+        const stmts = this.getStmts();
+        ValueAsserts_1.ValueAsserts.assertNotEmptyArray(stmts, 'stmts in this basic block should not be empty');
+        if (stmts.length === 0) {
             return null;
         }
-        return this.stmts[0];
+        return stmts[0];
     }
     getTail() {
-        let size = this.stmts.length;
+        const stmts = this.getStmts();
+        ValueAsserts_1.ValueAsserts.assertNotEmptyArray(stmts, 'stmts in this basic block should not be empty');
+        let size = stmts.length;
         if (size === 0) {
             return null;
         }
-        return this.stmts[size - 1];
+        return stmts[size - 1];
     }
     /**
      * Returns successors of the current basic block, whose types are also basic blocks (i.e.{@link BasicBlock}).
@@ -241,21 +256,25 @@ class BasicBlock {
     validate() {
         let branchStmts = [];
         for (const stmt of this.stmts) {
-            if (stmt instanceof Stmt_1.ArkIfStmt ||
-                stmt instanceof Stmt_1.ArkReturnStmt ||
-                stmt instanceof Stmt_1.ArkReturnVoidStmt) {
+            if (stmt instanceof Stmt_1.ArkIfStmt || stmt instanceof Stmt_1.ArkReturnStmt || stmt instanceof Stmt_1.ArkReturnVoidStmt) {
                 branchStmts.push(stmt);
             }
         }
         if (branchStmts.length > 1) {
-            let errMsg = `More than one branch or return stmts in the block: ${branchStmts.map((value) => value.toString()).join('\n')}`;
+            let errMsg = `More than one branch or return stmts in the block: ${branchStmts.map(value => value.toString()).join('\n')}`;
             logger.error(errMsg);
-            return { errCode: ArkError_1.ArkErrorCode.BB_MORE_THAN_ONE_BRANCH_RET_STMT, errMsg: errMsg };
+            return {
+                errCode: ArkError_1.ArkErrorCode.BB_MORE_THAN_ONE_BRANCH_RET_STMT,
+                errMsg: errMsg,
+            };
         }
         if (branchStmts.length === 1 && branchStmts[0] !== this.stmts[this.stmts.length - 1]) {
             let errMsg = `${branchStmts[0].toString()} not at the end of block.`;
             logger.error(errMsg);
-            return { errCode: ArkError_1.ArkErrorCode.BB_BRANCH_RET_STMT_NOT_AT_END, errMsg: errMsg };
+            return {
+                errCode: ArkError_1.ArkErrorCode.BB_BRANCH_RET_STMT_NOT_AT_END,
+                errMsg: errMsg,
+            };
         }
         return { errCode: ArkError_1.ArkErrorCode.OK };
     }

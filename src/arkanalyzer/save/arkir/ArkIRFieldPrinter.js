@@ -56,7 +56,7 @@ class ArkIRFieldPrinter extends BasePrinter_1.BasePrinter {
             this.printer.writeLine(',');
         }
         else {
-            this.printer.writeLine(';');
+            this.printer.writeLine('');
         }
         return this.printer.toString();
     }

@@ -4,7 +4,7 @@ import { ArkMethod } from "../arkanalyzer";
 import { TaintAnalysisChecker } from "./TaintAnalysis";
 import { TaintFact } from "./TaintFact";
 import { PathEdgePoint } from "../arkanalyzer";
-import { ClassHierarchyAnalysis } from "../arkanalyzer";
+import { ClassHierarchyAnalysis, CallGraphBuilder } from "../arkanalyzer";
 import { CallGraph } from "../arkanalyzer";
 import { PointerAnalysisConfig } from "../arkanalyzer";
 import { FunctionType, LexicalEnvType } from "../arkanalyzer";
@@ -98,7 +98,8 @@ export class LightTaintAnalysis {
         }
 
         let callGraph = new CallGraph(this.scene)
-        let cha = new ClassHierarchyAnalysis(this.scene, callGraph);
+        let cgBuilder = new CallGraphBuilder(callGraph, this.scene);
+        let cha = new ClassHierarchyAnalysis(this.scene, callGraph, cgBuilder);
         cha.start(true);
 
         for (const source of sources.values()) {

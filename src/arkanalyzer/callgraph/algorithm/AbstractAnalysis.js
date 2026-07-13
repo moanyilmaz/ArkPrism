@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,22 +29,34 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AbstractAnalysis = void 0;
 const Type_1 = require("../../core/base/Type");
 const logger_1 = __importStar(require("../../utils/logger"));
+const PtsDS_1 = require("../pointerAnalysis/PtsDS");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'CG');
 class AbstractAnalysis {
-    constructor(s) {
+    constructor(s, cg) {
         this.workList = [];
         this.scene = s;
+        this.cg = cg;
     }
     getScene() {
         return this.scene;
@@ -57,6 +69,7 @@ class AbstractAnalysis {
         if (method != null) {
             return method;
         }
+        return undefined;
     }
     getClassHierarchy(arkClass) {
         // TODO: remove abstract class
@@ -76,7 +89,7 @@ class AbstractAnalysis {
         while (this.workList.length !== 0) {
             const method = this.workList.shift();
             const cgNode = this.cg.getNode(method);
-            if (this.processedMethod.has(method) || cgNode.isSdkMethod()) {
+            if (this.processedMethod.contains(method) || cgNode.isSdkMethod()) {
                 continue;
             }
             // pre process for RTA only
@@ -84,20 +97,44 @@ class AbstractAnalysis {
                 this.workList.push(cs.calleeFuncID);
             });
             this.processMethod(method).forEach((cs) => {
-                var _a;
-                let me = this.cg.getArkMethodByFuncID(cs.calleeFuncID);
-                this.addCallGraphEdge(method, me, cs, displayGeneratedMethod);
-                if (!this.processedMethod.has(cs.calleeFuncID)) {
-                    this.workList.push(cs.calleeFuncID);
-                    logger.info(`New workList item ${cs.calleeFuncID}: ${(_a = this.cg.getArkMethodByFuncID(cs.calleeFuncID)) === null || _a === void 0 ? void 0 : _a.getSignature().toString()}`);
-                    this.processedMethod.add(cs.callerFuncID);
-                }
+                this.processCallSite(method, cs, displayGeneratedMethod);
             });
         }
     }
+    projectStart(displayGeneratedMethod) {
+        this.cgBuilder.buildCGNodes(this.scene.getMethods());
+        for (let n of this.cg.getNodesIter()) {
+            let cgNode = n;
+            if (cgNode.isSdkMethod()) {
+                continue;
+            }
+            this.preProcessMethod(cgNode.getID());
+            this.processMethod(cgNode.getID()).forEach((cs) => {
+                this.processCallSite(cgNode.getID(), cs, displayGeneratedMethod, true);
+            });
+        }
+        this.cgBuilder.setEntries();
+    }
+    processCallSite(method, cs, displayGeneratedMethod, isProject = false) {
+        var _a;
+        let me = this.cg.getArkMethodByFuncID(cs.calleeFuncID);
+        let meNode = this.cg.getNode(cs.calleeFuncID);
+        this.addCallGraphEdge(method, me, cs, displayGeneratedMethod);
+        if (isProject) {
+            return;
+        }
+        this.processedMethod.insert(cs.callerFuncID);
+        if (this.processedMethod.contains(cs.calleeFuncID) || meNode.isSdkMethod()) {
+            return;
+        }
+        if (displayGeneratedMethod || !(me === null || me === void 0 ? void 0 : me.isGenerated())) {
+            this.workList.push(cs.calleeFuncID);
+            logger.trace(`New workList item ${cs.calleeFuncID}: ${(_a = this.cg.getArkMethodByFuncID(cs.calleeFuncID)) === null || _a === void 0 ? void 0 : _a.getSignature().toString()}`);
+        }
+    }
     init() {
-        this.processedMethod = new Set();
-        this.cg.getEntries().forEach((entryFunc) => {
+        this.processedMethod = new ((0, PtsDS_1.createPtsCollectionCtor)(PtsDS_1.PtsCollectionType.BitVector))();
+        this.cg.getEntries().forEach(entryFunc => {
             this.workList.push(entryFunc);
         });
     }
@@ -106,22 +143,26 @@ class AbstractAnalysis {
         let arkMethod = this.scene.getMethod(cgNode.getMethod(), true);
         let calleeMethods = [];
         if (!arkMethod) {
-            throw new Error("can not find method");
+            throw new Error('can not find method');
         }
         const cfg = arkMethod.getCfg();
         if (!cfg) {
             return [];
         }
-        cfg.getStmts().forEach((stmt) => {
+        cfg.getStmts().forEach(stmt => {
             if (stmt.containsInvokeExpr()) {
-                this.resolveCall(cgNode.getID(), stmt).forEach(stmt => calleeMethods.push(stmt));
+                this.resolveCall(cgNode.getID(), stmt).forEach(callSite => {
+                    calleeMethods.push(callSite);
+                    this.cg.addStmtToCallSiteMap(stmt, callSite);
+                    this.cg.addMethodToCallSiteMap(callSite.calleeFuncID, callSite);
+                });
             }
         });
         return calleeMethods;
     }
     getParamAnonymousMethod(invokeExpr) {
         let paramMethod = [];
-        invokeExpr.getArgs().forEach((args) => {
+        invokeExpr.getArgs().forEach(args => {
             let argsType = args.getType();
             if (argsType instanceof Type_1.FunctionType) {
                 paramMethod.push(argsType.getMethodSignature());

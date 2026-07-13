@@ -13,6 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -24,58 +57,157 @@ const TSConst_1 = require("./TSConst");
 const Const_1 = require("./Const");
 const ArkClass_1 = require("../model/ArkClass");
 const ArkSignature_1 = require("../model/ArkSignature");
-const ModelUtils_1 = require("./ModelUtils");
 const Local_1 = require("../base/Local");
 const path_1 = __importDefault(require("path"));
-const IRInference_1 = require("./IRInference");
 const Type_1 = require("../base/Type");
 const ArkNamespace_1 = require("../model/ArkNamespace");
+const logger_1 = __importStar(require("../../utils/logger"));
+const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
+const fs_1 = __importDefault(require("fs"));
+const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'SdkUtils');
 class SdkUtils {
-    static buildGlobalMap(file, globalMap) {
-        var _a, _b, _c, _d;
+    static setEsVersion(buildProfile) {
+        const accessChain = 'buildOption.arkOptions.tscConfig.targetESVersion';
+        const version = accessChain.split('.').reduce((acc, key) => acc === null || acc === void 0 ? void 0 : acc[key], buildProfile);
+        if (version && this.esVersionMap.has(version)) {
+            this.esVersion = version;
+        }
+    }
+    static getBuiltInSdk() {
+        let builtInPath;
+        try {
+            // If arkanalyzer is used as dependency by other project, the base directory should be the module path.
+            const moduleRoot = path_1.default.dirname(path_1.default.dirname(require.resolve('arkanalyzer')));
+            builtInPath = path_1.default.join(moduleRoot, this.BUILT_IN_PATH);
+            logger.debug(`arkanalyzer is used as dependency, so using builtin sdk file in ${builtInPath}.`);
+        }
+        catch (_a) {
+            builtInPath = path_1.default.resolve(this.BUILT_IN_PATH);
+            logger.debug(`use builtin sdk file in ${builtInPath}.`);
+        }
+        return {
+            moduleName: '',
+            name: this.BUILT_IN_NAME,
+            path: builtInPath
+        };
+    }
+    static fetchBuiltInFiles(builtInPath) {
+        var _a;
+        const filePath = path_1.default.resolve(builtInPath, (_a = this.esVersionMap.get(this.esVersion)) !== null && _a !== void 0 ? _a : '');
+        if (!fs_1.default.existsSync(filePath)) {
+            logger.error(`built in directory ${filePath} is not exist, please check!`);
+            return [];
+        }
+        const result = new Set();
+        this.dfsFiles(filePath, result);
+        return Array.from(result);
+    }
+    static dfsFiles(filePath, files) {
+        const sourceFile = ohos_typescript_1.default.createSourceFile(filePath, fs_1.default.readFileSync(filePath, 'utf8'), ohos_typescript_1.default.ScriptTarget.Latest);
+        const references = sourceFile.libReferenceDirectives;
+        references.forEach(ref => {
+            this.dfsFiles(path_1.default.join(path_1.default.dirname(filePath), `lib.${ref.fileName}.d.ts`), files);
+        });
+        files.add(filePath);
+    }
+    /*
+     * Set static field to be null, then all related objects could be freed by GC.
+     * Class SdkUtils is only internally used by ArkAnalyzer type inference, the dispose method should be called at the end of type inference.
+     */
+    static dispose() {
+        this.sdkImportMap.clear();
+    }
+    static buildSdkImportMap(file) {
         const fileName = path_1.default.basename(file.getName());
         if (fileName.startsWith('@')) {
-            ModelUtils_1.sdkImportMap.set(fileName.replace(/\.d\.e?ts$/, ''), file);
+            this.sdkImportMap.set(fileName.replace(/\.d\.e?ts$/, ''), file);
         }
-        const isGlobalPath = (_a = file.getScene().getOptions().sdkGlobalFolders) === null || _a === void 0 ? void 0 : _a.find(x => file.getFilePath().includes(path_1.default.sep + x + path_1.default.sep));
-        if (!isGlobalPath) {
+    }
+    static getImportSdkFile(from) {
+        return this.sdkImportMap.get(from);
+    }
+    static isGlobalPath(file) {
+        var _a;
+        return !!((_a = file.getScene().getOptions().sdkGlobalFolders) === null || _a === void 0 ? void 0 : _a.find(x => {
+            if (path_1.default.isAbsolute(x)) {
+                return file.getFilePath().startsWith(x);
+            }
+            else {
+                return file.getFilePath().includes(path_1.default.sep + x + path_1.default.sep);
+            }
+        }));
+    }
+    static loadGlobalAPI(file, globalMap) {
+        var _a, _b, _c;
+        if (!this.isGlobalPath(file)) {
             return;
         }
-        IRInference_1.IRInference.inferFile(file);
-        ModelUtils_1.ModelUtils.getAllClassesInFile(file).forEach(cls => {
+        file.getClasses().forEach(cls => {
             if (!cls.isAnonymousClass() && !cls.isDefaultArkClass()) {
-                SdkUtils.loadClass(globalMap, cls);
+                this.loadAPI(cls, globalMap);
             }
             if (cls.isDefaultArkClass()) {
                 cls.getMethods()
                     .filter(mtd => !mtd.isDefaultArkMethod() && !mtd.isAnonymousMethod())
-                    .forEach(mtd => globalMap.set(mtd.getName(), mtd));
+                    .forEach(mtd => this.loadAPI(mtd, globalMap));
             }
         });
+        (_c = (_b = (_a = file.getDefaultClass().getDefaultArkMethod()) === null || _a === void 0 ? void 0 : _a.getBody()) === null || _b === void 0 ? void 0 : _b.getAliasTypeMap()) === null || _c === void 0 ? void 0 : _c.forEach(a => this.loadAPI(a[0], globalMap, true));
+        file.getNamespaces().forEach(ns => this.loadAPI(ns, globalMap));
+    }
+    static mergeGlobalAPI(file, globalMap) {
+        if (!this.isGlobalPath(file)) {
+            return;
+        }
+        file.getClasses().forEach(cls => {
+            if (!cls.isAnonymousClass() && !cls.isDefaultArkClass()) {
+                this.loadClass(globalMap, cls);
+            }
+        });
+    }
+    static loadAPI(api, globalMap, override = false) {
+        const old = globalMap.get(api.getName());
+        if (!old) {
+            globalMap.set(api.getName(), api);
+        }
+        else if (override) {
+            logger.trace(`${old.getSignature()} is override`);
+            globalMap.set(api.getName(), api);
+        }
+        else {
+            logger.trace(`duplicated api: ${api.getSignature()}`);
+        }
+    }
+    static postInferredSdk(file, globalMap) {
+        var _a;
+        if (!this.isGlobalPath(file)) {
+            return;
+        }
         const defaultArkMethod = file.getDefaultClass().getDefaultArkMethod();
-        (_b = defaultArkMethod === null || defaultArkMethod === void 0 ? void 0 : defaultArkMethod.getBody()) === null || _b === void 0 ? void 0 : _b.getLocals().forEach(local => {
+        (_a = defaultArkMethod === null || defaultArkMethod === void 0 ? void 0 : defaultArkMethod.getBody()) === null || _a === void 0 ? void 0 : _a.getLocals().forEach(local => {
             const name = local.getName();
             if (name !== TSConst_1.THIS_NAME && !name.startsWith(Const_1.TEMP_LOCAL_PREFIX)) {
                 this.loadGlobalLocal(local, defaultArkMethod, globalMap);
             }
         });
-        (_d = (_c = defaultArkMethod === null || defaultArkMethod === void 0 ? void 0 : defaultArkMethod.getBody()) === null || _c === void 0 ? void 0 : _c.getAliasTypeMap()) === null || _d === void 0 ? void 0 : _d.forEach(a => globalMap.set(a[0].getName(), a[0]));
-        ModelUtils_1.ModelUtils.getAllNamespacesInFile(file).forEach(ns => globalMap.set(ns.getName(), ns));
     }
     static loadClass(globalMap, cls) {
         const old = globalMap.get(cls.getName());
-        if (old instanceof ArkClass_1.ArkClass) {
-            if (old.getCategory() === ArkClass_1.ClassCategory.CLASS) {
-                this.copyMethod(cls, old);
+        if (cls === old) {
+            return;
+        }
+        else if (old instanceof ArkClass_1.ArkClass && old.getDeclaringArkFile().getProjectName() === cls.getDeclaringArkFile().getProjectName()) {
+            if (old.getCategory() === ArkClass_1.ClassCategory.CLASS || old.getCategory() === ArkClass_1.ClassCategory.INTERFACE) {
+                this.copyMembers(cls, old);
             }
             else {
-                this.copyMethod(old, cls);
+                this.copyMembers(old, cls);
                 globalMap.delete(cls.getName());
-                globalMap.set(cls.getName(), cls);
+                this.loadAPI(cls, globalMap, true);
             }
         }
-        else if (!old) {
-            globalMap.set(cls.getName(), cls);
+        else {
+            this.loadAPI(cls, globalMap, true);
         }
     }
     static loadGlobalLocal(local, defaultArkMethod, globalMap) {
@@ -86,23 +218,26 @@ class SdkUtils {
             const instance = globalMap.get(name + 'Interface');
             const attr = globalMap.get(name + EtsConst_1.COMPONENT_ATTRIBUTE);
             if (attr instanceof ArkClass_1.ArkClass && instance instanceof ArkClass_1.ArkClass) {
-                instance.getMethods().filter(m => !instance.getMethodWithName(m.getName())).forEach(m => attr.addMethod(m));
+                this.copyMembers(instance, attr);
                 globalMap.set(name, attr);
                 return;
             }
         }
         const old = globalMap.get(name);
-        if (!old) {
-            globalMap.set(name, local);
-        }
-        else if (old instanceof ArkClass_1.ArkClass && local.getType() instanceof Type_1.ClassType) {
-            const localConstructor = scene.getClass(local.getType().getClassSignature());
-            if (localConstructor) {
-                localConstructor.getMethods().filter(m => !old.getMethodWithName(m.getName())).forEach(m => old.addMethod(m));
+        if (old instanceof ArkClass_1.ArkClass && local.getType() instanceof Type_1.ClassType) {
+            const localConstructor = globalMap.get(local.getType().getClassSignature().getClassName());
+            if (localConstructor instanceof ArkClass_1.ArkClass) {
+                this.copyMembers(localConstructor, old);
+            }
+            else {
+                this.loadAPI(local, globalMap, true);
             }
         }
+        else {
+            this.loadAPI(local, globalMap, true);
+        }
     }
-    static copyMethod(from, to) {
+    static copyMembers(from, to) {
         from.getMethods().forEach(method => {
             var _a;
             const dist = method.isStatic() ? to.getStaticMethodWithName(method.getName()) : to.getMethodWithName(method.getName());
@@ -114,14 +249,30 @@ class SdkUtils {
                 to.addMethod(method);
             }
         });
+        from.getFields().forEach(field => {
+            const dist = field.isStatic() ? to.getStaticFieldWithName(field.getName()) : to.getFieldWithName(field.getName());
+            if (!dist) {
+                to.addField(field);
+            }
+        });
     }
     static computeGlobalThis(leftOp, arkMethod) {
         const globalThis = arkMethod.getDeclaringArkFile().getScene().getSdkGlobal(TSConst_1.GLOBAL_THIS_NAME);
         if (globalThis instanceof ArkNamespace_1.ArkNamespace) {
-            const exportInfo = new ArkExport_1.ExportInfo.Builder().exportClauseName(leftOp.getFieldName())
-                .arkExport(new Local_1.Local(leftOp.getFieldName(), leftOp.getType())).build();
+            const exportInfo = new ArkExport_1.ExportInfo.Builder()
+                .exportClauseName(leftOp.getFieldName())
+                .arkExport(new Local_1.Local(leftOp.getFieldName(), leftOp.getType()))
+                .build();
             globalThis.addExportInfo(exportInfo);
         }
     }
 }
 exports.SdkUtils = SdkUtils;
+SdkUtils.esVersion = 'ES2017';
+SdkUtils.esVersionMap = new Map([
+    ['ES2017', 'lib.es2020.d.ts'],
+    ['ES2021', 'lib.es2021.d.ts']
+]);
+SdkUtils.sdkImportMap = new Map();
+SdkUtils.BUILT_IN_NAME = 'built-in';
+SdkUtils.BUILT_IN_PATH = 'node_modules/ohos-typescript/lib';

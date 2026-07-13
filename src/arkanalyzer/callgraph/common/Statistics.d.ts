@@ -1,10 +1,13 @@
-import { CallGraphNodeKind } from "../model/CallGraph";
-import { PointerAnalysis } from "../pointerAnalysis/PointerAnalysis";
+import { CallGraphNodeKind } from '../model/CallGraph';
+import { PointerAnalysis } from '../pointerAnalysis/PointerAnalysis';
 declare abstract class StatTraits {
+    TotalTime: number;
+    startTime: number;
+    endTime: number;
     getStat(): string;
     printStat(): void;
 }
-export declare class PTAStat implements StatTraits {
+export declare class PTAStat extends StatTraits {
     pta: PointerAnalysis;
     numProcessedAddr: number;
     numProcessedCopy: number;
@@ -22,9 +25,6 @@ export declare class PTAStat implements StatTraits {
     numNotInferedUnknownValue: number;
     numUnhandledFunc: number;
     iterTimes: number;
-    TotalTime: number;
-    startTime: number;
-    endTime: number;
     startMemUsage: any;
     endMemUsage: any;
     rssUsed: number;
@@ -34,11 +34,12 @@ export declare class PTAStat implements StatTraits {
     endStat(): void;
     getNow(): number;
     private getInferedStat;
+    private getNotInferredUnknownStat;
     private getUnhandledFuncStat;
     getStat(): string;
     printStat(): void;
 }
-export declare class PAGStat implements StatTraits {
+export declare class PAGStat extends StatTraits {
     numDynamicCall: number;
     numTotalFunction: number;
     numTotalNode: number;
@@ -51,6 +52,9 @@ export declare class CGStat extends StatTraits {
     numVirtual: number;
     numIntrinsic: number;
     numConstructor: number;
+    numBlank: number;
+    startStat(): void;
+    endStat(): void;
     addNodeStat(kind: CallGraphNodeKind): void;
     getStat(): string;
 }

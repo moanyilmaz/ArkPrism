@@ -36,8 +36,7 @@ class LoopBuilder {
             const stmtsCnt = stmts.length;
             const { ifStmtIdx, iteratorNextStmtIdx, dummyInitializerStmtIdx } = this.findIteratorIdx(stmts);
             if (iteratorNextStmtIdx !== -1 || dummyInitializerStmtIdx !== -1) {
-                const lastStmtIdxBeforeCondition = iteratorNextStmtIdx !==
-                    -1 ? iteratorNextStmtIdx : dummyInitializerStmtIdx;
+                const lastStmtIdxBeforeCondition = iteratorNextStmtIdx !== -1 ? iteratorNextStmtIdx : dummyInitializerStmtIdx;
                 const stmtsInsertBeforeCondition = stmts.slice(0, lastStmtIdxBeforeCondition);
                 // If the loop body is empty, the loop conditional block should contain its own
                 const emptyLoopBody = blockBuilder.nexts.length === 1;
@@ -69,8 +68,7 @@ class LoopBuilder {
                     blockAfterCondition === null || blockAfterCondition === void 0 ? void 0 : blockAfterCondition.getStmts().splice(0, 0, ...stmtsAfterCondition);
                 }
                 // remove statements which should not in condition
-                const firstStmtIdxInCondition = iteratorNextStmtIdx !==
-                    -1 ? iteratorNextStmtIdx : dummyInitializerStmtIdx + 1;
+                const firstStmtIdxInCondition = iteratorNextStmtIdx !== -1 ? iteratorNextStmtIdx : dummyInitializerStmtIdx + 1;
                 stmts.splice(0, firstStmtIdxInCondition);
                 stmts.splice(ifStmtIdx - firstStmtIdxInCondition + 1);
             }
@@ -92,8 +90,8 @@ class LoopBuilder {
         }
         const blockId = conditionBlockBuilder.id;
         const block = this.getBlockFromMap(blockBuilderToCfgBlock, conditionBlockBuilder);
-        const { blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition, } = this.collectBlocksBeforeAndReenter(blockBuilderToCfgBlock, conditionBlockBuilder, blockId);
-        const { collectedBlockBuilders, collectedBlocks, } = this.getCollectedBlocks(collectReenter, blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition);
+        const { blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition } = this.collectBlocksBeforeAndReenter(blockBuilderToCfgBlock, conditionBlockBuilder, blockId);
+        const { collectedBlockBuilders, collectedBlocks } = this.getCollectedBlocks(collectReenter, blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition);
         const { blockBuilderInsertBeforeCondition, blockInsertBeforeCondition } = this.createAndLinkBlocks(collectedBlockBuilders, collectedBlocks, conditionBlockBuilder, stmtsInsertBeforeCondition, block);
         this.updatePredecessors(collectedBlockBuilders, blockBuilderToCfgBlock, conditionBlockBuilder, blockBuilderInsertBeforeCondition, blockInsertBeforeCondition);
         const { newPrevBlockBuildersBeforeCondition, newPrevBlocksBeforeCondition } = this.getNewPrevBlocks(collectReenter, blockBuildersBeforeCondition, blocksBeforeCondition, blockBuilderInsertBeforeCondition, blockInsertBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition);
@@ -120,7 +118,10 @@ class LoopBuilder {
             }
         }
         return {
-            blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition,
+            blockBuildersBeforeCondition,
+            blocksBeforeCondition,
+            blockBuildersReenterCondition,
+            blocksReenterCondition,
         };
     }
     getCollectedBlocks(collectReenter, blockBuildersBeforeCondition, blocksBeforeCondition, blockBuildersReenterCondition, blocksReenterCondition) {
@@ -169,7 +170,10 @@ class LoopBuilder {
             newPrevBlockBuildersBeforeCondition = [blockBuilderInsertBeforeCondition, ...blockBuildersReenterCondition];
             newPrevBlocksBeforeCondition = [blockInsertBeforeCondition, ...blocksReenterCondition];
         }
-        return { newPrevBlockBuildersBeforeCondition, newPrevBlocksBeforeCondition };
+        return {
+            newPrevBlockBuildersBeforeCondition,
+            newPrevBlocksBeforeCondition,
+        };
     }
     updateConditionBlockBuilder(conditionBlockBuilder, newPrevBlockBuildersBeforeCondition, block, newPrevBlocksBeforeCondition) {
         conditionBlockBuilder.lasts = newPrevBlockBuildersBeforeCondition;
@@ -190,8 +194,7 @@ class LoopBuilder {
             const stmt = stmts[i];
             if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Expr_1.AbstractInvokeExpr) {
                 const invokeExpr = stmt.getRightOp();
-                if (invokeExpr.getMethodSignature().getMethodSubSignature()
-                    .getMethodName() === Builtin_1.Builtin.ITERATOR_NEXT) {
+                if (invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() === Builtin_1.Builtin.ITERATOR_NEXT) {
                     iteratorNextStmtIdx = i;
                     continue;
                 }

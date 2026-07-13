@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SourceTransformer = void 0;
 const Constant_1 = require("../../core/base/Constant");
@@ -43,6 +53,7 @@ const Expr_1 = require("../../core/base/Expr");
 const Local_1 = require("../../core/base/Local");
 const ArkClass_1 = require("../../core/model/ArkClass");
 const ArkMethod_1 = require("../../core/model/ArkMethod");
+const ArkSignature_1 = require("../../core/model/ArkSignature");
 const logger_1 = __importStar(require("../../utils/logger"));
 const PrinterUtils_1 = require("../base/PrinterUtils");
 const SourceMethod_1 = require("./SourceMethod");
@@ -58,6 +69,7 @@ const ArkBaseModel_1 = require("../../core/model/ArkBaseModel");
 const ArkField_1 = require("../../core/model/ArkField");
 const ArkExport_1 = require("../../core/model/ArkExport");
 const ArkImport_1 = require("../../core/model/ArkImport");
+const TSConst_1 = require("../../core/common/TSConst");
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'SourceTransformer');
 class SourceTransformer {
     constructor(context) {
@@ -72,20 +84,69 @@ class SourceTransformer {
         let clsPrinter = new SourceClass_1.SourceClass(cls, indent);
         return clsPrinter.dump().trimStart();
     }
-    instanceInvokeExprToString(invokeExpr) {
+    instanceInvokeExprToString(invokeExpr, isAttr) {
         let methodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
         if (methodName === Const_1.INSTANCE_INIT_METHOD_NAME) {
             return '';
         }
         let args = [];
-        invokeExpr.getArgs().forEach((v) => {
+        invokeExpr.getArgs().forEach(v => {
             args.push(this.valueToString(v));
         });
-        let genericCode = this.genericTypesToString(invokeExpr.getRealGenericTypes());
-        if (PrinterUtils_1.PrinterUtils.isComponentAttributeInvoke(invokeExpr) && this.context.isInBuilderMethod()) {
+        let genericCode = isAttr ? '' : this.genericTypesToString(invokeExpr.getRealGenericTypes());
+        if (isAttr && this.context.isInBuilderMethod()) {
             return `.${methodName}${genericCode}(${args.join(', ')})`;
         }
-        return `${this.valueToString(invokeExpr.getBase())}.${methodName}${genericCode}(${args.join(', ')})`;
+        const base = invokeExpr.getBase();
+        if (base.getName() === TSConst_1.THIS_NAME) {
+            if (methodName === TSConst_1.CONSTRUCTOR_NAME) {
+                return `super(${args.join(', ')})`;
+            }
+            // If base type is not match the method declaring class, here take it as super.foo() even though the source code may be this.foo().
+            // Because it can not distinguish exactly whether it's this.foo() or super.foo() when foo is only defined in super class.
+            const baseType = base.getType();
+            if (baseType instanceof Type_1.ClassType) {
+                if (!(0, ArkSignature_1.classSignatureCompare)(baseType.getClassSignature(), invokeExpr.getMethodSignature().getDeclaringClassSignature())) {
+                    return `super.${methodName}${genericCode}(${args.join(', ')})`;
+                }
+            }
+        }
+        return `${this.valueToString(base)}.${methodName}${genericCode}(${args.join(', ')})`;
+    }
+    transBuilderMethod(className, methodName, args, invokeExpr, genericCode) {
+        if (className === EtsConst_1.COMPONENT_CUSTOMVIEW) {
+            if (methodName === EtsConst_1.COMPONENT_CREATE_FUNCTION) {
+                // Anonymous @Builder method
+                if (args.length > 1) {
+                    // remove the substring '() =>' or '(x, y): type =>' at the beginning of args[1]
+                    const pattern = /^\([^)]*\)\s*:\s*\w*\s*=>\s*/;
+                    args[1] = args[1].replace(pattern, '');
+                }
+                return `${args.join(' ')}`;
+            }
+            if (methodName === EtsConst_1.COMPONENT_POP_FUNCTION) {
+                return '';
+            }
+        }
+        if (PrinterUtils_1.PrinterUtils.isComponentCreate(invokeExpr)) {
+            if (className === EtsConst_1.COMPONENT_IF) {
+                return `if (${args.join(', ')})`;
+            }
+            return `${className}${genericCode}(${args.join(', ')})`;
+        }
+        if (PrinterUtils_1.PrinterUtils.isComponentIfBranchInvoke(invokeExpr)) {
+            let arg0 = invokeExpr.getArg(0);
+            if (arg0.getValue() === '0') {
+                return ``;
+            }
+            else {
+                return '} else {';
+            }
+        }
+        if (PrinterUtils_1.PrinterUtils.isComponentPop(invokeExpr)) {
+            return '}';
+        }
+        return null;
     }
     staticInvokeExprToString(invokeExpr) {
         let methodSignature = invokeExpr.getMethodSignature();
@@ -97,43 +158,17 @@ class SourceTransformer {
         let className = PrinterUtils_1.PrinterUtils.getStaticInvokeClassFullName(classSignature, this.context.getDeclaringArkNamespace());
         let methodName = methodSignature.getMethodSubSignature().getMethodName();
         let args = [];
-        invokeExpr.getArgs().forEach((v) => {
+        invokeExpr.getArgs().forEach(v => {
             args.push(this.valueToString(v));
         });
         let genericCode = this.genericTypesToString(invokeExpr.getRealGenericTypes());
         if (this.context.isInBuilderMethod()) {
-            if (className === EtsConst_1.COMPONENT_CUSTOMVIEW) {
-                if (methodName === EtsConst_1.COMPONENT_CREATE_FUNCTION) {
-                    // Anonymous @Builder method
-                    if (args.length > 1) {
-                        args[1] = args[1].substring('() => '.length);
-                    }
-                    return `${args.join(' ')}`;
-                }
-                if (methodName === EtsConst_1.COMPONENT_POP_FUNCTION) {
-                    return '';
-                }
-            }
-            if (PrinterUtils_1.PrinterUtils.isComponentCreate(invokeExpr)) {
-                if (className === EtsConst_1.COMPONENT_IF) {
-                    return `if (${args.join(', ')})`;
-                }
-                return `${className}${genericCode}(${args.join(', ')})`;
-            }
-            if (PrinterUtils_1.PrinterUtils.isComponentIfBranchInvoke(invokeExpr)) {
-                let arg0 = invokeExpr.getArg(0);
-                if (arg0.getValue() === '0') {
-                    return ``;
-                }
-                else {
-                    return '} else {';
-                }
-            }
-            if (PrinterUtils_1.PrinterUtils.isComponentPop(invokeExpr)) {
-                return '}';
+            const res = this.transBuilderMethod(className, methodName, args, invokeExpr, genericCode);
+            if (res !== null) {
+                return res;
             }
         }
-        if (className && className.length > 0) {
+        if (className && className.length > 0 && methodName !== TSConst_1.SUPER_NAME) {
             return `${className}.${methodName}${genericCode}(${args.join(', ')})`;
         }
         return `${methodName}${genericCode}(${args.join(', ')})`;
@@ -150,7 +185,7 @@ class SourceTransformer {
     }
     typeArrayToString(types, split = ', ') {
         let typesStr = [];
-        types.forEach((t) => {
+        types.forEach(t => {
             typesStr.push(this.typeToString(t));
         });
         return typesStr.join(split);
@@ -159,13 +194,17 @@ class SourceTransformer {
         if (value.getType().toString() === 'string') {
             return `'${PrinterUtils_1.PrinterUtils.escape(value.getValue())}'`;
         }
+        else if (value.getType().toString() === TSConst_1.BIGINT_KEYWORD) {
+            return `${value.getValue()}n`;
+        }
         else {
             return value.getValue();
         }
     }
     exprToString(expr) {
         if (expr instanceof Expr_1.ArkInstanceInvokeExpr) {
-            return `${this.instanceInvokeExprToString(expr)}`;
+            const isAttr = PrinterUtils_1.PrinterUtils.isComponentAttributeInvoke(expr);
+            return `${this.instanceInvokeExprToString(expr, isAttr)}`;
         }
         if (expr instanceof Expr_1.ArkStaticInvokeExpr) {
             return `${this.staticInvokeExprToString(expr)}`;
@@ -183,7 +222,7 @@ class SourceTransformer {
             let op1 = expr.getOp1();
             let op2 = expr.getOp2();
             let operator = expr.getOperator();
-            return `${this.valueToString(op1, operator)} ${operator} ${this.valueToString(op2, operator)}`;
+            return `${this.valueToString(op1, false, operator)} ${operator} ${this.valueToString(op2, false, operator)}`;
         }
         if (expr instanceof Expr_1.ArkTypeOfExpr) {
             return `typeof(${this.valueToString(expr.getOp())})`;
@@ -217,9 +256,7 @@ class SourceTransformer {
         }
         if (value instanceof Ref_1.ArkArrayRef) {
             let index = value.getIndex();
-            if (index instanceof Constant_1.Constant &&
-                index.getType() instanceof Type_1.StringType &&
-                PrinterUtils_1.PrinterUtils.isTemp(index.getValue())) {
+            if (index instanceof Constant_1.Constant && index.getType() instanceof Type_1.StringType && PrinterUtils_1.PrinterUtils.isTemp(index.getValue())) {
                 return `${this.valueToString(value.getBase())}[${this.valueToString(new Local_1.Local(index.getValue()))}]`;
             }
             return `${this.valueToString(value.getBase())}[${this.valueToString(value.getIndex())}]`;
@@ -231,7 +268,7 @@ class SourceTransformer {
         logger.info(`refToString ${value.constructor} not support.`);
         return `${value}`;
     }
-    valueToString(value, operator) {
+    valueToString(value, isLeftOp = false, operator) {
         if (value instanceof Expr_1.AbstractExpr) {
             return this.exprToString(value);
         }
@@ -242,34 +279,35 @@ class SourceTransformer {
             return SourceTransformer.constToString(value);
         }
         if (value instanceof Local_1.Local) {
-            if (PrinterUtils_1.PrinterUtils.isAnonymousMethod(value.getName())) {
-                let methodSignature = value.getType().getMethodSignature();
-                let anonymousMethod = this.context.getMethod(methodSignature);
-                if (anonymousMethod) {
-                    return this.anonymousMethodToString(anonymousMethod, this.context.getPrinter().getIndent());
-                }
-            }
-            if (PrinterUtils_1.PrinterUtils.isAnonymousClass(value.getName())) {
-                let clsSignature = value.getType().getClassSignature();
-                let cls = this.context.getClass(clsSignature);
-                if (cls) {
-                    return this.anonymousClassToString(cls, this.context.getPrinter().getIndent());
-                }
-            }
-            if (operator === Expr_1.NormalBinaryOperator.Division ||
-                operator === Expr_1.NormalBinaryOperator.Multiplication ||
-                operator === Expr_1.NormalBinaryOperator.Remainder) {
-                if (PrinterUtils_1.PrinterUtils.isTemp(value.getName())) {
-                    let stmt = value.getDeclaringStmt();
-                    if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Expr_1.ArkNormalBinopExpr) {
-                        return `(${this.context.transTemp2Code(value)})`;
-                    }
-                }
-            }
-            return this.context.transTemp2Code(value);
+            return this.localToString(value, isLeftOp, operator);
         }
         logger.info(`valueToString ${value.constructor} not support.`);
         return `${value}`;
+    }
+    localToString(value, isLeftOp = false, operator) {
+        if (PrinterUtils_1.PrinterUtils.isAnonymousMethod(value.getName())) {
+            let methodSignature = value.getType().getMethodSignature();
+            let anonymousMethod = this.context.getMethod(methodSignature);
+            if (anonymousMethod) {
+                return this.anonymousMethodToString(anonymousMethod, this.context.getPrinter().getIndent());
+            }
+        }
+        if (PrinterUtils_1.PrinterUtils.isAnonymousClass(value.getName())) {
+            let clsSignature = value.getType().getClassSignature();
+            let cls = this.context.getClass(clsSignature);
+            if (cls) {
+                return this.anonymousClassToString(cls, this.context.getPrinter().getIndent());
+            }
+        }
+        if (operator === Expr_1.NormalBinaryOperator.Division || operator === Expr_1.NormalBinaryOperator.Multiplication || operator === Expr_1.NormalBinaryOperator.Remainder) {
+            if (PrinterUtils_1.PrinterUtils.isTemp(value.getName())) {
+                let stmt = value.getDeclaringStmt();
+                if (stmt instanceof Stmt_1.ArkAssignStmt && stmt.getRightOp() instanceof Expr_1.ArkNormalBinopExpr) {
+                    return `(${this.context.transTemp2Code(value, isLeftOp)})`;
+                }
+            }
+        }
+        return this.context.transTemp2Code(value, isLeftOp);
     }
     literalObjectToString(type) {
         let name = type.getClassSignature().getClassName();
@@ -420,7 +458,7 @@ class SourceTransformer {
     unclearReferenceType2string(type) {
         let genericTypes = type.getGenericTypes();
         if (genericTypes.length > 0) {
-            return `${type.getName()}<${genericTypes.map((value) => this.typeToString(value)).join(', ')}>`;
+            return `${type.getName()}<${genericTypes.map(value => this.typeToString(value)).join(', ')}>`;
         }
         return type.getName();
     }

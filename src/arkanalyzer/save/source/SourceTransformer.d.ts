@@ -16,7 +16,7 @@ export interface TransformerContext {
     getMethod(signature: MethodSignature): ArkMethod | null;
     getClass(signature: ClassSignature): ArkClass | null;
     getPrinter(): ArkCodeBuffer;
-    transTemp2Code(temp: Local): string;
+    transTemp2Code(temp: Local, isLeftOp: boolean): string;
     isInBuilderMethod(): boolean;
 }
 export declare class SourceTransformer {
@@ -24,14 +24,16 @@ export declare class SourceTransformer {
     constructor(context: TransformerContext);
     private anonymousMethodToString;
     private anonymousClassToString;
-    instanceInvokeExprToString(invokeExpr: ArkInstanceInvokeExpr): string;
+    instanceInvokeExprToString(invokeExpr: ArkInstanceInvokeExpr, isAttr: boolean): string;
+    private transBuilderMethod;
     staticInvokeExprToString(invokeExpr: ArkStaticInvokeExpr): string;
     private genericTypesToString;
     typeArrayToString(types: Type[], split?: string): string;
     static constToString(value: Constant): string;
     private exprToString;
     refToString(value: AbstractRef): string;
-    valueToString(value: Value, operator?: string): string;
+    valueToString(value: Value, isLeftOp?: boolean, operator?: string): string;
+    private localToString;
     literalObjectToString(type: ClassType): string;
     typeToString(type: Type): string;
     private literalType2string;

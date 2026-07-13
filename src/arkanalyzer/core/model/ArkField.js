@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,6 +16,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArkField = exports.FieldCategory = void 0;
 const Position_1 = require("../base/Position");
+const ArkClass_1 = require("./ArkClass");
 const ArkBaseModel_1 = require("./ArkBaseModel");
 var FieldCategory;
 (function (FieldCategory) {
@@ -27,17 +28,24 @@ var FieldCategory;
     FieldCategory[FieldCategory["ENUM_MEMBER"] = 5] = "ENUM_MEMBER";
     FieldCategory[FieldCategory["INDEX_SIGNATURE"] = 6] = "INDEX_SIGNATURE";
     FieldCategory[FieldCategory["GET_ACCESSOR"] = 7] = "GET_ACCESSOR";
-})(FieldCategory = exports.FieldCategory || (exports.FieldCategory = {}));
+    FieldCategory[FieldCategory["PARAMETER_PROPERTY"] = 8] = "PARAMETER_PROPERTY";
+})(FieldCategory || (exports.FieldCategory = FieldCategory = {}));
 /**
  * @category core/model
  */
 class ArkField extends ArkBaseModel_1.ArkBaseModel {
     constructor() {
         super();
-        this.code = "";
+        this.code = '';
         this.questionToken = false;
         this.exclamationToken = false;
         this.initializer = [];
+    }
+    /**
+     * Returns the program language of the file where this field's class defined.
+     */
+    getLanguage() {
+        return this.getDeclaringArkClass().getLanguage();
     }
     getDeclaringArkClass() {
         return this.declaringClass;
@@ -108,6 +116,16 @@ class ArkField extends ArkBaseModel_1.ArkBaseModel {
     }
     validate() {
         return this.validateFields(['category', 'declaringClass', 'fieldSignature']);
+    }
+    // For class field, it is default public if there is not any access modify
+    isPublic() {
+        if (!this.containsModifier(ArkBaseModel_1.ModifierType.PUBLIC) &&
+            !this.containsModifier(ArkBaseModel_1.ModifierType.PRIVATE) &&
+            !this.containsModifier(ArkBaseModel_1.ModifierType.PROTECTED) &&
+            this.getDeclaringArkClass().getCategory() === ArkClass_1.ClassCategory.CLASS) {
+            return true;
+        }
+        return this.containsModifier(ArkBaseModel_1.ModifierType.PUBLIC);
     }
 }
 exports.ArkField = ArkField;

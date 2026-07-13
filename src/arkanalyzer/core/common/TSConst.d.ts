@@ -17,5 +17,6 @@ export declare const NUMBER_KEYWORD = "number";
 export declare const STRING_KEYWORD = "string";
 export declare const VOID_KEYWORD = "void";
 export declare const NEVER_KEYWORD = "never";
+export declare const BIGINT_KEYWORD = "bigint";
 export declare const TSCONFIG_JSON = "tsconfig.json";
 //# sourceMappingURL=TSConst.d.ts.map

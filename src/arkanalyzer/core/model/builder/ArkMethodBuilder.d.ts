@@ -36,7 +36,7 @@ export declare class MethodParameter implements Value {
     private name;
     private type;
     private optional;
-    private dotDotDotToken;
+    private restFlag;
     private objElements;
     private arrayElements;
     constructor();
@@ -46,8 +46,8 @@ export declare class MethodParameter implements Value {
     setType(type: Type): void;
     isOptional(): boolean;
     setOptional(optional: boolean): void;
-    hasDotDotDotToken(): boolean;
-    setDotDotDotToken(dotDotDotToken: boolean): void;
+    isRest(): boolean;
+    setRestFlag(restFlag: boolean): void;
     addObjElement(element: ObjectBindingPatternParameter): void;
     getObjElements(): ObjectBindingPatternParameter[];
     setObjElements(objElements: ObjectBindingPatternParameter[]): void;
@@ -58,7 +58,8 @@ export declare class MethodParameter implements Value {
 }
 export declare function buildDefaultConstructor(arkClass: ArkClass): boolean;
 export declare function buildInitMethod(initMethod: ArkMethod, fieldInitializerStmts: Stmt[], thisLocal: Local): void;
-export declare function addInitInConstructor(arkClass: ArkClass): void;
+export declare function addInitInConstructor(constructor: ArkMethod): void;
 export declare function isMethodImplementation(node: MethodLikeNode): boolean;
 export declare function checkAndUpdateMethod(method: ArkMethod, cls: ArkClass): void;
+export declare function replaceSuper2Constructor(constructor: ArkMethod): void;
 //# sourceMappingURL=ArkMethodBuilder.d.ts.map

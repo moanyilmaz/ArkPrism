@@ -29,18 +29,29 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mergeNameSpaces = exports.buildArkNamespace = void 0;
+exports.buildArkNamespace = buildArkNamespace;
+exports.mergeNameSpaces = mergeNameSpaces;
 const Position_1 = require("../../base/Position");
 const ArkClassBuilder_1 = require("./ArkClassBuilder");
 const ArkFile_1 = require("../ArkFile");
@@ -88,12 +99,13 @@ function buildArkNamespace(node, declaringInstance, ns, sourceFile) {
         // NamespaceDeclaration extends ModuleDeclaration
         //TODO: Check
         else if (ohos_typescript_1.default.isModuleDeclaration(node.body)) {
-            logger.warn('This ModuleBody is an NamespaceDeclaration.');
+            logger.trace('This ModuleBody is an NamespaceDeclaration.');
             let childNs = new ArkNamespace_1.ArkNamespace();
             buildArkNamespace(node.body, ns, childNs, sourceFile);
+            ns.addNamespace(childNs);
         }
         else if (ohos_typescript_1.default.isIdentifier(node.body)) {
-            logger.warn('ModuleBody is Identifier.');
+            logger.warn('ModuleBody is Identifier');
         }
         else {
             logger.warn('JSDocNamespaceDeclaration found.');
@@ -104,12 +116,11 @@ function buildArkNamespace(node, declaringInstance, ns, sourceFile) {
     }
     IRUtils_1.IRUtils.setComments(ns, node, sourceFile, ns.getDeclaringArkFile().getScene().getOptions());
 }
-exports.buildArkNamespace = buildArkNamespace;
 // TODO: check and update
 function buildNamespaceMembers(node, namespace, sourceFile) {
     const statements = node.statements;
     const nestedNamespaces = [];
-    statements.forEach((child) => {
+    statements.forEach(child => {
         if (ohos_typescript_1.default.isModuleDeclaration(child)) {
             let childNs = new ArkNamespace_1.ArkNamespace();
             childNs.setDeclaringArkNamespace(namespace);
@@ -117,10 +128,7 @@ function buildNamespaceMembers(node, namespace, sourceFile) {
             buildArkNamespace(child, namespace, childNs, sourceFile);
             nestedNamespaces.push(childNs);
         }
-        else if (ohos_typescript_1.default.isClassDeclaration(child) ||
-            ohos_typescript_1.default.isInterfaceDeclaration(child) ||
-            ohos_typescript_1.default.isEnumDeclaration(child) ||
-            ohos_typescript_1.default.isStructDeclaration(child)) {
+        else if (ohos_typescript_1.default.isClassDeclaration(child) || ohos_typescript_1.default.isInterfaceDeclaration(child) || ohos_typescript_1.default.isEnumDeclaration(child) || ohos_typescript_1.default.isStructDeclaration(child)) {
             let cls = new ArkClass_1.ArkClass();
             (0, ArkClassBuilder_1.buildNormalArkClassFromArkNamespace)(child, namespace, cls, sourceFile);
             namespace.addArkClass(cls);
@@ -130,7 +138,7 @@ function buildNamespaceMembers(node, namespace, sourceFile) {
         }
         // TODO: Check
         else if (ohos_typescript_1.default.isMethodDeclaration(child)) {
-            logger.warn('This is a MethodDeclaration in ArkNamespace.');
+            logger.trace('This is a MethodDeclaration in ArkNamespace.');
             let mthd = new ArkMethod_1.ArkMethod();
             (0, ArkMethodBuilder_1.buildArkMethodFromArkClass)(child, namespace.getDefaultClass(), mthd, sourceFile);
             if (mthd.isExported()) {
@@ -145,15 +153,16 @@ function buildNamespaceMembers(node, namespace, sourceFile) {
             }
         }
         else if (ohos_typescript_1.default.isExportDeclaration(child)) {
-            (0, ArkExportBuilder_1.buildExportDeclaration)(child, sourceFile, namespace.getDeclaringArkFile())
-                .forEach(item => namespace.addExportInfo(item));
+            (0, ArkExportBuilder_1.buildExportDeclaration)(child, sourceFile, namespace.getDeclaringArkFile()).forEach(item => namespace.addExportInfo(item));
         }
         else if (ohos_typescript_1.default.isExportAssignment(child)) {
-            (0, ArkExportBuilder_1.buildExportAssignment)(child, sourceFile, namespace.getDeclaringArkFile())
-                .forEach(item => namespace.addExportInfo(item));
+            (0, ArkExportBuilder_1.buildExportAssignment)(child, sourceFile, namespace.getDeclaringArkFile()).forEach(item => namespace.addExportInfo(item));
+        }
+        else if (ohos_typescript_1.default.isVariableStatement(child) && (0, ArkExportBuilder_1.isExported)(child.modifiers)) {
+            (0, ArkExportBuilder_1.buildExportVariableStatement)(child, sourceFile, namespace.getDeclaringArkFile(), namespace).forEach(item => namespace.addExportInfo(item));
         }
         else {
-            logger.info('Child joined default method of arkFile: ', ohos_typescript_1.default.SyntaxKind[child.kind]);
+            logger.trace('Child joined default method of arkFile: ', ohos_typescript_1.default.SyntaxKind[child.kind]);
             // join default method
         }
     });
@@ -202,4 +211,3 @@ function mergeNameSpaces(arkNamespaces) {
     }
     return [...namespaceMap.values()];
 }
-exports.mergeNameSpaces = mergeNameSpaces;

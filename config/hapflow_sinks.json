@@ -1,5 +1,4 @@
 [
-  
   {
     "api_name": "console.log",
     "module": "@internal/full/global",
@@ -55,8 +54,6 @@
     "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "debug",
     "module": "@ohos.hilog",
@@ -112,8 +109,6 @@
     "reason": "HiLog output may leak sensitive data",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "createHttp",
     "module": "@ohos.net.http",
@@ -147,8 +142,6 @@
     "reason": "HTTP request can send sensitive data to remote server",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "setData",
     "module": "@ohos.pasteboard",
@@ -182,8 +175,6 @@
     "reason": "Clipboard write can exfiltrate sensitive data",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "writeText",
     "module": "@ohos.file.fs",
@@ -217,8 +208,6 @@
     "reason": "File write may persist sensitive data",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "showToast",
     "module": "@ohos.promptAction",
@@ -252,8 +241,6 @@
     "reason": "Action menu may expose sensitive information in UI",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "publish",
     "module": "@ohos.notification",
@@ -276,8 +263,6 @@
     "reason": "Notification may expose sensitive information",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "getWakeUpIntent",
     "module": "@ohos.wantAgent",
@@ -289,8 +274,6 @@
     "reason": "WantAgent may contain sensitive data for inter-app communication",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "getApplicationInfo",
     "module": "@ohos.bundle",
@@ -313,8 +296,6 @@
     "reason": "Bundle info may be shared with other apps",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "send",
     "module": "@ohos.bluetoothManager",
@@ -335,6 +316,3731 @@
     "returnType": "boolean",
     "api_type": "sink",
     "reason": "Bluetooth publish can transmit sensitive data",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setRequestResult",
+    "module": "@ohos.app.ability.dialogRequest",
+    "class": "RequestCallback",
+    "namespace": "dialogRequest",
+    "parameters": [
+      {
+        "name": "result",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.app.ability.dialogRequest\").default.RequestResult"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送请求结果给调用者属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeCharacteristicValue",
+    "module": "@ohos.bluetooth.ble",
+    "class": "GattClientDevice",
+    "namespace": "ble",
+    "parameters": [
+      {
+        "name": "characteristic",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth.ble\").default.BLECharacteristic"
+      },
+      {
+        "name": "writeType",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth.ble\").default.GattWriteType"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入BLE外设的特征值属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeCharacteristicValue",
+    "module": "@ohos.bluetooth.ble",
+    "class": "GattClientDevice",
+    "namespace": "ble",
+    "parameters": [
+      {
+        "name": "characteristic",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth.ble\").default.BLECharacteristic"
+      },
+      {
+        "name": "writeType",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth.ble\").default.GattWriteType"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入BLE外设的特征值属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeDescriptorValue",
+    "module": "@ohos.bluetooth.ble",
+    "class": "GattClientDevice",
+    "namespace": "ble",
+    "parameters": [
+      {
+        "name": "descriptor",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth.ble\").default.BLEDescriptor"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入BLE外设的描述符属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sppWrite",
+    "module": "@ohos.bluetooth",
+    "class": "",
+    "namespace": "bluetooth",
+    "parameters": [
+      {
+        "name": "clientSocket",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "boolean",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过套接字写入数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendResponse",
+    "module": "@ohos.bluetooth",
+    "class": "GattServer",
+    "namespace": "bluetooth",
+    "parameters": [
+      {
+        "name": "serverResponse",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.bluetooth\").default.ServerResponse"
+      }
+    ],
+    "returnType": "boolean",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "向指定的BLE外设设备发送响应，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sppWriteAsync",
+    "module": "@ohos.bluetooth.socket",
+    "class": "",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "clientSocket",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于将数据写入套接字，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sppWrite",
+    "module": "@ohos.bluetooth.socket",
+    "class": "",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "clientSocket",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过套接字写入数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.connectedTag",
+    "class": "",
+    "namespace": "connectedTag",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "number[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入连接的 NFC 标签属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.connectedTag",
+    "class": "",
+    "namespace": "connectedTag",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "number[]"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入连接的 NFC 标签属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "publish",
+    "module": "@ohos.data.dataShare",
+    "class": "DataProxyHandle",
+    "namespace": "dataShare",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataShare\").default.ProxyData[]"
+      },
+      {
+        "name": "config",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataShare\").default.DataProxyConfig"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataShare\").default.DataProxyResult[]>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发布代理数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@ohos.data.distributedData",
+    "class": "KVStore",
+    "namespace": "distributedData",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string | number | boolean | Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将键值对写入数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@ohos.data.distributedData",
+    "class": "KVStore",
+    "namespace": "distributedData",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string | number | boolean | Uint8Array<ArrayBufferLike>"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将键值对写入 KvStore 数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@ohos.data.distributedKVStore",
+    "class": "SingleKVStore",
+    "namespace": "distributedKVStore",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string | number | boolean | Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将键值对写入数据库属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "putBatch",
+    "module": "@ohos.data.distributedKVStore",
+    "class": "SingleKVStore",
+    "namespace": "distributedKVStore",
+    "parameters": [
+      {
+        "name": "entries",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.distributedKVStore\").default.Entry[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将键值对批量插入数据库，属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@ohos.data.distributedKVStore",
+    "class": "SingleKVStore",
+    "namespace": "distributedKVStore",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string | number | boolean | Uint8Array<ArrayBufferLike>"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将键值对写入数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "backup",
+    "module": "@ohos.data.distributedKVStore",
+    "class": "SingleKVStore",
+    "namespace": "distributedKVStore",
+    "parameters": [
+      {
+        "name": "file",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "备份数据库操作可能涉及敏感数据的存储，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "putSync",
+    "module": "@ohos.data.preferences",
+    "class": "Preferences",
+    "namespace": "preferences",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.preferences\").default.ValueType"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据存储到 Preferences 对象中，属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@ohos.data.preferences",
+    "class": "Preferences",
+    "namespace": "preferences",
+    "parameters": [
+      {
+        "name": "key",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.preferences\").default.ValueType"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该方法将数据写入 Preferences 对象，属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "@ohos.data.rdb",
+    "class": "RdbStore",
+    "namespace": "rdb",
+    "parameters": [
+      {
+        "name": "values",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.RdbPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "更新数据库数据属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "insert",
+    "module": "@ohos.data.rdb",
+    "class": "RdbStore",
+    "namespace": "rdb",
+    "parameters": [
+      {
+        "name": "table",
+        "type": "string"
+      },
+      {
+        "name": "values",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "插入数据到目标表中属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sync",
+    "module": "@ohos.data.rdb",
+    "class": "RdbStore",
+    "namespace": "rdb",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.SyncMode"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.RdbPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<[string, number][], void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "同步数据可能涉及将数据传输到其他设备，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "values",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.RdbPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "更新数据库操作属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "values",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.RdbPredicates"
+      },
+      {
+        "name": "conflict",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ConflictResolution"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数更新数据库中的数据，属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "backup",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "destName",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "备份数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.RdbPredicates"
+      }
+    ],
+    "returnType": "Promise<[string, number][]>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "同步设备数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "cloudSync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "progress",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ProgressDetails>"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据同步到云端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.RdbPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<[string, number][], void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "同步数据可能涉及将敏感数据传输到其他设备，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "cloudSync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "tables",
+        "type": "string[]"
+      },
+      {
+        "name": "progress",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ProgressDetails>"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据同步到云端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "cloudSync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "progress",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ProgressDetails>"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "同步数据到云端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "remoteQuery",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "device",
+        "type": "string"
+      },
+      {
+        "name": "table",
+        "type": "string"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.RdbPredicates"
+      },
+      {
+        "name": "columns",
+        "type": "string[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ResultSet, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数查询远程数据库数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "cloudSync",
+    "module": "@ohos.data.relationalStore",
+    "class": "RdbStore",
+    "namespace": "relationalStore",
+    "parameters": [
+      {
+        "name": "mode",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.SyncMode"
+      },
+      {
+        "name": "tables",
+        "type": "string[]"
+      },
+      {
+        "name": "progress",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").Callback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.relationalStore\").default.ProgressDetails>"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据同步到云端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendData",
+    "module": "@ohos.distributedsched.abilityConnectionManager",
+    "class": "",
+    "namespace": "abilityConnectionManager",
+    "parameters": [
+      {
+        "name": "sessionId",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessage",
+    "module": "@ohos.distributedsched.abilityConnectionManager",
+    "class": "",
+    "namespace": "abilityConnectionManager",
+    "parameters": [
+      {
+        "name": "sessionId",
+        "type": "number"
+      },
+      {
+        "name": "msg",
+        "type": "string"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendData",
+    "module": "@ohos.distributedsched.linkEnhance",
+    "class": "Connection",
+    "namespace": "linkEnhance",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送数据到对端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendData",
+    "module": "@ohos.distributedsched.proxyChannelManager",
+    "class": "",
+    "namespace": "proxyChannelManager",
+    "parameters": [
+      {
+        "name": "channelId",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过代理通道向对等设备发送数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "info",
+    "module": "@ohos.hilog",
+    "class": "",
+    "namespace": "hilog",
+    "parameters": [
+      {
+        "name": "domain",
+        "type": "number"
+      },
+      {
+        "name": "tag",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "输出日志，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "warn",
+    "module": "@ohos.hilog",
+    "class": "",
+    "namespace": "hilog",
+    "parameters": [
+      {
+        "name": "domain",
+        "type": "number"
+      },
+      {
+        "name": "tag",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "输出警告级别日志，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "debug",
+    "module": "@ohos.hilog",
+    "class": "",
+    "namespace": "hilog",
+    "parameters": [
+      {
+        "name": "domain",
+        "type": "number"
+      },
+      {
+        "name": "tag",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "输出调试日志，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "error",
+    "module": "@ohos.hilog",
+    "class": "",
+    "namespace": "hilog",
+    "parameters": [
+      {
+        "name": "domain",
+        "type": "number"
+      },
+      {
+        "name": "tag",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "输出错误级别日志，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fatal",
+    "module": "@ohos.hilog",
+    "class": "",
+    "namespace": "hilog",
+    "parameters": [
+      {
+        "name": "domain",
+        "type": "number"
+      },
+      {
+        "name": "tag",
+        "type": "string"
+      },
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "输出致命级别的日志，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.hiviewdfx.hiAppEvent",
+    "class": "",
+    "namespace": "hiAppEvent",
+    "parameters": [
+      {
+        "name": "info",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.hiviewdfx.hiAppEvent\").default.AppEventInfo"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该 API 将事件写入，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessage",
+    "module": "@ohos.inputMethod",
+    "class": "InputMethodController",
+    "namespace": "inputMethod",
+    "parameters": [
+      {
+        "name": "msgId",
+        "type": "string"
+      },
+      {
+        "name": "msgParam",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessage",
+    "module": "@ohos.inputMethodEngine",
+    "class": "InputClient",
+    "namespace": "inputMethodEngine",
+    "parameters": [
+      {
+        "name": "msgId",
+        "type": "string"
+      },
+      {
+        "name": "msgParam",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息到编辑框属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.multimedia.audio",
+    "class": "AudioRenderer",
+    "namespace": "audio",
+    "parameters": [
+      {
+        "name": "buffer",
+        "type": "ArrayBuffer"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将数据写入外部存储，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendCustomData",
+    "module": "@ohos.multimedia.avsession",
+    "class": "AVSession",
+    "namespace": "avSession",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "Record<string, Object>"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送自定义数据到远程设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendControlCommand",
+    "module": "@ohos.multimedia.avsession",
+    "class": "AVCastController",
+    "namespace": "avSession",
+    "parameters": [
+      {
+        "name": "command",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.multimedia.avsession\").default.AVCastControlCommand"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送控制命令到远程播放器属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendCommonCommand",
+    "module": "@ohos.multimedia.avsession",
+    "class": "AVSessionController",
+    "namespace": "avSession",
+    "parameters": [
+      {
+        "name": "command",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "{ [key: string]: Object; }"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送通用命令可能涉及向外部传输数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "respondData",
+    "module": "@ohos.multimedia.media",
+    "class": "MediaSourceLoadingRequest",
+    "namespace": "media",
+    "parameters": [
+      {
+        "name": "uuid",
+        "type": "number"
+      },
+      {
+        "name": "offset",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "number",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该接口用于向 AVPlayer 发送请求的数据，属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "replyCustomEapData",
+    "module": "@ohos.net.eap",
+    "class": "",
+    "namespace": "eap",
+    "parameters": [
+      {
+        "name": "result",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.eap\").default.CustomResult"
+      },
+      {
+        "name": "data",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.eap\").default.EapData"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送自定义 EAP 数据包到系统属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "request",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpResponse, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "request",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpRequestOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpResponse, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "requestInStream",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "request",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpRequestOptions"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpResponse>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "requestInStream",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpRequestOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "requestInStream",
+    "module": "@ohos.net.http",
+    "class": "HttpRequest",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.http\").default.HttpRequestOptions"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发起 HTTP 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "flush",
+    "module": "@ohos.net.http",
+    "class": "HttpResponseCache",
+    "namespace": "http",
+    "parameters": [
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将缓存数据写入文件系统，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "flush",
+    "module": "@ohos.net.http",
+    "class": "HttpResponseCache",
+    "namespace": "http",
+    "parameters": [],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将缓存数据写入文件系统，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "UDPSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.socket\").default.UDPSendOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 UDPSocket 发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "UDPSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.socket\").default.UDPSendOptions"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 UDPSocket 发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "LocalSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.socket\").default.LocalSendOptions"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 LocalSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "TCPSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.socket\").default.TCPSendOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 TCPSocket 发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "TCPSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.socket\").default.TCPSendOptions"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 TCPSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "TLSSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "string | ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 TLSSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "class": "TLSSocket",
+    "namespace": "socket",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 TLSSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.webSocket",
+    "class": "WebSocket",
+    "namespace": "webSocket",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "string | ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<boolean>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 WebSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.webSocket",
+    "class": "WebSocket",
+    "namespace": "webSocket",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<boolean, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "通过 WebSocket 连接发送数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.webSocket",
+    "class": "WebSocketServer",
+    "namespace": "webSocket",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "connection",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.net.webSocket\").default.WebSocketConnection"
+      }
+    ],
+    "returnType": "Promise<boolean>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息通过特定连接，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "transmit",
+    "module": "@ohos.nfc.cardEmulation",
+    "class": "HceService",
+    "namespace": "cardEmulation",
+    "parameters": [
+      {
+        "name": "response",
+        "type": "number[]"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送响应 APDU 到远程设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "transmit",
+    "module": "@ohos.nfc.cardEmulation",
+    "class": "HceService",
+    "namespace": "cardEmulation",
+    "parameters": [
+      {
+        "name": "response",
+        "type": "number[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送响应 APDU 到远程设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendResponse",
+    "module": "@ohos.nfc.cardEmulation",
+    "class": "HceService",
+    "namespace": "cardEmulation",
+    "parameters": [
+      {
+        "name": "responseApdu",
+        "type": "number[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送响应 APDU 到远程设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "addRecord",
+    "module": "@ohos.pasteboard",
+    "class": "PasteData",
+    "namespace": "pasteboard",
+    "parameters": [
+      {
+        "name": "mimeType",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.pasteboard\").default.ValueType"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据添加到 PasteData 对象中，可能涉及用户剪贴板数据的外部传输，属于敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "upload",
+    "module": "@ohos.request",
+    "class": "",
+    "namespace": "request",
+    "parameters": [
+      {
+        "name": "config",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadConfig"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadTask, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "启动上传任务，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFile",
+    "module": "@ohos.request",
+    "class": "",
+    "namespace": "request",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+      },
+      {
+        "name": "config",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadConfig"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadTask, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "启动上传任务属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "upload",
+    "module": "@ohos.request",
+    "class": "",
+    "namespace": "request",
+    "parameters": [
+      {
+        "name": "config",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadConfig"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadTask>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "开始上传任务，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFile",
+    "module": "@ohos.request",
+    "class": "",
+    "namespace": "request",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/BaseContext\").default"
+      },
+      {
+        "name": "config",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadConfig"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.request\").default.UploadTask>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "上传文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessageRequest",
+    "module": "@ohos.rpc",
+    "class": "IRemoteObject",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "code",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageSequence"
+      },
+      {
+        "name": "reply",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageSequence"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageOption"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.RequestResult, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于发送消息到对等进程，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessageRequest",
+    "module": "@ohos.rpc",
+    "class": "IRemoteObject",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "code",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageSequence"
+      },
+      {
+        "name": "reply",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageSequence"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageOption"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.RequestResult>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于向对等进程异步发送消息，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendRequest",
+    "module": "@ohos.rpc",
+    "class": "RemoteObject",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "code",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageParcel"
+      },
+      {
+        "name": "reply",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageParcel"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.rpc\").default.MessageOption"
+      }
+    ],
+    "returnType": "boolean",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数向外部对象发送请求，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeToAshmem",
+    "module": "@ohos.rpc",
+    "class": "Ashmem",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "buf",
+        "type": "number[]"
+      },
+      {
+        "name": "size",
+        "type": "number"
+      },
+      {
+        "name": "offset",
+        "type": "number"
+      }
+    ],
+    "returnType": "boolean",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入共享文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeAshmem",
+    "module": "@ohos.rpc",
+    "class": "Ashmem",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "buf",
+        "type": "number[]"
+      },
+      {
+        "name": "size",
+        "type": "number"
+      },
+      {
+        "name": "offset",
+        "type": "number"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入共享文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeDataToAshmem",
+    "module": "@ohos.rpc",
+    "class": "Ashmem",
+    "namespace": "rpc",
+    "parameters": [
+      {
+        "name": "buf",
+        "type": "ArrayBuffer"
+      },
+      {
+        "name": "size",
+        "type": "number"
+      },
+      {
+        "name": "offset",
+        "type": "number"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入共享文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setValue",
+    "module": "@ohos.settings",
+    "class": "",
+    "namespace": "settings",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/Context\").default"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "name": "domainName",
+        "type": "string"
+      }
+    ],
+    "returnType": "Promise<boolean>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于设置系统设置数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setValueSync",
+    "module": "@ohos.settings",
+    "class": "",
+    "namespace": "settings",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/application/Context\").default"
+      },
+      {
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "name": "value",
+        "type": "string"
+      },
+      {
+        "name": "domainName",
+        "type": "string"
+      }
+    ],
+    "returnType": "boolean",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于设置系统设置数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "createMessage",
+    "module": "@ohos.telephony.sms",
+    "class": "",
+    "namespace": "sms",
+    "parameters": [
+      {
+        "name": "pdu",
+        "type": "number[]"
+      },
+      {
+        "name": "specification",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sms\").default.ShortMessage, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "创建短信消息实例涉及处理短信数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendShortMessage",
+    "module": "@ohos.telephony.sms",
+    "class": "",
+    "namespace": "sms",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sms\").default.SendMessageOptions"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送短信属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendShortMessage",
+    "module": "@ohos.telephony.sms",
+    "class": "",
+    "namespace": "sms",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sms\").default.SendMessageOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送短信属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessage",
+    "module": "@ohos.telephony.sms",
+    "class": "",
+    "namespace": "sms",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.telephony.sms\").default.SendMessageOptions"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送短信属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "bulkTransfer",
+    "module": "@ohos.usb",
+    "class": "",
+    "namespace": "usb",
+    "parameters": [
+      {
+        "name": "pipe",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.usb\").default.USBDevicePipe"
+      },
+      {
+        "name": "endpoint",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.usb\").default.USBEndpoint"
+      },
+      {
+        "name": "buffer",
+        "type": "Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "timeout",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "执行批量传输操作，涉及向外部设备传输数据，属于敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "bulkTransfer",
+    "module": "@ohos.usbManager",
+    "class": "",
+    "namespace": "usbManager",
+    "parameters": [
+      {
+        "name": "pipe",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.usbManager\").default.USBDevicePipe"
+      },
+      {
+        "name": "endpoint",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.usbManager\").default.USBEndpoint"
+      },
+      {
+        "name": "buffer",
+        "type": "Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "timeout",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "执行批量传输操作，涉及向外部设备传输数据，属于敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "usbSubmitTransfer",
+    "module": "@ohos.usbManager",
+    "class": "",
+    "namespace": "usbManager",
+    "parameters": [
+      {
+        "name": "transfer",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.usbManager\").default.UsbDataTransferParams"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "提交 USB 数据传输属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeSync",
+    "module": "@ohos.usbManager.serial",
+    "class": "",
+    "namespace": "serialManager",
+    "parameters": [
+      {
+        "name": "portId",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "timeout",
+        "type": "number"
+      }
+    ],
+    "returnType": "number",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该 API 将数据写入串口设备，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.usbManager.serial",
+    "class": "",
+    "namespace": "serialManager",
+    "parameters": [
+      {
+        "name": "portId",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "Uint8Array<ArrayBufferLike>"
+      },
+      {
+        "name": "timeout",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入串口设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "postUrl",
+    "module": "@ohos.web.webview",
+    "class": "WebviewController",
+    "namespace": "webview",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "string"
+      },
+      {
+        "name": "postData",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "使用 POST 方法加载 URL，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "postMessage",
+    "module": "@ohos.worker",
+    "class": "ThreadWorker",
+    "namespace": "worker",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "Object"
+      },
+      {
+        "name": "transfer",
+        "type": "ArrayBuffer[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将消息发送到工作线程属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "postMessage",
+    "module": "@ohos.worker",
+    "class": "ThreadWorker",
+    "namespace": "worker",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "Object"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.worker\").PostMessageOptions"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "向工作线程发送消息属于向外部传输数据的操作，可能涉及敏感信息。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setComment",
+    "module": "@ohos.xml",
+    "class": "XmlDynamicSerializer",
+    "namespace": "xml",
+    "parameters": [
+      {
+        "name": "text",
+        "type": "string"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将评论写入 XML，属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "gzwrite",
+    "module": "@ohos.zlib",
+    "class": "GZip",
+    "namespace": "zlib",
+    "parameters": [
+      {
+        "name": "buf",
+        "type": "ArrayBuffer"
+      },
+      {
+        "name": "len",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将数据写入文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "gzprintf",
+    "module": "@ohos.zlib",
+    "class": "GZip",
+    "namespace": "zlib",
+    "parameters": [
+      {
+        "name": "format",
+        "type": "string"
+      },
+      {
+        "name": "args",
+        "type": "(string | number)[]"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将格式化后的数据写入文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeArrayBuffer",
+    "module": "@system.file",
+    "class": "File",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@system.file\").FileWriteArrayBufferOption"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "upload",
+    "module": "@system.request",
+    "class": "Request",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@system.request\").UploadRequestOptions"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "上传文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "insert",
+    "module": "ability/dataAbilityHelper",
+    "class": "DataAbilityHelper",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valuesBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据记录插入数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "batchInsert",
+    "module": "ability/dataAbilityHelper",
+    "class": "DataAbilityHelper",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valuesBuckets",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将多个数据记录插入数据库属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "ability/dataAbilityHelper",
+    "class": "DataAbilityHelper",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valuesBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataAbility\").default.DataAbilityPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "更新数据库记录属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "ability/dataAbilityHelper",
+    "class": "DataAbilityHelper",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valuesBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "更新数据库记录属于向外部存储传输数据的操作，可能涉及敏感数据。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "print",
+    "module": "application/AbilityDelegator",
+    "class": "AbilityDelegator",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "msg",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "打印日志信息属于向外部传输数据的操作，可能会泄露敏感信息。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendData",
+    "module": "application/UIServiceProxy",
+    "class": "UIServiceProxy",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "data",
+        "type": "Record<string, Object>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送数据到 UI 服务属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeNdef",
+    "module": "tag/nfctech",
+    "class": "NdefTag",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "msg",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/tag/nfctech\").NdefMessage"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入 NDEF 消息到标签属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeSinglePage",
+    "module": "tag/nfctech",
+    "class": "MifareUltralightTag",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "pageIndex",
+        "type": "number"
+      },
+      {
+        "name": "data",
+        "type": "number[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入数据到存储设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "format",
+    "module": "tag/nfctech",
+    "class": "NdefFormatableTag",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/tag/nfctech\").NdefMessage"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将 NDEF 消息写入 NDEF 标签属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "formatReadOnly",
+    "module": "tag/nfctech",
+    "class": "NdefFormatableTag",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/tag/nfctech\").NdefMessage"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将 NDEF 消息写入标签并设置为只读，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMsg",
+    "module": "@internal/full/featureability",
+    "class": "FeatureAbility",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@internal/full/featureability\").SendMessageOptions"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMsg",
+    "module": "@internal/full/index",
+    "class": "FeatureAbility",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@internal/full/featureability\").SendMessageOptions"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送消息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "@internal/full/index",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataAbility\").default.DataAbilityPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "更新数据库中的数据记录属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "insert",
+    "module": "@internal/full/index",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "插入数据记录到数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "batchInsert",
+    "module": "@internal/full/index",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBuckets",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将多个数据记录插入数据库属于向外部传输数据的操作，可能涉及敏感数据。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "delete",
+    "module": "@internal/full/lifecycle",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataAbility\").default.DataAbilityPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "删除数据记录属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "update",
+    "module": "@internal/full/lifecycle",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "predicates",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.dataAbility\").default.DataAbilityPredicates"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该方法用于更新数据库中的数据记录，属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "insert",
+    "module": "@internal/full/lifecycle",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBucket",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据记录插入数据库属于向外部存储传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "batchInsert",
+    "module": "@internal/full/lifecycle",
+    "class": "LifecycleData",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "uri",
+        "type": "string"
+      },
+      {
+        "name": "valueBuckets",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.data.rdb\").default.ValuesBucket[]"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将多个数据记录插入数据库属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "shareIntent",
+    "module": "@hms.ai.insightIntent",
+    "class": "",
+    "namespace": "insightIntent",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "common.BaseContext"
+      },
+      {
+        "name": "intents",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.ai.insightIntent\").default.InsightIntent[]"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于分享 InsightIntent，属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@hms.collaboration.rcp",
+    "class": "WriteFile",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "buffer",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "Promise<number | void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeSync",
+    "module": "@hms.collaboration.rcp",
+    "class": "SyncWriteStream",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "buffer",
+        "type": "ArrayBuffer"
+      }
+    ],
+    "returnType": "number | void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将数据写入流，属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@hms.collaboration.rcp",
+    "class": "INetworkInputQueue",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将数据写入队列并最终传输到远程服务器，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fetchForSendable",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "request",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Request"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.ResponseSendable>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送 HTTP 请求并获取响应属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "post",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "any"
+      },
+      {
+        "name": "content",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.RequestContent"
+      },
+      {
+        "name": "destination",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.ResponseBodyDestination"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送 HTTP POST 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "put",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "any"
+      },
+      {
+        "name": "content",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.RequestContent"
+      },
+      {
+        "name": "destination",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.ResponseBodyDestination"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送 HTTP PUT 请求属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "head",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "any"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送 HTTP HEAD 请求，属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fetch",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "request",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Request"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送 HTTP 请求并获取响应属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFromStream",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "any"
+      },
+      {
+        "name": "uploadFrom",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.UploadFromStream"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数涉及从流中上传数据，属于向外部传输数据的操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFromFile",
+    "module": "@hms.collaboration.rcp",
+    "class": "Session",
+    "namespace": "rcp",
+    "parameters": [
+      {
+        "name": "url",
+        "type": "any"
+      },
+      {
+        "name": "uploadFrom",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.UploadFromFile"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.collaboration.rcp\").default.Response>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数涉及从文件上传数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "upsert",
+    "module": "@hms.core.deviceCloudGateway.cloudDatabase",
+    "class": "DatabaseZone",
+    "namespace": "cloudDatabase",
+    "parameters": [
+      {
+        "name": "objectList",
+        "type": "T | T[]"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<number>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "将对象写入云数据库，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "upsert",
+    "module": "@hms.core.deviceCloudGateway.cloudDatabase",
+    "class": "DatabaseZone",
+    "namespace": "cloudDatabase",
+    "parameters": [
+      {
+        "name": "objectList",
+        "type": "T | T[]"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将对象写入云数据库，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFile",
+    "module": "@hms.core.deviceCloudGateway.cloudStorage",
+    "class": "StorageBucket",
+    "namespace": "cloudStorage",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "common.BaseContext"
+      },
+      {
+        "name": "parameters",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.deviceCloudGateway.cloudStorage\").default.UploadParams"
+      }
+    ],
+    "returnType": "Promise<request.agent.Task>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "上传文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "deleteFile",
+    "module": "@hms.core.deviceCloudGateway.cloudStorage",
+    "class": "StorageBucket",
+    "namespace": "cloudStorage",
+    "parameters": [
+      {
+        "name": "cloudPath",
+        "type": "string"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "删除云端文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "downloadFile",
+    "module": "@hms.core.deviceCloudGateway.cloudStorage",
+    "class": "StorageBucket",
+    "namespace": "cloudStorage",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "common.BaseContext"
+      },
+      {
+        "name": "parameters",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.deviceCloudGateway.cloudStorage\").default.DownloadParams"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<request.agent.Task>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "下载文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "uploadFile",
+    "module": "@hms.core.deviceCloudGateway.cloudStorage",
+    "class": "StorageBucket",
+    "namespace": "cloudStorage",
+    "parameters": [
+      {
+        "name": "context",
+        "type": "common.BaseContext"
+      },
+      {
+        "name": "parameters",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.deviceCloudGateway.cloudStorage\").default.UploadParams"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<request.agent.Task>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "上传文件到云端属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setMetadata",
+    "module": "@hms.core.deviceCloudGateway.cloudStorage",
+    "class": "StorageBucket",
+    "namespace": "cloudStorage",
+    "parameters": [
+      {
+        "name": "cloudPath",
+        "type": "string"
+      },
+      {
+        "name": "metadata",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.deviceCloudGateway.cloudStorage\").default.MetadataUpdatable"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.deviceCloudGateway.cloudStorage\").default.Metadata>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将文件的元数据更新到云端，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendPackageInfo",
+    "module": "@hms.core.gameservice.gamenearbytransfer",
+    "class": "",
+    "namespace": "gameNearbyTransfer",
+    "parameters": [
+      {
+        "name": "packageInfo",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.core.gameservice.gamenearbytransfer\").default.PackageInfo"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送包信息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "setWorkspaceProfilePhoto",
+    "module": "@hms.enterpriseSpaceService.spaceManager",
+    "class": "",
+    "namespace": "spaceManager",
+    "parameters": [
+      {
+        "name": "workspaceId",
+        "type": "number"
+      },
+      {
+        "name": "photo",
+        "type": "string"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "设置工作区的个人资料照片属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "saveData",
+    "module": "@hms.health.store",
+    "class": "",
+    "namespace": "healthStore",
+    "parameters": [
+      {
+        "name": "exerciseSequence",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.ExerciseSequence<Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.ExerciseSummary>, Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.SequencePoint[]>> | import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.ExerciseSequence<Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.ExerciseSummary>, Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.SequencePoint[]>>[]"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "保存运动序列数据到健康数据存储，需要写入权限，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "saveData",
+    "module": "@hms.health.store",
+    "class": "",
+    "namespace": "healthStore",
+    "parameters": [
+      {
+        "name": "sampleData",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.SamplePoint<Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.HealthValueType>> | import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.SamplePoint<Record<string, import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.store\").default.HealthValueType>>[]"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "保存健康数据到数据存储，需要写入权限，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendMessage",
+    "module": "@hms.health.wearEngine",
+    "class": "P2pClient",
+    "namespace": "wearEngine",
+    "parameters": [
+      {
+        "name": "deviceRandomId",
+        "type": "string"
+      },
+      {
+        "name": "appParam",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pAppParam"
+      },
+      {
+        "name": "message",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pMessage"
+      }
+    ],
+    "returnType": "Promise<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pResult>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "向远程设备发送消息属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "transferFile",
+    "module": "@hms.health.wearEngine",
+    "class": "P2pClient",
+    "namespace": "wearEngine",
+    "parameters": [
+      {
+        "name": "deviceRandomId",
+        "type": "string"
+      },
+      {
+        "name": "appParam",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pAppParam"
+      },
+      {
+        "name": "file",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pFile"
+      },
+      {
+        "name": "callback",
+        "type": "AsyncCallback<import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.health.wearEngine\").default.P2pResult>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "发送文件到远程设备属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "sendResponse",
+    "module": "@hms.nearlink.ssap",
+    "class": "Server",
+    "namespace": "ssap",
+    "parameters": [
+      {
+        "name": "response",
+        "type": "import(\"D:/Tools/DevEco Studio/sdk/default/hms/ets/api/@hms.nearlink.ssap\").default.ServerResponse"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将响应发送给客户端，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeSync",
+    "module": "@ohos.file.fs",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.fs\").WriteOptions"
+      }
+    ],
+    "returnType": "number",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数将数据写入文件，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.file.fs",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.file.fs",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.fs\").WriteOptions"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入文件属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.file.fs",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.file.fs\").WriteOptions"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入文件属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fsync",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "fsync 函数用于将文件描述符 fd 的数据同步到磁盘，属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fsync",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<void, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "fsync 函数用于将文件描述符 fd 的数据同步到磁盘，属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "fdatasync",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      }
+    ],
+    "returnType": "Promise<void>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "fdatasync 函数用于将文件描述符 fd 的数据同步到磁盘，属于向外部存储传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入数据到文件或外部存储属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "{ offset?: number; length?: number; position?: number; encoding?: string; }"
+      }
+    ],
+    "returnType": "Promise<number>",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于写入数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "writeSync",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "{ offset?: number; length?: number; position?: number; encoding?: string; }"
+      }
+    ],
+    "returnType": "number",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "该函数用于同步写入数据，属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "write",
+    "module": "@ohos.fileio",
+    "class": "",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "fd",
+        "type": "number"
+      },
+      {
+        "name": "buffer",
+        "type": "string | ArrayBuffer"
+      },
+      {
+        "name": "options",
+        "type": "{ offset?: number; length?: number; position?: number; encoding?: string; }"
+      },
+      {
+        "name": "callback",
+        "type": "import(\"D:/OpenHarmony/Sdk/20/ets/api/@ohos.base\").AsyncCallback<number, void>"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入数据属于向外部传输数据的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "log",
+    "module": "@internal/full/global",
+    "class": "console",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "arguments",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入日志的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "info",
+    "module": "@internal/full/global",
+    "class": "console",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "arguments",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入日志的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "debug",
+    "module": "@internal/full/global",
+    "class": "console",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "arguments",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入日志的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "warn",
+    "module": "@internal/full/global",
+    "class": "console",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "arguments",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入日志的敏感操作。",
+    "is_sink": "yes"
+  },
+  {
+    "api_name": "error",
+    "module": "@internal/full/global",
+    "class": "console",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "message",
+        "type": "string"
+      },
+      {
+        "name": "arguments",
+        "type": "any[]"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "sink",
+    "source_type": null,
+    "tainted_param_index": -1,
+    "reason": "写入日志的敏感操作。",
     "is_sink": "yes"
   }
 ]

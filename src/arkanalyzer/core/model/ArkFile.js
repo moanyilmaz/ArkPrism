@@ -14,18 +14,42 @@
  * limitations under the License.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ArkFile = exports.notStmtOrExprKind = void 0;
+exports.ArkFile = exports.Language = exports.notStmtOrExprKind = void 0;
 const ArkNamespace_1 = require("./ArkNamespace");
 const ArkSignature_1 = require("./ArkSignature");
 const TSConst_1 = require("../common/TSConst");
-exports.notStmtOrExprKind = ['ModuleDeclaration', 'ClassDeclaration', 'InterfaceDeclaration', 'EnumDeclaration', 'ExportDeclaration',
-    'ExportAssignment', 'MethodDeclaration', 'Constructor', 'FunctionDeclaration', 'GetAccessor', 'SetAccessor', 'ArrowFunction',
-    'FunctionExpression', 'MethodSignature', 'ConstructSignature', 'CallSignature'];
+const Const_1 = require("../common/Const");
+exports.notStmtOrExprKind = [
+    'ModuleDeclaration',
+    'ClassDeclaration',
+    'InterfaceDeclaration',
+    'EnumDeclaration',
+    'ExportDeclaration',
+    'ExportAssignment',
+    'MethodDeclaration',
+    'Constructor',
+    'FunctionDeclaration',
+    'GetAccessor',
+    'SetAccessor',
+    'ArrowFunction',
+    'FunctionExpression',
+    'MethodSignature',
+    'ConstructSignature',
+    'CallSignature',
+];
+var Language;
+(function (Language) {
+    Language[Language["TYPESCRIPT"] = 0] = "TYPESCRIPT";
+    Language[Language["ARKTS1_1"] = 1] = "ARKTS1_1";
+    Language[Language["ARKTS1_2"] = 2] = "ARKTS1_2";
+    Language[Language["JAVASCRIPT"] = 3] = "JAVASCRIPT";
+    Language[Language["UNKNOWN"] = -1] = "UNKNOWN";
+})(Language || (exports.Language = Language = {}));
 /**
  * @category core/model
  */
 class ArkFile {
-    constructor() {
+    constructor(language) {
         this.absoluteFilePath = '';
         this.projectDir = '';
         this.code = '';
@@ -37,6 +61,17 @@ class ArkFile {
         this.fileSignature = ArkSignature_1.FileSignature.DEFAULT;
         this.ohPackageJson5Path = [];
         this.anonymousClassNumber = 0;
+        this.ast = null;
+        this.language = language;
+    }
+    /**
+     * Returns the program language of the file.
+     */
+    getLanguage() {
+        return this.language;
+    }
+    setLanguage(language) {
+        this.language = language;
     }
     /**
      * Returns the **string** name of the file, which also acts as the file's relative path.
@@ -75,9 +110,9 @@ class ArkFile {
      * @example
      * 1. Read source code based on file path.
 
-    ```typescript
-    let str = fs.readFileSync(arkFile.getFilePath(), 'utf8');
-    ```
+     ```typescript
+     let str = fs.readFileSync(arkFile.getFilePath(), 'utf8');
+     ```
      */
     getFilePath() {
         return this.absoluteFilePath;
@@ -95,8 +130,16 @@ class ArkFile {
     getCode() {
         return this.code;
     }
-    addArkClass(arkClass) {
-        this.classes.set(arkClass.getName(), arkClass);
+    addArkClass(arkClass, originName) {
+        const name = originName !== null && originName !== void 0 ? originName : arkClass.getName();
+        this.classes.set(name, arkClass);
+        if (!originName && !arkClass.isAnonymousClass()) {
+            const index = name.indexOf(Const_1.NAME_DELIMITER);
+            if (index > 0) {
+                const originName = name.substring(0, index);
+                this.addArkClass(arkClass, originName);
+            }
+        }
     }
     getDefaultClass() {
         return this.defaultClass;
@@ -120,15 +163,14 @@ class ArkFile {
      * @returns A class. If there is no class, the return will be a **null**.
      */
     getClass(classSignature) {
-        const className = classSignature instanceof ArkSignature_1.AliasClassSignature ? classSignature.getOriginName()
-            : classSignature.getClassName();
+        const className = classSignature instanceof ArkSignature_1.AliasClassSignature ? classSignature.getOriginName() : classSignature.getClassName();
         return this.getClassWithName(className);
     }
     getClassWithName(Class) {
         return this.classes.get(Class) || null;
     }
     getClasses() {
-        return Array.from(this.classes.values());
+        return Array.from(new Set(this.classes.values()));
     }
     addNamespace(namespace) {
         this.namespaces.set(namespace.getName(), namespace);
@@ -255,13 +297,19 @@ class ArkFile {
     getAllNamespacesUnderThisFile() {
         let namespaces = [];
         namespaces.push(...this.namespaces.values());
-        this.namespaces.forEach((ns) => {
+        this.namespaces.forEach(ns => {
             namespaces.push(...ns.getAllNamespacesUnderThisNamespace());
         });
         return namespaces;
     }
     getAnonymousClassNumber() {
         return this.anonymousClassNumber++;
+    }
+    getAST() {
+        return this.ast;
+    }
+    setAST(value) {
+        this.ast = value;
     }
 }
 exports.ArkFile = ArkFile;

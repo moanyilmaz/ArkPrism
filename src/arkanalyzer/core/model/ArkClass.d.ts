@@ -1,7 +1,7 @@
 import { GenericType, Type } from '../base/Type';
 import { ViewTree } from '../graph/ViewTree';
 import { ArkField } from './ArkField';
-import { ArkFile } from './ArkFile';
+import { ArkFile, Language } from './ArkFile';
 import { ArkMethod } from './ArkMethod';
 import { ArkNamespace } from './ArkNamespace';
 import { ClassSignature, FieldSignature, FileSignature, MethodSignature, NamespaceSignature } from './ArkSignature';
@@ -47,6 +47,10 @@ export declare class ArkClass extends ArkBaseModel implements ArkExport {
     private indexSignatureNumber;
     private viewTree?;
     constructor();
+    /**
+     * Returns the program language of the file where this class defined.
+     */
+    getLanguage(): Language;
     /**
      * Returns the **string**name of this class.
      * @returns The name of this class.
@@ -152,7 +156,12 @@ export declare class ArkClass extends ArkBaseModel implements ArkExport {
     getMethod(methodSignature: MethodSignature): ArkMethod | null;
     getMethodWithName(methodName: string): ArkMethod | null;
     getStaticMethodWithName(methodName: string): ArkMethod | null;
-    addMethod(method: ArkMethod): void;
+    /**
+     * add a method in class.
+     * when a nested method with declare name, add both the declare origin name and signature name
+     * %${declare name}$${outer method name} in class.
+     */
+    addMethod(method: ArkMethod, originName?: string): void;
     setDefaultArkMethod(defaultMethod: ArkMethod): void;
     getDefaultArkMethod(): ArkMethod | null;
     setViewTree(viewTree: ViewTree): void;

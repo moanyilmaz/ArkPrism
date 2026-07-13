@@ -8,6 +8,7 @@ import { Stmt } from '../../core/base/Stmt';
 import { Pag } from './Pag';
 import { PointerAnalysisConfig } from './PointerAnalysisConfig';
 import { DiffPTData, IPtsCollection } from './PtsDS';
+import { ArkMethod } from '../../core/model/ArkMethod';
 export declare class PointerAnalysis extends AbstractAnalysis {
     private pag;
     private pagBuilder;
@@ -19,10 +20,12 @@ export declare class PointerAnalysis extends AbstractAnalysis {
     private config;
     constructor(p: Pag, cg: CallGraph, s: Scene, config: PointerAnalysisConfig);
     static pointerAnalysisForWholeProject(projectScene: Scene, config?: PointerAnalysisConfig): PointerAnalysis;
+    static pointerAnalysisForMethod(s: Scene, method: ArkMethod, config?: PointerAnalysisConfig): PointerAnalysis;
     protected init(): void;
     start(): void;
     private postProcess;
     getPTD(): DiffPTData<NodeID, NodeID, IPtsCollection<NodeID>>;
+    getPag(): Pag;
     getStat(): string;
     protected preProcessMethod(funcID: FuncID): CallSite[];
     setEntries(fIds: FuncID[]): void;
@@ -45,7 +48,7 @@ export declare class PointerAnalysis extends AbstractAnalysis {
     private propagate;
     /**
      * 1. 记录被更新的节点(记录cid, nodeid)
-     * 2. ( PAGLocalNode记录callsite(cid, value唯一))，通过1种的nodeID查询Node,拿到Callsite
+     * 2. ( PAGLocalNode记录callSite(cid, value唯一))，通过1种的nodeID查询Node,拿到CallSite
      * 3. 在addDynamicCall里对传入指针过滤（已处理指针和未处理指针）
      */
     private onTheFlyDynamicCallSolve;

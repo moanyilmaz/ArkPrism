@@ -21,7 +21,8 @@ export declare abstract class AbstractInvokeExpr extends AbstractExpr {
     private methodSignature;
     private args;
     private realGenericTypes?;
-    constructor(methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[]);
+    private spreadFlags?;
+    constructor(methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[], spreadFlags?: boolean[]);
     /**
      * Get method Signature. The method signature is consist of ClassSignature and MethodSubSignature.
      * It is the unique flag of a method. It is usually used to compose a expression string in ArkIRTransformer.
@@ -71,11 +72,13 @@ export declare abstract class AbstractInvokeExpr extends AbstractExpr {
     getType(): Type;
     getRealGenericTypes(): Type[] | undefined;
     setRealGenericTypes(realTypes: Type[] | undefined): void;
+    getSpreadFlags(): boolean[] | undefined;
     getUses(): Value[];
+    protected argsToString(): string;
 }
 export declare class ArkInstanceInvokeExpr extends AbstractInvokeExpr {
     private base;
-    constructor(base: Local, methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[]);
+    constructor(base: Local, methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[], spreadFlags?: boolean[]);
     /**
      * Returns the local of the instance of invoke expression.
      * @returns The local of the invoke expression's instance..
@@ -93,17 +96,35 @@ export declare class ArkInstanceInvokeExpr extends AbstractInvokeExpr {
     inferType(arkMethod: ArkMethod): AbstractInvokeExpr;
 }
 export declare class ArkStaticInvokeExpr extends AbstractInvokeExpr {
-    constructor(methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[]);
+    constructor(methodSignature: MethodSignature, args: Value[], realGenericTypes?: Type[], spreadFlags?: boolean[]);
     toString(): string;
     inferType(arkMethod: ArkMethod): AbstractInvokeExpr;
 }
+/**
+ *     1. Local PtrInvokeExpr
+ *
+ *      ```typescript
+ *      func foo():void {
+ *      }
+ *      let ptr = foo;
+ *      ptr();
+ *      ```
+ *     2. FieldRef PtrInvokeExpr
+ *
+ *      ```typescript
+ *      class A {
+ *          b:()=> void()
+ *      }
+ *      new A().b()
+ *      ```
+ */
 export declare class ArkPtrInvokeExpr extends AbstractInvokeExpr {
-    private funPtrLocal;
-    constructor(methodSignature: MethodSignature, ptr: Local, args: Value[], realGenericTypes?: Type[]);
-    setFunPtrLocal(ptr: Local): void;
-    getFuncPtrLocal(): Local;
+    private funPtr;
+    constructor(methodSignature: MethodSignature, ptr: Local | AbstractFieldRef, args: Value[], realGenericTypes?: Type[], spreadFlags?: boolean[]);
+    setFunPtrLocal(ptr: Local | AbstractFieldRef): void;
+    getFuncPtrLocal(): Local | AbstractFieldRef;
+    inferType(arkMethod: ArkMethod): AbstractInvokeExpr;
     toString(): string;
-    inferType(arkMethod: ArkMethod): ArkPtrInvokeExpr;
     getUses(): Value[];
 }
 export declare class ArkNewExpr extends AbstractExpr {
@@ -114,6 +135,7 @@ export declare class ArkNewExpr extends AbstractExpr {
     getType(): Type;
     toString(): string;
     inferType(arkMethod: ArkMethod): ArkNewExpr;
+    private constructorSignature;
 }
 export declare class ArkNewArrayExpr extends AbstractExpr {
     private baseType;
@@ -245,6 +267,7 @@ export declare class ArkTypeOfExpr extends AbstractExpr {
     getUses(): Value[];
     getType(): Type;
     toString(): string;
+    inferType(arkMethod: ArkMethod): AbstractExpr;
 }
 export declare class ArkInstanceOfExpr extends AbstractExpr {
     private op;
@@ -256,6 +279,7 @@ export declare class ArkInstanceOfExpr extends AbstractExpr {
     getType(): Type;
     getUses(): Value[];
     toString(): string;
+    inferType(arkMethod: ArkMethod): AbstractExpr;
 }
 export declare class ArkCastExpr extends AbstractExpr {
     private op;

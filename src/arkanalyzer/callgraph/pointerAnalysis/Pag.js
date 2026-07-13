@@ -29,15 +29,25 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InterFuncPag = exports.FuncPag = exports.Pag = exports.PagGlobalThisNode = exports.PagFuncNode = exports.PagParamNode = exports.PagNewContainerExprNode = exports.PagNewExprNode = exports.PagArrayNode = exports.PagThisRefNode = exports.PagStaticFieldNode = exports.PagInstanceFieldNode = exports.PagLocalNode = exports.PagNode = exports.PagNodeKind = exports.ThisPagEdge = exports.WritePagEdge = exports.LoadPagEdge = exports.CopyPagEdge = exports.AddrPagEdge = exports.PagEdge = exports.StorageLinkEdgeType = exports.StorageType = exports.PagEdgeKind = void 0;
+exports.InterFuncPag = exports.FuncPag = exports.Pag = exports.PagGlobalThisNode = exports.PagFuncNode = exports.PagParamNode = exports.PagNewContainerExprNode = exports.PagNewExprNode = exports.PagConstantNode = exports.PagArrayNode = exports.PagThisRefNode = exports.PagStaticFieldNode = exports.PagInstanceFieldNode = exports.PagLocalNode = exports.PagNode = exports.PagNodeKind = exports.ThisPagEdge = exports.WritePagEdge = exports.LoadPagEdge = exports.CopyPagEdge = exports.AddrPagEdge = exports.PagEdge = exports.PagEdgeKind = void 0;
 const BaseExplicitGraph_1 = require("../../core/graph/BaseExplicitGraph");
 const Stmt_1 = require("../../core/base/Stmt");
 const Expr_1 = require("../../core/base/Expr");
@@ -47,7 +57,6 @@ const GraphPrinter_1 = require("../../save/GraphPrinter");
 const PrinterBuilder_1 = require("../../save/PrinterBuilder");
 const Constant_1 = require("../../core/base/Constant");
 const Type_1 = require("../../core/base/Type");
-const ArkSignature_1 = require("../../core/model/ArkSignature");
 const logger_1 = __importStar(require("../../utils/logger"));
 const TSConst_1 = require("../../core/common/TSConst");
 const ArkExport_1 = require("../../core/model/ArkExport");
@@ -57,7 +66,6 @@ const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 
 /*
  * Implementation of pointer-to assignment graph for pointer analysis
  */
-const DUMMY_PAG_NODE_ID = -1;
 var PagEdgeKind;
 (function (PagEdgeKind) {
     PagEdgeKind[PagEdgeKind["Address"] = 0] = "Address";
@@ -67,47 +75,32 @@ var PagEdgeKind;
     PagEdgeKind[PagEdgeKind["This"] = 4] = "This";
     PagEdgeKind[PagEdgeKind["Unknown"] = 5] = "Unknown";
     PagEdgeKind[PagEdgeKind["InterProceduralCopy"] = 6] = "InterProceduralCopy";
-})(PagEdgeKind = exports.PagEdgeKind || (exports.PagEdgeKind = {}));
-;
-var StorageType;
-(function (StorageType) {
-    StorageType[StorageType["APP_STORAGE"] = 0] = "APP_STORAGE";
-    StorageType[StorageType["LOCAL_STORAGE"] = 1] = "LOCAL_STORAGE";
-    StorageType[StorageType["Undefined"] = 2] = "Undefined";
-})(StorageType = exports.StorageType || (exports.StorageType = {}));
-;
-var StorageLinkEdgeType;
-(function (StorageLinkEdgeType) {
-    StorageLinkEdgeType[StorageLinkEdgeType["Property2Local"] = 0] = "Property2Local";
-    StorageLinkEdgeType[StorageLinkEdgeType["Local2Property"] = 1] = "Local2Property";
-    StorageLinkEdgeType[StorageLinkEdgeType["TwoWay"] = 2] = "TwoWay";
-})(StorageLinkEdgeType = exports.StorageLinkEdgeType || (exports.StorageLinkEdgeType = {}));
+})(PagEdgeKind || (exports.PagEdgeKind = PagEdgeKind = {}));
 class PagEdge extends BaseExplicitGraph_1.BaseEdge {
     constructor(n, d, k, s) {
         super(n, d, k);
         this.stmt = s;
     }
-    ;
     getDotAttr() {
         var _a;
         switch (this.getKind()) {
             case PagEdgeKind.Address:
-                return "color=green";
+                return 'color=green';
             case PagEdgeKind.Copy:
                 if (((_a = this.stmt) === null || _a === void 0 ? void 0 : _a.getInvokeExpr()) !== undefined || this.stmt instanceof Stmt_1.ArkReturnStmt) {
-                    return "color=black,style=dotted";
+                    return 'color=black,style=dotted';
                 }
-                return "color=black";
+                return 'color=black';
             case PagEdgeKind.Load:
-                return "color=red";
+                return 'color=red';
             case PagEdgeKind.Write:
-                return "color=blue";
+                return 'color=blue';
             case PagEdgeKind.This:
-                return "color=orange";
+                return 'color=orange';
             case PagEdgeKind.InterProceduralCopy:
-                return "color=purple,style=dashed";
+                return 'color=purple,style=dashed';
             default:
-                return "color=black";
+                return 'color=black';
         }
     }
 }
@@ -116,35 +109,30 @@ class AddrPagEdge extends PagEdge {
     constructor(n, d, s) {
         super(n, d, PagEdgeKind.Address, s);
     }
-    ;
 }
 exports.AddrPagEdge = AddrPagEdge;
 class CopyPagEdge extends PagEdge {
     constructor(n, d, s) {
         super(n, d, PagEdgeKind.Copy, s);
     }
-    ;
 }
 exports.CopyPagEdge = CopyPagEdge;
 class LoadPagEdge extends PagEdge {
     constructor(n, d, s) {
         super(n, d, PagEdgeKind.Copy, s);
     }
-    ;
 }
 exports.LoadPagEdge = LoadPagEdge;
 class WritePagEdge extends PagEdge {
     constructor(n, d, s) {
         super(n, d, PagEdgeKind.Write, s);
     }
-    ;
 }
 exports.WritePagEdge = WritePagEdge;
 class ThisPagEdge extends PagEdge {
     constructor(n, d, s) {
         super(n, d, PagEdgeKind.This, s);
     }
-    ;
 }
 exports.ThisPagEdge = ThisPagEdge;
 var PagNodeKind;
@@ -157,7 +145,7 @@ var PagNodeKind;
     PagNodeKind[PagNodeKind["Function"] = 5] = "Function";
     PagNodeKind[PagNodeKind["GlobalThis"] = 6] = "GlobalThis";
     PagNodeKind[PagNodeKind["ExportInfo"] = 7] = "ExportInfo";
-})(PagNodeKind = exports.PagNodeKind || (exports.PagNodeKind = {}));
+})(PagNodeKind || (exports.PagNodeKind = PagNodeKind = {}));
 class PagNode extends BaseExplicitGraph_1.BaseNode {
     constructor(id, cid = undefined, value, k, s) {
         super(id, k);
@@ -189,7 +177,7 @@ class PagNode extends BaseExplicitGraph_1.BaseNode {
         return this.stmt;
     }
     hasOutgoingCopyEdge() {
-        return (this.copyOutEdges.size !== 0);
+        return this.copyOutEdges.size !== 0;
     }
     getOutgoingCopyEdges() {
         return this.copyOutEdges;
@@ -213,32 +201,32 @@ class PagNode extends BaseExplicitGraph_1.BaseNode {
         return this.thisInEdges;
     }
     addAddressInEdge(e) {
-        this.addressInEdges === undefined ? this.addressInEdges = new Set() : undefined;
+        this.addressInEdges === undefined ? (this.addressInEdges = new Set()) : undefined;
         this.addressInEdges.add(e);
         this.addIncomingEdge(e);
     }
     addAddressOutEdge(e) {
-        this.addressOutEdges === undefined ? this.addressOutEdges = new Set() : undefined;
+        this.addressOutEdges === undefined ? (this.addressOutEdges = new Set()) : undefined;
         this.addressOutEdges.add(e);
         this.addOutgoingEdge(e);
     }
     addCopyInEdge(e) {
-        this.copyInEdges === undefined ? this.copyInEdges = new Set() : undefined;
+        this.copyInEdges === undefined ? (this.copyInEdges = new Set()) : undefined;
         this.copyInEdges.add(e);
         this.addIncomingEdge(e);
     }
     addCopyOutEdge(e) {
-        this.copyOutEdges === undefined ? this.copyOutEdges = new Set() : undefined;
+        this.copyOutEdges === undefined ? (this.copyOutEdges = new Set()) : undefined;
         this.copyOutEdges.add(e);
         this.addOutgoingEdge(e);
     }
     addLoadInEdge(e) {
-        this.loadInEdges === undefined ? this.loadInEdges = new Set() : undefined;
+        this.loadInEdges === undefined ? (this.loadInEdges = new Set()) : undefined;
         this.loadInEdges.add(e);
         this.addIncomingEdge(e);
     }
     addLoadOutEdge(e) {
-        this.loadOutEdges === undefined ? this.loadOutEdges = new Set() : undefined;
+        this.loadOutEdges === undefined ? (this.loadOutEdges = new Set()) : undefined;
         this.loadOutEdges.add(e);
         this.addOutgoingEdge(e);
     }
@@ -283,7 +271,7 @@ class PagNode extends BaseExplicitGraph_1.BaseNode {
             AddressEdge: this.addressOutEdges,
             CopyEdge: this.copyOutEdges,
             LoadEdge: this.loadOutEdges,
-            WriteEdge: this.writeOutEdges
+            WriteEdge: this.writeOutEdges,
         };
     }
     getClonedFrom() {
@@ -328,6 +316,9 @@ class PagNode extends BaseExplicitGraph_1.BaseNode {
         }
         if (this.getKind() === PagNodeKind.ThisRef) {
             label = label + `\n${this.value.toString()}`;
+        }
+        if (this.getKind() === PagNodeKind.Function) {
+            label = label + ` thisPt:{${this.getThisPt()}}`;
         }
         if (this.stmt) {
             label = label + `\n${this.stmt.toString()}`;
@@ -376,7 +367,7 @@ class PagLocalNode extends PagNode {
     getStorage() {
         return {
             StorageType: this.storageType,
-            PropertyName: this.propertyName
+            PropertyName: this.propertyName,
         };
     }
     isStorageLinked() {
@@ -403,8 +394,8 @@ class PagStaticFieldNode extends PagNode {
 }
 exports.PagStaticFieldNode = PagStaticFieldNode;
 class PagThisRefNode extends PagNode {
-    constructor(id, thisRef) {
-        super(id, DUMMY_PAG_NODE_ID, thisRef, PagNodeKind.ThisRef);
+    constructor(id, cid = undefined, thisRef) {
+        super(id, cid, thisRef, PagNodeKind.ThisRef);
         this.pointToNode = [];
     }
     getThisPTNode() {
@@ -422,6 +413,12 @@ class PagArrayNode extends PagNode {
     }
 }
 exports.PagArrayNode = PagArrayNode;
+class PagConstantNode extends PagNode {
+    constructor(id, cid = undefined, constant, stmt) {
+        super(id, cid, constant, PagNodeKind.LocalVar, stmt);
+    }
+}
+exports.PagConstantNode = PagConstantNode;
 /**
  * below is heapObj like Node
  */
@@ -479,17 +476,50 @@ class PagParamNode extends PagNode {
 exports.PagParamNode = PagParamNode;
 class PagFuncNode extends PagNode {
     // TODO: may add obj interface
-    constructor(id, cid = undefined, r, stmt, method) {
+    constructor(id, cid = undefined, r, stmt, method, thisInstanceID) {
         super(id, cid, r, PagNodeKind.Function, stmt);
+        this.argsOffset = 0;
         if (method) {
             this.methodSignature = method;
+            this.methodType = (0, PTAUtils_1.getBuiltInApiType)(method);
+        }
+        if (thisInstanceID) {
+            this.thisPt = thisInstanceID;
         }
     }
     setMethod(method) {
         this.methodSignature = method;
+        this.methodType = (0, PTAUtils_1.getBuiltInApiType)(method);
     }
     getMethod() {
         return this.methodSignature;
+    }
+    setThisPt(thisPt) {
+        this.thisPt = thisPt;
+    }
+    getThisPt() {
+        return this.thisPt;
+    }
+    setCS(callSite) {
+        this.originCallSite = callSite;
+    }
+    getCS() {
+        return this.originCallSite;
+    }
+    setArgsOffset(offset) {
+        this.argsOffset = offset;
+    }
+    getArgsOffset() {
+        return this.argsOffset;
+    }
+    getMethodType() {
+        return this.methodType;
+    }
+    setOriginCid(cid) {
+        this.originCid = cid;
+    }
+    getOriginCid() {
+        return this.originCid;
     }
 }
 exports.PagFuncNode = PagFuncNode;
@@ -527,6 +557,7 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
         this.stashAddrEdge = new Set();
         this.addrEdge = new Set();
         this.clonedNodeMap = new Map();
+        this.arrayRef2valueMap = new Map();
     }
     getCG() {
         return this.cg;
@@ -574,24 +605,43 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
             return undefined;
         }
     }
-    getOrClonePagContainerFieldNode(basePt, src, base) {
+    getOrClonePagContainerFieldNode(basePt, base, className, refValue) {
+        var _a, _b;
         let baseNode = this.getNode(basePt);
         if (baseNode instanceof PagNewContainerExprNode) {
             // check if Array Ref real node has been created or not, if not: create a real Array Ref node
             let existedNode = baseNode.getElementNode();
             let fieldNode;
+            let fieldRef;
             if (existedNode) {
-                return this.getNode(existedNode);
+                const fieldNode = this.getNode(existedNode);
+                if (refValue) {
+                    let fieldRefs = (_a = this.arrayRef2valueMap.get(refValue)) !== null && _a !== void 0 ? _a : new Set();
+                    fieldRefs.add(fieldNode.getValue());
+                    this.arrayRef2valueMap.set(refValue, fieldRefs);
+                }
+                return fieldNode;
             }
-            if (src) {
-                fieldNode = this.getOrClonePagNode(src, basePt);
+            switch (className) {
+                case 'Array':
+                    fieldRef = new Ref_1.ArkInstanceFieldRef(base, PTAUtils_1.ARRAY_FIELD_SIGNATURE);
+                    if (refValue) {
+                        let fieldRefs = (_b = this.arrayRef2valueMap.get(refValue)) !== null && _b !== void 0 ? _b : new Set();
+                        fieldRefs.add(fieldRef);
+                        this.arrayRef2valueMap.set(refValue, fieldRefs);
+                    }
+                    break;
+                case 'Set':
+                    fieldRef = new Ref_1.ArkInstanceFieldRef(base, PTAUtils_1.SET_FIELD_SIGNATURE);
+                    break;
+                case 'Map':
+                    fieldRef = new Ref_1.ArkInstanceFieldRef(base, PTAUtils_1.MAP_FIELD_SIGNATURE);
+                    break;
+                default:
+                    logger.error(`Error clone array field node ${className}`);
+                    return undefined;
             }
-            else if (base) {
-                const containerFieldSignature = new ArkSignature_1.FieldSignature('field', new ArkSignature_1.ClassSignature('container', new ArkSignature_1.FileSignature('container', 'lib.es2015.collection.d.ts')), new Type_1.UnclearReferenceType(''));
-                fieldNode = this.getOrClonePagNode(
-                // TODO: cid check
-                this.addPagNode(0, new Ref_1.ArkInstanceFieldRef(base, containerFieldSignature)), basePt);
-            }
+            fieldNode = this.addPagNode(0, fieldRef);
             baseNode.addElementNode(fieldNode.getID());
             fieldNode.setBasePt(basePt);
             return fieldNode;
@@ -609,8 +659,19 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
         }
         return undefined;
     }
+    getOrClonePagFuncNode(basePt) {
+        let baseNode = this.getNode(basePt);
+        if (baseNode instanceof PagFuncNode) {
+            let clonedFuncNode = this.getOrClonePagNode(baseNode, basePt);
+            return clonedFuncNode;
+        }
+        else {
+            logger.error(`Error clone func node ${baseNode.getValue()}`);
+            return undefined;
+        }
+    }
     addPagNode(cid, value, stmt, refresh = true) {
-        let id = this.nodeNum;
+        let id = this.nodeNum + 1;
         let pagNode;
         if (value instanceof Local_1.Local) {
             pagNode = this.handleLocalNode(id, cid, value, stmt);
@@ -634,7 +695,10 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
             pagNode = new PagParamNode(id, cid, value, stmt);
         }
         else if (value instanceof Ref_1.ArkThisRef) {
-            throw new Error('This Node needs to use addThisNode method');
+            pagNode = new PagThisRefNode(id, cid, value);
+        }
+        else if (value instanceof Constant_1.Constant) {
+            pagNode = new PagConstantNode(id, cid, value, stmt);
         }
         else {
             throw new Error('unsupported Value type ' + value.getType().toString());
@@ -702,59 +766,35 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
             this.contextValueToIdMap.set(value, ctx2NdMap);
         }
         ctx2NdMap.set(cid, id);
-        if (value instanceof Ref_1.ArkInstanceFieldRef || value instanceof Ref_1.ArkArrayRef) {
-            let base = value.getBase();
-            //TODO: remove below once this Local is not uniq in %instInit is fix
-            if (base instanceof Local_1.Local && base.getName() === 'this') {
-                (_a = stmt === null || stmt === void 0 ? void 0 : stmt.getCfg()) === null || _a === void 0 ? void 0 : _a.getStmts().forEach(s => {
-                    if (s instanceof Stmt_1.ArkAssignStmt &&
-                        (s.getLeftOp()) instanceof Local_1.Local &&
-                        s.getLeftOp().getName() === 'this') {
-                        base = s.getLeftOp();
-                        return;
-                    }
-                });
-            }
-            let ctxMap = this.contextBaseToIdMap.get(base);
-            if (ctxMap === undefined) {
-                ctxMap = new Map();
-                ctxMap.set(cid, [pagNode.getID()]);
+        if (!(value instanceof Ref_1.ArkInstanceFieldRef || value instanceof Ref_1.ArkArrayRef)) {
+            return;
+        }
+        let base = value.getBase();
+        //TODO: remove below once this Local is not uniq in %instInit is fix
+        if (base instanceof Local_1.Local && base.getName() === 'this') {
+            (_a = stmt === null || stmt === void 0 ? void 0 : stmt.getCfg()) === null || _a === void 0 ? void 0 : _a.getStmts().forEach(s => {
+                if (s instanceof Stmt_1.ArkAssignStmt && s.getLeftOp() instanceof Local_1.Local && s.getLeftOp().getName() === 'this') {
+                    base = s.getLeftOp();
+                    return;
+                }
+            });
+        }
+        let ctxMap = this.contextBaseToIdMap.get(base);
+        if (ctxMap === undefined) {
+            ctxMap = new Map();
+            ctxMap.set(cid, [pagNode.getID()]);
+        }
+        else {
+            let nodes = ctxMap.get(cid);
+            if (nodes === undefined) {
+                nodes = [pagNode.getID()];
             }
             else {
-                let nodes = ctxMap.get(cid);
-                if (nodes === undefined) {
-                    nodes = [pagNode.getID()];
-                }
-                else {
-                    nodes.push(pagNode.getID());
-                }
-                ctxMap.set(cid, nodes);
+                nodes.push(pagNode.getID());
             }
-            this.contextBaseToIdMap.set(base, ctxMap);
+            ctxMap.set(cid, nodes);
         }
-    }
-    /*
-     * This node has no context info
-     * but point to node info
-     */
-    addPagThisRefNode(value) {
-        let id = this.nodeNum;
-        let pagNode = new PagThisRefNode(id, value);
-        this.addNode(pagNode);
-        return pagNode;
-    }
-    addPagThisLocalNode(ptNode, value) {
-        let id = this.nodeNum;
-        let pagNode = new PagLocalNode(id, ptNode, value);
-        this.addNode(pagNode);
-        return pagNode;
-    }
-    getOrNewThisRefNode(thisRefNodeID, value) {
-        if (thisRefNodeID !== -1) {
-            return this.getNode(thisRefNodeID);
-        }
-        let thisRefNode = this.addPagThisRefNode(value);
-        return thisRefNode;
+        this.contextBaseToIdMap.set(base, ctxMap);
     }
     getOrNewThisLocalNode(cid, ptNode, value, s) {
         if (ptNode !== -1) {
@@ -807,7 +847,21 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
         return this.addPagNode(cid, v, s);
     }
     getNodesByValue(v) {
-        return this.contextValueToIdMap.get(v);
+        let result = this.contextValueToIdMap.get(v);
+        ;
+        if (!(v instanceof Ref_1.ArkArrayRef)) {
+            return result;
+        }
+        let value = this.arrayRef2valueMap.get(v) || [v];
+        let index = 0;
+        result = new Map();
+        value.forEach(v => {
+            var _a;
+            let temp = (_a = this.contextValueToIdMap.get(v)) === null || _a === void 0 ? void 0 : _a.get(0);
+            result.set(index, temp);
+            index++;
+        });
+        return result;
     }
     getNodesByBaseValue(v) {
         return this.contextBaseToIdMap.get(v);
@@ -823,10 +877,7 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
             case PagEdgeKind.InterProceduralCopy:
                 src.addCopyOutEdge(edge);
                 dst.addCopyInEdge(edge);
-                if (src instanceof PagFuncNode ||
-                    src instanceof PagGlobalThisNode ||
-                    src instanceof PagNewExprNode ||
-                    src instanceof PagNewContainerExprNode) {
+                if (src instanceof PagFuncNode || src instanceof PagGlobalThisNode || src instanceof PagNewExprNode || src instanceof PagNewContainerExprNode) {
                     this.addrEdge.add(edge);
                     this.stashAddrEdge.add(edge);
                 }
@@ -850,8 +901,8 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
                 dst.addThisInEdge(edge);
                 break;
             default:
-                ;
         }
+        this.edgeNum++;
         return true;
     }
     getAddrEdges() {
@@ -904,13 +955,18 @@ class FuncPag {
         return this.unknownCallSites;
     }
     addInternalEdge(stmt, k) {
-        this.internalEdges === undefined ? this.internalEdges = new Set() : undefined;
+        this.internalEdges === undefined ? (this.internalEdges = new Set()) : undefined;
         let lhOp = stmt.getLeftOp();
         let rhOp = stmt.getRightOp();
         if (rhOp instanceof Constant_1.Constant) {
             return false;
         }
-        let iEdge = { src: rhOp, dst: lhOp, kind: k, stmt: stmt };
+        let iEdge = {
+            src: rhOp,
+            dst: lhOp,
+            kind: k,
+            stmt: stmt,
+        };
         this.internalEdges.add(iEdge);
         return true;
     }

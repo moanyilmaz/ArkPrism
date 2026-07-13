@@ -34,12 +34,11 @@ class ArkIRNamespacePrinter extends BasePrinter_1.BasePrinter {
         const commentsMetadata = this.ns.getMetadata(ArkMetadata_1.ArkMetadataKind.LEADING_COMMENTS);
         if (commentsMetadata instanceof ArkMetadata_1.CommentsMetadata) {
             const comments = commentsMetadata.getComments();
-            comments.forEach((comment) => {
+            comments.forEach(comment => {
                 this.printer.writeIndent().writeLine(comment.content);
             });
         }
-        this.printer.writeIndent().writeSpace(this.modifiersToString(this.ns.getModifiers()))
-            .writeLine(`namespace ${this.ns.getName()} {`);
+        this.printer.writeIndent().writeSpace(this.modifiersToString(this.ns.getModifiers())).writeLine(`namespace ${this.ns.getName()} {`);
         this.printer.incIndent();
         let items = [];
         // print class

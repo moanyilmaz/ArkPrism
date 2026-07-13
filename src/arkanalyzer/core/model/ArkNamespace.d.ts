@@ -1,6 +1,6 @@
 import { ArkExport, ExportInfo, ExportType } from './ArkExport';
 import { ArkClass } from './ArkClass';
-import { ArkFile } from './ArkFile';
+import { ArkFile, Language } from './ArkFile';
 import { ArkMethod } from './ArkMethod';
 import { ClassSignature, NamespaceSignature } from './ArkSignature';
 import { ArkBaseModel } from './ArkBaseModel';
@@ -21,6 +21,10 @@ export declare class ArkNamespace extends ArkBaseModel implements ArkExport {
     private namespaceSignature;
     private anonymousClassNumber;
     constructor();
+    /**
+     * Returns the program language of the file where this namespace defined.
+     */
+    getLanguage(): Language;
     addNamespace(namespace: ArkNamespace): void;
     getNamespace(namespaceSignature: NamespaceSignature): ArkNamespace | null;
     getNamespaceWithName(namespaceName: string): ArkNamespace | null;
@@ -40,7 +44,7 @@ export declare class ArkNamespace extends ArkBaseModel implements ArkExport {
     setColumn(column: number): void;
     getLineColPairs(): [number, number][];
     setLineCols(lineColPairs: [number, number][]): void;
-    getDeclaringInstance(): ArkFile | ArkNamespace;
+    getDeclaringInstance(): ArkNamespace | ArkFile;
     setDeclaringInstance(declaringInstance: ArkFile | ArkNamespace): void;
     getDeclaringArkFile(): ArkFile;
     setDeclaringArkFile(declaringArkFile: ArkFile): void;
@@ -49,7 +53,7 @@ export declare class ArkNamespace extends ArkBaseModel implements ArkExport {
     getClass(classSignature: ClassSignature): ArkClass | null;
     getClassWithName(Class: string): ArkClass | null;
     getClasses(): ArkClass[];
-    addArkClass(arkClass: ArkClass): void;
+    addArkClass(arkClass: ArkClass, originName?: string): void;
     getExportInfos(): ExportInfo[];
     getExportInfoBy(name: string): ExportInfo | undefined;
     addExportInfo(exportInfo: ExportInfo): void;

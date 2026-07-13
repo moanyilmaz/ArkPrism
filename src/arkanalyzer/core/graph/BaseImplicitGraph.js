@@ -37,6 +37,12 @@ class BaseImplicitGraph {
         }
         return this.idToNodeMap.get(id);
     }
+    getNodeID(s) {
+        if (!this.nodeToIdMap.has(s)) {
+            throw new Error(`Can find Node # ${s}`);
+        }
+        return this.nodeToIdMap.get(s);
+    }
     /**
      * Checks whether the graph contains a specific node ID.
      * @param id The node ID.

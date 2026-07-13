@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -62,8 +62,8 @@ class IRUtils {
         if ((isLeading && !options.enableLeadingComments) || (!isLeading && !options.enableTrailingComments)) {
             return new ArkMetadata_1.CommentsMetadata(comments);
         }
-        const commentRanges = (isLeading ? ohos_typescript_1.default.getLeadingCommentRanges(sourceFile.text, node.pos)
-            : ohos_typescript_1.default.getTrailingCommentRanges(sourceFile.text, node.end)) || []; // node.pos is the start position of
+        // node.pos is the start position of
+        const commentRanges = (isLeading ? ohos_typescript_1.default.getLeadingCommentRanges(sourceFile.text, node.pos) : ohos_typescript_1.default.getTrailingCommentRanges(sourceFile.text, node.end)) || [];
         // leading comment, while node.end is the
         // end position of the statement
         const getPosition = (pos, end) => {
@@ -113,7 +113,8 @@ class IRUtils {
                 operandOriginalPositions.splice(oldValueIdx + baseValueOffset, 0, ...IRUtils.generateDefaultPositions(newValueUseSize - oldValueUseSize));
             }
             if (oldValue instanceof Ref_1.ArkInstanceFieldRef && newValue instanceof Ref_1.ArkArrayRef) {
-                if (operandOriginalPositionSize === defUseSize) { // may not reserve positions for field name
+                if (operandOriginalPositionSize === defUseSize) {
+                    // may not reserve positions for field name
                     operandOriginalPositions.splice(oldValueIdx + fieldValueOffset, 0, ...IRUtils.generateDefaultPositions(newValueUseSize - oldValueUseSize));
                 }
             }

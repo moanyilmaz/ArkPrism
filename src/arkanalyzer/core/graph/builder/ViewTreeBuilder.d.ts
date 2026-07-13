@@ -165,6 +165,7 @@ export declare class ViewTreeImpl extends TreeNodeStack implements ViewTree {
      */
     private addSystemComponentNode;
     private findMethodInvokeBuilderMethod;
+    private parseFieldInObjectLiteral;
     private parseObjectLiteralExpr;
     private viewComponentCreationParser;
     private waterFlowCreationParser;
@@ -181,6 +182,7 @@ export declare class ViewTreeImpl extends TreeNodeStack implements ViewTree {
      * @param expr
      */
     private parseInstanceInvokeExpr;
+    private parsePtrInvokeExpr;
     /**
      * $temp3 = View.create($temp2);
      * $temp4 = View.pop();

@@ -46,6 +46,7 @@ export declare abstract class BaseExplicitGraph implements GraphTraits<BaseNode>
     protected edgeMarkSet: Set<string>;
     constructor();
     getNodeNum(): number;
+    getEdgeNum(): number;
     nodesItor(): IterableIterator<BaseNode>;
     addNode(n: BaseNode): void;
     getNode(id: NodeID): BaseNode | undefined;

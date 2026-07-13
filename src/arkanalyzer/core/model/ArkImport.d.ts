@@ -1,4 +1,4 @@
-import { ArkFile } from './ArkFile';
+import { ArkFile, Language } from './ArkFile';
 import { LineColPosition } from '../base/Position';
 import { ExportInfo, FromInfo } from './ArkExport';
 import { ArkBaseModel } from './ArkBaseModel';
@@ -16,6 +16,10 @@ export declare class ImportInfo extends ArkBaseModel implements FromInfo {
     private tsSourceCode?;
     private lazyExportInfo?;
     constructor();
+    /**
+     * Returns the program language of the file where this import info defined.
+     */
+    getLanguage(): Language;
     build(importClauseName: string, importType: string, importFrom: string, originTsPosition: LineColPosition, modifiers: number, nameBeforeAs?: string): void;
     getOriginName(): string;
     /**

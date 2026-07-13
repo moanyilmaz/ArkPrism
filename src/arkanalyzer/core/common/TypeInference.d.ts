@@ -6,6 +6,7 @@ import { ArkClass } from '../model/ArkClass';
 import { ArkField } from '../model/ArkField';
 import { Value } from '../base/Value';
 import { MethodSignature, MethodSubSignature } from '../model/ArkSignature';
+import { MethodParameter } from '../model/builder/ArkMethodBuilder';
 export declare class TypeInference {
     static inferTypeInArkField(arkField: ArkField): void;
     /**
@@ -15,10 +16,10 @@ export declare class TypeInference {
      * The original type is null if failed to infer the type.
      * @param leftOpType
      * @param declaringArkClass
-     * @param [rightType]
+     * @param visited
      * @returns
      */
-    static inferUnclearedType(leftOpType: Type, declaringArkClass: ArkClass, rightType?: Type): Type | null | undefined;
+    static inferUnclearedType(leftOpType: Type, declaringArkClass: ArkClass, visited?: Set<Type>): Type | null | undefined;
     static inferTypeInMethod(arkMethod: ArkMethod): void;
     private static resolveStmt;
     /**
@@ -40,6 +41,7 @@ export declare class TypeInference {
      */
     private static resolveFieldRefsInStmt;
     private static processRef;
+    private static getLocalFromMethodBody;
     static parseArkExport2Type(arkExport: ArkExport | undefined | null): Type | null;
     /**
      * infer and pass type for ArkAssignStmt right and left
@@ -50,11 +52,11 @@ export declare class TypeInference {
     private static resolveLeftOp;
     private static setValueType;
     static isUnclearType(type: Type | null | undefined): boolean;
-    private static hasUnclearReferenceType;
+    static checkType(type: Type, check: (t: Type) => boolean, visited?: Set<Type>): boolean;
     static inferSimpleTypeInStmt(stmt: Stmt): void;
     static buildTypeFromStr(typeStr: string): Type;
     static inferValueType(value: Value, arkMethod: ArkMethod): Type | null;
-    private static inferParameterType;
+    static inferParameterType(param: MethodParameter, arkMethod: ArkMethod): void;
     static inferSignatureReturnType(oldSignature: MethodSignature, arkMethod: ArkMethod): void;
     private static inferReturnType;
     static inferGenericType(types: GenericType[] | undefined, arkClass: ArkClass): void;
@@ -87,6 +89,8 @@ export declare class TypeInference {
      * @returns
      */
     static inferFieldType(baseType: Type, fieldName: string, declareClass: ArkClass): [any, Type] | null;
+    private static inferClassFieldType;
+    private static inferArrayFieldType;
     /**
      * Find out the original object and type for a given base name.
      * It returns original type.
@@ -96,9 +100,12 @@ export declare class TypeInference {
      * @returns
      */
     static inferBaseType(baseName: string, arkClass: ArkClass): Type | null;
+    static inferTypeByName(typeName: string, arkClass: ArkClass): Type | null;
+    static getTypeByGlobalName(globalName: string, arkMethod: ArkMethod): Type | null;
     static inferRealGenericTypes(realTypes: Type[] | undefined, arkClass: ArkClass): void;
     static inferDynamicImportType(from: string, arkClass: ArkClass): Type | null;
-    static replaceTypeWithReal(type: Type, realTypes?: Type[]): Type;
+    static replaceTypeWithReal(type: Type, realTypes?: Type[], visited?: Set<Type>): Type;
+    static replaceRecursiveType(type: Type, visited: Set<Type>, realTypes?: Type[]): Type;
     static replaceAliasType(type: Type): Type;
     static inferFunctionType(argType: FunctionType, paramSubSignature: MethodSubSignature | undefined, realTypes: Type[] | undefined): void;
     private static resolveArkReturnStmt;

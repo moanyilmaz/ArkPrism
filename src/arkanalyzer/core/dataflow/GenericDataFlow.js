@@ -52,11 +52,11 @@ class MFPDataFlowSolver {
         let newEntries = new Set();
         while (workList.length > 0) {
             newEntries.clear();
-            workList.forEach((n) => {
+            workList.forEach(n => {
                 let inSet;
                 const predecessors = problem.flowGraph.pred(n);
                 if (predecessors && predecessors.length > 0) {
-                    const predecessorOuts = predecessors.map((pred) => _out.get(pred));
+                    const predecessorOuts = predecessors.map(pred => _out.get(pred));
                     inSet = predecessorOuts.reduce((acc, cur) => problem.meet(acc, cur), problem.empty);
                 }
                 else {
@@ -67,7 +67,7 @@ class MFPDataFlowSolver {
                 let newSet = problem.transferFunction.apply(n, inSet);
                 if (!old || old.count() === 0 || !old.equals(newSet)) {
                     _out.set(n, newSet);
-                    problem.flowGraph.succ(n).forEach((succ) => newEntries.add(succ));
+                    problem.flowGraph.succ(n).forEach(succ => newEntries.add(succ));
                 }
             });
             workList = [...newEntries];
@@ -89,7 +89,7 @@ class MFPDataFlowSolver {
         let newEntries = new Set();
         while (workList.length > 0) {
             newEntries.clear();
-            workList.forEach((n) => {
+            workList.forEach(n => {
                 let outSet = problem.flowGraph.succ(n).reduce((acc, curr) => {
                     return problem.meet(acc, _in.get(curr));
                 }, problem.empty);
@@ -98,7 +98,7 @@ class MFPDataFlowSolver {
                 let newSet = problem.transferFunction.apply(n, outSet);
                 if (!old || !old.equals(newSet)) {
                     _in.set(n, newSet);
-                    problem.flowGraph.pred(n).forEach((pred) => newEntries.add(pred));
+                    problem.flowGraph.pred(n).forEach(pred => newEntries.add(pred));
                 }
             });
             workList = [...newEntries];

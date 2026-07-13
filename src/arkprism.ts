@@ -73,6 +73,8 @@ interface AnalysisOptions {
     noDot: boolean;
     noTaint: boolean;
     noPta: boolean;
+    noLifecycle: boolean;
+    lifecycleLevel?: 1 | 2;
     sdkPath: string;
     // IFDS options
     ifdsBatchSize?: number;
@@ -161,7 +163,7 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     let multiSourceResults: any[] = [];
     if (allApiResults.length > 0) {
         try {
-            let callGraph = buildCallGraph(scene);
+            let callGraph = buildCallGraph(scene, { noLifecycle: opts.noLifecycle });
             callChainResults = traceCallChains(allApiResults, scene, callGraph, projectDir);
             analyzeDataSinks(allApiResults, callChainResults, scene);
             enrichCallChainsWithSemanticContext(callChainResults, allApiResults);
@@ -203,6 +205,8 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         try {
             taintFlows = runHapflowAnalysis(scene, {
                 noPta: opts.noPta,
+                noLifecycle: opts.noLifecycle,
+                lifecycleLevel: opts.lifecycleLevel,
                 sdkPath: opts.sdkPath,
                 ifdsBatchSize: opts.ifdsBatchSize,
                 ifdsMaxEdges: opts.ifdsMaxEdges,
@@ -286,6 +290,8 @@ Options:
   --no-dot              Skip DOT graph generation
   --no-taint            Skip HapFlow taint analysis
   --no-pta              Skip pointer analysis (faster but less precise)
+  --no-lifecycle        Skip lifecycle state machine (use flat DummyMain)
+  --lifecycle-level <1|2>  Lifecycle DummyMain level: 1=ordered entry, 2=structured CFG (default: 2)
   --sdkPath <dir>       OpenHarmony SDK path (default: OPENHARMONY_SDK_PATH or E:/OpenHarmony_SDK/20/ets)
 
 IFDS Options:
@@ -326,6 +332,8 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
     let noDot = false;
     let noTaint = false;
     let noPta = false;
+    let noLifecycle = false;
+    let lifecycleLevel: 1 | 2 | undefined;
     let sdkPath = DEFAULT_SDK_PATH;
 
     // IFDS options
@@ -360,6 +368,11 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
             noTaint = true;
         } else if (arg === '--no-pta') {
             noPta = true;
+        } else if (arg === '--no-lifecycle') {
+            noLifecycle = true;
+        } else if (arg === '--lifecycle-level') {
+            const lv = parseInt(args[++i]);
+            if (lv === 1 || lv === 2) lifecycleLevel = lv;
         } else if (arg === '--sdkPath') {
             sdkPath = args[++i] || sdkPath;
         }
@@ -392,7 +405,7 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
     return {
         mode, target,
         opts: {
-            outputDir, noDot, noTaint, noPta, sdkPath,
+            outputDir, noDot, noTaint, noPta, noLifecycle, lifecycleLevel, sdkPath,
             ifdsBatchSize, ifdsMaxEdges, ifdsMaxWorklist, ifdsTimeoutMs,
             callbackAnalysis, callbackMaxMethods, callbackMaxSources, callbackMaxStates, callbackMaxPathLen
         }

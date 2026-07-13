@@ -15,7 +15,6 @@
  */
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ArkIRMethodPrinter = void 0;
-const Type_1 = require("../../core/base/Type");
 const ArkStream_1 = require("../ArkStream");
 const Stmt_1 = require("../../core/base/Stmt");
 const ArkMetadata_1 = require("../../core/model/ArkMetadata");
@@ -50,7 +49,7 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         if (cfg) {
             cfg.getStmts()
                 .reverse()
-                .forEach((stmt) => stmts.push(stmt));
+                .forEach(stmt => stmts.push(stmt));
         }
         for (const stmt of stmts) {
             if (stmt.getOriginPositionInfo().getLineNo() > 0) {
@@ -64,7 +63,7 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         this.printer.writeIndent().write(this.methodProtoToString(method));
         // abstract function no body
         if (!method.getBody()) {
-            this.printer.writeLine(';');
+            this.printer.writeLine('');
             return;
         }
         this.printer.writeLine(' {');
@@ -72,7 +71,6 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         this.printBody(method);
         this.printer.decIndent();
         this.printer.writeIndent().writeLine('}');
-        this.printer.writeLine('');
     }
     printBody(method) {
         if (method.getCfg()) {
@@ -89,15 +87,15 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         const genericTypes = method.getGenericTypes();
         if (genericTypes && genericTypes.length > 0) {
             let typeParameters = [];
-            genericTypes.forEach((genericType) => {
+            genericTypes.forEach(genericType => {
                 typeParameters.push(genericType.toString());
             });
             code.write(`<${genericTypes.join(', ')}>`);
         }
         let parameters = [];
-        method.getParameters().forEach((parameter) => {
+        method.getParameters().forEach(parameter => {
             let str = parameter.getName();
-            if (parameter.hasDotDotDotToken()) {
+            if (parameter.isRest()) {
                 str = `...${parameter.getName()}`;
             }
             if (parameter.isOptional()) {
@@ -110,21 +108,27 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         });
         code.write(`(${parameters.join(', ')})`);
         const returnType = method.getReturnType();
-        if (method.getName() !== 'constructor' && !(returnType instanceof Type_1.UnknownType)) {
-            code.write(`: ${returnType.toString()}`);
-        }
+        code.write(`: ${returnType.toString()}`);
         return code.toString();
     }
     printCfg(cfg) {
         let blocks = cfg.getBlocks();
-        if (blocks.size === 1) {
-            cfg.getStmts().map((stmt) => {
-                this.printer.writeIndent().writeLine(stmt.toString());
-            });
+        let isFirstBB = true;
+        let firstBB = cfg.getStartingBlock();
+        // Try to always print the starting block at the beginning.
+        if (firstBB) {
+            this.printBasicBlock(firstBB);
+            isFirstBB = false;
         }
-        else {
-            for (const block of blocks) {
+        for (const block of blocks) {
+            if (!firstBB || block.getId() !== firstBB.getId()) {
+                if (!isFirstBB) {
+                    this.printer.writeLine('');
+                }
                 this.printBasicBlock(block);
+            }
+            if (firstBB) {
+                isFirstBB = false;
             }
         }
     }
@@ -133,7 +137,7 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
         this.printer.writeIndent().writeLine(`label${block.getId()}:`);
         this.printer.incIndent();
         if (successors.length === 1) {
-            block.getStmts().map((stmt) => {
+            block.getStmts().map(stmt => {
                 this.printer.writeIndent().writeLine(stmt.toString());
             });
             this.printer.writeIndent().writeLine(`goto label${successors[0].getId()}`);
@@ -149,11 +153,11 @@ class ArkIRMethodPrinter extends BasePrinter_1.BasePrinter {
             }
         }
         else {
-            block.getStmts().map((stmt) => {
+            block.getStmts().map(stmt => {
                 this.printer.writeIndent().writeLine(stmt.toString());
             });
         }
-        this.printer.decIndent().writeLine('');
+        this.printer.decIndent();
     }
 }
 exports.ArkIRMethodPrinter = ArkIRMethodPrinter;

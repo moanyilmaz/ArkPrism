@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,15 +29,26 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseJsonText = exports.fetchDependenciesFromFile = void 0;
+exports.fetchDependenciesFromFile = fetchDependenciesFromFile;
+exports.parseJsonText = parseJsonText;
 const ts = __importStar(require("ohos-typescript"));
 const fs = __importStar(require("fs"));
 const logger_1 = __importStar(require("./logger"));
@@ -57,7 +68,6 @@ function fetchDependenciesFromFile(filePath) {
     const file = parseJsonText(configurationsText);
     return file;
 }
-exports.fetchDependenciesFromFile = fetchDependenciesFromFile;
 function parseJsonText(text) {
     let file;
     try {
@@ -74,7 +84,6 @@ function parseJsonText(text) {
     }
     return parseObjectLiteralExpression(rootObjectLiteralExpression, file);
 }
-exports.parseJsonText = parseJsonText;
 function getRootObjectLiteral(file) {
     if (!file || !file.statements || !file.statements.length) {
         logger.error('The JSON5 file format is incorrect, the root node statements is empty.');

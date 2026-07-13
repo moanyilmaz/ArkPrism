@@ -1,36 +1,18 @@
 import { MethodSignature } from '../../core/model/ArkSignature';
 import { Stmt } from '../../core/base/Stmt';
-import { Value } from '../../core/base/Value';
 import { Scene } from '../../Scene';
 import { ArkMethod } from '../../core/model/ArkMethod';
 import { BaseEdge, BaseNode, BaseExplicitGraph, NodeID } from '../../core/graph/BaseExplicitGraph';
-import { ContextID } from '../pointerAnalysis/Context';
+import { CallSite, CallSiteID, CallSiteManager, DynCallSite, ICallSite } from './CallSite';
 export type Method = MethodSignature;
-export type CallSiteID = number;
 export type FuncID = number;
+export { CallSite, DynCallSite, ICallSite };
 export declare enum CallGraphNodeKind {
-    real = 0,
+    real = 0,// method from project and has body
     vitual = 1,
-    intrinsic = 2,
-    constructor = 3
-}
-export declare class CallSite {
-    callStmt: Stmt;
-    args: Value[] | undefined;
-    calleeFuncID: FuncID;
-    callerFuncID: FuncID;
-    constructor(s: Stmt, a: Value[] | undefined, ce: FuncID, cr: FuncID);
-}
-export declare class DynCallSite {
-    callerFuncID: FuncID;
-    callStmt: Stmt;
-    args: Value[] | undefined;
-    protentialCalleeFuncID: FuncID | undefined;
-    constructor(caller: FuncID, s: Stmt, a: Value[] | undefined, ptcCallee: FuncID | undefined);
-}
-export declare class CSCallSite extends CallSite {
-    cid: ContextID;
-    constructor(id: ContextID, cs: CallSite);
+    intrinsic = 2,// method created by AA, which arkMethod.isGenrated is true
+    constructor = 3,// constructor
+    blank = 4
 }
 export declare class CallGraphEdge extends BaseEdge {
     private directCalls;
@@ -45,25 +27,22 @@ export declare class CallGraphEdge extends BaseEdge {
 export declare class CallGraphNode extends BaseNode {
     private method;
     private ifSdkMethod;
-    private isBlank;
     constructor(id: number, m: Method, k?: CallGraphNodeKind);
     getMethod(): Method;
     setSdkMethod(v: boolean): void;
     isSdkMethod(): boolean;
     get isBlankMethod(): boolean;
-    set isBlankMethod(is: boolean);
     getDotAttr(): string;
     getDotLabel(): string;
 }
 export declare class CallGraph extends BaseExplicitGraph {
     private scene;
-    private idToCallSiteMap;
-    private callSiteToIdMap;
+    private csManager;
     private stmtToCallSitemap;
     private stmtToDynCallSitemap;
     private methodToCGNodeMap;
     private callPairToEdgeMap;
-    private callSiteNum;
+    private methodToCallSiteMap;
     private entries;
     private cgStat;
     private dummyMainMethodID;
@@ -77,9 +56,12 @@ export declare class CallGraph extends BaseExplicitGraph {
     removeCallGraphEdge(nodeID: NodeID): void;
     addDynamicCallInfo(callStmt: Stmt, caller: Method, protentialCallee?: Method): void;
     addDynamicCallEdge(callerID: NodeID, calleeID: NodeID, callStmt: Stmt): void;
-    getDynCallsiteByStmt(stmt: Stmt): DynCallSite | undefined;
+    getDynCallSiteByStmt(stmt: Stmt): DynCallSite | undefined;
     addStmtToCallSiteMap(stmt: Stmt, cs: CallSite): boolean;
-    getCallSiteByStmt(stmt: Stmt): CallSite | undefined;
+    getCallSiteByStmt(stmt: Stmt): CallSite[];
+    addMethodToCallSiteMap(funcID: FuncID, cs: CallSite): void;
+    getCallSitesByMethod(func: FuncID | MethodSignature): Set<CallSite>;
+    getInvokeStmtByMethod(func: FuncID | MethodSignature): Stmt[];
     getDynEdges(): Map<Method, Set<Method>>;
     getMethodByFuncID(id: FuncID): Method | null;
     getArkMethodByFuncID(id: FuncID): ArkMethod | null;
@@ -87,11 +69,15 @@ export declare class CallGraph extends BaseExplicitGraph {
     setEntries(n: NodeID[]): void;
     dump(name: string, entry?: FuncID): void;
     detectReachable(fromID: FuncID, dstID: FuncID): boolean;
+    startStat(): void;
+    endStat(): void;
     printStat(): void;
     getStat(): string;
     setDummyMainFuncID(dummyMainMethodID: number): void;
     getDummyMainFuncID(): FuncID | undefined;
     isUnknownMethod(funcID: FuncID): boolean;
     getGraphName(): string;
+    getCallSiteManager(): CallSiteManager;
+    getCallSiteInfo(csID: CallSiteID): string;
 }
 //# sourceMappingURL=CallGraph.d.ts.map

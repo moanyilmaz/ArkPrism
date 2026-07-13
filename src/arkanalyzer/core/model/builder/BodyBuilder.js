@@ -36,7 +36,12 @@ class BodyBuilder {
             if (globals !== null) {
                 this.setGlobals(globals);
             }
-            cfg.buildDefUseStmt(locals);
+            if (globals === null) {
+                cfg.buildDefUseStmt(locals);
+            }
+            else {
+                cfg.buildDefUseStmt(locals, globals);
+            }
             return new ArkBody_1.ArkBody(locals, cfg, aliasTypeMap, traps.length ? traps : undefined);
         }
         return null;
@@ -97,7 +102,7 @@ class BodyBuilder {
      */
     buildLexicalEnv(childrenChain, baseLocals, index) {
         var _a;
-        let usedClosures = this.findClosuresUsedInNested(childrenChain, baseLocals, new Map);
+        let usedClosures = this.findClosuresUsedInNested(childrenChain, baseLocals, new Map());
         const nestedMethod = childrenChain.parent;
         const nestedSignature = nestedMethod.getImplementationSignature();
         if (nestedSignature !== null && usedClosures !== null && usedClosures.length > 0) {
@@ -226,7 +231,10 @@ class BodyBuilder {
     }
     generateNestedMethodChains(outerMethod) {
         let candidateMethods = [];
-        outerMethod.getDeclaringArkClass().getMethods().forEach(method => {
+        outerMethod
+            .getDeclaringArkClass()
+            .getMethods()
+            .forEach(method => {
             if (method.getName().startsWith(Const_1.NAME_PREFIX) && method.getName().endsWith(`${Const_1.NAME_DELIMITER}${outerMethod.getName()}`)) {
                 candidateMethods.push(method);
             }
@@ -331,7 +339,7 @@ class BodyBuilder {
         const callGlobal = (_d = outerGlobals === null || outerGlobals === void 0 ? void 0 : outerGlobals.get(nestedMethodName)) !== null && _d !== void 0 ? _d : outerGlobals === null || outerGlobals === void 0 ? void 0 : outerGlobals.get(originalMethodName);
         if (callGlobal !== undefined && callGlobal instanceof Ref_1.GlobalRef && callGlobal.getRef() === null) {
             const fieldSignature = new ArkSignature_1.FieldSignature(nestedMethodName, nestedMethod.getDeclaringArkClass().getSignature(), new Type_1.FunctionType(nestedMethod.getSignature()));
-            callGlobal.setRef(new Ref_1.ArkStaticFieldRef((fieldSignature)));
+            callGlobal.setRef(new Ref_1.ArkStaticFieldRef(fieldSignature));
         }
         const childrenChains = nestedChain.children;
         if (childrenChains === null) {
@@ -405,7 +413,7 @@ class BodyBuilder {
             return;
         }
         const fieldSignature = new ArkSignature_1.FieldSignature(methodSignature.getMethodSubSignature().getMethodName(), methodSignature.getDeclaringClassSignature(), new Type_1.ClosureType(lexicalEnv, methodSignature));
-        globalRef.setRef(new Ref_1.ArkStaticFieldRef((fieldSignature)));
+        globalRef.setRef(new Ref_1.ArkStaticFieldRef(fieldSignature));
         this.updateAbstractInvokeExprWithClosures(globalRef, outerMethod.getSignature(), nestedMethod.getSignature(), closuresLocal);
     }
     updateLocalInfoWithClosures(local, outerMethod, nestedMethod, closuresLocal) {
@@ -509,15 +517,16 @@ class BodyBuilder {
         if (body === undefined) {
             return;
         }
-        let stmts = Array.from(body.getCfg().getBlocks())[0].getStmts();
+        let stmts = body.getCfg().getStartingBlock().getStmts();
         let index = 0;
         const parameterRef = new Ref_1.ArkParameterRef(index, lexicalEnv);
         const closuresLocal = new Local_1.Local(closuresParam.getName(), lexicalEnv);
         body.addLocal(closuresLocal.getName(), closuresLocal);
         let assignStmt = new Stmt_1.ArkAssignStmt(closuresLocal, parameterRef);
+        assignStmt.setCfg(body.getCfg());
         stmts.splice(index, 0, assignStmt);
         closuresLocal.setDeclaringStmt(assignStmt);
-        oldParamRefs === null || oldParamRefs === void 0 ? void 0 : oldParamRefs.forEach((paramRef) => {
+        oldParamRefs === null || oldParamRefs === void 0 ? void 0 : oldParamRefs.forEach(paramRef => {
             index++;
             paramRef.setIndex(index);
         });
@@ -533,6 +542,7 @@ class BodyBuilder {
             index++;
             const closureFieldRef = new Ref_1.ClosureFieldRef(closuresParam, closure.getName(), closure.getType());
             let assignStmt = new Stmt_1.ArkAssignStmt(local, closureFieldRef);
+            assignStmt.setCfg(body.getCfg());
             stmts.splice(index, 0, assignStmt);
             local.setDeclaringStmt(assignStmt);
             closuresLocal.addUsedStmt(assignStmt);

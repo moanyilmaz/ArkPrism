@@ -29,18 +29,36 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.checkAndUpdateMethod = exports.isMethodImplementation = exports.addInitInConstructor = exports.buildInitMethod = exports.buildDefaultConstructor = exports.MethodParameter = exports.ArrayBindingPatternParameter = exports.ObjectBindingPatternParameter = exports.buildArkMethodFromArkClass = exports.buildDefaultArkMethodFromArkClass = void 0;
+exports.MethodParameter = exports.ArrayBindingPatternParameter = exports.ObjectBindingPatternParameter = void 0;
+exports.buildDefaultArkMethodFromArkClass = buildDefaultArkMethodFromArkClass;
+exports.buildArkMethodFromArkClass = buildArkMethodFromArkClass;
+exports.buildDefaultConstructor = buildDefaultConstructor;
+exports.buildInitMethod = buildInitMethod;
+exports.addInitInConstructor = addInitInConstructor;
+exports.isMethodImplementation = isMethodImplementation;
+exports.checkAndUpdateMethod = checkAndUpdateMethod;
+exports.replaceSuper2Constructor = replaceSuper2Constructor;
 const Type_1 = require("../../base/Type");
 const BodyBuilder_1 = require("./BodyBuilder");
 const ViewTreeBuilder_1 = require("../../graph/builder/ViewTreeBuilder");
@@ -73,15 +91,12 @@ function buildDefaultArkMethodFromArkClass(declaringClass, mtd, sourceFile, node
     let bodyBuilder = new BodyBuilder_1.BodyBuilder(mtd.getSignature(), defaultMethodNode, mtd, sourceFile);
     mtd.setBodyBuilder(bodyBuilder);
 }
-exports.buildDefaultArkMethodFromArkClass = buildDefaultArkMethodFromArkClass;
 function buildArkMethodFromArkClass(methodNode, declaringClass, mtd, sourceFile, declaringMethod) {
     mtd.setDeclaringArkClass(declaringClass);
-    if (declaringMethod !== undefined) {
-        mtd.setOuterMethod(declaringMethod);
-    }
-    if (ohos_typescript_1.default.isFunctionDeclaration(methodNode)) {
-        mtd.setAsteriskToken(methodNode.asteriskToken !== undefined);
-    }
+    declaringMethod !== undefined && mtd.setOuterMethod(declaringMethod);
+    ohos_typescript_1.default.isFunctionDeclaration(methodNode) && mtd.setAsteriskToken(methodNode.asteriskToken !== undefined);
+    // All MethodLikeNode except FunctionTypeNode have questionToken.
+    !ohos_typescript_1.default.isFunctionTypeNode(methodNode) && mtd.setQuestionToken(methodNode.questionToken !== undefined);
     mtd.setCode(methodNode.getText(sourceFile));
     mtd.setModifiers((0, builderUtils_1.buildModifiers)(methodNode));
     mtd.setDecorators((0, builderUtils_1.buildDecorators)(methodNode, sourceFile));
@@ -91,7 +106,7 @@ function buildArkMethodFromArkClass(methodNode, declaringClass, mtd, sourceFile,
     // build methodDeclareSignatures and methodSignature as well as corresponding positions
     const methodName = buildMethodName(methodNode, declaringClass, sourceFile, declaringMethod);
     const methodParameters = [];
-    (0, builderUtils_1.buildParameters)(methodNode.parameters, mtd, sourceFile).forEach((parameter) => {
+    (0, builderUtils_1.buildParameters)(methodNode.parameters, mtd, sourceFile).forEach(parameter => {
         (0, builderUtils_1.buildGenericType)(parameter.getType(), mtd);
         methodParameters.push(parameter);
     });
@@ -106,26 +121,23 @@ function buildArkMethodFromArkClass(methodNode, declaringClass, mtd, sourceFile,
         mtd.setImplementationSignature(methodSignature);
         mtd.setLine(line + 1);
         mtd.setColumn(character + 1);
+        let bodyBuilder = new BodyBuilder_1.BodyBuilder(mtd.getSignature(), methodNode, mtd, sourceFile);
+        mtd.setBodyBuilder(bodyBuilder);
     }
     else {
         mtd.setDeclareSignatures(methodSignature);
         mtd.setDeclareLinesAndCols([line + 1], [character + 1]);
     }
-    let bodyBuilder = new BodyBuilder_1.BodyBuilder(mtd.getSignature(), methodNode, mtd, sourceFile);
-    mtd.setBodyBuilder(bodyBuilder);
     if (mtd.hasBuilderDecorator()) {
         mtd.setViewTree((0, ViewTreeBuilder_1.buildViewTree)(mtd));
     }
-    else if (declaringClass.hasComponentDecorator() &&
-        mtd.getSubSignature().toString() === 'build()' &&
-        !mtd.isStatic()) {
+    else if (declaringClass.hasComponentDecorator() && mtd.getSubSignature().toString() === 'build()' && !mtd.isStatic()) {
         declaringClass.setViewTree((0, ViewTreeBuilder_1.buildViewTree)(mtd));
     }
     checkAndUpdateMethod(mtd, declaringClass);
     declaringClass.addMethod(mtd);
     IRUtils_1.IRUtils.setComments(mtd, methodNode, sourceFile, mtd.getDeclaringArkFile().getScene().getOptions());
 }
-exports.buildArkMethodFromArkClass = buildArkMethodFromArkClass;
 function buildMethodName(node, declaringClass, sourceFile, declaringMethod) {
     let name = '';
     if (ohos_typescript_1.default.isFunctionDeclaration(node) || ohos_typescript_1.default.isFunctionExpression(node)) {
@@ -243,7 +255,7 @@ class MethodParameter {
     constructor() {
         this.name = '';
         this.optional = false;
-        this.dotDotDotToken = false;
+        this.restFlag = false;
         this.objElements = [];
         this.arrayElements = [];
     }
@@ -265,11 +277,11 @@ class MethodParameter {
     setOptional(optional) {
         this.optional = optional;
     }
-    hasDotDotDotToken() {
-        return this.dotDotDotToken;
+    isRest() {
+        return this.restFlag;
     }
-    setDotDotDotToken(dotDotDotToken) {
-        this.dotDotDotToken = dotDotDotToken;
+    setRestFlag(restFlag) {
+        this.restFlag = restFlag;
     }
     addObjElement(element) {
         this.objElements.push(element);
@@ -296,85 +308,60 @@ class MethodParameter {
 exports.MethodParameter = MethodParameter;
 function needDefaultConstructorInClass(arkClass) {
     const originClassType = arkClass.getCategory();
-    return arkClass.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME) == null &&
+    return (arkClass.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME) === null &&
         (originClassType === ArkClass_1.ClassCategory.CLASS || originClassType === ArkClass_1.ClassCategory.OBJECT) &&
         arkClass.getName() !== Const_1.DEFAULT_ARK_CLASS_NAME &&
-        !arkClass.isDeclare();
+        !arkClass.isDeclare());
+}
+function recursivelyCheckAndBuildSuperConstructor(arkClass) {
+    let superClass = arkClass.getSuperClass();
+    while (superClass !== null) {
+        if (superClass.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME) === null) {
+            buildDefaultConstructor(superClass);
+        }
+        superClass = superClass.getSuperClass();
+    }
 }
 function buildDefaultConstructor(arkClass) {
+    var _a;
     if (!needDefaultConstructorInClass(arkClass)) {
         return false;
     }
-    let parentConstructor = null;
-    let superClass = arkClass.getSuperClass() || null;
-    while (superClass != null) {
-        parentConstructor = superClass.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME);
-        if (parentConstructor != null) {
-            break;
-        }
-        superClass = superClass.getSuperClass() || null;
-    }
+    recursivelyCheckAndBuildSuperConstructor(arkClass);
     const defaultConstructor = new ArkMethod_1.ArkMethod();
     defaultConstructor.setDeclaringArkClass(arkClass);
     defaultConstructor.setCode('');
     defaultConstructor.setIsGeneratedFlag(true);
-    const thisLocal = new Local_1.Local(TSConst_1.THIS_NAME);
+    defaultConstructor.setLineCol(0);
+    const thisLocal = new Local_1.Local(TSConst_1.THIS_NAME, new Type_1.ClassType(arkClass.getSignature()));
     const locals = new Set([thisLocal]);
     const basicBlock = new BasicBlock_1.BasicBlock();
-    let startingStmt = new Stmt_1.ArkAssignStmt(thisLocal, new Ref_1.ArkThisRef(new Type_1.ClassType(arkClass.getSignature())));
-    basicBlock.addStmt(startingStmt);
-    if (parentConstructor != null) {
-        const methodParameters = [];
-        parentConstructor.getParameters().forEach(parameter => {
-            methodParameters.push(parameter);
-        });
-        let returnType = parentConstructor.getReturnType();
-        const methodSubSignature = new ArkSignature_1.MethodSubSignature(TSConst_1.CONSTRUCTOR_NAME, methodParameters, returnType, defaultConstructor.isStatic());
-        const methodSignature = new ArkSignature_1.MethodSignature(defaultConstructor.getDeclaringArkClass().getSignature(), methodSubSignature);
-        defaultConstructor.setImplementationSignature(methodSignature);
-        defaultConstructor.setLineCol(0);
-        const stmts = [];
-        let index = 0;
-        const parameterLocals = [];
-        for (const methodParameter of defaultConstructor.getParameters()) {
-            const parameterRef = new Ref_1.ArkParameterRef(index, methodParameter.getType());
-            const parameterLocal = new Local_1.Local(methodParameter.getName(), parameterRef.getType());
+    basicBlock.setId(0);
+    let parameters = [];
+    let parameterArgs = [];
+    const superConstructor = (_a = arkClass.getSuperClass()) === null || _a === void 0 ? void 0 : _a.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME);
+    if (superConstructor) {
+        parameters = superConstructor.getParameters();
+        for (let index = 0; index < parameters.length; index++) {
+            const parameterRef = new Ref_1.ArkParameterRef(index, parameters[index].getType());
+            const parameterLocal = new Local_1.Local(parameters[index].getName(), parameterRef.getType());
             locals.add(parameterLocal);
-            parameterLocals.push(parameterLocal);
-            stmts.push(new Stmt_1.ArkAssignStmt(parameterLocal, parameterRef));
+            parameterArgs.push(parameterLocal);
+            basicBlock.addStmt(new Stmt_1.ArkAssignStmt(parameterLocal, parameterRef));
             index++;
         }
-        const superMethodSubSignature = new ArkSignature_1.MethodSubSignature(TSConst_1.SUPER_NAME, parentConstructor.getParameters(), defaultConstructor.getReturnType());
-        const superMethodSignature = new ArkSignature_1.MethodSignature(arkClass.getSignature(), superMethodSubSignature);
-        const superInvokeExpr = new Expr_1.ArkStaticInvokeExpr(superMethodSignature, parameterLocals);
-        const superInvokeStmt = new Stmt_1.ArkInvokeStmt(superInvokeExpr);
-        basicBlock.addStmt(superInvokeStmt);
-        const returnVoidStmt = new Stmt_1.ArkReturnVoidStmt();
-        basicBlock.addStmt(returnVoidStmt);
     }
-    else {
-        const methodSubSignature = ArkSignatureBuilder_1.ArkSignatureBuilder.buildMethodSubSignatureFromMethodName(TSConst_1.CONSTRUCTOR_NAME);
-        const methodSignature = new ArkSignature_1.MethodSignature(defaultConstructor.getDeclaringArkClass().getSignature(), methodSubSignature);
-        defaultConstructor.setImplementationSignature(methodSignature);
-        defaultConstructor.setLineCol(0);
-        if (arkClass.getSuperClass()) {
-            const superClass = arkClass.getSuperClass();
-            const superMethodSubSignature = new ArkSignature_1.MethodSubSignature(TSConst_1.SUPER_NAME, [], Type_1.UnknownType.getInstance());
-            const superMethodSignature = new ArkSignature_1.MethodSignature(superClass.getSignature(), superMethodSubSignature);
-            const superInvokeExpr = new Expr_1.ArkStaticInvokeExpr(superMethodSignature, []);
-            const superInvokeStmt = new Stmt_1.ArkInvokeStmt(superInvokeExpr);
-            basicBlock.addStmt(superInvokeStmt);
-            const returnVoidStmt = new Stmt_1.ArkReturnVoidStmt();
-            basicBlock.addStmt(returnVoidStmt);
-        }
-        else {
-            const returnVoidStmt = new Stmt_1.ArkReturnVoidStmt();
-            basicBlock.addStmt(returnVoidStmt);
-        }
+    basicBlock.addStmt(new Stmt_1.ArkAssignStmt(thisLocal, new Ref_1.ArkThisRef(new Type_1.ClassType(arkClass.getSignature()))));
+    if (superConstructor) {
+        const superInvokeExpr = new Expr_1.ArkInstanceInvokeExpr(thisLocal, superConstructor.getSignature(), parameterArgs);
+        basicBlock.addStmt(new Stmt_1.ArkInvokeStmt(superInvokeExpr));
     }
+    const methodSubSignature = new ArkSignature_1.MethodSubSignature(TSConst_1.CONSTRUCTOR_NAME, parameters, thisLocal.getType(), defaultConstructor.isStatic());
+    defaultConstructor.setImplementationSignature(new ArkSignature_1.MethodSignature(arkClass.getSignature(), methodSubSignature));
+    basicBlock.addStmt(new Stmt_1.ArkReturnStmt(thisLocal));
     const cfg = new Cfg_1.Cfg();
     cfg.addBlock(basicBlock);
-    cfg.setStartingStmt(startingStmt);
+    cfg.setStartingStmt(basicBlock.getHead());
     cfg.setDeclaringMethod(defaultConstructor);
     cfg.getStmts().forEach(s => s.setCfg(cfg));
     defaultConstructor.setBody(new ArkBody_1.ArkBody(locals, cfg));
@@ -382,11 +369,11 @@ function buildDefaultConstructor(arkClass) {
     arkClass.addMethod(defaultConstructor);
     return true;
 }
-exports.buildDefaultConstructor = buildDefaultConstructor;
 function buildInitMethod(initMethod, fieldInitializerStmts, thisLocal) {
     const classType = new Type_1.ClassType(initMethod.getDeclaringArkClass().getSignature());
     const assignStmt = new Stmt_1.ArkAssignStmt(thisLocal, new Ref_1.ArkThisRef(classType));
     const block = new BasicBlock_1.BasicBlock();
+    block.setId(0);
     block.addStmt(assignStmt);
     const locals = new Set([thisLocal]);
     for (const stmt of fieldInitializerStmts) {
@@ -406,30 +393,37 @@ function buildInitMethod(initMethod, fieldInitializerStmts, thisLocal) {
     cfg.setDeclaringMethod(initMethod);
     initMethod.setBody(new ArkBody_1.ArkBody(locals, cfg));
 }
-exports.buildInitMethod = buildInitMethod;
-function addInitInConstructor(arkClass) {
-    var _a, _b;
-    for (const method of arkClass.getMethods(true)) {
-        if (method.getName() === TSConst_1.CONSTRUCTOR_NAME) {
-            const thisLocal = (_a = method.getBody()) === null || _a === void 0 ? void 0 : _a.getLocals().get(TSConst_1.THIS_NAME);
-            if (!thisLocal) {
-                continue;
-            }
-            const initInvokeStmt = new Stmt_1.ArkInvokeStmt(new Expr_1.ArkInstanceInvokeExpr(thisLocal, arkClass.getInstanceInitMethod().getSignature(), []));
-            const blocks = (_b = method.getCfg()) === null || _b === void 0 ? void 0 : _b.getBlocks();
-            if (!blocks) {
-                continue;
-            }
-            const firstBlockStmts = [...blocks][0].getStmts();
-            let index = 0;
-            if (firstBlockStmts[0].getDef() instanceof Local_1.Local && firstBlockStmts[0].getDef().getName() === TSConst_1.THIS_NAME) {
-                index = 1;
-            }
-            firstBlockStmts.splice(index, 0, initInvokeStmt);
-        }
+function addInitInConstructor(constructor) {
+    var _a;
+    const thisLocal = (_a = constructor.getBody()) === null || _a === void 0 ? void 0 : _a.getLocals().get(TSConst_1.THIS_NAME);
+    if (!thisLocal) {
+        return;
     }
+    const cfg = constructor.getCfg();
+    if (cfg === undefined) {
+        return;
+    }
+    const firstBlockStmts = cfg.getStartingBlock().getStmts();
+    let index = 0;
+    for (let i = 0; i < firstBlockStmts.length; i++) {
+        const stmt = firstBlockStmts[i];
+        if (stmt instanceof Stmt_1.ArkInvokeStmt && stmt.getInvokeExpr().getMethodSignature().getMethodSubSignature().getMethodName() === TSConst_1.CONSTRUCTOR_NAME) {
+            index++;
+            continue;
+        }
+        if (stmt instanceof Stmt_1.ArkAssignStmt) {
+            const rightOp = stmt.getRightOp();
+            if (rightOp instanceof Ref_1.ArkParameterRef || rightOp instanceof Ref_1.ArkThisRef || rightOp instanceof Ref_1.ClosureFieldRef) {
+                index++;
+                continue;
+            }
+        }
+        break;
+    }
+    const initInvokeStmt = new Stmt_1.ArkInvokeStmt(new Expr_1.ArkInstanceInvokeExpr(thisLocal, constructor.getDeclaringArkClass().getInstanceInitMethod().getSignature(), []));
+    initInvokeStmt.setCfg(cfg);
+    firstBlockStmts.splice(index, 0, initInvokeStmt);
 }
-exports.addInitInConstructor = addInitInConstructor;
 function isMethodImplementation(node) {
     if (ohos_typescript_1.default.isFunctionDeclaration(node) ||
         ohos_typescript_1.default.isMethodDeclaration(node) ||
@@ -444,7 +438,6 @@ function isMethodImplementation(node) {
     }
     return false;
 }
-exports.isMethodImplementation = isMethodImplementation;
 function checkAndUpdateMethod(method, cls) {
     let presentMethod;
     if (method.isStatic()) {
@@ -484,4 +477,41 @@ function checkAndUpdateMethod(method, cls) {
         return;
     }
 }
-exports.checkAndUpdateMethod = checkAndUpdateMethod;
+function replaceSuper2Constructor(constructor) {
+    var _a, _b;
+    if (constructor.getName() !== TSConst_1.CONSTRUCTOR_NAME) {
+        return;
+    }
+    const superClass = constructor.getDeclaringArkClass().getSuperClass();
+    if (superClass === null) {
+        return;
+    }
+    const superConstructor = superClass.getMethodWithName(TSConst_1.CONSTRUCTOR_NAME);
+    if (superConstructor === null) {
+        if (needDefaultConstructorInClass(superClass)) {
+            logger.error(`Can not find constructor method for class ${superClass.getSignature().toString()}`);
+        }
+        return;
+    }
+    const startingBlock = (_a = constructor.getBody()) === null || _a === void 0 ? void 0 : _a.getCfg().getStartingBlock();
+    if (startingBlock === undefined) {
+        return;
+    }
+    for (const stmt of startingBlock.getStmts()) {
+        if (stmt instanceof Stmt_1.ArkInvokeStmt) {
+            let invokeExpr = stmt.getInvokeExpr();
+            const methodSignature = invokeExpr.getMethodSignature();
+            if (methodSignature.getMethodSubSignature().getMethodName() !== TSConst_1.SUPER_NAME) {
+                continue;
+            }
+            let base = (_b = constructor.getBody()) === null || _b === void 0 ? void 0 : _b.getLocals().get(TSConst_1.THIS_NAME);
+            if (base === undefined) {
+                logger.error(`Can not find local this in constructor method ${constructor.getSignature().toString()}`);
+                return;
+            }
+            const newInvokeExpr = new Expr_1.ArkInstanceInvokeExpr(base, superConstructor.getSignature(), invokeExpr.getArgs());
+            stmt.replaceInvokeExpr(newInvokeExpr);
+            return;
+        }
+    }
+}

@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -57,6 +67,7 @@ class SceneConfig {
         this.sdkFiles = [];
         this.sdkFilesMap = new Map();
         this.projectFiles = [];
+        this.fileLanguages = new Map();
         this.options = { supportFileExts: ['.ets', '.ts'] };
         this.loadDefaultConfig(options);
     }
@@ -74,17 +85,19 @@ class SceneConfig {
     buildConfig(targetProjectName, targetProjectDirectory, sdks, fullFilePath) {
         this.targetProjectName = targetProjectName;
         this.targetProjectDirectory = targetProjectDirectory;
+        this.projectFiles = (0, getAllFiles_1.getAllFiles)(targetProjectDirectory, this.options.supportFileExts, this.options.ignoreFileNames);
         this.sdksObj = sdks;
         if (fullFilePath) {
             this.projectFiles.push(...fullFilePath);
         }
     }
     /**
-     * Create a sceneConfig object for a specified project path and set the target project directory to the targetProjectDirectory property of the sceneConfig object.
-     * @param targetProjectDirectory - the target project directory, such as xxx/xxx/xxx, started from project directory.
+     * Create a sceneConfig object for a specified project path and set the target project directory to the
+     * targetProjectDirectory property of the sceneConfig object.
+     * @param targetProjectDirectory - the target project directory, such as xxx/xxx/xxx, started from project
+     *     directory.
      * @example
      * 1. build a sceneConfig object.
-
     ```typescript
     const projectDir = 'xxx/xxx/xxx';
     const sceneConfig: SceneConfig = new SceneConfig();
@@ -96,7 +109,7 @@ class SceneConfig {
         this.targetProjectName = path_1.default.basename(targetProjectDirectory);
         this.projectFiles = (0, getAllFiles_1.getAllFiles)(targetProjectDirectory, this.options.supportFileExts, this.options.ignoreFileNames);
     }
-    buildFromProjectFiles(projectName, projectDir, filesAndDirectorys, sdks) {
+    buildFromProjectFiles(projectName, projectDir, filesAndDirectorys, sdks, languageTags) {
         if (sdks) {
             this.sdksObj = sdks;
         }
@@ -107,17 +120,20 @@ class SceneConfig {
             return;
         }
         filesAndDirectorys.forEach(fileOrDirectory => this.processFilePaths(fileOrDirectory, projectDir));
+        languageTags === null || languageTags === void 0 ? void 0 : languageTags.forEach((languageTag, fileOrDirectory) => {
+            this.setLanguageTagForFiles(fileOrDirectory, projectDir, languageTag);
+        });
     }
     processFilePaths(fileOrDirectory, projectDir) {
         let absoluteFilePath = '';
-        if (fileOrDirectory.includes(projectDir)) {
+        if (path_1.default.isAbsolute(fileOrDirectory)) {
             absoluteFilePath = fileOrDirectory;
         }
         else {
             absoluteFilePath = path_1.default.join(projectDir, fileOrDirectory);
         }
         if (fs_1.default.statSync(absoluteFilePath).isDirectory()) {
-            (0, getAllFiles_1.getAllFiles)(absoluteFilePath, this.getOptions().supportFileExts, this.options.ignoreFileNames).forEach((filePath) => {
+            (0, getAllFiles_1.getAllFiles)(absoluteFilePath, this.getOptions().supportFileExts, this.options.ignoreFileNames).forEach(filePath => {
                 if (!this.projectFiles.includes(filePath)) {
                     this.projectFiles.push(filePath);
                 }
@@ -125,6 +141,23 @@ class SceneConfig {
         }
         else {
             this.projectFiles.push(absoluteFilePath);
+        }
+    }
+    setLanguageTagForFiles(fileOrDirectory, projectDir, languageTag) {
+        let absoluteFilePath = '';
+        if (path_1.default.isAbsolute(fileOrDirectory)) {
+            absoluteFilePath = fileOrDirectory;
+        }
+        else {
+            absoluteFilePath = path_1.default.join(projectDir, fileOrDirectory);
+        }
+        if (fs_1.default.statSync(absoluteFilePath).isDirectory()) {
+            (0, getAllFiles_1.getAllFiles)(absoluteFilePath, this.getOptions().supportFileExts, this.options.ignoreFileNames).forEach(filePath => {
+                this.fileLanguages.set(filePath, languageTag);
+            });
+        }
+        else {
+            this.fileLanguages.set(absoluteFilePath, languageTag);
         }
     }
     buildFromJson(configJsonPath) {
@@ -147,9 +180,7 @@ class SceneConfig {
                 return;
             }
             const targetProjectName = configurations.targetProjectName ? configurations.targetProjectName : '';
-            const targetProjectDirectory = configurations.targetProjectDirectory
-                ? configurations.targetProjectDirectory
-                : '';
+            const targetProjectDirectory = configurations.targetProjectDirectory ? configurations.targetProjectDirectory : '';
             const sdks = configurations.sdks ? configurations.sdks : [];
             if (configurations.options) {
                 this.options = Object.assign(Object.assign({}, this.options), configurations.options);
@@ -169,6 +200,9 @@ class SceneConfig {
     getProjectFiles() {
         return this.projectFiles;
     }
+    getFileLanguages() {
+        return this.fileLanguages;
+    }
     getSdkFiles() {
         return this.sdkFiles;
     }
@@ -181,15 +215,34 @@ class SceneConfig {
     getSdksObj() {
         return this.sdksObj;
     }
-    loadDefaultConfig(options) {
-        let configFile = DEFAULT_CONFIG_FILE;
-        if (!fs_1.default.existsSync(configFile)) {
-            configFile = path_1.default.join(__dirname, 'config', CONFIG_FILENAME);
+    getDefaultConfigPath() {
+        try {
+            const moduleRoot = path_1.default.dirname(path_1.default.dirname(require.resolve('arkanalyzer')));
+            return path_1.default.join(moduleRoot, 'config', CONFIG_FILENAME);
         }
+        catch (e) {
+            logger.info(`Failed to resolve default config file from dependency path with error: ${e}`);
+            let configFile = DEFAULT_CONFIG_FILE;
+            if (!fs_1.default.existsSync(configFile)) {
+                logger.debug(`default config file '${DEFAULT_CONFIG_FILE}' not found.`);
+                configFile = path_1.default.join(__dirname, 'config', CONFIG_FILENAME);
+                logger.debug(`use new config file '${configFile}'.`);
+            }
+            else {
+                logger.debug(`default config file '${DEFAULT_CONFIG_FILE}' found, use it.`);
+            }
+            return configFile;
+        }
+    }
+    loadDefaultConfig(options) {
+        const configFile = this.getDefaultConfigPath();
+        logger.debug(`try to parse config file ${configFile}`);
         try {
             this.options = Object.assign(Object.assign({}, this.options), JSON.parse(fs_1.default.readFileSync(configFile, 'utf-8')));
         }
-        catch (error) { }
+        catch (error) {
+            logger.error(`Failed to parse config file with error: ${error}`);
+        }
         if (options) {
             this.options = Object.assign(Object.assign({}, this.options), options);
         }

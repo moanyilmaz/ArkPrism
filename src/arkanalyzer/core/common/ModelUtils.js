@@ -29,18 +29,33 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initModulePathMap = exports.findArkExportInFile = exports.findArkExport = exports.findExportInfo = exports.getArkFile = exports.sdkImportMap = exports.ModelUtils = void 0;
+exports.ModelUtils = void 0;
+exports.getArkFile = getArkFile;
+exports.findExportInfo = findExportInfo;
+exports.findArkExport = findArkExport;
+exports.findArkExportInFile = findArkExportInFile;
+exports.initModulePathMap = initModulePathMap;
 const Local_1 = require("../base/Local");
 const ArkClass_1 = require("../model/ArkClass");
 const ArkMethod_1 = require("../model/ArkMethod");
@@ -56,7 +71,17 @@ const ArkExportBuilder_1 = require("../model/builder/ArkExportBuilder");
 const Type_1 = require("../base/Type");
 const Const_1 = require("./Const");
 const ValueUtil_1 = require("./ValueUtil");
+const Stmt_1 = require("../base/Stmt");
+const Ref_1 = require("../base/Ref");
+const SdkUtils_1 = require("./SdkUtils");
 class ModelUtils {
+    /*
+     * Set static field to be null, then all related objects could be freed by GC.
+     * Static field implicitArkUIBuilderMethods is only used during method body building, the dispose method should be called after build all body.
+     */
+    static dispose() {
+        this.implicitArkUIBuilderMethods.clear();
+    }
     static getMethodSignatureFromArkClass(arkClass, methodName) {
         for (const arkMethod of arkClass.getMethods()) {
             if (arkMethod.getName() === methodName) {
@@ -98,8 +123,9 @@ class ModelUtils {
             const names = className.split('.');
             let nameSpace = this.getNamespaceWithNameFromClass(names[0], startFrom);
             for (let i = 1; i < names.length - 1; i++) {
-                if (nameSpace)
+                if (nameSpace) {
                     nameSpace = nameSpace.getNamespaceWithName(names[i]);
+                }
             }
             if (nameSpace) {
                 return nameSpace.getClassWithName(names[names.length - 1]);
@@ -261,24 +287,21 @@ class ModelUtils {
     }
     static getAllClassesInFile(arkFile) {
         const allClasses = arkFile.getClasses();
-        this.getAllNamespacesInFile(arkFile).forEach((namespace) => {
+        this.getAllNamespacesInFile(arkFile).forEach(namespace => {
             allClasses.push(...namespace.getClasses());
         });
         return allClasses;
     }
     static getAllMethodsInFile(arkFile) {
         const allMethods = [];
-        this.getAllClassesInFile(arkFile).forEach((cls) => {
+        this.getAllClassesInFile(arkFile).forEach(cls => {
             allMethods.push(...cls.getMethods());
         });
         return allMethods;
     }
     static isArkUIBuilderMethod(arkMethod) {
         let isArkUIBuilderMethod = arkMethod.hasBuilderDecorator() || this.implicitArkUIBuilderMethods.has(arkMethod);
-        if (!isArkUIBuilderMethod &&
-            arkMethod.getName() === 'build' &&
-            arkMethod.getDeclaringArkClass().hasComponentDecorator() &&
-            !arkMethod.isStatic()) {
+        if (!isArkUIBuilderMethod && arkMethod.getName() === 'build' && arkMethod.getDeclaringArkClass().hasComponentDecorator() && !arkMethod.isStatic()) {
             const fileName = arkMethod.getDeclaringArkClass().getDeclaringArkFile().getName();
             if (fileName.endsWith('.ets')) {
                 isArkUIBuilderMethod = true;
@@ -326,7 +349,7 @@ class ModelUtils {
     }
     static findPropertyInNamespace(name, namespace) {
         var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
-        return (_j = (_e = (_d = (_c = (_b = (_a = namespace.getDefaultClass()) === null || _a === void 0 ? void 0 : _a.getMethodWithName(name)) !== null && _b !== void 0 ? _b : findArkExport(namespace.getExportInfoBy(name))) !== null && _c !== void 0 ? _c : namespace.getClassWithName(name)) !== null && _d !== void 0 ? _d : namespace.getNamespaceWithName(name)) !== null && _e !== void 0 ? _e : (_h = (_g = (_f = namespace.getDefaultClass()) === null || _f === void 0 ? void 0 : _f.getDefaultArkMethod()) === null || _g === void 0 ? void 0 : _g.getBody()) === null || _h === void 0 ? void 0 : _h.getAliasTypeByName(name)) !== null && _j !== void 0 ? _j : (_o = (_m = (_l = (_k = namespace.getDefaultClass()) === null || _k === void 0 ? void 0 : _k.getDefaultArkMethod()) === null || _l === void 0 ? void 0 : _l.getBody()) === null || _m === void 0 ? void 0 : _m.getLocals()) === null || _o === void 0 ? void 0 : _o.get(name);
+        return ((_j = (_e = (_d = (_c = (_b = (_a = namespace.getDefaultClass()) === null || _a === void 0 ? void 0 : _a.getMethodWithName(name)) !== null && _b !== void 0 ? _b : findArkExport(namespace.getExportInfoBy(name))) !== null && _c !== void 0 ? _c : namespace.getClassWithName(name)) !== null && _d !== void 0 ? _d : namespace.getNamespaceWithName(name)) !== null && _e !== void 0 ? _e : (_h = (_g = (_f = namespace.getDefaultClass()) === null || _f === void 0 ? void 0 : _f.getDefaultArkMethod()) === null || _g === void 0 ? void 0 : _g.getBody()) === null || _h === void 0 ? void 0 : _h.getAliasTypeByName(name)) !== null && _j !== void 0 ? _j : (_o = (_m = (_l = (_k = namespace.getDefaultClass()) === null || _k === void 0 ? void 0 : _k.getDefaultArkMethod()) === null || _l === void 0 ? void 0 : _l.getBody()) === null || _m === void 0 ? void 0 : _m.getLocals()) === null || _o === void 0 ? void 0 : _o.get(name));
     }
     static findPropertyInClass(name, arkClass) {
         var _a, _b, _c;
@@ -354,13 +377,15 @@ class ModelUtils {
         if (name === TSConst_1.THIS_NAME || name.startsWith(Const_1.TEMP_LOCAL_PREFIX)) {
             return null;
         }
+        const parameter = arkMethod.getParameters().find(p => p.getName() === name);
+        if (parameter) {
+            return new Local_1.Local(parameter.getName(), parameter.getType());
+        }
         if (times > 0) {
-            const parameter = arkMethod.getParameters().find(p => p.getName() === name);
-            if (parameter) {
-                return new Local_1.Local(parameter.getName(), parameter.getType());
-            }
             const declaredLocal = (_a = arkMethod.getBody()) === null || _a === void 0 ? void 0 : _a.getLocals().get(name);
-            if (declaredLocal && declaredLocal.getDeclaringStmt()) {
+            if (declaredLocal &&
+                declaredLocal.getDeclaringStmt() instanceof Stmt_1.ArkAssignStmt &&
+                !(declaredLocal.getDeclaringStmt().getRightOp() instanceof Ref_1.ClosureFieldRef)) {
                 return declaredLocal;
             }
         }
@@ -368,23 +393,20 @@ class ModelUtils {
         if (parentName === Const_1.DEFAULT_ARK_METHOD_NAME) {
             return null;
         }
-        const start = parentName.indexOf(Const_1.NAME_DELIMITER);
-        let invokeMethod;
-        if (start < 0) {
+        let invokeMethod = arkMethod.getOuterMethod();
+        if (!invokeMethod) {
             const className = arkMethod.getDeclaringArkClass().getName();
             const outerStart = className.indexOf(Const_1.NAME_DELIMITER);
             const outerEnd = className.lastIndexOf('.');
             if (outerStart > -1 && outerEnd > -1) {
-                invokeMethod = (_b = arkMethod.getDeclaringArkFile().getClassWithName(className.substring(outerStart + 1, outerEnd))) === null || _b === void 0 ? void 0 : _b.getMethodWithName(className.substring(outerEnd + 1));
+                invokeMethod = (_b = arkMethod
+                    .getDeclaringArkFile()
+                    .getClassWithName(className.substring(outerStart + 1, outerEnd))) === null || _b === void 0 ? void 0 : _b.getMethodWithName(className.substring(outerEnd + 1));
             }
             else {
                 const cls = arkMethod.getDeclaringArkClass();
                 invokeMethod = (_c = cls.getDefaultArkMethod()) !== null && _c !== void 0 ? _c : (_d = cls.getDeclaringArkFile().getDefaultClass()) === null || _d === void 0 ? void 0 : _d.getDefaultArkMethod();
             }
-        }
-        else {
-            parentName = parentName.substring(start + 1);
-            invokeMethod = arkMethod.getDeclaringArkClass().getMethodWithName(parentName);
         }
         if (invokeMethod) {
             return this.findDeclaredLocal(local, invokeMethod, ++times);
@@ -397,11 +419,16 @@ class ModelUtils {
         if (arkModel) {
             return arkModel;
         }
-        arkModel = (_r = (_m = (_k = (_j = (_h = (_g = (_f = (_e = (_d = ModelUtils.getDefaultClass(arkClass)) === null || _d === void 0 ? void 0 : _d.getDefaultArkMethod()) === null || _e === void 0 ? void 0 : _e.getBody()) === null || _f === void 0 ? void 0 : _f.getLocals()) === null || _g === void 0 ? void 0 : _g.get(baseName)) !== null && _h !== void 0 ? _h : ModelUtils.getClassWithName(baseName, arkClass)) !== null && _j !== void 0 ? _j : ModelUtils.getNamespaceWithName(baseName, arkClass)) !== null && _k !== void 0 ? _k : (_l = ModelUtils.getDefaultClass(arkClass)) === null || _l === void 0 ? void 0 : _l.getMethodWithName(baseName)) !== null && _m !== void 0 ? _m : (_q = (_p = (_o = ModelUtils.getDefaultClass(arkClass)) === null || _o === void 0 ? void 0 : _o.getDefaultArkMethod()) === null || _p === void 0 ? void 0 : _p.getBody()) === null || _q === void 0 ? void 0 : _q.getAliasTypeByName(baseName)) !== null && _r !== void 0 ? _r : ModelUtils.getArkExportInImportInfoWithName(baseName, arkClass.getDeclaringArkFile());
+        arkModel =
+            (_r = (_m = (_k = (_j = (_h = (_g = (_f = (_e = (_d = ModelUtils.getDefaultClass(arkClass)) === null || _d === void 0 ? void 0 : _d.getDefaultArkMethod()) === null || _e === void 0 ? void 0 : _e.getBody()) === null || _f === void 0 ? void 0 : _f.getLocals()) === null || _g === void 0 ? void 0 : _g.get(baseName)) !== null && _h !== void 0 ? _h : ModelUtils.getClassWithName(baseName, arkClass)) !== null && _j !== void 0 ? _j : ModelUtils.getNamespaceWithName(baseName, arkClass)) !== null && _k !== void 0 ? _k : (_l = ModelUtils.getDefaultClass(arkClass)) === null || _l === void 0 ? void 0 : _l.getMethodWithName(baseName)) !== null && _m !== void 0 ? _m : (_q = (_p = (_o = ModelUtils.getDefaultClass(arkClass)) === null || _o === void 0 ? void 0 : _o.getDefaultArkMethod()) === null || _p === void 0 ? void 0 : _p.getBody()) === null || _q === void 0 ? void 0 : _q.getAliasTypeByName(baseName)) !== null && _r !== void 0 ? _r : ModelUtils.getArkExportInImportInfoWithName(baseName, arkClass.getDeclaringArkFile());
         if (!arkModel && !arkClass.getDeclaringArkFile().getImportInfoBy(baseName)) {
             arkModel = arkClass.getDeclaringArkFile().getScene().getSdkGlobal(baseName);
         }
         return arkModel;
+    }
+    static findGlobalRef(refName, method) {
+        var _a, _b;
+        return ((_b = (_a = this.findDeclaredLocal(new Local_1.Local(refName), method, 1)) !== null && _a !== void 0 ? _a : this.getArkExportInImportInfoWithName(refName, method.getDeclaringArkFile())) !== null && _b !== void 0 ? _b : method.getDeclaringArkFile().getScene().getSdkGlobal(refName));
     }
     static findArkModelByRefName(refName, arkClass) {
         const singleNames = refName.split('.');
@@ -486,7 +513,6 @@ exports.ModelUtils = ModelUtils;
 ModelUtils.implicitArkUIBuilderMethods = new Set();
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'ModelUtils');
 let moduleMap;
-exports.sdkImportMap = new Map();
 /**
  * find arkFile by from info
  * export xx from '../xx'
@@ -499,20 +525,21 @@ function getArkFile(im) {
     if (!from) {
         return null;
     }
-    if (/^([^@]*\/)([^\/]*)$/.test(from)) { //relative path
-        const parentPath = /^\.{1,2}\//.test(from) ? path_1.default.dirname(im.getDeclaringArkFile().getFilePath())
-            : im.getDeclaringArkFile().getProjectDir();
+    if (/^([^@]*\/)([^\/]*)$/.test(from)) {
+        //relative path
+        const parentPath = /^\.{1,2}\//.test(from) ? path_1.default.dirname(im.getDeclaringArkFile().getFilePath()) : im.getDeclaringArkFile().getProjectDir();
         const originPath = path_1.default.resolve(parentPath, from);
         return getArkFileFromScene(im, originPath);
     }
-    else if (/^@[a-z|\-]+?\//.test(from)) { //module path
+    else if ((moduleMap === null || moduleMap === void 0 ? void 0 : moduleMap.get(from)) || /^@[a-z|\-]+?\//.test(from)) {
+        //module path
         const arkFile = getArkFileFromOtherModule(im);
         if (arkFile) {
             return arkFile;
         }
     }
     //sdk path
-    const file = exports.sdkImportMap.get(from);
+    const file = SdkUtils_1.SdkUtils.getImportSdkFile(from);
     if (file) {
         return file;
     }
@@ -523,8 +550,8 @@ function getArkFile(im) {
             return arkFile;
         }
     }
+    return null;
 }
-exports.getArkFile = getArkFile;
 /**
  * find from info's export
  * @param fromInfo importInfo or exportInfo
@@ -533,8 +560,7 @@ function findExportInfo(fromInfo) {
     var _a, _b;
     let file = getArkFile(fromInfo);
     if (!file) {
-        logger.warn(`${fromInfo.getOriginName()} ${fromInfo.getFrom()} file not found: 
-        ${(_b = (_a = fromInfo.getDeclaringArkFile()) === null || _a === void 0 ? void 0 : _a.getFileSignature()) === null || _b === void 0 ? void 0 : _b.toString()}`);
+        logger.warn(`${fromInfo.getOriginName()} ${fromInfo.getFrom()} file not found: ${(_b = (_a = fromInfo.getDeclaringArkFile()) === null || _a === void 0 ? void 0 : _a.getFileSignature()) === null || _b === void 0 ? void 0 : _b.toString()}`);
         return null;
     }
     if ((0, ArkSignature_1.fileSignatureCompare)(file.getFileSignature(), fromInfo.getDeclaringArkFile().getFileSignature())) {
@@ -548,8 +574,7 @@ function findExportInfo(fromInfo) {
     }
     let exportInfo = findExportInfoInfile(fromInfo, file) || null;
     if (exportInfo === null) {
-        logger.warn('export info not found, ' + fromInfo.getFrom() + ' in file: '
-            + fromInfo.getDeclaringArkFile().getFileSignature().toString());
+        logger.warn('export info not found, ' + fromInfo.getFrom() + ' in file: ' + fromInfo.getDeclaringArkFile().getFileSignature().toString());
         return null;
     }
     const arkExport = findArkExport(exportInfo);
@@ -559,9 +584,8 @@ function findExportInfo(fromInfo) {
     }
     return exportInfo;
 }
-exports.findExportInfo = findExportInfo;
 function findArkExport(exportInfo) {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e, _f;
     if (!exportInfo) {
         return null;
     }
@@ -571,11 +595,12 @@ function findArkExport(exportInfo) {
     }
     if (!exportInfo.getFrom()) {
         const name = exportInfo.getOriginName();
+        const defaultClass = (_b = (_a = exportInfo.getDeclaringArkNamespace()) === null || _a === void 0 ? void 0 : _a.getDefaultClass()) !== null && _b !== void 0 ? _b : exportInfo.getDeclaringArkFile().getDefaultClass();
         if (exportInfo.getExportClauseType() === ArkExport_1.ExportType.LOCAL) {
-            arkExport = ((_b = (_a = exportInfo.getDeclaringArkFile().getDefaultClass().getDefaultArkMethod()) === null || _a === void 0 ? void 0 : _a.getBody()) === null || _b === void 0 ? void 0 : _b.getLocals().get(name)) || null;
+            arkExport = (_d = (_c = defaultClass.getDefaultArkMethod()) === null || _c === void 0 ? void 0 : _c.getBody()) === null || _d === void 0 ? void 0 : _d.getExportLocalByName(name);
         }
         else if (exportInfo.getExportClauseType() === ArkExport_1.ExportType.TYPE) {
-            arkExport = ((_d = (_c = exportInfo.getDeclaringArkFile().getDefaultClass().getDefaultArkMethod()) === null || _c === void 0 ? void 0 : _c.getBody()) === null || _d === void 0 ? void 0 : _d.getAliasTypeByName(name)) || null;
+            arkExport = (_f = (_e = defaultClass.getDefaultArkMethod()) === null || _e === void 0 ? void 0 : _e.getBody()) === null || _f === void 0 ? void 0 : _f.getAliasTypeByName(name);
         }
         else {
             arkExport = findArkExportInFile(name, exportInfo.getDeclaringArkFile());
@@ -587,16 +612,18 @@ function findArkExport(exportInfo) {
             arkExport = result.getArkExport() || null;
         }
     }
-    if (!arkExport) {
-        logger.warn(`${exportInfo.getExportClauseName()} get arkExport fail from ${exportInfo.getFrom()} at
-                ${exportInfo.getDeclaringArkFile().getFileSignature().toString()}`);
+    if (arkExport) {
+        exportInfo.setArkExport(arkExport);
+    }
+    else {
+        const file = exportInfo.getDeclaringArkFile().getFileSignature().toString();
+        logger.warn(`${exportInfo.getExportClauseName()} get arkExport fail from ${exportInfo.getFrom()} at ${file}`);
     }
     return arkExport || null;
 }
-exports.findArkExport = findArkExport;
 function findArkExportInFile(name, declaringArkFile) {
     var _a, _b, _c, _d, _e, _f, _g, _h;
-    let arkExport = (_f = (_e = (_d = (_a = declaringArkFile.getNamespaceWithName(name)) !== null && _a !== void 0 ? _a : (_c = (_b = declaringArkFile.getDefaultClass().getDefaultArkMethod()) === null || _b === void 0 ? void 0 : _b.getBody()) === null || _c === void 0 ? void 0 : _c.getAliasTypeByName(name)) !== null && _d !== void 0 ? _d : declaringArkFile.getClassWithName(name)) !== null && _e !== void 0 ? _e : declaringArkFile.getDefaultClass().getMethodWithName(name)) !== null && _f !== void 0 ? _f : (_h = (_g = declaringArkFile.getDefaultClass().getDefaultArkMethod()) === null || _g === void 0 ? void 0 : _g.getBody()) === null || _h === void 0 ? void 0 : _h.getLocals().get(name);
+    let arkExport = (_f = (_e = (_d = (_a = declaringArkFile.getNamespaceWithName(name)) !== null && _a !== void 0 ? _a : (_c = (_b = declaringArkFile.getDefaultClass().getDefaultArkMethod()) === null || _b === void 0 ? void 0 : _b.getBody()) === null || _c === void 0 ? void 0 : _c.getAliasTypeByName(name)) !== null && _d !== void 0 ? _d : declaringArkFile.getClassWithName(name)) !== null && _e !== void 0 ? _e : declaringArkFile.getDefaultClass().getMethodWithName(name)) !== null && _f !== void 0 ? _f : (_h = (_g = declaringArkFile.getDefaultClass().getDefaultArkMethod()) === null || _g === void 0 ? void 0 : _g.getBody()) === null || _h === void 0 ? void 0 : _h.getExportLocalByName(name);
     if (!arkExport) {
         const importInfo = declaringArkFile.getImportInfoBy(name);
         if (importInfo) {
@@ -608,7 +635,6 @@ function findArkExportInFile(name, declaringArkFile) {
     }
     return arkExport || null;
 }
-exports.findArkExportInFile = findArkExportInFile;
 function processSdkPath(sdk, formPath) {
     let originPath = path_1.default.join(sdk.path, formPath);
     if (FileUtils_1.FileUtils.isDirectory(originPath)) {
@@ -663,8 +689,7 @@ function findExportInfoInfile(fromInfo, file) {
         file.addExportInfo(exportInfo, TSConst_1.ALL);
     }
     else if (/\.d\.e?ts$/.test(file.getName())) {
-        let declare = exportName === TSConst_1.DEFAULT ? undefined
-            : findArkExportInFile(fromInfo.getOriginName(), file) || undefined;
+        let declare = exportName === TSConst_1.DEFAULT ? undefined : findArkExportInFile(fromInfo.getOriginName(), file) || undefined;
         exportInfo = (0, ArkExportBuilder_1.buildDefaultExportInfo)(fromInfo, file, declare);
     }
     return exportInfo;
@@ -675,10 +700,9 @@ function initModulePathMap(ohPkgContentMap) {
     }
     moduleMap = FileUtils_1.FileUtils.generateModuleMap(ohPkgContentMap);
 }
-exports.initModulePathMap = initModulePathMap;
 function getArkFileFromOtherModule(fromInfo) {
     if (!moduleMap || moduleMap.size === 0) {
-        return;
+        return undefined;
     }
     const from = fromInfo.getFrom();
     let index;
@@ -712,7 +736,7 @@ function getArkFileFromOtherModule(fromInfo) {
 }
 function findFileInModule(fromInfo, modulePath, contentPath) {
     if (!modulePath) {
-        return;
+        return undefined;
     }
     const originPath = path_1.default.join(modulePath.path, contentPath);
     let file;
@@ -722,4 +746,5 @@ function findFileInModule(fromInfo, modulePath, contentPath) {
     if (file && findExportInfoInfile(fromInfo, file)) {
         return file;
     }
+    return undefined;
 }

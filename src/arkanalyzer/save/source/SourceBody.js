@@ -29,13 +29,23 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StmtReader = exports.SourceBody = void 0;
 const Local_1 = require("../../core/base/Local");
@@ -103,8 +113,9 @@ class SourceBody {
     setTempCode(temp, code) {
         this.tempCodeMap.set(temp, code);
     }
-    transTemp2Code(temp) {
-        if (this.tempCodeMap.has(temp.getName()) && PrinterUtils_1.PrinterUtils.isTemp(temp.getName())) {
+    transTemp2Code(temp, isLeftOp = false) {
+        // if the temp local is not the left op of ArkAssignStmt, it should get the actual text from tempCodeMap
+        if (!isLeftOp && this.tempCodeMap.has(temp.getName()) && PrinterUtils_1.PrinterUtils.isTemp(temp.getName())) {
             this.tempVisitor.add(temp.getName());
             return this.tempCodeMap.get(temp.getName());
         }
@@ -199,11 +210,7 @@ class SourceBody {
         }
     }
     getStmts() {
-        return this.stmts.filter((value) => {
-            if (!this.skipStmts.has(value.original)) {
-                return value;
-            }
-        });
+        return this.stmts.filter(value => !this.skipStmts.has(value.original));
     }
     pushStmt(stmt) {
         let lastLine = this.getLastLine();
@@ -231,12 +238,13 @@ class SourceBody {
         for (let i = stmts.length - 1; i > 0; i--) {
             if (stmts[i] instanceof Stmt_1.ArkInvokeStmt && stmts[i].getInvokeExpr()) {
                 let instanceInvokeExpr = stmts[i].getInvokeExpr();
-                if ('constructor' === instanceInvokeExpr.getMethodSignature().getMethodSubSignature().getMethodName()) {
-                    let localName = instanceInvokeExpr.getBase().getName();
-                    let newExprIdx = findNewExpr(i, localName);
-                    if (newExprIdx >= 0 && newExprIdx < i - 1) {
-                        moveStmt(i, newExprIdx);
-                    }
+                if ('constructor' !== instanceInvokeExpr.getMethodSignature().getMethodSubSignature().getMethodName()) {
+                    continue;
+                }
+                let localName = instanceInvokeExpr.getBase().getName();
+                let newExprIdx = findNewExpr(i, localName);
+                if (newExprIdx >= 0 && newExprIdx < i - 1) {
+                    moveStmt(i, newExprIdx);
                 }
             }
         }
@@ -246,10 +254,9 @@ class SourceBody {
                 if (!(stmts[j] instanceof Stmt_1.ArkAssignStmt)) {
                     continue;
                 }
-                if (stmts[j].getLeftOp() instanceof Local_1.Local) {
-                    if (stmts[j].getLeftOp().getName() === name) {
-                        return j;
-                    }
+                const leftOp = stmts[j].getLeftOp();
+                if (leftOp instanceof Local_1.Local && leftOp.getName() === name) {
+                    return j;
                 }
             }
             return -1;

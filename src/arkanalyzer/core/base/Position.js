@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -29,18 +29,33 @@ var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (
 }) : function(o, v) {
     o["default"] = v;
 });
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FullPosition = exports.LineColPosition = exports.getColNo = exports.getLineNo = exports.setLineCol = exports.setCol = exports.setLine = void 0;
+exports.FullPosition = exports.LineColPosition = void 0;
+exports.setLine = setLine;
+exports.setCol = setCol;
+exports.setLineCol = setLineCol;
+exports.getLineNo = getLineNo;
+exports.getColNo = getColNo;
 const ohos_typescript_1 = __importDefault(require("ohos-typescript"));
 const logger_1 = __importStar(require("../../utils/logger"));
 const logger = logger_1.default.getLogger(logger_1.LOG_MODULE_TYPE.ARKANALYZER, 'Position');
@@ -60,7 +75,6 @@ function setLine(lineCol, lineNo) {
     }
     return (lineNo << LOW_BITS_SIZE) | (lineCol & LOW_BITS_MASK);
 }
-exports.setLine = setLine;
 function setCol(lineCol, colNo) {
     if (colNo < MIN_NUMBER) {
         colNo = MIN_NUMBER;
@@ -71,14 +85,12 @@ function setCol(lineCol, colNo) {
     }
     return (lineCol & HIGH_BITS_MASK) | colNo;
 }
-exports.setCol = setCol;
 function setLineCol(lineNo, colNo) {
     let lineCol = 0;
     lineCol = setLine(lineCol, lineNo);
     lineCol = setCol(lineCol, colNo);
     return lineCol;
 }
-exports.setLineCol = setLineCol;
 function getLineNo(lineCol) {
     let line = lineCol >>> LOW_BITS_SIZE;
     if (line === MIN_NUMBER) {
@@ -86,7 +98,6 @@ function getLineNo(lineCol) {
     }
     return line;
 }
-exports.getLineNo = getLineNo;
 function getColNo(lineCol) {
     let col = lineCol & LOW_BITS_MASK;
     if (col === MIN_NUMBER) {
@@ -94,7 +105,6 @@ function getColNo(lineCol) {
     }
     return col;
 }
-exports.getColNo = getColNo;
 /**
  * @category core/base
  */

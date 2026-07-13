@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JsonPrinter = void 0;
 const Printer_1 = require("./Printer");
@@ -26,7 +23,6 @@ const Constant_1 = require("../core/base/Constant");
 const ArkSignature_1 = require("../core/model/ArkSignature");
 const Ref_1 = require("../core/base/Ref");
 const Local_1 = require("../core/base/Local");
-const util_1 = __importDefault(require("util"));
 class JsonPrinter extends Printer_1.Printer {
     constructor(arkFile) {
         super();
@@ -39,17 +35,17 @@ class JsonPrinter extends Printer_1.Printer {
     serializeArkFile(file) {
         return {
             signature: this.serializeFileSignature(file.getFileSignature()),
-            namespaces: file.getNamespaces().map((ns) => this.serializeNamespace(ns)),
-            classes: file.getClasses().map((cls) => this.serializeClass(cls)),
-            importInfos: file.getImportInfos().map((info) => this.serializeImportInfo(info)),
-            exportInfos: file.getExportInfos().map((info) => this.serializeExportInfo(info)),
+            namespaces: file.getNamespaces().map(ns => this.serializeNamespace(ns)),
+            classes: file.getClasses().map(cls => this.serializeClass(cls)),
+            importInfos: file.getImportInfos().map(info => this.serializeImportInfo(info)),
+            exportInfos: file.getExportInfos().map(info => this.serializeExportInfo(info)),
         };
     }
     serializeNamespace(namespace) {
         return {
             signature: this.serializeNamespaceSignature(namespace.getSignature()),
-            classes: namespace.getClasses().map((cls) => this.serializeClass(cls)),
-            namespaces: namespace.getNamespaces().map((ns) => this.serializeNamespace(ns)),
+            classes: namespace.getClasses().map(cls => this.serializeClass(cls)),
+            namespaces: namespace.getNamespaces().map(ns => this.serializeNamespace(ns)),
         };
     }
     serializeClass(clazz) {
@@ -59,17 +55,18 @@ class JsonPrinter extends Printer_1.Printer {
             modifiers: clazz.getModifiers(),
             decorators: clazz.getDecorators().map((decorator) => this.serializeDecorator(decorator)),
             typeParameters: (_a = clazz.getGenericsTypes()) === null || _a === void 0 ? void 0 : _a.map((type) => this.serializeType(type)),
+            category: clazz.getCategory(),
             superClassName: clazz.getSuperClassName(),
             implementedInterfaceNames: clazz.getImplementedInterfaceNames(),
-            fields: clazz.getFields().map((field) => this.serializeField(field)),
-            methods: clazz.getMethods(true).map((method) => this.serializeMethod(method)),
+            fields: clazz.getFields().map(field => this.serializeField(field)),
+            methods: clazz.getMethods(true).map(method => this.serializeMethod(method)),
         };
     }
     serializeField(field) {
         return {
             signature: this.serializeFieldSignature(field.getSignature()),
             modifiers: field.getModifiers(),
-            decorators: field.getDecorators().map((decorator) => this.serializeDecorator(decorator)),
+            decorators: field.getDecorators().map(decorator => this.serializeDecorator(decorator)),
             questionToken: field.getQuestionToken(),
             exclamationToken: field.getExclamationToken(),
         };
@@ -80,14 +77,14 @@ class JsonPrinter extends Printer_1.Printer {
         return {
             signature: this.serializeMethodSignature(method.getSignature()),
             modifiers: method.getModifiers(),
-            decorators: method.getDecorators().map((decorator) => this.serializeDecorator(decorator)),
+            decorators: method.getDecorators().map(decorator => this.serializeDecorator(decorator)),
             typeParameters: (_a = method.getGenericTypes()) === null || _a === void 0 ? void 0 : _a.map(type => this.serializeType(type)),
             body: body && this.serializeMethodBody(body),
         };
     }
     serializeMethodBody(body) {
         return {
-            locals: Array.from(body.getLocals().values()).map((local) => this.serializeLocal(local)),
+            locals: Array.from(body.getLocals().values()).map(local => this.serializeLocal(local)),
             cfg: this.serializeCfg(body.getCfg()),
         };
     }
@@ -96,6 +93,7 @@ class JsonPrinter extends Printer_1.Printer {
             name: parameter.getName(),
             type: this.serializeType(parameter.getType()),
             isOptional: parameter.isOptional(),
+            isRest: parameter.isRest(),
         };
     }
     serializeImportInfo(importInfo) {
@@ -136,61 +134,52 @@ class JsonPrinter extends Printer_1.Printer {
             throw new Error('Type is undefined');
         }
         if (type instanceof Type_1.AnyType) {
-            return {
-                _: 'AnyType',
-            };
+            return { _: 'AnyType' };
         }
         else if (type instanceof Type_1.UnknownType) {
-            return {
-                _: 'UnknownType',
-            };
+            return { _: 'UnknownType' };
         }
         else if (type instanceof Type_1.VoidType) {
-            return {
-                _: 'VoidType',
-            };
+            return { _: 'VoidType' };
         }
         else if (type instanceof Type_1.NeverType) {
-            return {
-                _: 'NeverType',
-            };
+            return { _: 'NeverType' };
         }
         else if (type instanceof Type_1.UnionType) {
             return {
                 _: 'UnionType',
+                types: type.getTypes().map(type => this.serializeType(type)),
+            };
+        }
+        else if (type instanceof Type_1.IntersectionType) {
+            return {
+                _: 'IntersectionType',
                 types: type.getTypes().map((type) => this.serializeType(type)),
             };
         }
         else if (type instanceof Type_1.TupleType) {
             return {
                 _: 'TupleType',
-                types: type.getTypes().map((type) => this.serializeType(type)),
+                types: type.getTypes().map(type => this.serializeType(type)),
             };
         }
         else if (type instanceof Type_1.BooleanType) {
-            return {
-                _: 'BooleanType',
-            };
+            return { _: 'BooleanType' };
         }
         else if (type instanceof Type_1.NumberType) {
-            return {
-                _: 'NumberType',
-            };
+            return { _: 'NumberType' };
+        }
+        else if (type instanceof Type_1.BigIntType) {
+            return { _: 'BigIntType' };
         }
         else if (type instanceof Type_1.StringType) {
-            return {
-                _: 'StringType',
-            };
+            return { _: 'StringType' };
         }
         else if (type instanceof Type_1.NullType) {
-            return {
-                _: 'NullType',
-            };
+            return { _: 'NullType' };
         }
         else if (type instanceof Type_1.UndefinedType) {
-            return {
-                _: 'UndefinedType',
-            };
+            return { _: 'UndefinedType' };
         }
         else if (type instanceof Type_1.LiteralType) {
             return {
@@ -198,21 +187,18 @@ class JsonPrinter extends Printer_1.Printer {
                 literal: type.getLiteralName(),
             };
         }
-        else if (type instanceof Type_1.PrimitiveType) {
-            throw new Error('Unhandled PrimitiveType: ' + util_1.default.inspect(type, { showHidden: true, depth: null }));
-        }
         else if (type instanceof Type_1.ClassType) {
             return {
                 _: 'ClassType',
                 signature: this.serializeClassSignature(type.getClassSignature()),
-                typeParameters: (_a = type.getRealGenericTypes()) === null || _a === void 0 ? void 0 : _a.map((type) => this.serializeType(type)),
+                typeParameters: (_a = type.getRealGenericTypes()) === null || _a === void 0 ? void 0 : _a.map(type => this.serializeType(type)),
             };
         }
         else if (type instanceof Type_1.FunctionType) {
             return {
                 _: 'FunctionType',
                 signature: this.serializeMethodSignature(type.getMethodSignature()),
-                typeParameters: (_b = type.getRealGenericTypes()) === null || _b === void 0 ? void 0 : _b.map((type) => this.serializeType(type)),
+                typeParameters: (_b = type.getRealGenericTypes()) === null || _b === void 0 ? void 0 : _b.map(type => this.serializeType(type)),
             };
         }
         else if (type instanceof Type_1.ArrayType) {
@@ -226,17 +212,17 @@ class JsonPrinter extends Printer_1.Printer {
             return {
                 _: 'UnclearReferenceType',
                 name: type.getName(),
-                typeParameters: type.getGenericTypes().map((type) => this.serializeType(type)),
+                typeParameters: type.getGenericTypes().map(type => this.serializeType(type)),
             };
         }
         else if (type instanceof Type_1.GenericType) {
-            let defaultType = type.getDefaultType();
             let constraint = type.getConstraint();
+            let defaultType = type.getDefaultType();
             return {
                 _: 'GenericType',
                 name: type.getName(),
-                defaultType: defaultType && this.serializeType(defaultType),
                 constraint: constraint && this.serializeType(constraint),
+                defaultType: defaultType && this.serializeType(defaultType),
             };
         }
         else if (type instanceof Type_1.AliasType) {
@@ -260,11 +246,20 @@ class JsonPrinter extends Printer_1.Printer {
                 originType: type.getOriginType(),
             };
         }
-        else if (type instanceof Type_1.AnnotationType) {
-            throw new Error('Unhandled AnnotationType: ' + util_1.default.inspect(type, { showHidden: true, depth: null }));
+        else if (type instanceof Type_1.EnumValueType) {
+            const c = type.getConstant();
+            return {
+                _: 'EnumValueType',
+                signature: this.serializeFieldSignature(type.getFieldSignature()),
+                constant: c && this.serializeValue(c),
+            };
         }
         else {
-            throw new Error('Unhandled Type: ' + util_1.default.inspect(type, { showHidden: true, depth: null }));
+            console.warn(`Unhandled Type: ${type.constructor.name} (${type.toString()})`);
+            return {
+                _: type.constructor.name,
+                text: type.toString(),
+            };
         }
     }
     serializeFileSignature(file) {
@@ -311,7 +306,7 @@ class JsonPrinter extends Printer_1.Printer {
             parameters: method
                 .getMethodSubSignature()
                 .getParameters()
-                .map((param) => this.serializeMethodParameter(param)),
+                .map(param => this.serializeMethodParameter(param)),
             returnType: this.serializeType(method.getType()),
         };
     }
@@ -339,25 +334,31 @@ class JsonPrinter extends Printer_1.Printer {
             stack.push(...block.getSuccessors());
         }
         return {
-            blocks: Array.from(visited).map((block) => this.serializeBasicBlock(block)),
+            blocks: Array.from(visited).map(block => this.serializeBasicBlock(block)),
         };
     }
     serializeBasicBlock(block) {
-        const successors = block.getSuccessors().map((succ) => succ.getId());
+        const successors = block.getSuccessors().map(succ => succ.getId());
         successors.sort((a, b) => a - b);
-        const predecessors = block.getPredecessors().map((pred) => pred.getId());
+        const predecessors = block.getPredecessors().map(pred => pred.getId());
         predecessors.sort((a, b) => a - b);
         return {
             id: block.getId(),
             successors,
             predecessors,
-            stmts: block.getStmts().map((stmt) => this.serializeStmt(stmt)),
+            stmts: block.getStmts().map(stmt => this.serializeStmt(stmt)),
         };
     }
     serializeLocal(local) {
         return {
             name: local.getName(),
             type: this.serializeType(local.getType()),
+        };
+    }
+    serializeConstant(constant) {
+        return {
+            value: constant.getValue(),
+            type: this.serializeType(constant.getType()),
         };
     }
     serializeValue(value) {
@@ -368,70 +369,39 @@ class JsonPrinter extends Printer_1.Printer {
             return Object.assign({ _: 'Local' }, this.serializeLocal(value));
         }
         else if (value instanceof Constant_1.Constant) {
-            return {
-                _: 'Constant',
-                value: value.getValue(),
-                type: this.serializeType(value.getType()),
-            };
+            return Object.assign({ _: 'Constant' }, this.serializeConstant(value));
         }
         else if (value instanceof Expr_1.ArkNewExpr) {
-            return {
-                _: 'NewExpr',
-                classType: this.serializeType(value.getClassType()),
-            };
+            return { _: 'NewExpr', classType: this.serializeType(value.getClassType()) };
         }
         else if (value instanceof Expr_1.ArkNewArrayExpr) {
-            return {
-                _: 'NewArrayExpr',
-                elementType: this.serializeType(value.getBaseType()),
-                size: this.serializeValue(value.getSize()),
-            };
+            return { _: 'NewArrayExpr', elementType: this.serializeType(value.getBaseType()), size: this.serializeValue(value.getSize()) };
         }
         else if (value instanceof Expr_1.ArkDeleteExpr) {
-            return {
-                _: 'DeleteExpr',
-                arg: this.serializeValue(value.getField()),
-            };
+            return { _: 'DeleteExpr', arg: this.serializeValue(value.getField()) };
         }
         else if (value instanceof Expr_1.ArkAwaitExpr) {
-            return {
-                _: 'AwaitExpr',
-                arg: this.serializeValue(value.getPromise()),
-            };
+            return { _: 'AwaitExpr', arg: this.serializeValue(value.getPromise()) };
         }
         else if (value instanceof Expr_1.ArkYieldExpr) {
-            return {
-                _: 'YieldExpr',
-                arg: this.serializeValue(value.getYieldValue()),
-            };
+            return { _: 'YieldExpr', arg: this.serializeValue(value.getYieldValue()) };
         }
         else if (value instanceof Expr_1.ArkTypeOfExpr) {
-            return {
-                _: 'TypeOfExpr',
-                arg: this.serializeValue(value.getOp()),
-            };
+            return { _: 'TypeOfExpr', arg: this.serializeValue(value.getOp()) };
         }
         else if (value instanceof Expr_1.ArkInstanceOfExpr) {
-            return {
-                _: 'InstanceOfExpr',
-                arg: this.serializeValue(value.getOp()),
-                checkType: this.serializeType(value.getCheckType()),
-            };
+            return { _: 'InstanceOfExpr', arg: this.serializeValue(value.getOp()), checkType: this.serializeType(value.getCheckType()) };
         }
         else if (value instanceof Expr_1.ArkCastExpr) {
-            return {
-                _: 'CastExpr',
-                arg: this.serializeValue(value.getOp()),
-                type: this.serializeType(value.getType()),
-            };
+            return { _: 'CastExpr', arg: this.serializeValue(value.getOp()), type: this.serializeType(value.getType()) };
         }
         else if (value instanceof Expr_1.ArkPhiExpr) {
             const args = value.getArgs();
             const argToBlock = value.getArgToBlock();
             return {
                 _: 'PhiExpr',
-                args: args.map((arg) => this.serializeValue(arg)),
-                blocks: args.map((arg) => argToBlock.get(arg).getId()),
+                args: args.map(arg => this.serializeValue(arg)),
+                blocks: args.map(arg => argToBlock.get(arg).getId()),
                 type: this.serializeType(value.getType()),
             };
         }
@@ -452,29 +422,22 @@ class JsonPrinter extends Printer_1.Printer {
                 right: this.serializeValue(value.getOp2()),
             };
         }
-        else if (value instanceof Expr_1.AbstractBinopExpr) {
-            return new Error('Unhandled BinopExpr: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
-        }
         else if (value instanceof Expr_1.ArkUnopExpr) {
-            return {
-                _: 'UnopExpr',
-                op: value.getOperator(),
-                arg: this.serializeValue(value.getOp()),
-            };
+            return { _: 'UnopExpr', op: value.getOperator(), arg: this.serializeValue(value.getOp()) };
         }
         else if (value instanceof Expr_1.ArkInstanceInvokeExpr) {
             return {
                 _: 'InstanceCallExpr',
                 instance: this.serializeValue(value.getBase()),
                 method: this.serializeMethodSignature(value.getMethodSignature()),
-                args: value.getArgs().map((arg) => this.serializeValue(arg)),
+                args: value.getArgs().map(arg => this.serializeValue(arg)),
             };
         }
         else if (value instanceof Expr_1.ArkStaticInvokeExpr) {
             return {
                 _: 'StaticCallExpr',
                 method: this.serializeMethodSignature(value.getMethodSignature()),
-                args: value.getArgs().map((arg) => this.serializeValue(arg)),
+                args: value.getArgs().map(arg => this.serializeValue(arg)),
             };
         }
         else if (value instanceof Expr_1.ArkPtrInvokeExpr) {
@@ -482,24 +445,14 @@ class JsonPrinter extends Printer_1.Printer {
                 _: 'PtrCallExpr',
                 ptr: this.serializeValue(value.getFuncPtrLocal()),
                 method: this.serializeMethodSignature(value.getMethodSignature()),
-                args: value.getArgs().map((arg) => this.serializeValue(arg)),
+                args: value.getArgs().map(arg => this.serializeValue(arg)),
             };
-        }
-        else if (value instanceof Expr_1.AbstractInvokeExpr) {
-            throw new Error('Unhandled CallExpr: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
         }
         else if (value instanceof Ref_1.ArkThisRef) {
-            return {
-                _: 'ThisRef',
-                type: this.serializeType(value.getType()),
-            };
+            return { _: 'ThisRef', type: this.serializeType(value.getType()) };
         }
         else if (value instanceof Ref_1.ArkParameterRef) {
-            return {
-                _: 'ParameterRef',
-                index: value.getIndex(),
-                type: this.serializeType(value.getType()),
-            };
+            return { _: 'ParameterRef', index: value.getIndex(), type: this.serializeType(value.getType()) };
         }
         else if (value instanceof Ref_1.ArkArrayRef) {
             return {
@@ -509,30 +462,30 @@ class JsonPrinter extends Printer_1.Printer {
                 type: this.serializeType(value.getType()),
             };
         }
-        else if (value instanceof Ref_1.ArkInstanceFieldRef) {
+        else if (value instanceof Ref_1.ArkCaughtExceptionRef) {
+            return { _: 'CaughtExceptionRef', type: this.serializeType(value.getType()) };
+        }
+        else if (value instanceof Ref_1.GlobalRef) {
+            let ref = value.getRef();
+            return { _: 'GlobalRef', name: value.getName(), ref: ref ? this.serializeValue(ref) : null };
+        }
+        else if (value instanceof Ref_1.ClosureFieldRef) {
             return {
-                _: 'InstanceFieldRef',
-                instance: this.serializeValue(value.getBase()),
-                field: this.serializeFieldSignature(value.getFieldSignature()),
+                _: 'ClosureFieldRef',
+                base: this.serializeLocal(value.getBase()),
+                fieldName: value.getFieldName(),
+                type: this.serializeType(value.getType()),
             };
+        }
+        else if (value instanceof Ref_1.ArkInstanceFieldRef) {
+            return { _: 'InstanceFieldRef', instance: this.serializeValue(value.getBase()), field: this.serializeFieldSignature(value.getFieldSignature()) };
         }
         else if (value instanceof Ref_1.ArkStaticFieldRef) {
-            return {
-                _: 'StaticFieldRef',
-                field: this.serializeFieldSignature(value.getFieldSignature()),
-            };
-        }
-        else if (value instanceof Ref_1.AbstractFieldRef) {
-            throw new Error('Unhandled FieldRef: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
-        }
-        else if (value instanceof Ref_1.AbstractRef) {
-            throw new Error('Unhandled Ref: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
-        }
-        else if (value instanceof Expr_1.AbstractExpr) {
-            throw new Error('Unhandled Expr: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
+            return { _: 'StaticFieldRef', field: this.serializeFieldSignature(value.getFieldSignature()) };
         }
         else {
-            throw new Error('Unhandled Value: ' + util_1.default.inspect(value, { showHidden: true, depth: null }));
+            console.warn(`Unhandled Value: ${value.constructor.name} (${value.toString()})`);
+            return { _: value.constructor.name, text: value.toString(), type: this.serializeType(value.getType()) };
         }
     }
     serializeStmt(stmt) {
@@ -573,7 +526,11 @@ class JsonPrinter extends Printer_1.Printer {
             };
         }
         else {
-            throw new Error('Unhandled Stmt: ' + util_1.default.inspect(stmt, { showHidden: true, depth: null }));
+            console.warn(`Unhandled Stmt: ${stmt.constructor.name} (${stmt.toString()})`);
+            return {
+                _: stmt.constructor.name,
+                text: stmt.toString(),
+            };
         }
     }
 }

@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -27,7 +27,7 @@ var ExportType;
     ExportType[ExportType["LOCAL"] = 3] = "LOCAL";
     ExportType[ExportType["TYPE"] = 4] = "TYPE";
     ExportType[ExportType["UNKNOWN"] = 9] = "UNKNOWN";
-})(ExportType = exports.ExportType || (exports.ExportType = {}));
+})(ExportType || (exports.ExportType = ExportType = {}));
 /**
  * @category core/model
  */
@@ -36,6 +36,12 @@ class ExportInfo extends ArkBaseModel_1.ArkBaseModel {
         super();
         this.exportClauseName = '';
         this.exportClauseType = ExportType.UNKNOWN;
+    }
+    /**
+     * Returns the program language of the file where this export info defined.
+     */
+    getLanguage() {
+        return this.getDeclaringArkFile().getLanguage();
     }
     getFrom() {
         return this.exportFrom;
@@ -82,6 +88,9 @@ class ExportInfo extends ArkBaseModel_1.ArkBaseModel {
     getDeclaringArkFile() {
         return this.declaringArkFile;
     }
+    getDeclaringArkNamespace() {
+        return this.declaringArkNamespace;
+    }
     validate() {
         return this.validateFields(['declaringArkFile']);
     }
@@ -117,6 +126,10 @@ ExportInfo.Builder = class ArkExportBuilder {
     }
     declaringArkFile(value) {
         this.exportInfo.declaringArkFile = value;
+        return this;
+    }
+    declaringArkNamespace(value) {
+        this.exportInfo.declaringArkNamespace = value;
         return this;
     }
     arkExport(value) {

@@ -1,3 +1,4 @@
+import { Language } from './core/model/ArkFile';
 export interface Sdk {
     name: string;
     path: string;
@@ -18,6 +19,7 @@ export interface SceneOptions {
     ignoreFileNames?: string[];
     enableLeadingComments?: boolean;
     enableTrailingComments?: boolean;
+    enableBuiltIn?: boolean;
     tsconfig?: string;
     isScanAbc?: boolean;
     sdkGlobalFolders?: string[];
@@ -31,6 +33,7 @@ export declare class SceneConfig {
     private sdkFiles;
     private sdkFilesMap;
     private projectFiles;
+    private fileLanguages;
     private options;
     constructor(options?: SceneOptions);
     getOptions(): SceneOptions;
@@ -44,11 +47,12 @@ export declare class SceneConfig {
      */
     buildConfig(targetProjectName: string, targetProjectDirectory: string, sdks: Sdk[], fullFilePath?: string[]): void;
     /**
-     * Create a sceneConfig object for a specified project path and set the target project directory to the targetProjectDirectory property of the sceneConfig object.
-     * @param targetProjectDirectory - the target project directory, such as xxx/xxx/xxx, started from project directory.
+     * Create a sceneConfig object for a specified project path and set the target project directory to the
+     * targetProjectDirectory property of the sceneConfig object.
+     * @param targetProjectDirectory - the target project directory, such as xxx/xxx/xxx, started from project
+     *     directory.
      * @example
      * 1. build a sceneConfig object.
-
     ```typescript
     const projectDir = 'xxx/xxx/xxx';
     const sceneConfig: SceneConfig = new SceneConfig();
@@ -56,16 +60,19 @@ export declare class SceneConfig {
     ```
      */
     buildFromProjectDir(targetProjectDirectory: string): void;
-    buildFromProjectFiles(projectName: string, projectDir: string, filesAndDirectorys: string[], sdks?: Sdk[]): void;
+    buildFromProjectFiles(projectName: string, projectDir: string, filesAndDirectorys: string[], sdks?: Sdk[], languageTags?: Map<string, Language>): void;
     private processFilePaths;
+    private setLanguageTagForFiles;
     buildFromJson(configJsonPath: string): void;
     getTargetProjectName(): string;
     getTargetProjectDirectory(): string;
     getProjectFiles(): string[];
+    getFileLanguages(): Map<string, Language>;
     getSdkFiles(): string[];
     getSdkFilesMap(): Map<string[], string>;
     getEtsSdkPath(): string;
     getSdksObj(): Sdk[];
+    private getDefaultConfigPath;
     private loadDefaultConfig;
 }
 //# sourceMappingURL=Config.d.ts.map

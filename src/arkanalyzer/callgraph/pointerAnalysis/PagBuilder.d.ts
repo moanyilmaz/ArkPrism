@@ -1,13 +1,15 @@
-import { CallGraph, FuncID, CallSite, DynCallSite } from '../model/CallGraph';
+import { CallGraph, CallSite, DynCallSite, FuncID, ICallSite } from '../model/CallGraph';
 import { Scene } from '../../Scene';
 import { Stmt } from '../../core/base/Stmt';
-import { ArkThisRef } from '../../core/base/Ref';
 import { Value } from '../../core/base/Value';
+import { ArkMethod } from '../../core/model/ArkMethod';
 import { Local } from '../../core/base/Local';
 import { NodeID } from '../../core/graph/BaseExplicitGraph';
-import { ContextID } from './Context';
-import { Pag, FuncPag, PagNode, StorageType, InterFuncPag, PagNodeType } from './Pag';
+import { FuncPag, InterFuncPag, Pag, PagNode, PagNodeType } from './Pag';
 import { IPtsCollection } from './PtsDS';
+import { PointerAnalysisConfig } from './PointerAnalysisConfig';
+import { ContextID } from './context/Context';
+import { ContextSelector } from './context/ContextSelector';
 export declare class CSFuncID {
     cid: ContextID;
     funcID: FuncID;
@@ -16,92 +18,77 @@ export declare class CSFuncID {
 export declare class PagBuilder {
     private pag;
     private cg;
+    private scale;
     private funcPags;
     private interFuncPags?;
     private handledFunc;
-    private ctx;
+    private ctxSelector;
+    private pluginManager;
     private scene;
     private worklist;
     private pagStat;
     private staticField2UniqInstanceMap;
     private instanceField2UniqInstanceMap;
-    private cid2ThisRefPtMap;
-    private cid2ThisRefMap;
-    private cid2ThisLocalMap;
     private sdkMethodReturnValueMap;
-    private sdkMethodParamValueMap;
-    private fakeSdkMethodParamDeclaringStmt;
     private funcHandledThisRound;
     private updatedNodesThisRound;
     private singletonFuncMap;
     private globalThisValue;
     private globalThisPagNode?;
-    private storagePropertyMap;
     private externalScopeVariableMap;
-    constructor(p: Pag, cg: CallGraph, s: Scene, kLimit: number);
-    private buildFuncPagAndAddToWorklist;
+    private retriggerNodesList;
+    constructor(p: Pag, cg: CallGraph, s: Scene, config: PointerAnalysisConfig);
+    buildFuncPagAndAddToWorklist(cs: CSFuncID): CSFuncID;
     private addToFuncHandledListThisRound;
     buildForEntries(funcIDs: FuncID[]): void;
     handleReachable(): boolean;
     build(): void;
     buildFuncPag(funcID: FuncID): boolean;
+    private buildInvokeExprInStmt;
+    private processExternalScopeValue;
     /**
-     * will not create real funcPag, only create param values
+     * process Method level analysis only
      */
-    private buildSDKFuncPag;
+    private createDummyParamValue;
+    private createDummyParamPagNodes;
     buildPagFromFuncPag(funcID: FuncID, cid: ContextID): void;
-    addEdgesFromFuncPag(funcPag: FuncPag, cid: ContextID): boolean;
+    addEdgesFromFuncPag(funcPag: FuncPag, cid: ContextID, funcID: FuncID): boolean;
     addCallsEdgesFromFuncPag(funcPag: FuncPag, cid: ContextID): boolean;
-    /**
-     * process Storage API
-     * @returns boolean: check if the cs represent a Storage API, no matter the API will success or fail
-     */
-    private processStorage;
-    private processStorageSetOrCreate;
-    private processStorageLink;
-    private processStorageProp;
-    private processStorageSet;
-    private processStorageGet;
-    private getPropertyName;
-    addDynamicCallSite(funcPag: FuncPag, funcID: FuncID): void;
+    addDynamicCallSite(funcPag: FuncPag, funcID: FuncID, cid: ContextID): void;
     addUnknownCallSite(funcPag: FuncPag, funcID: FuncID): void;
-    addDynamicCallEdge(cs: DynCallSite | CallSite, baseClassPTNode: NodeID, cid: ContextID): NodeID[];
+    addDynamicCallEdge(cs: ICallSite, baseClassPTNode: NodeID, cid: ContextID): NodeID[];
+    /**
+     * all possible callee methods of a dynamic call site
+     * handle both PtrInvokeExpr and InstanceInvokeExpr
+     */
     private getDynamicCallee;
-    addUpdatedNode(nodeID: NodeID, diffPT: IPtsCollection<NodeID>): void;
-    getUpdatedNodes(): Map<number, IPtsCollection<number>>;
-    resetUpdatedNodes(): void;
+    processNormalMethodPagCallEdge(staticCS: CallSite, cid: ContextID, baseClassPTNode: NodeID): NodeID[];
     handleUnkownDynamicCall(cs: DynCallSite, cid: ContextID): NodeID[];
     handleUnprocessedCallSites(processedCallSites: Set<DynCallSite>): NodeID[];
-    private addThisRefCallEdge;
-    addStaticPagCallEdge(cs: CallSite, callerCid: ContextID, calleeCid?: ContextID): NodeID[];
-    private addSDKMethodPagCallEdge;
+    addThisRefCallEdge(cid: ContextID, baseLocal: Local, callee: ArkMethod, calleeCid: ContextID, callerFunID: FuncID): NodeID;
+    private recordThisRefNode;
+    addStaticPagCallEdge(cs: CallSite, callerCid: ContextID, calleeCid?: ContextID, ptNode?: PagNode): NodeID[];
+    /**
+     * only process the param PAG edge for invoke stmt
+     */
+    addCallParamPagEdge(calleeMethod: ArkMethod, args: Value[], cs: ICallSite, callerCid: ContextID, calleeCid: ContextID, offset: number): NodeID[];
+    /**
+     * temporary solution for foreach
+     * deprecate when foreach is handled by built-in method
+     * connect the element node with the value inside foreach
+     */
+    private addForeachParamPagEdge;
+    /**
+     * process the return value PAG edge for invoke stmt
+     */
+    addCallReturnPagEdge(calleeMethod: ArkMethod, callStmt: Stmt, callerCid: ContextID, calleeCid: ContextID): NodeID[];
+    /**
+     * for method level call graph, add return edge
+     */
+    addStaticPagCallReturnEdge(cs: CallSite, cid: ContextID, baseClassPTNode: NodeID): NodeID[];
     private addSDKMethodReturnPagEdge;
-    private addSDKMethodParamPagEdge;
-    private processContainerPagCallEdge;
     getOrNewPagNode(cid: ContextID, v: PagNodeType, s?: Stmt): PagNode;
-    /**
-     * return ThisRef PAG node according to cid, a cid has a unique ThisRef node
-     * @param cid: current contextID
-     */
-    getOrNewThisRefNode(cid: ContextID, v: ArkThisRef): PagNode;
-    getOrNewThisLoalNode(cid: ContextID, v: Local, s?: Stmt): PagNode;
     getOrNewGlobalThisNode(cid: ContextID): PagNode;
-    getUniqThisLocalNode(cid: ContextID): NodeID | undefined;
-    /**
-     * search the storage map to get propertyNode with given storage and propertyFieldName
-     * @param storage storage type: AppStorage, LocalStorage etc.
-     * @param propertyName string property key
-     * @returns propertyNode: PagLocalNode
-     */
-    getOrNewPropertyNode(storage: StorageType, propertyName: string, stmt: Stmt): PagNode;
-    getPropertyNode(storage: StorageType, propertyName: string, stmt: Stmt): PagNode | undefined;
-    /**
-     * add PagEdge
-     * @param edgeKind: edge kind differs from API
-     * @param propertyNode: PAG node created by protpertyName
-     * @param obj: heapObj stored with Storage API
-     */
-    addPropertyLinkEdge(propertyNode: PagNode, storageObj: Value, cid: ContextID, stmt: Stmt, edgeKind: number): boolean;
     getRealInstanceRef(v: Value): Value;
     /**
      * check if a method is singleton function
@@ -112,19 +99,6 @@ export declare class PagBuilder {
     private funcPagDfs;
     getGlobalThisValue(): Local;
     private getEdgeKindForAssignStmt;
-    /**
-     * get storageType enum with method's Declaring ClassName
-     *
-     * @param storageName ClassName that method belongs to, currently support AppStorage and SubscribedAbstractProperty
-     * SubscribedAbstractProperty: in following listing, `link1` is infered as ClassType `SubscribedAbstractProperty`,
-     * it needs to get PAG node to check the StorageType
-     * let link1: SubscribedAbstractProperty<A> = AppStorage.link('PropA');
-     * link1.set(a);
-     * @param cs: for search PAG node in SubscribedAbstractProperty
-     * @param cid: for search PAG node in SubscribedAbstractProperty
-     * @returns StorageType enum
-     */
-    private getStorageType;
     /**\
      * ArkNewExpr, ArkNewArrayExpr, function ptr, globalThis
      */
@@ -154,5 +128,10 @@ export declare class PagBuilder {
     private addExportVariableMap;
     getExportVariableMap(src: Local): Local[];
     addEdgesFromInterFuncPag(interFuncPag: InterFuncPag, cid: ContextID): boolean;
+    getRetriggerNodes(): NodeID[];
+    addUpdatedNode(nodeID: NodeID, diffPT: IPtsCollection<NodeID>): void;
+    getUpdatedNodes(): Map<number, IPtsCollection<number>>;
+    resetUpdatedNodes(): void;
+    getContextSelector(): ContextSelector;
 }
 //# sourceMappingURL=PagBuilder.d.ts.map

@@ -52,8 +52,8 @@ class ReachingDefProblem {
             r.unionWith(y);
             return r;
         };
-        this.initIn = new Map(this.flowGraph.nodesInPostOrder.map((i) => [i, new coCtor(BV_SIZE)]));
-        this.initOut = new Map(this.flowGraph.nodesInPostOrder.map((i) => [i, new coCtor(BV_SIZE)]));
+        this.initIn = new Map(this.flowGraph.nodesInPostOrder.map(i => [i, new coCtor(BV_SIZE)]));
+        this.initOut = new Map(this.flowGraph.nodesInPostOrder.map(i => [i, new coCtor(BV_SIZE)]));
         this.forward = forward;
     }
 }
@@ -72,6 +72,7 @@ class ReachingDefFlowGraph extends BaseImplicitGraph_1.BaseImplicitGraph {
         }
         const nodes = cfg.getStmts();
         this.nodeToIdMap = new Map(nodes.map((x, i) => [x, i]));
+        this.idToNodeMap = new Map(nodes.map((x, i) => [i, x]));
         this.nodesInPostOrder = nodes.map((_, i) => i);
         this.initSuccPred(nodes, cfg);
     }
@@ -85,7 +86,7 @@ class ReachingDefFlowGraph extends BaseImplicitGraph_1.BaseImplicitGraph {
     initSuccPred(nodes, cfg) {
         this.succMap = new Map();
         this.predMap = new Map();
-        cfg.getBlocks().forEach((bb) => {
+        cfg.getBlocks().forEach(bb => {
             let stmts = bb.getStmts();
             if (stmts.length === 0) {
                 return;
@@ -93,6 +94,9 @@ class ReachingDefFlowGraph extends BaseImplicitGraph_1.BaseImplicitGraph {
             for (let i = 0; i < stmts.length - 1; i++) {
                 let c = this.nodeToIdMap.get(stmts[i]);
                 let n = this.nodeToIdMap.get(stmts[i + 1]);
+                if (c === undefined || n === undefined) {
+                    continue;
+                }
                 this.succMap.set(c, [n]);
                 this.predMap.set(n, [c]);
             }
@@ -100,7 +104,13 @@ class ReachingDefFlowGraph extends BaseImplicitGraph_1.BaseImplicitGraph {
             if (!terminate) {
                 throw new Error('cfg has no terminal');
             }
-            bb.getSuccessors().forEach((succBB) => {
+            let successors = bb.getSuccessors();
+            // try...catch语句，catch所在的block在CFG表示里是没有前驱block的，需要在这里额外查找并将exceptionalSuccessorBlocks作为try块的后继块之一
+            const exceptionalSuccessorBlocks = bb.getExceptionalSuccessorBlocks();
+            if (exceptionalSuccessorBlocks !== undefined) {
+                successors.push(...exceptionalSuccessorBlocks);
+            }
+            successors.forEach(succBB => {
                 var _a, _b, _c, _d;
                 let head = succBB.getHead();
                 if (!head) {
@@ -108,6 +118,9 @@ class ReachingDefFlowGraph extends BaseImplicitGraph_1.BaseImplicitGraph {
                 }
                 let t = (_a = this.nodeToIdMap) === null || _a === void 0 ? void 0 : _a.get(terminate);
                 let h = (_b = this.nodeToIdMap) === null || _b === void 0 ? void 0 : _b.get(head);
+                if (t === undefined || h === undefined) {
+                    return;
+                }
                 // Terminate's succ
                 let succ = (_c = this.succMap.get(t)) !== null && _c !== void 0 ? _c : [];
                 succ.push(h);

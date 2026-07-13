@@ -11,6 +11,7 @@ export declare class Builtin {
     static DUMMY_FILE_NAME: string;
     static BUILT_IN_CLASSES_FILE_SIGNATURE: FileSignature;
     static OBJECT_CLASS_SIGNATURE: ClassSignature;
+    static OBJECT_CLASS_TYPE: ClassType;
     static ARRAY_CLASS_SIGNATURE: ClassSignature;
     static SET_CLASS_SIGNATURE: ClassSignature;
     static MAP_CLASS_SIGNATURE: ClassSignature;
@@ -29,9 +30,12 @@ export declare class Builtin {
     static ITERATOR_RESULT_CLASS_TYPE: ClassType;
     static TO_STRING: string;
     static TO_STRING_METHOD_SIGNATURE: MethodSignature;
+    static SLICE: string;
+    static CONCAT: string;
     private static buildBuiltInClasses;
     private static buildBuiltInClassesFileSignature;
     static buildBuiltInClassSignature(className: string): ClassSignature;
     private static buildBuiltInClassSignatureMap;
+    static isBuiltinClass(className: string): boolean;
 }
 //# sourceMappingURL=Builtin.d.ts.map

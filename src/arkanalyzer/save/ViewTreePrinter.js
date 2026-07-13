@@ -1,6 +1,6 @@
 "use strict";
 /*
- * Copyright (c) 2024 Huawei Device Co., Ltd.
+ * Copyright (c) 2024-2025 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -53,7 +53,7 @@ class ViewTreePrinter extends Printer_1.Printer {
         const PRE_FIX_LEN = 5;
         let label = content.join('|');
         if (label.length > MAX_LABEL_LEN) {
-            return (label.substring(0, PRE_FIX_LEN) + '...' + label.substring(label.length - MAX_LABEL_LEN + PRE_FIX_LEN));
+            return label.substring(0, PRE_FIX_LEN) + '...' + label.substring(label.length - MAX_LABEL_LEN + PRE_FIX_LEN);
         }
         return label;
     }
@@ -93,7 +93,7 @@ class ViewTreePrinter extends Printer_1.Printer {
         if (item.stateValues.size > 0) {
             let stateValuesId = `${id}val`;
             let content = [];
-            item.stateValues.forEach((value) => {
+            item.stateValues.forEach(value => {
                 content.push(value.getName());
             });
             this.printer.write(`    ${stateValuesId} [shape=ellipse label="StateValues\n ${this.escapeDotLabel(content)}" fontsize=10 height=.1 style=filled color=".7 .3 1.0" ]\n`);

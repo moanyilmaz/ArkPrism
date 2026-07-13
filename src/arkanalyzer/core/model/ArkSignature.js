@@ -17,7 +17,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genSignature4ImportClause = exports.fileSignatureCompare = exports.classSignatureCompare = exports.methodSubSignatureCompare = exports.methodSignatureCompare = exports.fieldSignatureCompare = exports.AliasTypeSignature = exports.LocalSignature = exports.MethodSignature = exports.MethodSubSignature = exports.FieldSignature = exports.AliasClassSignature = exports.ClassSignature = exports.NamespaceSignature = exports.FileSignature = void 0;
+exports.AliasTypeSignature = exports.LocalSignature = exports.MethodSignature = exports.MethodSubSignature = exports.FieldSignature = exports.AliasClassSignature = exports.ClassSignature = exports.NamespaceSignature = exports.FileSignature = void 0;
+exports.fieldSignatureCompare = fieldSignatureCompare;
+exports.methodSignatureCompare = methodSignatureCompare;
+exports.methodSubSignatureCompare = methodSubSignatureCompare;
+exports.classSignatureCompare = classSignatureCompare;
+exports.fileSignatureCompare = fileSignatureCompare;
+exports.genSignature4ImportClause = genSignature4ImportClause;
 const path_1 = __importDefault(require("path"));
 const pathTransfer_1 = require("../../utils/pathTransfer");
 const Type_1 = require("../base/Type");
@@ -180,8 +186,7 @@ class FieldSignature {
         return this.declaringSignature;
     }
     getBaseName() {
-        return this.declaringSignature instanceof ClassSignature ? this.declaringSignature.getClassName()
-            : this.declaringSignature.getNamespaceName();
+        return this.declaringSignature instanceof ClassSignature ? this.declaringSignature.getClassName() : this.declaringSignature.getNamespaceName();
     }
     getFieldName() {
         return this.fieldName;
@@ -224,7 +229,7 @@ class MethodSubSignature {
     }
     getParameterTypes() {
         const parameterTypes = [];
-        this.parameters.forEach((parameter) => {
+        this.parameters.forEach(parameter => {
             parameterTypes.push(parameter.getType());
         });
         return parameterTypes;
@@ -238,13 +243,13 @@ class MethodSubSignature {
     isStatic() {
         return this.staticFlag;
     }
-    toString() {
-        let paraStr = "";
-        this.getParameterTypes().forEach((parameterType) => {
-            paraStr += parameterType.toString() + ", ";
+    toString(ptrName) {
+        let paraStr = '';
+        this.getParameterTypes().forEach(parameterType => {
+            paraStr += parameterType.toString() + ', ';
         });
         paraStr = paraStr.replace(/, $/, '');
-        let tmpSig = `${this.getMethodName()}(${paraStr})`;
+        let tmpSig = `${ptrName !== null && ptrName !== void 0 ? ptrName : this.getMethodName()}(${paraStr})`;
         if (this.isStatic()) {
             tmpSig = '[static]' + tmpSig;
         }
@@ -263,8 +268,10 @@ class MethodSignature {
     /**
      * Return the declaring class signature.
      * A {@link ClassSignature} includes:
-     * - File Signature: including the **string** names of the project and file, respectively. The default value of project's name is "%unk" and the default value of file's name is "%unk".
-     * - Namespace Signature | **null**:  it may be a namespace signature or **null**. A namespace signature can indicate its **string** name of namespace and its file signature.
+     * - File Signature: including the **string** names of the project and file, respectively.
+     * The default value of project's name is "%unk" and the default value of file's name is "%unk".
+     * - Namespace Signature | **null**:  it may be a namespace signature or **null**.
+     * A namespace signature can indicate its **string** name of namespace and its file signature.
      * - Class Name: the **string** name of this class.
      * @returns The declaring class signature.
      * @example
@@ -291,17 +298,17 @@ class MethodSignature {
     getType() {
         return this.methodSubSignature.getReturnType();
     }
-    toString() {
-        return this.declaringClassSignature.toString() + '.' + this.methodSubSignature.toString();
+    toString(ptrName) {
+        return this.declaringClassSignature.toString() + '.' + this.methodSubSignature.toString(ptrName);
     }
     toMapKey() {
         return this.declaringClassSignature.toMapKey() + '.' + this.methodSubSignature.toString();
     }
     isMatch(signature) {
-        return ((this.toString() === signature.toString()) && (this.getType().toString() === signature.getType().toString()));
+        return this.toString() === signature.toString() && this.getType().toString() === signature.getType().toString();
     }
     getParamLength() {
-        return this.methodSubSignature.getParameters().length;
+        return this.methodSubSignature.getParameters().filter(p => !p.getName().startsWith(Const_1.LEXICAL_ENV_NAME_PREFIX)).length;
     }
 }
 exports.MethodSignature = MethodSignature;
@@ -339,13 +346,11 @@ class AliasTypeSignature {
 exports.AliasTypeSignature = AliasTypeSignature;
 //TODO, reconstruct
 function fieldSignatureCompare(leftSig, rightSig) {
-    if (leftSig.getDeclaringSignature().toString() === rightSig.getDeclaringSignature().toString() &&
-        (leftSig.getFieldName() === rightSig.getFieldName())) {
+    if (leftSig.getDeclaringSignature().toString() === rightSig.getDeclaringSignature().toString() && leftSig.getFieldName() === rightSig.getFieldName()) {
         return true;
     }
     return false;
 }
-exports.fieldSignatureCompare = fieldSignatureCompare;
 function methodSignatureCompare(leftSig, rightSig) {
     if (classSignatureCompare(leftSig.getDeclaringClassSignature(), rightSig.getDeclaringClassSignature()) &&
         methodSubSignatureCompare(leftSig.getMethodSubSignature(), rightSig.getMethodSubSignature())) {
@@ -353,29 +358,26 @@ function methodSignatureCompare(leftSig, rightSig) {
     }
     return false;
 }
-exports.methodSignatureCompare = methodSignatureCompare;
 function methodSubSignatureCompare(leftSig, rightSig) {
-    if ((leftSig.getMethodName() === rightSig.getMethodName()) && arrayCompare(leftSig.getParameterTypes(), rightSig.getParameterTypes()) && leftSig.getReturnType() === rightSig.getReturnType()) {
+    if (leftSig.getMethodName() === rightSig.getMethodName() &&
+        arrayCompare(leftSig.getParameterTypes(), rightSig.getParameterTypes()) &&
+        leftSig.getReturnType() === rightSig.getReturnType()) {
         return true;
     }
     return false;
 }
-exports.methodSubSignatureCompare = methodSubSignatureCompare;
 function classSignatureCompare(leftSig, rightSig) {
-    if ((fileSignatureCompare(leftSig.getDeclaringFileSignature(), rightSig.getDeclaringFileSignature())) &&
-        (leftSig.getClassName() === rightSig.getClassName())) {
+    if (fileSignatureCompare(leftSig.getDeclaringFileSignature(), rightSig.getDeclaringFileSignature()) && leftSig.getClassName() === rightSig.getClassName()) {
         return true;
     }
     return false;
 }
-exports.classSignatureCompare = classSignatureCompare;
 function fileSignatureCompare(leftSig, rightSig) {
-    if ((leftSig.getFileName() === rightSig.getFileName()) && (leftSig.getProjectName() === rightSig.getProjectName())) {
+    if (leftSig.getFileName() === rightSig.getFileName() && leftSig.getProjectName() === rightSig.getProjectName()) {
         return true;
     }
     return false;
 }
-exports.fileSignatureCompare = fileSignatureCompare;
 function arrayCompare(leftArray, rightArray) {
     if (leftArray.length !== rightArray.length) {
         return false;
@@ -390,4 +392,3 @@ function arrayCompare(leftArray, rightArray) {
 function genSignature4ImportClause(arkFileName, importClauseName) {
     return `<${arkFileName}>.<${importClauseName}>`;
 }
-exports.genSignature4ImportClause = genSignature4ImportClause;

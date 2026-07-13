@@ -25,6 +25,7 @@ export declare class JsonPrinter extends Printer {
     private serializeCfg;
     private serializeBasicBlock;
     private serializeLocal;
+    private serializeConstant;
     private serializeValue;
     private serializeStmt;
 }
