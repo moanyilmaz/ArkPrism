@@ -1,0 +1,215 @@
+%%
+%%
+%%
+\documentclass[sigconf,review,anonymous]{acmart}
+
+\usepackage{amsmath}
+\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{soul,color}
+\usepackage{listings}
+\usepackage{xurl}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{colortbl}
+\usepackage{makecell}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{hyphenat}
+\usepackage{seqsplit}
+\usepackage{tabularx}
+\usepackage{diagbox}
+\usepackage{verbatim}
+\usepackage{pifont}
+\usepackage{tcolorbox}
+\usepackage{threeparttable}
+\usepackage{float}
+\usepackage{siunitx}
+% enumitem removed — conflicts with acmart's list handling; paralist provides inparaenum
+% \setlist from enumitem; replaced with manual list parameter adjustments below
+\usepackage{paralist}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,backgrounds}
+
+\DeclareRobustCommand{\textspecial}[1]{{\sffamily #1}}
+\newcommand{\mytoolname}{\textsc{ArkPrism}}
+\newcommand{\mytool}{\mytoolname\xspace}
+\newcommand{\mytooltitle}{\texorpdfstring{Beyond Method Signatures: Resolving Privacy APIs and Asynchronous Flows in ArkTS}{Beyond Method Signatures: Resolving Privacy APIs and Asynchronous Flows in ArkTS}}
+\newcommand{\arkts}{ArkTS\xspace}
+\newcommand{\openharmony}{OpenHarmony\xspace}
+
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{arkblue}{HTML}{2B6CB0}
+\definecolor{arkgreen}{HTML}{2F855A}
+\definecolor{arkpurple}{HTML}{6B46C1}
+\definecolor{arkorange}{HTML}{B7791F}
+\definecolor{arkgray}{HTML}{4A5568}
+\definecolor{arkhead}{HTML}{EAF2FB}
+\definecolor{arkrow}{HTML}{F7FAFC}
+\definecolor{arkwarn}{HTML}{FFF7E6}
+\definecolor{arkok}{HTML}{EAF7EF}
+\definecolor{arkviolet}{HTML}{F0ECFA}
+\definecolor{arkpanel}{HTML}{F8FBFF}
+\definecolor{arkgrid}{HTML}{E2E8F0}
+\newcommand{\down}[1]{\tiny\textcolor{deepblue}{~($\downarrow$#1\%)}}
+\newcommand{\up}[1]{\tiny\textcolor{deepred}{~($\uparrow$#1\%)}}
+\newcommand{\fsupport}{\textcolor{green!70!black}{\ding{51}}}
+\newcommand{\psupport}{\textcolor{black}{\ding{115}}}
+\newcommand{\nsupport}{\textcolor{red}{\ding{55}}}
+\newcommand{\xmark}{\ding{55}}
+
+\SetCommentSty{textnormal}
+\SetKwComment{Comment}{$\triangleright$\ }{}
+\newcommand{\tccdot}[1]{\tcp[r]{\hfill$\triangleright$~\textnormal{\small #1}}}
+\renewcommand\cellalign{cc}
+\newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\tablehead}{}
+\newcommand{\subtlebreak}{}
+\newcommand{\gain}[1]{\textsubscript{\textcolor{arkgreen!65!black}{+#1pp}}}
+\newcommand{\loss}[1]{\textsubscript{\textcolor{deepred}{-#1pp}}}
+
+\tikzset{
+  arkblock/.style={draw=arkblue!75, fill=arkblue!8, rounded corners=2pt,
+    very thick, align=center, font=\scriptsize, minimum height=7mm,
+    inner xsep=4pt, inner ysep=3pt},
+  arkgreenblock/.style={draw=arkgreen!75, fill=arkgreen!9, rounded corners=2pt,
+    very thick, align=center, font=\scriptsize, minimum height=7mm,
+    inner xsep=4pt, inner ysep=3pt},
+  arkpurpleblock/.style={draw=arkpurple!70, fill=arkviolet, rounded corners=2pt,
+    very thick, align=center, font=\scriptsize, minimum height=7mm,
+    inner xsep=4pt, inner ysep=3pt},
+  arkwarnblock/.style={draw=arkorange!80, fill=arkwarn, rounded corners=2pt,
+    very thick, align=center, font=\scriptsize, minimum height=7mm,
+    inner xsep=4pt, inner ysep=3pt},
+  arkstage/.style={draw=arkgray!45, fill=white, rounded corners=3pt,
+    thick, align=center, font=\scriptsize, minimum height=7.5mm,
+    inner xsep=4pt, inner ysep=3pt},
+  arkchip/.style={draw=arkgray!35, fill=arkrow, rounded corners=2pt,
+    align=center, font=\tiny, inner xsep=3pt, inner ysep=1.8pt},
+  arkline/.style={-{Stealth[length=2mm]}, very thick, draw=arkgray!80},
+  arklightline/.style={-{Stealth[length=1.8mm]}, thick, draw=arkgray!55},
+  arkdashline/.style={-{Stealth[length=1.8mm]}, thick, dashed, draw=arkgray!58},
+  arkevidence/.style={font=\scriptsize\ttfamily, align=center}
+}
+
+\tcbset{
+  standardsnippet/.style={
+    colback=green!5,
+    colframe=green!40!black,
+    boxrule=0.5pt,
+    arc=1pt,
+    left=0pt,
+    right=6pt,
+    top=0pt,
+    bottom=6pt,
+  }
+}
+
+\makeatletter
+\newcommand{\seqsplitenv}{\seq@enable@utf}
+\makeatother
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{codebackgroundcolor}{rgb}{0.96,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.07,0.03,0.95}
+\definecolor{codeorange}{rgb}{1,0.27,0}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{codebackgroundcolor},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{codeblue},
+    numberstyle=\ttfamily\footnotesize\color{codegray},
+    stringstyle=\color{codeorange},
+    mathescape=true,
+    xleftmargin=5pt,
+    xrightmargin=5pt,
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2,
+    frame=single,
+    moredelim=**[is][\color{red}]{@@}{@@},
+}
+
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\dbltextfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\dblfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{8pt plus 2pt minus 2pt}
+\setlength{\belowcaptionskip}{4pt plus 2pt minus 2pt}
+\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
+\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
+% \setlist was from enumitem; acmart handles list spacing internally
+
+\setcopyright{none}
+\settopmatter{printacmref=true}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+
+\acmConference[Conference'26]{ACM Conference}{2026}{}
+\acmYear{2026}
+
+\begin{document}
+\sloppy
+
+\title{\mytooltitle}
+
+\begin{abstract}
+Existing taint analysis frameworks for \openharmony/\arkts assume that privacy-sensitive API sources are already identified. In practice, method-signature-based source configuration misses 31.3\% of real API usages: manager-style indirect calls and privacy-constant field reads are invisible to signature matching. HapFlow, the state-of-the-art \arkts taint analysis, solves \emph{propagation} but not \emph{source identity resolution}---which API calls are privacy-sensitive and how their identities survive package migration, receiver factories, and IR lowering.
+
+We present \mytool, a static analysis framework addressing this bottleneck. \mytool contributes: (1)~\emph{package- and receiver-aware API identity resolution}, resolving package-family equivalence, import aliases, IR-lowered aliases, and receiver-origin provenance---two access patterns that are structurally invisible to method-signature matching; (2)~\emph{asynchronous source binding}, formalizing how callbacks, field-stored callbacks, builder-option callbacks, and Promise/\texttt{async-await} chains connect sources to downstream consumers, improving taint flow recall from 51.5\% to 97.8\%; and (3)~\emph{provenance-annotated evidence subgraphs}, where each edge records its derivation, enabling auditors to distinguish proven paths from heuristic completions.
+
+On the ArkPrismBench stratified benchmark (164 projects sampled from a 1,015-project corpus), \mytool achieves 100\% precision and 100\% recall for API recognition; a micro-benchmark of 77 test cases across 15 pattern categories confirms 93.2\% positive-case detection. Ablation shows that callback analysis is the dominant component, improving taint flow recall from 51.5\% to 97.8\% ($p<0.001$). The full pipeline analyzes 1,015 projects in $\approx$4.2\,h wall time with 99.8\% completion.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+   <concept>
+       <concept_id>10002978.10003022.10003023</concept_id>
+       <concept_desc>Security and privacy~Software security engineering</concept_desc>
+       <concept_significance>500</concept_significance>
+   </concept>
+   <concept>
+       <concept_id>10011007.10011074.10011099.10011102</concept_id>
+       <concept_desc>Software and its engineering~Software defect analysis</concept_desc>
+       <concept_significance>300</concept_significance>
+   </concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Security and privacy~Software security engineering}
+\ccsdesc[300]{Software and its engineering~Software defect analysis}
+
+\keywords{OpenHarmony, ArkTS, static analysis, privacy APIs, taint analysis, call-chain analysis}
+
+\maketitle
+
+\input{1.Introduction}
+\input{2.Background}
+\input{3.DesignofRAPA}
+\input{4.Implementation}
+\input{5.Evaluation}
+\input{6.Discussion}
+\input{7.RelatedWork}
+\input{8.Conclusion}
+
+\section*{Data Availability}
+Our artifact includes: (1) the ArkPrism tool source code and build scripts, (2) the ARGUS-1015 dataset of 1,015 HarmonyOS applications with per-project analysis reports, (3) the ArkPrismBench stratified benchmark (164 projects) with ground-truth annotations, (4) the ArkPrismBench-Micro (77 test cases across 15 pattern categories), (5) source/sink configuration files, and (6) scripts for reproducing all evaluation tables. We will provide an anonymized artifact package upon acceptance.
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{references}
+
+\input{9.Appendix}
+
+\end{document}

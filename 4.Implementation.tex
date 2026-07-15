@@ -1,0 +1,16 @@
+\section{Implementation}
+\label{sec:implementation}
+
+\mytool is implemented in TypeScript and runs as a command-line analyzer. It reuses ArkAnalyzer's Scene, IR, and call-graph abstractions, and integrates HapFlow through a runner module.
+
+\textbf{Rule base.} The sensitive API rule file (\texttt{sensitive\_apis.json}) contains 57 system-package groups and 822 API entries, extending an earlier list of 34 packages and 193 APIs. Each entry records namespace, method/property, permission, profiling category, and access mode. An explicit package-alias table maps \texttt{@ohos.*}$\leftrightarrow$\texttt{@kit.*} equivalents, applied before rule matching. The rule base is stored as data rather than hard-coded logic, allowing the same entries to drive detection, annotation, and evaluation.
+
+\textbf{Detector.} The API detector operates per Ark file: it obtains system imports, expands package aliases, divides rules into direct, indirect, and constant-like sets, and scans every method CFG. Method matching normalizes \texttt{Class.method}, \texttt{method()}, and event-style signatures while preserving namespace context. For indirect calls, the detector first inspects receiver type information; if the type is missing or imprecise, it applies a constrained fallback that requires the method name to match an indirect-call rule under a relevant imported package. For IR-lowered multi-segment APIs (e.g., \texttt{request.agent.create}), the detector records namespace-member aliases when ArkAnalyzer lowers the namespace prefix into a temporary.
+
+\textbf{Call-chain tracer.} The tracer builds an enhanced reverse call map from ArkAnalyzer call-graph edges plus supplementary edges recovered from FunctionType/ClosureType signatures, class-field callback assignments, and ArkUI builder-option callbacks. Entry methods are classified through lifecycle and callback naming conventions; if no upstream entry is found, the tracer emits a local fallback chain.
+
+\textbf{Sink analysis.} The sink analyzer classifies sinks into log, UI display, storage, network, data return, intent, and share categories. A semantic-enrichment pass adds guard conditions, try-catch context, and loop evidence.
+
+\textbf{HapFlow runner.} The runner lazily loads SDK files, creates a lifecycle-aware DummyMain entry (Section~\ref{subsec:lifecycle}), builds a lifecycle-enhanced call graph passed to the IFDS solver, attempts pointer analysis, and loads configured sources and sinks. Callback analysis is enabled by default. Failure modes are recorded explicitly rather than silently producing empty results.
+
+\textbf{Lifecycle modeler and context-sensitive CG.} The lifecycle modeler builds the three-layer state machine $\mathcal{L}$ (Section~\ref{subsec:lifecycle}). The DummyMain builder supports Level~1 (phase-ordered non-deterministic entries) and Level~2 (sequential CFG with cross-phase edges). The call graph builder augments RTA/CHA with lifecycle transition edges. The context-sensitive CG module wraps ArkAnalyzer's PointerAnalysis with $k$-limited context sensitivity (Section~\ref{subsec:context_sensitive}).

@@ -1,0 +1,154 @@
+This is BibTeX, Version 0.99e
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 21 items.
+The style file: ACM-Reference-Format.bst
+Reallocating 'name_of_file' (item size: 1) to 11 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Database file #1: references.bib
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Warning--empty publisher in droidapiminer
+Warning--empty address in droidapiminer
+Warning--empty publisher in drebin
+Warning--empty address in drebin
+Warning--page numbers missing in both pages and numpages fields in drebin
+Warning--empty publisher in droidbench
+Warning--empty address in droidbench
+Warning--empty publisher in pscout
+Warning--empty address in pscout
+Warning--empty publisher in axplorer
+Warning--empty address in axplorer
+Warning--empty publisher in covert
+Warning--empty address in covert
+Warning--empty publisher in heros
+Warning--empty address in heros
+Warning--empty publisher in babelview
+Warning--empty address in babelview
+Warning--empty publisher in horndroid
+Warning--empty address in horndroid
+Warning--empty publisher in edgeminer
+Warning--empty address in edgeminer
+Warning--page numbers missing in both pages and numpages fields in edgeminer
+Warning--empty address in arkanalyzer
+Warning--page numbers missing in both pages and numpages fields in arkanalyzer
+Warning--no number and no volume in hapflow
+Warning--page numbers missing in both pages and numpages fields in hapflow
+Warning--empty publisher in comdroid
+Warning--empty address in comdroid
+Warning--empty publisher in stowaway
+Warning--empty address in stowaway
+Warning--empty publisher in apposcopy
+Warning--empty address in apposcopy
+Warning--articleno or eid field, but no numpages field, in wala
+Warning--page numbers missing in both pages and numpages fields in wala
+Warning--articleno or eid, but no pages or numpages field in wala
+Warning--empty publisher in triggerscope
+Warning--empty address in triggerscope
+Warning--empty publisher in androidleaks
+Warning--empty address in androidleaks
+Warning--empty publisher in gordon2015droidsafe
+Warning--empty address in gordon2015droidsafe
+Warning--page numbers missing in both pages and numpages fields in gordon2015droidsafe
+Warning--empty publisher in didfail
+Warning--empty address in didfail
+Warning--empty publisher in iccta
+Warning--empty address in iccta
+Warning--empty publisher in haprepair
+Warning--empty address in haprepair
+Warning--empty publisher in haptest
+Warning--empty address in haptest
+Warning--empty publisher in chex
+Warning--empty address in chex
+Warning--empty publisher in epicc
+Warning--empty address in epicc
+Warning--empty publisher in ic3
+Warning--empty address in ic3
+Warning--articleno or eid field, but no numpages field, in onw19
+Warning--INFO: reduced pages = [10:1--10:29] to numpages = [29]
+Warning--empty publisher in susi
+Warning--empty address in susi
+Warning--page numbers missing in both pages and numpages fields in susi
+Warning--empty publisher in harvester
+Warning--empty address in harvester
+Warning--page numbers missing in both pages and numpages fields in harvester
+Warning--empty publisher in fuse
+Warning--empty address in fuse
+Warning--empty publisher in reps95
+Warning--empty address in reps95
+Warning--page numbers missing in both pages and numpages fields in raicc
+Warning--empty publisher in copperdroid
+Warning--empty address in copperdroid
+Warning--page numbers missing in both pages and numpages fields in copperdroid
+Warning--empty address in soot
+Warning--empty publisher in intellidroid
+Warning--empty address in intellidroid
+Warning--page numbers missing in both pages and numpages fields in intellidroid
+Warning--empty publisher in appaudit
+Warning--empty address in appaudit
+Warning--empty publisher in eoeidroid
+Warning--empty address in eoeidroid
+Warning--page numbers missing in both pages and numpages fields in eoeidroid
+Warning--empty publisher in bridgescope
+Warning--empty address in bridgescope
+Warning--empty publisher in appcontext
+Warning--empty address in appcontext
+Warning--empty publisher in leakminer
+Warning--empty address in leakminer
+Warning--empty publisher in appintent
+Warning--empty address in appintent
+Warning--empty publisher in droidsift
+Warning--empty address in droidsift
+Warning--empty publisher in droidmoss
+Warning--empty address in droidmoss
+Warning--empty publisher in droidranger
+Warning--empty address in droidranger
+Warning--page numbers missing in both pages and numpages fields in droidranger
+You've used 61 entries,
+            6273 wiz_defined-function locations,
+            1836 strings with 31908 characters,
+and the built_in function-call counts, 74777 in all, are:
+= -- 8307
+> -- 2843
+< -- 0
++ -- 966
+- -- 952
+* -- 5531
+:= -- 7323
+add.period$ -- 293
+call.type$ -- 61
+change.case$ -- 534
+chr.to.int$ -- 129
+cite$ -- 156
+duplicate$ -- 6844
+empty$ -- 4779
+format.name$ -- 1157
+if$ -- 17900
+int.to.chr$ -- 6
+int.to.str$ -- 1
+missing$ -- 270
+newline$ -- 502
+num.names$ -- 423
+pop$ -- 3136
+preamble$ -- 1
+purify$ -- 1014
+quote$ -- 0
+skip$ -- 2507
+stack$ -- 0
+substring$ -- 5184
+swap$ -- 655
+text.length$ -- 45
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 1644
+warning$ -- 96
+while$ -- 354
+width$ -- 0
+write$ -- 1164
+(There were 96 warnings)
