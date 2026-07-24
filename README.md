@@ -1,324 +1,543 @@
 # ArkPrism
 
-> HarmonyOS ArkTS 隐私敏感 API 识别与信息流子图映射工具
+ArkPrism is a static-analysis tool for locating privacy-sensitive API usages and reconstructing information-flow evidence in HarmonyOS ArkTS applications. It operates on ArkAnalyzer IR and produces auditable JSON reports and DOT graphs that connect sensitive API locations, framework and UI entry points, control context, data sinks, and source-to-sink taint paths.
 
-静态分析工具，通过多层级分析检测 HarmonyOS 应用中的隐私数据泄露风险。
+ArkPrism is designed for source projects containing `.ets` or `.ts` files. It requires a real OpenHarmony SDK for SDK signature resolution during pointer and taint analysis.
 
----
+## Contents
 
-## 核心架构
+- [Analysis pipeline](#analysis-pipeline)
+- [Implementation](#implementation)
+- [Repository layout](#repository-layout)
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Running ArkPrism](#running-arkprism)
+- [Command-line options](#command-line-options)
+- [Output](#output)
+- [Rule configuration](#rule-configuration)
+- [Validation and troubleshooting](#validation-and-troubleshooting)
+- [Known analysis boundaries](#known-analysis-boundaries)
 
-ArkPrism 采用 **六层分析架构**：
+## Analysis pipeline
 
+```text
+ArkTS project + privacy rules + OpenHarmony SDK
+                         |
+                         v
+             ArkAnalyzer Scene and ArkIR
+                         |
+             +-----------+-----------+
+             |                       |
+             v                       v
+       View-tree model       Sensitive API recognition
+             |                       |
+             +-----------+-----------+
+                         v
+           Lifecycle-aware call-graph recovery
+                         |
+                         v
+       Entry-to-API chains and control evidence
+                         |
+             +-----------+-----------+
+             |                       |
+             v                       v
+       Sink classification    HapFlow IFDS analysis
+             |                + pointer analysis
+             |                + callback/Promise recovery
+             +-----------+-----------+
+                         v
+       Evidence assembly, collaboration analysis,
+                 JSON report, and DOT graph
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    ArkPrism 分析流程                            │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 1: 隐私 API 检测 (apiDetector.ts)                         │
-│   - 四种模式匹配：直接调用、间接调用、常量访问、属性访问          │
-│   - 输出: 隐私 API 调用位置                                      │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 2: 调用链构建 (callChainTracer.ts)                        │
-│   - 三源逆向调用图 + ArkUI 回调边                                │
-│   - 输出: API → UI 组件的调用路径                                │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 3: 数据 Sink 检测 (dataSinkAnalyzer.ts)                   │
-│   - 检测网络、存储、日志、UI、Intent 等敏感操作                  │
-│   - 输出: 数据可能泄露的终点                                      │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 4: 语义增强 (semanticEnricher.ts)                         │
-│   - 变量名分析、条件判断识别                                      │
-│   - 输出: 上下文语义信息                                          │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 5: 污点分析 (HapFlow)                                      │
-│   - IFDS 算法 + 回调数据流追踪                                   │
-│   - 输出: 隐私数据从 source 到 sink 的完整路径                   │
-├─────────────────────────────────────────────────────────────────┤
-│ Layer 6: 协同行为检测 (multiSourceAnalyzer.ts)                  │
-│   - 跨多个隐私 API 的协作行为识别                                │
-│   - 输出: 隐私数据组合分析                                        │
-└─────────────────────────────────────────────────────────────────┘
+
+The pipeline is evidence preserving: each detected API usage retains its package, namespace, method, ArkIR statement, source file, declaring method, permission, and profiling category. Call-chain and taint results refer back to this evidence instead of reporting only aggregate counts.
+
+## Implementation
+
+### 1. ArkAnalyzer frontend
+
+`src/arkprism.ts` builds an ArkAnalyzer `Scene` from the target project. The normal project loader is used first. If the project metadata is incomplete and produces no Ark files, ArkPrism discovers `.ets` and `.ts` files and rebuilds the scene from the source-file list.
+
+The frontend:
+
+1. parses project files and imports;
+2. creates ArkIR statements, CFGs, classes, methods, and signatures;
+3. performs ArkAnalyzer type inference;
+4. excludes generated or dependency directories such as `build`, `cache`, `node_modules`, `oh_modules`, and `.preview`;
+5. builds ArkUI view-tree evidence for components, callback bindings, and state-to-UI flows.
+
+The OpenHarmony SDK is loaded again for taint-rule signature resolution. The SDK path must point to the SDK's `ets` directory, not merely to the SDK installation root.
+
+### 2. Sensitive API recognition
+
+`src/apiDetector.ts` reads `config/sensitive_apis.json` and binds rules to actual imports in each Ark file. Recognition is performed over ArkIR, not by searching for bare method-name strings.
+
+ArkPrism handles four principal usage forms:
+
+| Form | Example | Main evidence |
+|---|---|---|
+| Direct invocation | `pasteboard.getSystemPasteboard()` | imported package, namespace alias, invoke signature, and method |
+| Assigned invocation | `const id = identifier.getOAID()` | direct-call evidence plus assignment IR |
+| Manager/helper invocation | `calendarMgr.getCalendar()` | inferred receiver namespace or package-scoped method fallback |
+| Field/property access | `deviceInfo.deviceType` | imported namespace and field reference |
+
+Package aliases bridge equivalent `@ohos.*` and `@kit.*` APIs. Namespace-member aliases are recovered when ArkIR lowers compound APIs, for example assigning `request.agent` to a local and invoking `local.create(...)`.
+
+For indirect calls, ArkPrism first uses the inferred receiver namespace. If ArkAnalyzer cannot infer a usable receiver type, the detector applies a package-scoped method match among rules associated with imports in the same file. Rule authors should therefore avoid unqualified generic methods such as `get`, `set`, `create`, `request`, `on`, or `start` unless the package and namespace make the owner unambiguous.
+
+Each `privacyApiUsages` record contains the matched rule and its evidence location.
+
+### 3. Lifecycle and callback modeling
+
+`src/lifecycleModeler.ts` models HarmonyOS execution as three related layers:
+
+1. **Ability lifecycle**: creation, window creation, foreground, background, and destruction;
+2. **Component lifecycle**: appearance, build, page show/hide, and disappearance;
+3. **UI callbacks**: user-interaction and registered callback methods.
+
+The model discovers UIAbility, Ability, ExtensionAbility, FormExtensionAbility, BackupExtensionAbility, service classes, ArkUI components, and callback methods. It constructs legal intra-layer transitions and framework-driven cross-layer transitions, such as Ability foregrounding to component appearance.
+
+`src/lifecycleDummyMain.ts` orders discovered entry methods by lifecycle phase and creates the synthetic entry used by the IFDS analysis. The default bounded model represents one lifecycle instance and prevents a synthetic lifecycle loop from dominating memory consumption. This bound can be disabled only for controlled ablation experiments through `ARKPRISM_DISABLE_LIFECYCLE_BOUNDS=1`.
+
+### 4. Call-graph and call-chain recovery
+
+`src/callGraphBuilder.ts` constructs the base call graph. `src/callChainTracer.ts` then builds an enhanced reverse call map from complementary edge sources:
+
+- ArkAnalyzer call-graph edges;
+- CHA resolution for virtual/interface calls;
+- invoke edges recovered directly from ArkIR;
+- uniquely resolvable unknown-signature calls;
+- FunctionType and ClosureType callback arguments;
+- whitelisted event, Promise, and callback APIs;
+- class-field arrow-function callbacks;
+- anonymous-method parent relationships;
+- ArkUI builder-option callbacks;
+- lifecycle transitions supplied by the state-machine model.
+
+For each sensitive API usage, ArkPrism traverses callers toward a recognized application, component, initialization, or user-interaction entry. If no framework entry is recoverable, the declaring method is retained as a precise local entry; ArkPrism does not invent a caller.
+
+The resulting chain records:
+
+- entry method, entry type, file, and line;
+- caller/callee links and call kinds;
+- readable names for ArkIR anonymous methods;
+- asynchronous usage evidence;
+- source snippets for methods on the path;
+- enclosing `if`, `switch`, loop, and `try/catch` structures.
+
+Control evidence uses CFG dominance information to distinguish a condition that actually governs the API call from a condition that is merely nearby.
+
+### 5. Sink analysis and semantic evidence
+
+`src/dataSinkAnalyzer.ts` classifies operations that may expose or persist sensitive data. Rules in `config/data_sinks.json` cover:
+
+- network transmission;
+- persistent or distributed storage;
+- log and console output;
+- UI display;
+- intents and inter-component transfer;
+- sharing;
+- returned data.
+
+The analysis follows variables produced by sensitive APIs through the declaring method, related same-class methods, and callbacks. A sink record contains its category, API, enclosing method, file, line, and data variable when recoverable.
+
+`src/callChainTracer.ts` also assembles semantic context: page/component name, the nearest meaningful application method, a simplified chain, and a concise purpose hint. These fields are evidence summaries; they do not replace the underlying call chain or source location.
+
+### 6. Multi-source collaboration analysis
+
+`src/multiSourceAnalyzer.ts` groups sensitive APIs by profiling category and identifies methods that combine multiple privacy dimensions. It computes a common ancestor in the recovered call graph and constructs an evidence subgraph:
+
+```text
+entry -> common ancestor -> sensitive API branches -> sinks
 ```
 
----
+The output includes involved categories, API branches, entry method, lowest common ancestor, sink evidence, and a risk level derived from the number of combined categories.
 
-## 安装
+### 7. HapFlow IFDS taint analysis
 
-```bash
+`src/hapflowRunner.ts` integrates the HapFlow IFDS solver with ArkPrism.
+
+The taint stage:
+
+1. loads SDK declarations from the explicitly supplied OpenHarmony SDK;
+2. builds the lifecycle-aware synthetic entry;
+3. runs context-sensitive pointer analysis for aliases and dynamic callees;
+4. resolves configured source and sink signatures;
+5. solves the interprocedural distributive data-flow problem;
+6. supplements IR propagation for ArkTS callbacks, closures, Promise chains, and `await`;
+7. converts path facts into source-to-sink evidence.
+
+`config/hapflow_sources.json` supports return-value sources and callback-parameter sources. `config/hapflow_sinks.json` defines sink signatures. The IFDS implementation propagates facts through normal, call, return, call-to-return, exceptional, field, and receiver-refined edges.
+
+By default, all resolved sources are processed in one solver run. `--ifds-batch-size` is an explicit memory fallback and should remain unset in accuracy-oriented runs because a single solver preserves the complete shared context.
+
+The supplementary callback analysis is enabled by default. It handles patterns that are frequently incomplete in ArkIR, including:
+
+- source values delivered through callbacks;
+- Promise `.then(...)` and chained callbacks;
+- `await` assignments;
+- closure and lexical-environment captures;
+- Promise executor `resolve(...)` propagation;
+- callback fields and manager/helper aliases.
+
+### 8. Additional project evidence
+
+ArkPrism also reports:
+
+- permissions declared in `module.json5`;
+- CFG unreachable-block statistics;
+- recursive and loop-pattern statistics;
+- ArkUI component, callback, and state-flow evidence;
+- project-level totals for files, methods, APIs, chains, collaborations, and taint flows.
+
+## Repository layout
+
+| Path | Purpose |
+|---|---|
+| `src/arkprism.ts` | CLI and end-to-end pipeline |
+| `src/apiDetector.ts` | import-aware sensitive API recognition |
+| `src/callGraphBuilder.ts` | base call-graph construction |
+| `src/callChainTracer.ts` | enhanced reverse graph, call chains, control and semantic evidence |
+| `src/lifecycleModeler.ts` | HarmonyOS lifecycle state machine |
+| `src/lifecycleDummyMain.ts` | lifecycle-aware IFDS entry construction |
+| `src/dataSinkAnalyzer.ts` | sink recognition and local/callback data tracking |
+| `src/multiSourceAnalyzer.ts` | cross-category collaboration subgraphs |
+| `src/hapflowRunner.ts` | SDK loading, pointer analysis, IFDS orchestration, result conversion |
+| `src/hapflow/` | IFDS problem, solver, facts, rules, and callback/Promise propagation |
+| `src/arkanalyzer/` | bundled ArkAnalyzer frontend and graph infrastructure |
+| `src/dotExporter.ts` | DOT evidence-graph generation |
+| `config/` | sensitive API, source, sink, package, and permission rules |
+| `scripts/run_argus_batch_isolated.js` | process-isolated, resumable large-corpus runner |
+
+## Requirements
+
+- 64-bit Windows, Linux, or macOS;
+- Node.js 20.x recommended;
+- npm;
+- an OpenHarmony SDK containing ArkTS declaration files;
+- sufficient memory for the analyzed project;
+- Graphviz, optional, for rendering DOT files.
+
+The SDK argument must identify the `ets` directory. Example on Windows:
+
+```powershell
+$sdk = "E:\OpenHarmony_SDK\20\ets"
+Test-Path $sdk
+Get-ChildItem $sdk -Recurse -Filter *.d.ts | Select-Object -First 1
+```
+
+Both commands must return usable results. Do not substitute project-local stubs for the SDK in a formal analysis.
+
+## Installation
+
+```powershell
+git clone https://github.com/moanyilmaz/ArkPrism.git
+cd ArkPrism
 npm install
+npm run build
+node dist/arkprism.js --help
 ```
 
----
+For development-time execution:
 
-## 使用
-
-### 基本用法
-
-```bash
-# 分析单个项目
-npx ts-node src/arkprism.ts ./project
-
-# 使用已编译的 JavaScript
-node --max-old-space-size=4096 dist/arkprism.js ./project
-
-# 指定 OpenHarmony SDK
-node dist/arkprism.js ./project --sdkPath /path/to/sdk
-
-# 跳过污点分析（更快，但不检测数据流）
-node dist/arkprism.js ./project --no-taint
-
-# 跳过指针分析（更快，精度降低）
-node dist/arkprism.js ./project --no-pta
-
-# 批量分析数据集
-node dist/arkprism.js --batch ./dataset
+```powershell
+npx ts-node src/arkprism.ts --help
 ```
 
-### 输出
+Compiled execution is recommended for repeatable experiments.
 
-分析完成后会在 `out/{project_name}/` 目录下生成：
+## Running ArkPrism
 
-- `{project}-arkprism-report.json` - 完整分析报告
-- `{project}-privacy-graph.dot` - 隐私数据流图
+### Single project
 
----
+```powershell
+$env:OPENHARMONY_SDK_PATH = "E:\OpenHarmony_SDK\20\ets"
+$env:NODE_OPTIONS = "--max-old-space-size=8192"
 
-## 核心方法思路
-
-### 1. 隐私 API 检测 (apiDetector.ts)
-
-检测四类隐私 API 调用模式：
-
-| 模式 | 示例 | 检测方法 |
-|------|------|---------|
-| 直接调用 | `pasteboard.getSystemPasteboard()` | AST 遍历 |
-| 间接调用 | `mgr.getData()` (mgr from namespace) | 类型推断 + 方法名匹配 |
-| 回调模式 | `getData((err, data) => {...})` | 参数回调检测 |
-| 属性访问 | `deviceInfo.deviceType` | FieldRef 检测 |
-
-**关键 API**:
-- `checkDirectCallPrivacyApis()` - 检测直接调用
-- `checkIndirectCallPrivacyApis()` - 检测间接调用（instance method）
-- `checkCallbackPrivacyApis()` - 检测回调风格 API
-- `checkPrivacyConstantUsages()` - 检测属性访问
-
-### 2. 调用链构建 (callChainTracer.ts)
-
-构建从隐私 API 到 UI 组件的调用链：
-
-```
-┌─────────────┐     ┌─────────────┐     ┌─────────────┐
-│  隐私 API   │ ──> │  中间方法    │ ──> │  UI 组件    │
-│ 位置信息    │     │  调用关系    │     │  aboutToAppear/onClick │
-└─────────────┘     └─────────────┘     └─────────────┘
+node dist/arkprism.js `
+  "E:\Projects\MyHarmonyApp" `
+  --output-dir "E:\ArkPrismResults\single" `
+  --sdkPath "$env:OPENHARMONY_SDK_PATH"
 ```
 
-**三源调用图**:
-1. **内置 CG 边** - ArkAnalyzer 生成的标准调用图
-2. **CHA 解析边** - 类层次分析推断的调用关系
-3. **补充调用边** - ArkUI 回调参数边
+Default output:
 
-**关键 API**:
-- `buildCallChainsFromApiUsage()` - 从 API 使用点构建调用链
-- `resolveCallbackMethod()` - 解析回调方法
-- `findArkUIEntry()` - 找到 ArkUI 组件入口
-
-### 3. 数据 Sink 检测 (dataSinkAnalyzer.ts)
-
-识别数据可能泄露的终点：
-
-| Sink 类型 | 示例 | 风险等级 |
-|-----------|------|---------|
-| network | `http.createHttp()` | 高 |
-| storage | `fileIO.write()` | 高 |
-| log | `hilog.info()` / `console.log()` | 中 |
-| ui_display | `promptAction.showToast()` | 低 |
-| intent | `wantAgent.startAbility()` | 中 |
-| share | `share.select()` | 高 |
-
-**关键 API**:
-- `scanMethodForSinks()` - 扫描方法中的 sink 调用
-- `isSensitiveSink()` - 判断是否为敏感 sink
-
-### 4. 污点分析 - HapFlow (hapflow/)
-
-基于 IFDS (Interprocedural Data Flow Analysis) 算法的数据流追踪。
-
-#### 4.1 IFDS 算法 (DataflowSolver.ts)
-
-IFDS 是一种精确的过程间数据流分析算法，通过图可达性解决数据流问题。
-
-```
-问题：找到所有从 Source 到 Sink 的路径
-
-IFDS 解决方案：
-1. 构建 Supergraph（包含所有方法和调用边）
-2. 从 entry point 开始
-3. 使用 flow functions 传播污点
-4. 达到 Sink 时记录数据流
+```text
+E:\ArkPrismResults\single\
+└── MyHarmonyApp\
+    ├── MyHarmonyApp-arkprism-report.json
+    └── MyHarmonyApp-privacy-graph.dot
 ```
 
-**关键类**:
-- `TaintAnalysisChecker` - 问题定义
-- `TaintAnalysisSolver` - IFDS 求解器
-- `DataflowSolver` - 基础求解器框架
+### Accuracy-oriented single-project run
 
-#### 4.2 回调数据流追踪 (TaintAnalysis.ts)
+The following configuration raises resource ceilings while leaving IFDS unbatched:
 
-处理 HarmonyOS SDK 的两种异步模式：
+```powershell
+$env:NODE_OPTIONS = "--max-old-space-size=8192"
 
-**Promise 模式**:
-```typescript
-// HapFlow 自动追踪
-selectContacts().then((info) => {
-    hilog.info('联系人: ' + info.name);  // 污点从 info 流向 hilog.info
-});
+node dist/arkprism.js `
+  "E:\Projects\MyHarmonyApp" `
+  --output-dir "E:\ArkPrismResults\full" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --ifds-max-edges 30000000 `
+  --ifds-max-worklist 8000000 `
+  --ifds-timeout-ms 1800000 `
+  --callback-analysis true `
+  --callback-max-methods 200000 `
+  --callback-max-sources 20000 `
+  --callback-max-states 50000 `
+  --callback-max-path-len 160
 ```
 
-**回调函数模式**:
-```typescript
-// HapFlow 识别回调参数
-pasteboard.getData((err, pasteData) => {
-    let text = pasteData.getPrimaryText();  // pasteData 是污点源
-    hilog.info('剪贴板: ' + text);  // 污点从 text 流向 hilog.info
-});
+`--ifds-batch-size` is intentionally omitted.
+
+### Built-in sequential batch mode
+
+The dataset directory must contain one project per immediate subdirectory:
+
+```text
+dataset\
+├── ProjectA\
+├── ProjectB\
+└── ProjectC\
 ```
 
-**关键方法**:
-- `analyzeCallbackDataFlows()` - 分析所有回调数据流
-- `processThenCallback()` - 处理 Promise.then() 回调
-- `analyzeCallbackSource()` - 分析回调风格 source API
-- `traceCallbackParamDataFlow()` - 追踪回调参数数据流
+Run:
 
-#### 4.3 闭包处理 (Util.ts)
-
-处理 ArkTS 闭包变量：
-
-```typescript
-// 闭包变量可能是 ClosureFieldRef，需要解析其实际值
-const resolvedParam = resolveClosureVariable(param, callbackMethod);
+```powershell
+node dist/arkprism.js `
+  --batch "E:\Datasets\HarmonyApps" `
+  --output-dir "E:\ArkPrismResults\batch" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets"
 ```
 
-**关键函数**:
-- `resolveClosureVariable()` - 解析闭包变量
-- `getResolvedCallbackParameters()` - 获取解析后的回调参数
+The runner writes one project directory plus `batch_summary.json`.
 
-### 5. 协同行为检测 (multiSourceAnalyzer.ts)
+### Process-isolated large-corpus mode
 
-识别跨多个隐私 API 的组合行为：
+For a large corpus, use the isolated runner. Each project runs in a separate Node.js process, preventing heap state from accumulating across projects.
 
-```typescript
-// 协同行为示例：位置 + 设备 ID 同时被收集
-location.getCurrentLocation() + deviceInfo.deviceId
-// 可能用于：用户画像、设备指纹
+```powershell
+node scripts\run_argus_batch_isolated.js `
+  --dataset "E:\Datasets\HarmonyApps" `
+  --output-dir "E:\ArkPrismResults\isolated" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --log-dir "E:\ArkPrismResults\isolated\logs" `
+  --timeout-ms 3600000 `
+  --node-options "--max-old-space-size=8192" `
+  --concurrency 2 `
+  -- `
+  --ifds-max-edges 30000000 `
+  --ifds-max-worklist 8000000 `
+  --ifds-timeout-ms 1800000 `
+  --callback-analysis true `
+  --callback-max-methods 200000 `
+  --callback-max-sources 20000 `
+  --callback-max-states 50000 `
+  --callback-max-path-len 160
 ```
 
-**检测逻辑**:
-1. 按 profiling category 分组隐私 API
-2. 检测同一组件中多个类别的使用
-3. 识别隐私数据组合风险
+Arguments before `--` configure the isolated runner. Arguments after `--` are passed unchanged to ArkPrism.
 
----
+Resume an interrupted run:
 
-## 配置
-
-### 隐私 API 规则
-
-- `config/privacy_apis.json` - 隐私 API 定义
-- `config/hapflow_sources.json` - IFDS source 定义
-- `config/hapflow_sinks.json` - IFDS sink 定义
-- `config/data_sinks.json` - 数据泄露 sink 定义
-
-### OpenHarmony SDK
-
-工具依赖 OpenHarmony SDK 进行类型推断：
-
-```
---sdkPath 默认值: OPENHARMONY_SDK_PATH or E:/OpenHarmony_SDK/20/ets
+```powershell
+node scripts\run_argus_batch_isolated.js `
+  --dataset "E:\Datasets\HarmonyApps" `
+  --output-dir "E:\ArkPrismResults\isolated" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --log-dir "E:\ArkPrismResults\isolated\logs" `
+  --concurrency 2 `
+  --resume `
+  -- `
+  --ifds-max-edges 30000000 `
+  --ifds-max-worklist 8000000 `
+  --ifds-timeout-ms 1800000
 ```
 
----
+Use the same analysis arguments when resuming.
 
-## 大型项目支持
+### Detector-only and ablation modes
 
-为避免大型项目（1000+ 方法）的 OOM 问题，HapFlow 实现了智能限制：
+```powershell
+# API recognition, call chains, sinks, and project evidence; no IFDS taint paths
+node dist/arkprism.js "E:\Projects\MyHarmonyApp" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --no-taint
 
-| 限制项 | 默认值 | 说明 |
-|--------|--------|------|
-| MAX_METHODS_TO_SCAN | 500 | 回调分析扫描的方法数上限 |
-| MAX_SOURCES_TO_ANALYZE | 50 | 源 API 分析数量上限 |
+# Disable pointer analysis; intended for ablation/debugging, not final accuracy claims
+node dist/arkprism.js "E:\Projects\MyHarmonyApp" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --no-pta
 
-**为什么这样设计安全？**
-
-1. 隐私 API 主要集中在 UI 页面（deviceid.ets, batteryInfo.ets 等）
-2. ArkAnalyzer 按文件顺序枚举方法，UI 页面通常在前
-3. API 检测层（Layer 1）不受限制，100% 召回
-
-**实测结果**:
-- legado-Harmony-main (3576 方法): 60 APIs 检测，44 有数据流 (73% 召回)
-- harmonyos-games-main: 56 APIs 检测，40 有数据流 (71.4% 召回)
-
----
-
-## 性能优化
-
-| 技术 | 效果 |
-|------|------|
-| --no-pta | 跳过指针分析，速度提升约 30% |
-| --no-taint | 跳过污点分析，速度提升约 50% |
-| MAX_METHODS_TO_SCAN | 限制大型项目扫描范围 |
-| LightTaintAnalysis | 轻量级数据流分析（可选） |
-
----
-
-## 项目结构
-
-```
-Argus/
-├── src/
-│   ├── arkprism.ts              # 主入口
-│   ├── apiDetector.ts           # Layer 1: 隐私 API 检测
-│   ├── callChainTracer.ts       # Layer 2: 调用链构建
-│   ├── dataSinkAnalyzer.ts      # Layer 3: Sink 检测
-│   ├── semanticEnricher.ts      # Layer 4: 语义增强
-│   ├── multiSourceAnalyzer.ts   # Layer 6: 协同行为检测
-│   ├── hapflow/                 # IFDS 污点分析
-│   │   ├── TaintAnalysis.ts     # 核心分析逻辑
-│   │   ├── TaintAnalysisSolver.ts
-│   │   ├── DataflowSolver.ts    # IFDS 算法实现
-│   │   ├── TaintFact.ts         # 污点事实
-│   │   ├── LightTaintAnalysis.ts # 轻量级分析
-│   │   └── Util.ts              # 辅助函数
-│   ├── arkanalyzer/             # ArkAnalyzer 封装
-│   └── prototypes.ts            # 类型定义
-├── config/
-│   ├── privacy_apis.json        # 隐私 API 规则
-│   ├── hapflow_sources.json     # IFDS source
-│   ├── hapflow_sinks.json       # IFDS sink
-│   └── data_sinks.json          # 数据泄露 sink
-├── dist/                        # 编译输出
-└── out/                         # 分析结果
+# Skip DOT generation
+node dist/arkprism.js "E:\Projects\MyHarmonyApp" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --no-dot
 ```
 
----
+`--no-taint` and `--no-pta` reduce analysis coverage or precision and should not be used as silent fallbacks in a delivery run.
 
-## 术语表
+## Command-line options
 
-| 术语 | 说明 |
-|------|------|
-| IFDS | Interprocedural Data Flow Analysis，过程间数据流分析 |
-| Source | 隐私数据源头，如 `getCurrentLocation()` |
-| Sink | 数据泄露终点，如 `http.post()` |
-| Taint | 污点，被追踪的敏感数据 |
-| Callback | 回调函数，异步编程模式 |
-| Closure | 闭包，捕获外部变量的函数 |
-| ArkTS | HarmonyOS 的 TypeScript 超集 |
-| CFG | Control Flow Graph，控制流图 |
-| PTA | Pointer Analysis，指针分析 |
-| CHA | Class Hierarchy Analysis，类层次分析 |
+| Option | Meaning | Default |
+|---|---|---:|
+| `<project_dir>` | analyze one ArkTS project | required in single mode |
+| `--batch <dataset_dir>` | analyze immediate child directories sequentially | off |
+| `--config <file>` | legacy JSON configuration mode | off |
+| `--output-dir <dir>` | output root | `./out` |
+| `--sdkPath <dir>` | OpenHarmony SDK `ets` directory | environment/default path |
+| `--no-dot` | do not create DOT graphs | off |
+| `--no-taint` | skip HapFlow taint analysis | off |
+| `--no-pta` | skip pointer analysis | off |
+| `--ifds-batch-size <n>` | sources per solver batch | all sources together |
+| `--ifds-max-edges <n>` | maximum processed IFDS edges | `10000000` |
+| `--ifds-max-worklist <n>` | maximum IFDS worklist size | `2000000` |
+| `--ifds-timeout-ms <n>` | IFDS solver time limit | `900000` |
+| `--callback-analysis <bool>` | enable supplementary callback analysis | `true` |
+| `--callback-max-methods <n>` | maximum scanned callback methods | `100000` |
+| `--callback-max-sources <n>` | maximum callback sources | `5000` |
+| `--callback-max-states <n>` | maximum states per callback source | `10000` |
+| `--callback-max-path-len <n>` | maximum callback path length | `100` |
 
----
+Use `node dist/arkprism.js --help` as the authoritative option list for the checked-out revision.
 
-## 许可
+## Output
 
-MIT License
+### JSON report
+
+`{project}-arkprism-report.json` contains:
+
+| Field | Description |
+|---|---|
+| `projectName`, `projectDirectory`, `analysisTimestamp` | analysis identity and provenance |
+| `privacyApiUsages` | matched package/namespace/method, arguments, IR, file, declaring method, permission, and category |
+| `callChains` | entry point, call links, control structures, source snippets, sinks, async flag, and semantic context |
+| `multiSourceCollaborations` | common-ancestor subgraphs combining multiple privacy categories |
+| `permissionUsages` | permissions declared by application modules |
+| `taintFlows` | source, sink, tainted value, files, lines, and complete propagation path |
+| `statistics` | files, methods, APIs, chains, collaborations, and taint-flow totals |
+| `dataFlowStats` | unreachable-block and dead-variable statistics |
+| `recursivePatternStats` | loop and recursion statistics |
+
+Indexes in `callChains[*].apiUsageIndex` refer to `privacyApiUsages`.
+
+### DOT graph
+
+`{project}-privacy-graph.dot` visualizes the evidence graph. Render it with Graphviz:
+
+```powershell
+dot -Tsvg `
+  "MyHarmonyApp-privacy-graph.dot" `
+  -o "MyHarmonyApp-privacy-graph.svg"
+```
+
+DOT is emitted only when at least one sensitive API is detected.
+
+## Rule configuration
+
+### Sensitive APIs
+
+`config/sensitive_apis.json` is the authoritative recognition rule set:
+
+```json
+[
+  {
+    "systemPackage": "@kit.BasicServicesKit",
+    "privacyApis": [
+      {
+        "namespace": "deviceInfo",
+        "method": "deviceType",
+        "permission": null,
+        "profilingCategory": "device_identity.hardware",
+        "directCall": null
+      }
+    ]
+  }
+]
+```
+
+`directCall` means:
+
+- `true`: namespace/direct invocation;
+- `false`: manager, helper, or receiver invocation;
+- `null`: field/property-style usage.
+
+Use a qualified package, namespace, and method. Do not add a generic method name without owner evidence.
+
+### Sink rules
+
+`config/data_sinks.json` defines evidence-oriented sink categories used by call-chain analysis. Each pattern specifies a namespace, method set, API label, package/kit, and severity.
+
+### IFDS sources and sinks
+
+- `config/hapflow_sources.json`: SDK source signatures, source type, tainted parameter index, sensitivity, and reason;
+- `config/hapflow_sinks.json`: sink signatures and reasons.
+
+Types containing `${OPENHARMONY_SDK_PATH}` are expanded with the SDK path supplied to the current run. After changing any rule file, rebuild if required by the workflow and rerun the relevant regression projects before a corpus experiment.
+
+## Validation and troubleshooting
+
+### Recommended preflight
+
+```powershell
+npm run build
+node dist/arkprism.js --help
+
+node dist/arkprism.js `
+  "E:\Projects\SmallKnownProject" `
+  --output-dir "E:\ArkPrismResults\preflight" `
+  --sdkPath "E:\OpenHarmony_SDK\20\ets"
+```
+
+Verify:
+
+1. the process exits successfully;
+2. the JSON report parses;
+3. `privacyApiUsages.length` agrees with the API count;
+4. every `apiUsageIndex` is valid;
+5. source and sink files are not `unknown` when project provenance exists;
+6. logs contain no budget-exceeded, timeout, SDK-loading, pointer-analysis, or solver failure.
+
+### SDK loading failures
+
+- Pass the full `ets` path explicitly with `--sdkPath`.
+- Confirm that the directory exists and contains SDK `.d.ts` files.
+- Do not rely on a different SDK version through a fallback path.
+- Quote Windows paths containing spaces.
+
+### Out-of-memory conditions
+
+Use project-level process isolation first:
+
+1. run the compiled entry;
+2. set `NODE_OPTIONS=--max-old-space-size=8192` or a value appropriate for the machine;
+3. keep concurrency conservative;
+4. increase per-project timeout for large projects;
+5. resume completed projects with the isolated runner.
+
+Do not disable pointer or taint analysis merely to obtain a success exit code. Explicit IFDS batching is a last-resort memory control and changes the analysis execution model.
+
+### Budget or timeout messages
+
+A report produced after `BUDGET_EXCEEDED`, solver timeout, or process timeout is not equivalent to a complete run. Increase `--ifds-max-edges`, `--ifds-max-worklist`, `--ifds-timeout-ms`, or the isolated runner's `--timeout-ms`, then rerun the affected project.
+
+### No project files found
+
+Confirm that the target contains `.ets` or `.ts` source files and is not only a build artifact. ArkPrism retries source-file discovery when standard project loading yields no Ark files, but malformed or encrypted projects still require repair or explicit exclusion with documented criteria.
+
+## Known analysis boundaries
+
+- Static analysis over-approximates some dynamic dispatch and framework behavior.
+- Reflection, native code, dynamically loaded modules, generated code unavailable in the source tree, and encrypted artifacts may be unresolved.
+- ArkIR type or callback information can be incomplete; supplementary recovery improves coverage but does not make runtime behavior observable.
+- Source and sink coverage is bounded by the configured rule sets and the SDK version used for signature resolution.
+- A detected API usage is evidence of an executable ArkIR access, not proof that the code executes in every runtime state.
+- A reported taint path is a static may-flow unless independently confirmed at runtime.
+
+For research or delivery results, retain the analyzed source revision, ArkPrism revision, rule-file hashes, SDK path/version, command line, per-project logs, JSON reports, DOT files, failures, exclusions, and resource limits.
+
+## License
+
+This repository is distributed under the license declared in the project metadata. Bundled third-party components retain their respective notices and licenses.
