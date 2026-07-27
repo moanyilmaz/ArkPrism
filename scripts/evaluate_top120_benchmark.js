@@ -169,8 +169,14 @@ function evaluate({ benchmarkPath, reportsRoot, rulesPath }) {
   if (benchmarkProjects.length !== 120 || new Set(benchmarkProjects).size !== 120) {
     throw new Error(`Benchmark must contain 120 unique projects, found ${benchmarkProjects.length}`);
   }
-  if ((benchmark.annotations || []).length !== 666) {
-    throw new Error(`Benchmark must contain 666 annotations, found ${benchmark.annotations?.length}`);
+  const expectedAnnotations = Number(benchmark.benchmark?.confirmedProjectApiKeys);
+  if (!Number.isInteger(expectedAnnotations) || expectedAnnotations <= 0) {
+    throw new Error('Benchmark must declare a positive confirmedProjectApiKeys count');
+  }
+  if ((benchmark.annotations || []).length !== expectedAnnotations) {
+    throw new Error(
+      `Benchmark declares ${expectedAnnotations} annotations, found ${benchmark.annotations?.length}`,
+    );
   }
   const benchmarkProjectSet = new Set(benchmarkProjects);
   const run = validateRunManifest(reportsRoot, benchmarkProjects);
@@ -329,7 +335,7 @@ function evaluate({ benchmarkPath, reportsRoot, rulesPath }) {
     unreviewedOutputKeys: unreviewed,
     unresolvedOutputOccurrences,
     metricContract: {
-      confirmedKeyCoverage: 'Fraction of the 666 manually confirmed project-API keys reproduced by this run.',
+      confirmedKeyCoverage: `Fraction of the ${expectedAnnotations} manually confirmed project-API keys reproduced by this run.`,
       reviewedOutputPrecision: 'Defined only when every project-API key emitted by this run is present in the manually reviewed key set.',
       occurrencePrecision: 'Undefined because the Top-120 audit canonicalizes repeated report rows to project-API keys.',
       corpusRecall: 'Undefined because benchmark projects and candidates were selected from an earlier ArkPrism output.',

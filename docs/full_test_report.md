@@ -220,18 +220,18 @@ HapFlow 的 2 个 FN 涉及匿名实例初始化和异常流恢复。
 
 ## 7. 120 项目源码审计集
 
-该审计集包含 120 个高输出项目和 666 个去重的 `project + namespace + method/property` 键。每条记录保留：
+该审计集包含 120 个高输出项目和 848 个去重的 `project + namespace + method/property` 键。每条记录保留：
 
 - 项目和源码路径。
 - source line、column、matched text 和上下文 snippet。
 - package、namespace、method/property。
 - 人工确认标签及证据类型。
 
-人工复核排除注释、字符串字面量、普通同名业务方法和只有声明没有可执行访问的情况。666 个 project-API 键均具有可执行源码证据：
+人工复核排除注释、字符串字面量、普通同名业务方法和只有声明没有可执行访问的情况。848 个 project-API 键均具有可执行源码证据：
 
 | 粒度 | 已确认 | 观察 precision | Wilson 95% 下界 |
 |---|---:|---:|---:|
-| project-API 键 | 666/666 | 100.00% | 99.43% |
+| project-API 键 | 848/848 | 100.00% | 99.55% |
 
 必须限定该结论的范围：
 
@@ -453,7 +453,7 @@ flow identity 由 source、sink 和传播路径共同确定，避免 callback/IF
 
 1. ArkPrism 在完整 HapBench 上达到 100.00% precision、94.34% recall 和 97.09% F1，且 14 个负例全部正确。
 2. 相比 HapFlow artifact，ArkPrism 的主要观察优势是 specificity 和整体类别平衡；总体 paired 差异没有统计显著。
-3. 120 项目高输出源码审计中，已审计的 666 个 project-API 键全部具有真实源码证据，但该设计不能估计 recall。
+3. 120 项目高输出源码审计中，已审计的 848 个 project-API 键全部具有真实源码证据，但该设计不能估计 recall。
 4. 最终 1,014 项目结果包含 1,896 个唯一敏感 API 调用点、1,542 个 sink 和 1,103 条 IFDS may-flow。
 5. 1,014 个保留项目均使用真实 API-20 SDK、成功 PTA、单次不分批 IFDS，且没有 budget exceeded。
 6. manager/factory 修复新增 28 个经源码逐条确认的真实调用点，没有删除原调用点。

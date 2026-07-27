@@ -84,7 +84,7 @@ node scripts\run_argus_batch_isolated.js `
 
 ## Top-120 benchmark
 
-交付 benchmark 位于 `benchmarks/ArkPrismTop120/`，包含 120 个工程中的 666 个源码人工确认 project--API key，并保留源码文件、行列、片段和证据类型。
+交付 benchmark 位于 `benchmarks/ArkPrismTop120/`，包含 120 个工程中的 848 个源码人工确认 project--API key，并保留源码文件、行列、片段和证据类型。
 
 交付包同时在 `benchmarks/ArkPrismTop120/sources/` 中提供这 120 个工程的完整源码。仅排除依赖目录、构建产物、缓存和 Git 元数据。
 

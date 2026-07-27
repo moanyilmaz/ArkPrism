@@ -84,7 +84,7 @@ The isolated runner records the exact project set, SDK/build/configuration hashe
 
 ## Top-120 benchmark
 
-The delivery benchmark is under `benchmarks/ArkPrismTop120/`. It contains 666 manually confirmed project--API keys from 120 projects, with source files, lines, snippets, and evidence types.
+The delivery benchmark is under `benchmarks/ArkPrismTop120/`. It contains 848 manually confirmed project--API keys from 120 projects, with source files, lines, snippets, and evidence types.
 
 The delivery package also contains the complete source projects under `benchmarks/ArkPrismTop120/sources/`. Generated dependencies, build output, caches, and Git metadata are excluded.
 

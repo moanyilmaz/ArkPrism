@@ -1,6 +1,6 @@
 # ArkPrism Top-120 Benchmark
 
-This benchmark contains manual source review for 666 project--API keys in 120 ArkTS projects.
+This benchmark contains manual source review for 848 project--API keys in 120 ArkTS projects.
 
 ## Files
 
@@ -15,7 +15,7 @@ Each annotation records the project, normalized API identity, source file, line,
 
 The 120 projects were selected from high-output ArkPrism results. The benchmark therefore measures:
 
-- whether the current tool reproduces the 666 manually confirmed project--API keys;
+- whether the current tool reproduces the 848 manually confirmed project--API keys;
 - whether every current output key is covered by the reviewed set;
 - project-level and evidence-kind recovery.
 

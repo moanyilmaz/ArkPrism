@@ -4,14 +4,14 @@
   "dataset": "E:\\arkprism-fse2027-experiments\\benchmarks\\ArkPrismTop120\\sources",
   "rules": "E:\\arkprism-fse2027-experiments\\config\\sensitive_apis.json",
   "checks": {
-    "records": 666,
-    "sourceEvidenceLocations": 666,
-    "projectDirectoriesPresent": 666,
-    "sourceFilesPresent": 666,
-    "positiveLinesPresent": 666,
-    "lineTextSupported": 666,
-    "snippetsPresent": 666,
-    "configuredApiKeys": 666
+    "records": 848,
+    "sourceEvidenceLocations": 848,
+    "projectDirectoriesPresent": 848,
+    "sourceFilesPresent": 848,
+    "positiveLinesPresent": 848,
+    "lineTextSupported": 848,
+    "snippetsPresent": 848,
+    "configuredApiKeys": 848
   },
   "failures": [],
   "passed": true
