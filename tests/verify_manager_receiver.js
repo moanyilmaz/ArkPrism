@@ -65,7 +65,7 @@ const cases = [
       'request.agent.create|undefined',
     ],
     expectedSourceLocations: [
-      { method: 'serial', fragment: '      info' },
+      { method: 'serial', fragment: '.serial' },
     ],
   },
 ];
