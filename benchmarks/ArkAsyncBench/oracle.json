@@ -1,0 +1,390 @@
+{
+  "schemaVersion": 1,
+  "definition": "A positive case has an explicit value dependence from the configured privacy-data carrier to console.info. Framework-input paths do not satisfy the oracle.",
+  "cases": [
+    {
+      "id": "T1_callback__oaid__callback_inline_data",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__oaid__callback_alias_data",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback aliases the configured data parameter before the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__oaid__callback_named_data",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__oaid__callback_error_only",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "Only the callback error parameter reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__oaid__callback_constant_only",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "The callback executes, but the sensitive parameter is ignored.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__oaid__callback_named_error",
+      "api": "oaid",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "A definition-backed callback sends only the error parameter.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_direct_data",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends the resolved value to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_property_data",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends a property derived from the resolved value.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_variable_alias",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A Promise local is consumed by a then handler through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_ignore_data",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_catch_only",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "Only the rejection error reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__oaid__then_variable_constant",
+      "api": "oaid",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__oaid__await_direct_data",
+      "api": "oaid",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink directly.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__oaid__await_alias_data",
+      "api": "oaid",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__oaid__await_similar_local",
+      "api": "oaid",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "A similarly named but independent local reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__oaid__await_ignored",
+      "api": "oaid",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_inline_data",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_alias_data",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback aliases the configured data parameter before the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_named_data",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_error_only",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "Only the callback error parameter reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_constant_only",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "The callback executes, but the sensitive parameter is ignored.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__sim_account__callback_named_error",
+      "api": "sim_account",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "A definition-backed callback sends only the error parameter.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_direct_data",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends the resolved value to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_property_data",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends a property derived from the resolved value.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_variable_alias",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A Promise local is consumed by a then handler through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_ignore_data",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_catch_only",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "Only the rejection error reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__sim_account__then_variable_constant",
+      "api": "sim_account",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__sim_account__await_direct_data",
+      "api": "sim_account",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink directly.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__sim_account__await_alias_data",
+      "api": "sim_account",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__sim_account__await_similar_local",
+      "api": "sim_account",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "A similarly named but independent local reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__sim_account__await_ignored",
+      "api": "sim_account",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_inline_data",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_alias_data",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Inline callback aliases the configured data parameter before the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_named_data",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": true,
+      "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_error_only",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "Only the callback error parameter reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_constant_only",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "The callback executes, but the sensitive parameter is ignored.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T1_callback__reverse_geocode__callback_named_error",
+      "api": "reverse_geocode",
+      "construct": "T1-callback",
+      "expected": false,
+      "rationale": "A definition-backed callback sends only the error parameter.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_direct_data",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends the resolved value to the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_property_data",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A direct then handler sends a property derived from the resolved value.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_variable_alias",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": true,
+      "rationale": "A Promise local is consumed by a then handler through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_ignore_data",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_catch_only",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "Only the rejection error reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T4_then__reverse_geocode__then_variable_constant",
+      "api": "reverse_geocode",
+      "construct": "T4-then",
+      "expected": false,
+      "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__reverse_geocode__await_direct_data",
+      "api": "reverse_geocode",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink directly.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__reverse_geocode__await_alias_data",
+      "api": "reverse_geocode",
+      "construct": "T5-await",
+      "expected": true,
+      "rationale": "An awaited sensitive result reaches the sink through an alias.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__reverse_geocode__await_similar_local",
+      "api": "reverse_geocode",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "A similarly named but independent local reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "T5_await__reverse_geocode__await_ignored",
+      "api": "reverse_geocode",
+      "construct": "T5-await",
+      "expected": false,
+      "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    }
+  ]
+}

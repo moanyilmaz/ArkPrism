@@ -109,6 +109,19 @@ function metric(items, field) {
   return { successes, total: items.length, ...wilson(successes, items.length) };
 }
 
+function sourceScope(record) {
+  const files = [
+    record.sourceFile,
+    record.sinkFile,
+    ...(record.path || []).map(item => item.file),
+  ].filter(Boolean).map(value => String(value).replace(/\\\\/g, '/'));
+  if (files.some(value => /(^|\/)ohosTest(\/|$)/i.test(value))) return 'test';
+  if (files.some(value => /(^|\/)(build|\.preview)(\/|$)|\/cache\//i.test(value))) {
+    return 'generated';
+  }
+  return 'production';
+}
+
 function grouped(items, field) {
   const groups = new Map();
   for (const item of items) {
@@ -185,7 +198,7 @@ function main() {
   }
 
   const reviewed = [...recordById.values()].map(record => ({
-    record,
+    record: { ...record, sourceScope: sourceScope(record) },
     decision: decisionById.get(record.id),
   }));
   const metrics = Object.fromEntries(
@@ -204,6 +217,7 @@ function main() {
       provenance: grouped(reviewed, 'provenance'),
       sinkFamily: grouped(reviewed, 'sinkFamily'),
       pathLengthBin: grouped(reviewed, 'pathLengthBin'),
+      sourceScope: grouped(reviewed, 'sourceScope'),
     },
     rejected: reviewed
       .filter(item => !item.decision.fullPathCorrect)
@@ -223,4 +237,11 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { DIMENSIONS, metric, resolveUnder, verifyQueueArtifacts, wilson };
+module.exports = {
+  DIMENSIONS,
+  metric,
+  resolveUnder,
+  sourceScope,
+  verifyQueueArtifacts,
+  wilson,
+};

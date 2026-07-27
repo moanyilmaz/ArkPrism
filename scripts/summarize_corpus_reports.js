@@ -170,6 +170,7 @@ function validateSingleRun(args, reportCount, batch) {
     ? path.resolve(manifest.execution.outputDir)
     : '';
   const failures = [];
+  let verifiedInterruptionRecovery = null;
 
   if (manifest.status !== 'complete') failures.push(`status=${manifest.status}`);
   if (!Number.isInteger(projectCount) || projectCount <= 0) {
@@ -193,6 +194,76 @@ function validateSingleRun(args, reportCount, batch) {
     if (batch.length !== projectCount) failures.push(`batchEntries=${batch.length}/${projectCount}`);
     const batchErrors = batch.filter(item => item.error);
     if (batchErrors.length > 0) failures.push(`batchErrors=${batchErrors.length}`);
+  }
+
+  const recovery = manifest.interruptionRecovery;
+  if (recovery) {
+    const recoveredProjects = Array.isArray(recovery.recoveredProjects)
+      ? recovery.recoveredProjects
+      : [];
+    const proofFiles = Array.isArray(recovery.proofFiles)
+      ? recovery.proofFiles
+      : [];
+    if (manifest.execution?.interruptionRecovery !== true) {
+      failures.push('interruption recovery flag is missing');
+    }
+    if (recovery.schemaVersion !== 1 || recovery.status !== 'complete') {
+      failures.push('interruption recovery metadata is invalid');
+    }
+    if (recovery.primaryStatusBefore !== 'running') {
+      failures.push(`recovery primaryStatusBefore=${recovery.primaryStatusBefore}`);
+    }
+    if (recoveredProjects.length === 0) {
+      failures.push('recovered project list is empty');
+    }
+    const recoveredNames = new Set();
+    for (const item of recoveredProjects) {
+      const projectName = item.projectName;
+      if (!projectName || recoveredNames.has(projectName)) {
+        failures.push(`duplicate or missing recovered project=${projectName}`);
+        continue;
+      }
+      recoveredNames.add(projectName);
+      const recoveredReport = path.join(reportsDirectory, item.report || '');
+      if (!item.report || !fs.existsSync(recoveredReport)) {
+        failures.push(`recovered report missing=${item.report || '(missing)'}`);
+      } else {
+        const actualHash = sha256File(recoveredReport);
+        if (actualHash !== item.reportSha256) {
+          failures.push(
+            `recovered report sha256=${actualHash}/${item.reportSha256}`,
+          );
+        }
+      }
+      const batchItem = Array.isArray(batch)
+        ? batch.find(candidate => candidate.projectName === projectName)
+        : null;
+      if (!batchItem || batchItem.recoveredFromInterruption !== true) {
+        failures.push(`recovered batch marker missing=${projectName}`);
+      }
+    }
+    for (const item of proofFiles) {
+      const proofPath = path.join(reportsDirectory, item.path || '');
+      if (!item.path || !fs.existsSync(proofPath)) {
+        failures.push(`recovery proof missing=${item.path || '(missing)'}`);
+      } else {
+        const actualHash = sha256File(proofPath);
+        if (actualHash !== item.sha256) {
+          failures.push(`recovery proof sha256=${actualHash}/${item.sha256}`);
+        }
+      }
+    }
+    if (proofFiles.length !== 4) {
+      failures.push(`recovery proof files=${proofFiles.length}/4`);
+    }
+    verifiedInterruptionRecovery = {
+      recoveredProjects: [...recoveredNames].sort(),
+      recoveredAt: recovery.recoveredAt || null,
+      proofFiles,
+      semanticCompatibility: recovery.semanticCompatibility || null,
+    };
+  } else if (manifest.execution?.interruptionRecovery === true) {
+    failures.push('interruption recovery metadata is missing');
   }
 
   const verifyInputHashes = args.verifyInputHashes !== false;
@@ -342,6 +413,7 @@ function validateSingleRun(args, reportCount, batch) {
     configHashes: manifest.inputs?.configHashes || {},
     implementation: manifest.inputs?.implementation || null,
     resume: Boolean(manifest.execution?.resume),
+    interruptionRecovery: verifiedInterruptionRecovery,
     inputVerification: {
       performed: verifyInputHashes,
       build: verifiedBuild,

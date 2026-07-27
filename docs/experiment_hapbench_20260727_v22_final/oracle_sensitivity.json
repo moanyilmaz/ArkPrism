@@ -1,0 +1,2555 @@
+{
+  "generatedAt": "2026-07-27T06:19:24.096Z",
+  "input": "E:\\arkprism-fse2027-experiments\\docs\\experiment_hapbench_20260727_v22_final\\hapbench_results.json",
+  "primaryOracle": "published HapBench source annotations",
+  "secondaryOracle": {
+    "name": "strict executed-order sensitivity",
+    "scope": "post-hoc sensitivity analysis; not the primary benchmark result",
+    "relabeledAsNegative": [
+      "Lifecycle_Modeling__ActivityLifecycle4",
+      "Lifecycle_Modeling__BackupExtensionAbility",
+      "Lifecycle_Modeling__Button1"
+    ],
+    "contract": [
+      "An overridden lifecycle method does not execute its parent body without an explicit super call.",
+      "Instance fields do not transfer across framework-created instances without an explicit same-object witness.",
+      "A UI callback that occurs after initial ability creation does not feed an earlier onCreate without an explicit later-creation edge."
+    ]
+  },
+  "published": {
+    "hapflow": {
+      "metrics": {
+        "tp": 51,
+        "tn": 10,
+        "fp": 4,
+        "fn": 2,
+        "precision": 0.9272727272727272,
+        "recall": 0.9622641509433962,
+        "specificity": 0.7142857142857143,
+        "f1": 0.9444444444444444,
+        "balancedAccuracy": 0.8382749326145553,
+        "mcc": 0.7173478429572888
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "arkprism": {
+      "metrics": {
+        "tp": 50,
+        "tn": 14,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.9433962264150944,
+        "specificity": 1,
+        "f1": 0.970873786407767,
+        "balancedAccuracy": 0.9716981132075472,
+        "mcc": 0.8814275576589751
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "unboundedLifecycle": {
+      "metrics": {
+        "tp": 52,
+        "tn": 13,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.9811320754716981,
+        "recall": 0.9811320754716981,
+        "specificity": 0.9285714285714286,
+        "f1": 0.9811320754716981,
+        "balancedAccuracy": 0.9548517520215634,
+        "mcc": 0.9097035040431267
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "mcnemar": {
+      "firstOnlyCorrect": 6,
+      "secondOnlyCorrect": 3,
+      "discordant": 9,
+      "pValue": 0.5078125
+    },
+    "boundedVsUnbounded": {
+      "firstOnlyCorrect": 1,
+      "secondOnlyCorrect": 2,
+      "discordant": 3,
+      "pValue": 1
+    }
+  },
+  "strictExecutedOrder": {
+    "hapflow": {
+      "metrics": {
+        "tp": 48,
+        "tn": 10,
+        "fp": 7,
+        "fn": 2,
+        "precision": 0.8727272727272727,
+        "recall": 0.96,
+        "specificity": 0.5882352941176471,
+        "f1": 0.9142857142857144,
+        "balancedAccuracy": 0.7741176470588236,
+        "mcc": 0.622163438357254
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": false,
+          "classification": "FN"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "arkprism": {
+      "metrics": {
+        "tp": 50,
+        "tn": 17,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "balancedAccuracy": 1,
+        "mcc": 1
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "unboundedLifecycle": {
+      "metrics": {
+        "tp": 50,
+        "tn": 14,
+        "fp": 3,
+        "fn": 0,
+        "precision": 0.9433962264150944,
+        "recall": 1,
+        "specificity": 0.8235294117647058,
+        "f1": 0.970873786407767,
+        "balancedAccuracy": 0.9117647058823529,
+        "mcc": 0.8814275576589751
+      },
+      "outcomes": [
+        {
+          "id": "Aliasing__After",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Before",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "expected": false,
+          "predicted": true,
+          "classification": "FP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "expected": true,
+          "predicted": true,
+          "classification": "TP"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "expected": false,
+          "predicted": false,
+          "classification": "TN"
+        }
+      ]
+    },
+    "mcnemar": {
+      "firstOnlyCorrect": 9,
+      "secondOnlyCorrect": 0,
+      "discordant": 9,
+      "pValue": 0.00390625
+    },
+    "boundedVsUnbounded": {
+      "firstOnlyCorrect": 3,
+      "secondOnlyCorrect": 0,
+      "discordant": 3,
+      "pValue": 0.25
+    }
+  }
+}

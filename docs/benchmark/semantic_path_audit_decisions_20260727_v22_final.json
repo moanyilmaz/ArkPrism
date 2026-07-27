@@ -1,0 +1,1208 @@
+{
+  "schemaVersion": 1,
+  "role": "manual-semantic-path-decisions",
+  "benchmark": "ArkSemanticPath120",
+  "reviewQueueSha256": "9ddd1df187e7b3bdefd685a7bc879913cd21352c20699f94c093ec4ef3f8518d",
+  "decisions": [
+    {
+      "id": "c151d781e8ef3f1f8bbc4d83",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:25. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:26 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "53868f6abf135a8d9b7f21c9",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:24. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:26 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "682810f4aada71f0a1791b4c",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getAddressesFromLocation at entry/src/main/ets/pages/Index.ets:35. The executable value chain starts with \"geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest, (err, data) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:37 through \"hilog.info(0x00000, 'getAddressesFromLocation: data=', JSON.stringify(data));\"."
+    },
+    {
+      "id": "1aa180fd82667e74cb1b91eb",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/pages/Index.ets:79. The executable value chain starts with \"let fetchResult: photoAccessHelper.FetchResult<photoAccessHelper.PhotoAsset> =\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:86 through \"console.info('asset width: ', asset.get(photoAccessHelper.PhotoKeys.WIDTH));\"."
+    },
+    {
+      "id": "26932de4dd92cedffcff2b89",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/pages/ThumbnailGet.ets:77. The executable value chain starts with \"let metadata = await avMetadataExtractor.fetchMetadata()\" and reaches the logging sink at entry/src/main/ets/pages/ThumbnailGet.ets:78 through \"console.info(`winddraw rotation ${metadata.videoOrientation}`)\"."
+    },
+    {
+      "id": "4f9cb0e82a85f131bec4de02",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:26. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:28 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "90510c118cb051d5aa83fd52",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at products/phone/src/ohosTest/ets/testability/TestAbility.ets:11. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at products/phone/src/ohosTest/ets/testability/TestAbility.ets:13 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "b7c1b5ed30d525a0bd1cdee5",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:21. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:39 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "3ed7411c49326371a48ff533",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:13. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:17 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "b5edcf267a0f7a74bd107b5f",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:25. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:26 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "817089176c4cfaa06aafc6d9",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getCurrentLocation at entry/src/main/ets/pages/ChooseCity.ets:320. The executable value chain starts with \"geoLocationManager.getCurrentLocation(requestInfo, (err: BusinessError, location: geoLocationManager.Location) => {\" and reaches the network sink at entry/src/main/ets/pages/ChooseCity.ets:230 through \"let response = await httpRequest.request(Config.API.WEATHER_BY_LOCATION, {\"."
+    },
+    {
+      "id": "93e17aacca8977a1ed94854d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:13. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:19 through \"console.info('Succeeded in invoking on. Z-coordinate component: ' + data.z);\"."
+    },
+    {
+      "id": "9579f823de439e26b7cb579d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/entryability/FfmpegPlugin.ets:1054. The executable value chain starts with \"let metadata = await avMetadataExtractor.fetchMetadata()\" and reaches the logging sink at entry/src/main/ets/entryability/FfmpegPlugin.ets:1055 through \"console.info(TAG, `get meta data, hasAudio: ${metadata.hasAudio}`)\"."
+    },
+    {
+      "id": "2bc525e37085afe124013d72",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/main/ets/widgetevententryability/WidgetEventRouterEntryAbility.ts:27. The executable value chain starts with \"this.handleFormRouterEvent(want);\" and reaches the logging sink at entry/src/main/ets/widgetevententryability/WidgetEventRouterEntryAbility.ts:36 through \"hilog.info(DOMAIN_NUMBER, TAG, `UpdateForm formId: ${curFormId}, message: ${message}`);\"."
+    },
+    {
+      "id": "031c9c0d64953664f10e1bb3",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AudioManager.getAudioScene at entry/src/main/ets/pages/audio.ets:12. The executable value chain starts with \"audioManager.getAudioScene((err: BusinessError, value: audio.AudioScene) => {\" and reaches the logging sink at entry/src/main/ets/pages/audio.ets:19 through \"console.info(`Callback invoked to indicate that the audio scene mode is obtained ${value}.`);\"."
+    },
+    {
+      "id": "9a560ebd41299f8a1469f6d5",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/Index.ets:177. The executable value chain starts with \"sensor.on(this.sensors.get(this.realSensorName), ((data: sensor.Response) => {\" and reaches the logging sink at entry/src/main/ets/common/utils/Logger.ets:39 through \"hilog.info(this.domain, this.prefix, this.format, args);\"."
+    },
+    {
+      "id": "35d29c31d7ff138af498cb3a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getCurrentLocation at entry/src/main/ets/pages/ChooseCity.ets:320. The executable value chain starts with \"geoLocationManager.getCurrentLocation(requestInfo, (err: BusinessError, location: geoLocationManager.Location) => {\" and reaches the network sink at entry/src/main/ets/pages/ChooseCity.ets:230 through \"let response = await httpRequest.request(Config.API.WEATHER_BY_LOCATION, {\"."
+    },
+    {
+      "id": "787d96099b8b267176a38b05",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:20. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:37 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "57a5d5e9dd4626d79d470895",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:18. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:24 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "7407b1b79680a4a793aaf9a7",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/entryability/EntryAbility.ets:91. The executable value chain starts with \"this.handleNewIntent(want);\" and reaches the logging sink at entry/src/main/ets/entryability/EntryAbility.ets:305 through \"hilog.info(0x0001, 'AI生日提醒',\"."
+    },
+    {
+      "id": "45fd40713a0efb48c04dcee8",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:92 through \"hilog.info(DOMAIN, TAG,\"."
+    },
+    {
+      "id": "fa4492e9dedf5bfd4761fb7d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getCurrentLocation at entry/src/main/ets/pages/ChooseCity.ets:320. The executable value chain starts with \"geoLocationManager.getCurrentLocation(requestInfo, (err: BusinessError, location: geoLocationManager.Location) => {\" and reaches the logging sink at entry/src/main/ets/pages/ChooseCity.ets:328 through \"console.log('获取位置成功:', location);\"."
+    },
+    {
+      "id": "90da6c5e7056495befd1f38a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.getSensorListSync at entry/src/main/ets/pages/Index.ets:68. The executable value chain starts with \"let data = sensor.getSensorListSync();\" and reaches the logging sink at entry/src/main/ets/common/utils/Logger.ets:39 through \"hilog.info(this.domain, this.prefix, this.format, args);\"."
+    },
+    {
+      "id": "439c1c954788be3d895cce1a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:20. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:37 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "835e2680f1982fe3528beb69",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:20. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "695992f150d246a9850a1a3a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms SystemPasteboard.getData at entry/src/main/ets/pages/Index.ets:131. The executable value chain starts with \"pasteboard.getSystemPasteboard().getData((err: BusinessError, pasteData: pasteboard.PasteData) => {\" and reaches the logging sink at entry/src/main/common/Log.ets:47 through \"hilog.info(DOMAIN, tag, format, args);\"."
+    },
+    {
+      "id": "036cef83ce4777a3f7905fc9",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:92 through \"hilog.info(DOMAIN, TAG,\"."
+    },
+    {
+      "id": "6dfd6594f7d3bb706eb14877",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms wifiManager.getScanInfoList at entry/src/main/ets/pages/ssid.ets:45. The executable value chain starts with \"let scanInfoList = wifiManager.getScanInfoList();\" and reaches the logging sink at entry/src/main/ets/pages/ssid.ets:46 through \"console.info(\"scanInfoList:\" + JSON.stringify(scanInfoList));\"."
+    },
+    {
+      "id": "dab94f83c5065fc990d2b6e1",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AbsAlbum.getAssets at entry/src/main/ets/base/UserFileModel.ts:288. The executable value chain starts with \"photoFetchResult = await albumAsset.getAssets(fileFetchOption);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "53b2864ab028ff309c26913a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:105 through \"hilog.info(DOMAIN, TAG, 'Sampling %{public}d frames from %{public}sms video',\"."
+    },
+    {
+      "id": "ef18aa6baf506c7d226672b2",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:26. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:28 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "87e0867ebd1df1db1253d728",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/widgetevententryability/WidgetEventRouterEntryAbility.ts:50. The executable value chain starts with \"hilog.info(DOMAIN_NUMBER, TAG, 'onNewWant Want:', JSON.stringify(want));\" and reaches the logging sink at entry/src/main/ets/widgetevententryability/WidgetEventRouterEntryAbility.ts:51 through \"hilog.info(DOMAIN_NUMBER, TAG, 'onNewWant Want:', JSON.stringify(want));\"."
+    },
+    {
+      "id": "9e02e06ecd48a5172a37baa6",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:31. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:37 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "e538150bf6319bc20442b897",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/common/AlbumDataImpl.ts:211. The executable value chain starts with \"photoFetchResult = await userFileModel.getUserFileMgr().getAssets(fetchOptions);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "3b5e1b6b6fe34cb83c4f5c66",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: onNewWant stores want.uri in OHBridge.wantUri, but InputPage line 65 displays the constant message \"请输入内容\"; no read of wantUri reaches this Toast."
+    },
+    {
+      "id": "095849172ffe0bc3ab0e025d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/entryability/EntryAbility.ets:91. The executable value chain starts with \"this.handleNewIntent(want);\" and reaches the logging sink at entry/src/main/ets/entryability/EntryAbility.ets:293 through \"console.log(`[EntryAbility] Handle birthday reminder intent: ${data || 'none'}`);\"."
+    },
+    {
+      "id": "101ec071e12fb8ba783503c1",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:25. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:27 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "45d1bdb50d6c2339a9c6b4c8",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms SystemPasteboard.getData at entry/src/main/ets/pages/Clipboard.ets:14. The executable value chain starts with \"systemPasteboard.getData((err: BusinessError, pasteData: pasteboard.PasteData) => {\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "830229438c2ba62e7ed31e8c",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Index.ets:136. The executable value chain starts with \"this.text = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/common/Log.ets:47 through \"hilog.info(DOMAIN, tag, format, args);\"."
+    },
+    {
+      "id": "c59439b46b15cae085bf7e3b",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/entryability/CastView.ets:301. The executable value chain starts with \"let metadata = await avMetadataExtractor.fetchMetadata()\" and reaches the logging sink at entry/src/main/ets/entryability/CastView.ets:302 through \"console.info(`get meta data, hasAudio: ${metadata.hasAudio}`)\"."
+    },
+    {
+      "id": "67b9fc146235f5897a7b0fa5",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.on at feature/backgroundTask/src/main/ets/view/LongTermTaskView.ets:79. The executable value chain starts with \"geolocation.on('locationChange', requestInfo, this.locationChange);\" and reaches the logging sink at feature/backgroundTask/src/main/ets/view/LongTermTaskView.ets:63 through \"console.info(TAG, `locationChange location =${JSON.stringify(location)}`);\"."
+    },
+    {
+      "id": "cc9e4d8a8fdff4ec898be78c",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at Attribution/src/ohosTest/ets/testability/TestAbility.ets:9. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at Attribution/src/ohosTest/ets/testability/TestAbility.ets:11 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "1bde6b70427f4d2e3b0c98f3",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at product/phone/entry/src/ohosTest/ets/testability/TestAbility.ets:27. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at product/phone/entry/src/ohosTest/ets/testability/TestAbility.ets:29 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "416bbbbd4cdf0cf242ede0bb",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AbsAlbum.getAssets at entry/src/main/ets/common/AlbumDataImpl.ts:127. The executable value chain starts with \"photoFetchResult = await albumAsset.getAssets(fetchOptions);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "e741ff49cdc9481d060e265d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at library/src/ohosTest/ets/testability/TestAbility.ets:9. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at library/src/ohosTest/ets/testability/TestAbility.ets:11 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "43e003a9cd12624b4ec4e764",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms SystemPasteboard.getData at entry/src/main/ets/pages/Clipboard.ets:14. The executable value chain starts with \"systemPasteboard.getData((err: BusinessError, pasteData: pasteboard.PasteData) => {\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "3625c2a314f652671e037669",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/build/default/cache/default/default@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:52. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/build/default/cache/default/default@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:53 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "f93133d5b0aea40417f58cbf",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sim.getSimSpn at entry/src/main/ets/model/RadioStatus.ts:27. The executable value chain starts with \"const simSpn = await sim.getSimSpn(slotId)\" and reaches the logging sink at entry/src/main/ets/model/Logger.ts:33 through \"hilog.info(this.domain, this.prefix, this.format, args)\"."
+    },
+    {
+      "id": "cc9da2180c48850b5c50dd85",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:11. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:17 through \"console.info('Succeeded in invoking on. Z-coordinate component: ' + data.z);\"."
+    },
+    {
+      "id": "904b6a31454d2bf7db0627e8",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:20. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "53e0ff06f74bebcf726459bd",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:105 through \"hilog.info(DOMAIN, TAG, 'Sampling %{public}d frames from %{public}sms video',\"."
+    },
+    {
+      "id": "785bcecfb023ca26b94abef4",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:13. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:17 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "7b510e842b463ebf60446f91",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms wifiManager.getScanInfoList at entry/src/main/ets/pages/ssid.ets:45. The executable value chain starts with \"let scanInfoList = wifiManager.getScanInfoList();\" and reaches the logging sink at entry/src/main/ets/pages/ssid.ets:46 through \"console.info(\"scanInfoList:\" + JSON.stringify(scanInfoList));\"."
+    },
+    {
+      "id": "2a974d18472c9832d3c9b43b",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/hdrability/HDRAbility.ets:23. The executable value chain starts with \"console.log(`[sweet] uri: ${want.parameters!.url}`)\" and reaches the logging sink at entry/src/main/ets/hdrability/HDRAbility.ets:25 through \"console.log(`[sweet] uri: ${want.parameters!.url}`)\"."
+    },
+    {
+      "id": "27c04af17949a2b4711e2b8b",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: onCreate stores want.uri in OHBridge.wantUri, while InputPage line 71 formats this.inputText; the reported path omits any value-producing read that could connect the fields."
+    },
+    {
+      "id": "90dc658af5cc77685fcbf058",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:25. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:27 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "dc236b848a08eb6487ef300e",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getAddressesFromLocation at entry/src/main/ets/pages/Index.ets:187. The executable value chain starts with \"geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest, async (err, data) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:192 through \"hilog.info(0x0000, TAG, `The address is: ${this.address}`);\"."
+    },
+    {
+      "id": "d1a40a7261c0724d14bf4ddb",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/migrationability/MigrationAbility.ts:112. The executable value chain starts with \"continueInput = JSON.stringify(want.parameters.data);\" and reaches the logging sink at entry/src/main/ets/migrationability/MigrationAbility.ts:120 through \"hilog.info(DOMAIN_NUMBER, TAG, `continue input ${JSON.stringify(continueInput)}`);\"."
+    },
+    {
+      "id": "fa5830b37f1469e190fae233",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:18. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:24 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "ff8d0d6564b8867fd1e8efb7",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getLastLocation at entry/src/main/ets/pages/location.ets:30. The executable value chain starts with \"let location = await geoLocationManager.getLastLocation();\" and reaches the logging sink at entry/src/main/ets/pages/location.ets:32 through \"console.log(`获取缓存位置信息:${json.stringify(location)}`);\"."
+    },
+    {
+      "id": "b0108ce95b94a6284936aa11",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:30. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER_UNCALIBRATED, (data: sensor.AccelerometerUncalibratedResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:32 through \"console.info('Succeeded in invoking on. Y-coordinate component: ' + data.y);\"."
+    },
+    {
+      "id": "ed3853b17be41cbf07e5e304",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: the UIAbility Want reaches readWant, but the reported Toast at Index line 51 is driven only by the permission result and a resource constant."
+    },
+    {
+      "id": "f140fa8857061e587dcdc821",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:11. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:16 through \"console.info('Succeeded in invoking on. Y-coordinate component: ' + data.y);\"."
+    },
+    {
+      "id": "daa5a4fd1e9241ec132ff077",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/ohosTest/ets/test/Ability.test.ets:78. The executable value chain starts with \"let fetchResultBefore = await media.getAssets(fetchOptions)\" and reaches the logging sink at entry/src/ohosTest/ets/test/Ability.test.ets:81 through \"console.log(\"媒体资源的数量:\"+mediaDataCount)\"."
+    },
+    {
+      "id": "ced7ba66287b393a6b9b3918",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getAddressesFromLocation at commons/component/src/main/ets/model/CommonModel.ets:46. The executable value chain starts with \"const res = await geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest);\" and reaches the logging sink at commons/component/src/main/ets/model/CommonModel.ets:47 through \"console.log('[location]',JSON.stringify(res))\"."
+    },
+    {
+      "id": "c043c9c9f9de6adb00760dce",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: readWant selects an emitter event, but the listener passes a hard-coded EVENT_UI_ANSWER constant to the logger; this is control selection, not explicit value dependence."
+    },
+    {
+      "id": "65fc2c8513a4335bf2f2d30e",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:11. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:15 through \"console.info('Succeeded in invoking on. X-coordinate component: ' + data.x);\"."
+    },
+    {
+      "id": "e94a4a476af7c48c28d7213a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at product/phone/src/main/ets/entryability/EntryAbility.ets:9. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at product/phone/src/main/ets/entryability/EntryAbility.ets:12 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "750f4506a1d7ed918a91de33",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onNewWant at entry/src/main/ets/entryability/EntryAbility.ets:91. The executable value chain starts with \"this.handleNewIntent(want);\" and reaches the logging sink at entry/src/main/ets/entryability/EntryAbility.ets:237 through \"console.log(`[EntryAbility] Handle new intent - action: ${action || 'none'}, data: ${data || 'none'}`);\"."
+    },
+    {
+      "id": "95fbafd67a5b06f22a575837",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geolocation.getAddressesFromLocation at entry/src/main/ets/pages/Index.ets:40. The executable value chain starts with \"geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest, (err, data) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:42 through \"hilog.info(0x00000, 'getAddressesFromLocation: data=', JSON.stringify(data));\"."
+    },
+    {
+      "id": "5d515ab0110c336f57af76e6",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:13. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:18 through \"console.info('Succeeded in invoking on. Y-coordinate component: ' + data.y);\"."
+    },
+    {
+      "id": "0ecf70936b0a1331bf921043",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/pages/Index.ets:79. The executable value chain starts with \"let fetchResult: photoAccessHelper.FetchResult<photoAccessHelper.PhotoAsset> =\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:87 through \"console.info('asset height: ', asset.get(photoAccessHelper.PhotoKeys.HEIGHT));\"."
+    },
+    {
+      "id": "352258dececdff499dc91485",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/pages/Index.ets:79. The executable value chain starts with \"let fetchResult: photoAccessHelper.FetchResult<photoAccessHelper.PhotoAsset> =\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:84 through \"console.info('asset uri: ', asset.uri);\"."
+    },
+    {
+      "id": "2e5898a9864114fce47fce5a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:26. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '')\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:28 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '')\"."
+    },
+    {
+      "id": "18f2b8b9b8ae08d3cfd97e85",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:26. The executable value chain starts with \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:28 through \"hilog.info(0x0000, 'testTag', '%{public}s', 'want param:' + JSON.stringify(want) ?? '');\"."
+    },
+    {
+      "id": "601e50de405c4907a5040c66",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/base/UserFileModel.ts:255. The executable value chain starts with \"photoFetchResult = await this.userFileMgr.getAssets(fetchOptions);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "cc5d1c7f9f163e8069f3b36a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.getSensorList at entry/src/main/ets/pages/Index.ets:124. The executable value chain starts with \"sensor.getSensorList((error, data) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:59 through \"hilog.info(this.domain, this.prefix, this.format, args)\"."
+    },
+    {
+      "id": "714020ec0e7d96a3a70d4f62",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getCurrentLocation at entry/src/main/ets/pages/chat/ChatFuntionBar.ets:68. The executable value chain starts with \"let location = await geoLocationManager.getCurrentLocation(request);\" and reaches the logging sink at entry/src/main/ets/pages/chat/ChatFuntionBar.ets:69 through \"console.log('current location: ' + JSON.stringify(location));\"."
+    },
+    {
+      "id": "87991215d8f255ac33e0ae94",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/Index.ets:252. The executable value chain starts with \"sensor.on(this.sensors.get(this.realSensorName), (data: sensor.Response) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:59 through \"hilog.info(this.domain, this.prefix, this.format, args)\"."
+    },
+    {
+      "id": "32aad8cfc4571e9c97bf9c83",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/ohosTest/ets/testability/TestAbility.ets:32. The executable value chain starts with \"hilog.info(DOMAIN, TAG, JSON.stringify(want));\" and reaches the logging sink at entry/src/ohosTest/ets/testability/TestAbility.ets:34 through \"hilog.info(DOMAIN, TAG, JSON.stringify(want));\"."
+    },
+    {
+      "id": "31c04375324cddea9a5d9c93",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/main/ets/entryability/EntryAbility.ts:28. The executable value chain starts with \"let params: Record<string, Object> = JSON.parse(want.parameters.params as string);\" and reaches the logging sink at entry/src/main/ets/entryability/EntryAbility.ts:35 through \"hilog.info(DOMAIN_NUMBER, TAG, `onCreate selectPage: ${this.selectPage}`);\"."
+    },
+    {
+      "id": "2c3ee52c6553666d98f4c6b8",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/common/AlbumDataImpl.ts:242. The executable value chain starts with \"photoFetchResult = await userFileModel.getUserFileMgr().getAssets(fetchOptions);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "172fd839108c2c91364857bb",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at products/phone/src/main/ets/entryability/EntryAbility.ets:10. The executable value chain starts with \"this.resolvePagePath(want);\" and reaches the logging sink at products/phone/src/main/ets/entryability/EntryAbility.ets:82 through \"console.info(`tableId is: ${tableId}`);\"."
+    },
+    {
+      "id": "4f3dccab79f347de88a28fc0",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms wifiManager.getScanInfoList at entry/src/main/ets/pages/ssid.ets:45. The executable value chain starts with \"let scanInfoList = wifiManager.getScanInfoList();\" and reaches the logging sink at entry/src/main/ets/pages/ssid.ets:57 through \"console.info(\"band: \" + scanInfoList[i].band);\"."
+    },
+    {
+      "id": "a828b7ca0803a22b03775b16",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/build/default/cache/default/default@HotReloadArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:52. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/build/default/cache/default/default@HotReloadArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:53 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "5ad25b525274cc345d48b31e",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms SystemPasteboard.getData at entry/src/main/ets/pages/Clipboard.ets:14. The executable value chain starts with \"systemPasteboard.getData((err: BusinessError, pasteData: pasteboard.PasteData) => {\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "528400cf03153b54ef10a522",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getAddressesFromLocation at commons/commonLib/src/main/ets/model/CommonModel.ets:46. The executable value chain starts with \"const res = await geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest);\" and reaches the logging sink at commons/commonLib/src/main/ets/model/CommonModel.ets:47 through \"console.log('[location]',JSON.stringify(res))\"."
+    },
+    {
+      "id": "dd5789d1cdfe049e96ec8116",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at entry/src/main/ets/entryability/EntryAbility.ets:24. The executable value chain starts with \"Logger.info(`want: ${JSON.stringify(want)}, launchParam: ${JSON.stringify(launchParam)}`);\" and reaches the logging sink at entry/src/main/ets/utils/Logger.ets:28 through \"hilog.info(Logger.domain, Logger.prefix, Logger.format, args);\"."
+    },
+    {
+      "id": "5a643be04c83cded5e08ad0a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:20. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "a490cd44fc37c9858b040e7a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/base/UserFileModel.ts:229. The executable value chain starts with \"photoFetchResult = await this.userFileMgr.getAssets(emptyFetchOption);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "19ef632898864b6b6f79d57d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms identifier.getOAID at product/entry/src/main/ets/pages/SplashPage.ets:51. The executable value chain starts with \"identifier.getOAID().then((data: string) => {\" and reaches the logging sink at product/entry/src/main/ets/pages/SplashPage.ets:53 through \"hilog.info(0x0000, TAG, '%{public}s', `succeeded in getting adsIdentifierInfo by promise: ${this.oaid}`);\"."
+    },
+    {
+      "id": "beb76523b3c52c9749d7c2a9",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:11. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:16 through \"console.info('Succeeded in invoking on. Y-coordinate component: ' + data.y);\"."
+    },
+    {
+      "id": "8793d373b212e53515322f6a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:21. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:39 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "bcb7ea66ac9f1b7ecba09617",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/pages/Index.ets:80. The executable value chain starts with \"avMetadataExtractor.fetchMetadata((error, metadata) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:85 through \"console.info(TAG, `fetchMetadata callback success, genre: ${metadata.genre}`);\"."
+    },
+    {
+      "id": "d8522d73bf23a975655f1ecc",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/pages/Index.ets:152. The executable value chain starts with \"let metadata = await avMetadataExtractor.fetchMetadata();\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:153 through \"console.info(TAG, `get meta data, mimeType: ${metadata.mimeType}`);\"."
+    },
+    {
+      "id": "8d513ba07ccbc4b0189febe7",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/build/default/cache/Legado/Legado@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:52. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/build/default/cache/Legado/Legado@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:53 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "daa8f84df942a25e59422f21",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at entry/src/main/ets/pages/Index.ets:124. The executable value chain starts with \"let metadata = await avMetadataExtractor.fetchMetadata();\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:125 through \"console.info(TAG, `get meta data, hasAudio: ${metadata.hasAudio}`);\"."
+    },
+    {
+      "id": "f31f40f27a8f55a4b60b0160",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/build/default/cache/default/default@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:38. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/build/default/cache/default/default@CompileArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:39 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "d948ac81f402088fbee3c2f2",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getAddressesFromLocation at commons/commonLib/src/main/ets/model/CommonModel.ets:46. The executable value chain starts with \"const res = await geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest);\" and reaches the logging sink at commons/commonLib/src/main/ets/model/CommonModel.ets:47 through \"console.log('[location]',JSON.stringify(res))\"."
+    },
+    {
+      "id": "57025382d562393966ca72b3",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:13. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:17 through \"console.info('Succeeded in invoking on. X-coordinate component: ' + data.x);\"."
+    },
+    {
+      "id": "d5ff3f738edfedeae3517e57",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/ohosTest/ets/test/Ability.test.ets:114. The executable value chain starts with \"let fetchResultAfter = await media.getAssets(fetchOptions)\" and reaches the logging sink at entry/src/ohosTest/ets/test/Ability.test.ets:115 through \"hilog.info(DOMAIN, TAG, BUNDLE + 'StopRecord_001 end; mediaDataCountAfter = ' + fetchResultAfter.getCount());\"."
+    },
+    {
+      "id": "a8bab2cbb0312ad2ca94b1a2",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms geoLocationManager.getAddressesFromLocation at commons/commonLib/src/main/ets/model/CommonModel.ets:56. The executable value chain starts with \"const res = await geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest);\" and reaches the logging sink at commons/commonLib/src/main/ets/model/CommonModel.ets:57 through \"console.log('[location]',JSON.stringify(res))\"."
+    },
+    {
+      "id": "bd4d719f8dd574ba66d02286",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/sensor.ets:13. The executable value chain starts with \"sensor.on(sensor.SensorId.ACCELEROMETER, (data: sensor.AccelerometerResponse) => {\" and reaches the logging sink at entry/src/main/ets/pages/sensor.ets:18 through \"console.info('Succeeded in invoking on. Y-coordinate component: ' + data.y);\"."
+    },
+    {
+      "id": "30b1fad20d2c3db4f2b829f1",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms SystemPasteboard.getData at entry/src/main/ets/pages/Clipboard.ets:14. The executable value chain starts with \"systemPasteboard.getData((err: BusinessError, pasteData: pasteboard.PasteData) => {\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "8352d0e580afc92ddb6d0696",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets_bjc/pages/Account.ets:61. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets_bjc/pages/Account.ets:71 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "df89de93b3e9f5262f362785",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:20. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:37 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "a596369c2e93ecf763497779",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms UIAbility.onCreate at products/phone/src/main/ets/entryability/EntryAbility.ets:10. The executable value chain starts with \"this.resolvePagePath(want);\" and reaches the logging sink at products/phone/src/main/ets/entryability/EntryAbility.ets:78 through \"console.info(`storeId is: ${storeId}`);\"."
+    },
+    {
+      "id": "0ca578ade5035f04d9aed4f5",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:92 through \"hilog.info(DOMAIN, TAG,\"."
+    },
+    {
+      "id": "1738317f2590226b445cd203",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AVMetadataExtractor.fetchMetadata at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:88. The executable value chain starts with \"const meta = await extractor.fetchMetadata();\" and reaches the logging sink at MiniCPM-V-demo-HarmonyOS/entry/src/main/ets/utils/VideoFrameExtractor.ets:153 through \"hilog.warn(DOMAIN, TAG,\"."
+    },
+    {
+      "id": "6e0384abd4dd64a2c696e46b",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms contact.selectContacts at entry/src/main/ets/pages/Contact.ets:20. The executable value chain starts with \"contact.selectContacts().then((info: Array<contact.Contact>) => {\" and reaches the logging sink at entry/src/main/ets/pages/Contact.ets:37 through \"console.log('选择的联系人信息:', contactInfo);\"."
+    },
+    {
+      "id": "556fd099559558104b95b28d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/base/UserFileModel.ts:367. The executable value chain starts with \"fetchResult = await this.userFileMgr.getAssets(fetchOptions);\" and reaches the logging sink at entry/src/main/ets/utils/Log.ts:36 through \"HiLog.info(this.DOMAIN, this.TAG, '[' + TAG + ']: ' + message);\"."
+    },
+    {
+      "id": "bfcd35b194667fca5a8df12f",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms wifiManager.getScanInfoList at entry/src/main/ets/pages/ssid.ets:45. The executable value chain starts with \"let scanInfoList = wifiManager.getScanInfoList();\" and reaches the logging sink at entry/src/main/ets/pages/ssid.ets:56 through \"console.info(\"rssi: \" + scanInfoList[i].rssi);\"."
+    },
+    {
+      "id": "c7f1bba527e8dedac3ea027a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PhotoAccessHelper.getAssets at entry/src/main/ets/pages/Index.ets:79. The executable value chain starts with \"let fetchResult: photoAccessHelper.FetchResult<photoAccessHelper.PhotoAsset> =\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:85 through \"console.info('asset photoType: ', asset.photoType);\"."
+    },
+    {
+      "id": "5e21e61f9ad0a58a5fd823f8",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AppAccountManager.getAllAccounts at entry/src/main/ets/pages/Index.ets:56. The executable value chain starts with \"appAccountManager.getAllAccounts().then((data: appAccount.AppAccountInfo[]) => {\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:57 through \"console.debug('getAllAccounts successfully, data: ' + JSON.stringify(data));\"."
+    },
+    {
+      "id": "a0cb9d779f2ceac08f8d6113",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: onNewWant stores want.uri in OHBridge.wantUri, while InputPage line 71 displays this.inputText; the reported component transition does not carry the stored URI."
+    },
+    {
+      "id": "a26dc0c01808c9e3ecf57dc2",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms AccountManager.getOsAccountLocalId at entry/src/main/ets/pages/Account.ets:13. The executable value chain starts with \"accountManager.getOsAccountLocalId((err: BusinessError, localId: number) => {\" and reaches the logging sink at entry/src/main/ets/pages/Account.ets:17 through \"console.log('成功获取当前进程所属的系统账号ID, localId: ' + localId);\"."
+    },
+    {
+      "id": "30cbbcf18141245ab03075a3",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": false,
+      "reachabilityConsistent": false,
+      "provenanceCorrect": true,
+      "fullPathCorrect": false,
+      "evidence": "Manual source inspection: onCreate stores want.uri in OHBridge.wantUri, but InputPage line 65 displays a fixed validation message and never reads that field."
+    },
+    {
+      "id": "31b1d133eac629bca4e5b75d",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/src/main/ets/pages/Clipboard.ets:20. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/src/main/ets/pages/Clipboard.ets:21 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    },
+    {
+      "id": "ca68cf0cc0f2a7f32d4b397a",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms sensor.on at entry/src/main/ets/pages/Index.ets:352. The executable value chain starts with \"sensor.on('sensorStatusChange', this.sensorStatusChangeCallback);\" and reaches the logging sink at entry/src/main/ets/pages/Index.ets:55 through \"hilog.debug(this.domain, this.prefix, this.format, args)\"."
+    },
+    {
+      "id": "f4a2b70d9a3ec0ce53c03e10",
+      "sourceIdentityCorrect": true,
+      "sinkIdentityCorrect": true,
+      "explicitDataDependence": true,
+      "reachabilityConsistent": true,
+      "provenanceCorrect": true,
+      "fullPathCorrect": true,
+      "evidence": "Manual source inspection confirms PasteData.getPrimaryText at entry/.preview/default/cache/default/default@PreviewArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:52. The executable value chain starts with \"let text: string = pasteData.getPrimaryText();\" and reaches the logging sink at entry/.preview/default/cache/default/default@PreviewArkTS/esmodule/debug/entry/src/main/ets/pages/Clipboard.ts:53 through \"hilog.info(0xFF00, 'ClipboardPage', '%{public}s', 'Clipboard Data: ' + text);\"."
+    }
+  ]
+}

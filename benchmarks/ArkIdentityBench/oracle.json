@@ -1,0 +1,1039 @@
+{
+  "schemaVersion": 1,
+  "definition": "A positive case contains an executable access to the specified configured API identity. Comments, strings, method references, wrong event literals, and same-name unrelated receivers are negative.",
+  "frozenBeforeExecution": true,
+  "cases": [
+    {
+      "id": "oaid__direct",
+      "family": "oaid",
+      "expected": true,
+      "evidence": "import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__import_alias",
+      "family": "oaid",
+      "expected": true,
+      "evidence": "aliased import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__assigned",
+      "family": "oaid",
+      "expected": true,
+      "evidence": "assigned result of an import-qualified access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__helper",
+      "family": "oaid",
+      "expected": true,
+      "evidence": "access in a helper method",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__comment_and_string",
+      "family": "oaid",
+      "expected": false,
+      "evidence": "method text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__local_collision",
+      "family": "oaid",
+      "expected": false,
+      "evidence": "same member on an unrelated local receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__member_reference",
+      "family": "oaid",
+      "expected": false,
+      "evidence": "member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "oaid__import_only",
+      "family": "oaid",
+      "expected": false,
+      "evidence": "package is imported but the target member is not accessed",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "identifier",
+        "method": "getOAID",
+        "canonicalPath": "identifier.getOAID",
+        "lexicalToken": "getOAID",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__direct",
+      "family": "sim_account",
+      "expected": true,
+      "evidence": "import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__import_alias",
+      "family": "sim_account",
+      "expected": true,
+      "evidence": "aliased import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__assigned",
+      "family": "sim_account",
+      "expected": true,
+      "evidence": "assigned result of an import-qualified access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__helper",
+      "family": "sim_account",
+      "expected": true,
+      "evidence": "access in a helper method",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__comment_and_string",
+      "family": "sim_account",
+      "expected": false,
+      "evidence": "method text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__local_collision",
+      "family": "sim_account",
+      "expected": false,
+      "evidence": "same member on an unrelated local receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__member_reference",
+      "family": "sim_account",
+      "expected": false,
+      "evidence": "member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "sim_account__import_only",
+      "family": "sim_account",
+      "expected": false,
+      "evidence": "package is imported but the target member is not accessed",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "sim",
+        "method": "getSimAccountInfo",
+        "canonicalPath": "sim.getSimAccountInfo",
+        "lexicalToken": "getSimAccountInfo",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__direct",
+      "family": "reverse_geocode",
+      "expected": true,
+      "evidence": "import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__import_alias",
+      "family": "reverse_geocode",
+      "expected": true,
+      "evidence": "aliased import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__assigned",
+      "family": "reverse_geocode",
+      "expected": true,
+      "evidence": "assigned result of an import-qualified access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__helper",
+      "family": "reverse_geocode",
+      "expected": true,
+      "evidence": "access in a helper method",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__comment_and_string",
+      "family": "reverse_geocode",
+      "expected": false,
+      "evidence": "method text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__local_collision",
+      "family": "reverse_geocode",
+      "expected": false,
+      "evidence": "same member on an unrelated local receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__member_reference",
+      "family": "reverse_geocode",
+      "expected": false,
+      "evidence": "member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "reverse_geocode__import_only",
+      "family": "reverse_geocode",
+      "expected": false,
+      "evidence": "package is imported but the target member is not accessed",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "canonicalPath": "geoLocationManager.getAddressesFromLocation",
+        "lexicalToken": "getAddressesFromLocation",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__direct",
+      "family": "request_agent",
+      "expected": true,
+      "evidence": "import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__import_alias",
+      "family": "request_agent",
+      "expected": true,
+      "evidence": "aliased import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__assigned",
+      "family": "request_agent",
+      "expected": true,
+      "evidence": "assigned result of an import-qualified access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__helper",
+      "family": "request_agent",
+      "expected": true,
+      "evidence": "access in a helper method",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__comment_and_string",
+      "family": "request_agent",
+      "expected": false,
+      "evidence": "method text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__local_collision",
+      "family": "request_agent",
+      "expected": false,
+      "evidence": "same member on an unrelated local receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__member_reference",
+      "family": "request_agent",
+      "expected": false,
+      "evidence": "member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "request_agent__import_only",
+      "family": "request_agent",
+      "expected": false,
+      "evidence": "package is imported but the target member is not accessed",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "request",
+        "method": "agent.create",
+        "canonicalPath": "request.agent.create",
+        "lexicalToken": "create",
+        "accessKind": "call",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__direct",
+      "family": "device_serial_property",
+      "expected": true,
+      "evidence": "import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__import_alias",
+      "family": "device_serial_property",
+      "expected": true,
+      "evidence": "aliased import-qualified executable access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__assigned",
+      "family": "device_serial_property",
+      "expected": true,
+      "evidence": "assigned result of an import-qualified access",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__helper",
+      "family": "device_serial_property",
+      "expected": true,
+      "evidence": "access in a helper method",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__comment_and_string",
+      "family": "device_serial_property",
+      "expected": false,
+      "evidence": "method text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__local_collision",
+      "family": "device_serial_property",
+      "expected": false,
+      "evidence": "same member on an unrelated local receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__member_reference",
+      "family": "device_serial_property",
+      "expected": false,
+      "evidence": "namespace is referenced but the target property is not read",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "device_serial_property__import_only",
+      "family": "device_serial_property",
+      "expected": false,
+      "evidence": "package is imported but the target member is not accessed",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "deviceInfo",
+        "method": "serial",
+        "canonicalPath": "deviceInfo.serial",
+        "lexicalToken": "serial",
+        "accessKind": "property",
+        "receiverClass": "",
+        "factoryPath": ""
+      }
+    },
+    {
+      "id": "media_metadata__typed_parameter",
+      "family": "media_metadata",
+      "expected": true,
+      "evidence": "declared receiver type",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__typed_alias",
+      "family": "media_metadata",
+      "expected": true,
+      "evidence": "declared receiver type propagated through a local alias",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__factory_local",
+      "family": "media_metadata",
+      "expected": true,
+      "evidence": "factory-returned receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__factory_typed_local",
+      "family": "media_metadata",
+      "expected": true,
+      "evidence": "factory origin and declared receiver type",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__comment_and_string",
+      "family": "media_metadata",
+      "expected": false,
+      "evidence": "member text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__local_collision",
+      "family": "media_metadata",
+      "expected": false,
+      "evidence": "same member on an unrelated structural object",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__factory_only",
+      "family": "media_metadata",
+      "expected": false,
+      "evidence": "factory is called but the sensitive receiver method is not",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "media_metadata__member_reference",
+      "family": "media_metadata",
+      "expected": false,
+      "evidence": "typed receiver member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "AVMetadataExtractor",
+        "method": "fetchMetadata",
+        "canonicalPath": "",
+        "lexicalToken": "fetchMetadata",
+        "accessKind": "call",
+        "receiverClass": "AVMetadataExtractor",
+        "factoryPath": "media.createAVMetadataExtractor"
+      }
+    },
+    {
+      "id": "calendar_manager__typed_parameter",
+      "family": "calendar_manager",
+      "expected": true,
+      "evidence": "declared receiver type",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__typed_alias",
+      "family": "calendar_manager",
+      "expected": true,
+      "evidence": "declared receiver type propagated through a local alias",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__factory_local",
+      "family": "calendar_manager",
+      "expected": true,
+      "evidence": "factory-returned receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__factory_typed_local",
+      "family": "calendar_manager",
+      "expected": true,
+      "evidence": "factory origin and declared receiver type",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__comment_and_string",
+      "family": "calendar_manager",
+      "expected": false,
+      "evidence": "member text occurs only in a comment and string",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__local_collision",
+      "family": "calendar_manager",
+      "expected": false,
+      "evidence": "same member on an unrelated structural object",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__factory_only",
+      "family": "calendar_manager",
+      "expected": false,
+      "evidence": "factory is called but the sensitive receiver method is not",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "calendar_manager__member_reference",
+      "family": "calendar_manager",
+      "expected": false,
+      "evidence": "typed receiver member is referenced but not invoked",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "CalendarManager",
+        "method": "getAllCalendars",
+        "canonicalPath": "",
+        "lexicalToken": "getAllCalendars",
+        "accessKind": "call",
+        "receiverClass": "CalendarManager",
+        "factoryPath": "calendarManager.getCalendarManager"
+      }
+    },
+    {
+      "id": "user_auth_event__typed_parameter",
+      "family": "user_auth_event",
+      "expected": true,
+      "evidence": "typed receiver and exact event literal",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__typed_alias",
+      "family": "user_auth_event",
+      "expected": true,
+      "evidence": "typed receiver alias and exact event literal",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__typed_field",
+      "family": "user_auth_event",
+      "expected": true,
+      "evidence": "typed field receiver and exact event literal",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__helper",
+      "family": "user_auth_event",
+      "expected": true,
+      "evidence": "typed receiver used in a helper",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__wrong_event",
+      "family": "user_auth_event",
+      "expected": false,
+      "evidence": "same generic method with a non-sensitive event literal",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__local_collision",
+      "family": "user_auth_event",
+      "expected": false,
+      "evidence": "same method and literal on an unrelated receiver",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__comment_and_string",
+      "family": "user_auth_event",
+      "expected": false,
+      "evidence": "event registration occurs only in text",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    },
+    {
+      "id": "user_auth_event__member_reference",
+      "family": "user_auth_event",
+      "expected": false,
+      "evidence": "typed receiver method is referenced but not called",
+      "sourceFile": "entry/src/main/ets/IdentityCase.ets",
+      "target": {
+        "namespace": "UserAuthInstance",
+        "method": "on('result')",
+        "canonicalPath": "",
+        "lexicalToken": "on",
+        "accessKind": "call",
+        "receiverClass": "UserAuthInstance",
+        "factoryPath": "",
+        "eventLiteral": "result"
+      }
+    }
+  ]
+}

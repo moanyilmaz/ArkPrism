@@ -200,6 +200,58 @@ assert.strictEqual(
   sourceFingerprint.sha256,
 );
 
+const recoveryProofPath = path.join(runDirectory, 'recovery-proof.json');
+fs.writeFileSync(recoveryProofPath, '{"proof":true}\n');
+manifest.execution.interruptionRecovery = true;
+manifest.interruptionRecovery = {
+  schemaVersion: 1,
+  status: 'complete',
+  primaryStatusBefore: 'running',
+  recoveredAt: '2026-07-24T00:00:00.000Z',
+  recoveredProjects: [{
+    projectName: 'B',
+    report: 'B/B-arkprism-report.json',
+    reportSha256: 'report-hash',
+  }],
+  proofFiles: Array.from({ length: 4 }, (_, index) => ({
+    path: 'recovery-proof.json',
+    sha256: sha256File(recoveryProofPath),
+    index,
+  })),
+};
+fs.mkdirSync(path.join(runDirectory, 'B'));
+fs.writeFileSync(
+  path.join(runDirectory, 'B', 'B-arkprism-report.json'),
+  '{"projectName":"B"}\n',
+);
+manifest.interruptionRecovery.recoveredProjects[0].reportSha256 = sha256File(
+  path.join(runDirectory, 'B', 'B-arkprism-report.json'),
+);
+fs.writeFileSync(
+  path.join(runDirectory, 'run_manifest.json'),
+  `${JSON.stringify(manifest, null, 2)}\n`,
+);
+const recoveryValidated = validateSingleRun(
+  { reports: runDirectory, configDir: configDirectory },
+  2,
+  [
+    { projectName: 'A' },
+    { projectName: 'B', recoveredFromInterruption: true },
+  ],
+);
+assert.deepStrictEqual(
+  recoveryValidated.interruptionRecovery.recoveredProjects,
+  ['B'],
+);
+delete manifest.execution.interruptionRecovery;
+delete manifest.interruptionRecovery;
+fs.rmSync(path.join(runDirectory, 'B'), { recursive: true, force: true });
+fs.rmSync(recoveryProofPath);
+fs.writeFileSync(
+  path.join(runDirectory, 'run_manifest.json'),
+  `${JSON.stringify(manifest, null, 2)}\n`,
+);
+
 const changedPackage = readJsonForTest(path.join(runDirectory, 'package.json'));
 changedPackage.scripts.audit = 'node audit.js';
 fs.writeFileSync(

@@ -1,0 +1,1479 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "ArkSourceFirst60",
+  "role": "exhaustive-manual-source-decisions",
+  "reviewQueueSha256": "251fb9a03725385265e9053a9a3a86899757b5dadff77544259d3450c96cfc93",
+  "candidateCount": 186,
+  "decisions": [
+    {
+      "key": "Aigis|entry/src/main/ets/common/icons.ets|81|9|delete",
+      "decision": "reject",
+      "reason": "this.map is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/components/settings.ets|10|5|getSystemPasteboard",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "method": "getSystemPasteboard"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|47|9|getAvailableStatus",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "userAuth",
+        "method": "getAvailableStatus"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|53|9|getAvailableStatus",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "userAuth",
+        "method": "getAvailableStatus"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|57|13|getAvailableStatus",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "userAuth",
+        "method": "getAvailableStatus"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|61|17|getAvailableStatus",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "userAuth",
+        "method": "getAvailableStatus"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|120|34|getUserAuthInstance",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "userAuth",
+        "method": "getUserAuthInstance"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|123|9|on",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "UserAuthInstance",
+        "method": "on('result')"
+      },
+      "evidenceKind": "manager_receiver",
+      "reason": "Executable manager receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/crypto/authUtils.ets|134|9|start",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.UserAuthenticationKit",
+        "namespace": "UserAuthInstance",
+        "method": "start"
+      },
+      "evidenceKind": "manager_receiver",
+      "reason": "Executable manager receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/entryability/EntryAbility.ets|371|17|delete",
+      "decision": "reject",
+      "reason": "this._instances is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/entryability/EntryAbility.ets|405|9|delete",
+      "decision": "reject",
+      "reason": "this._instances is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/pages/Index.ets|1104|9|getSystemPasteboard",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "method": "getSystemPasteboard"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "Aigis|entry/src/main/ets/widgets/DynamicWidgets.ets|108|25|start",
+      "decision": "reject",
+      "reason": "this.textTimerController controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "BindSheet|entry/src/main/ets/entryability/EntryAbility.ets|53|43|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "BindSheet|entry/src/main/ets/entryability/EntryAbility.ets|60|26|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "BindSheet|entry/src/ohosTest/ets/test/BindContentCover.test.ets|21|16|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "BindSheet|entry/src/ohosTest/ets/test/BindSheet.test.ets|25|16|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "BindSheet|entry/src/ohosTest/ets/test/OpenSheet.test.ets|25|16|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/components/ScanLine.ets|89|54|create",
+      "decision": "reject",
+      "reason": "Animator is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/model/PromptTone.ets|89|7|on",
+      "decision": "reject",
+      "reason": "this.avPlayer registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/model/ScanSize.ets|95|22|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/pages/CustomScanPage.ets|76|5|on",
+      "decision": "reject",
+      "reason": "uiObserver registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/pages/CustomScanPage.ets|98|5|off",
+      "decision": "reject",
+      "reason": "uiObserver registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "CustomScan|customscan/src/main/ets/viewmodel/CustomScanViewModel.ets|186|7|on",
+      "decision": "reject",
+      "reason": "display registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "DistributedAccount|entry/src/main/ets/model/DistributedAccountModel.ets|87|9|getOsAccountDistributedInfo",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "distributedAccount",
+        "method": "distributedAccount.DistributedAccountAbility.getOsAccountDistributedInfo"
+      },
+      "evidenceKind": "manager_receiver",
+      "reason": "Executable manager receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DistributedAccount|entry/src/main/ets/pages/Index.ets|70|5|getOsAccountDistributedInfo",
+      "decision": "reject",
+      "reason": "Application wrapper invocation; the configured framework call is inside the wrapper and is labeled separately."
+    },
+    {
+      "key": "DistributedAccount|entry/src/ohosTest/ets/test/Ability.test.ets|25|22|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "DistributedAccount|entry/src/ohosTest/ets/test/Ability.test.ets|67|16|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/model/CommonModel.ets|42|30|getCurrentLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/model/CommonModel.ets|46|29|getAddressesFromLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/AccountUtil.ets|36|53|connect",
+      "decision": "reject",
+      "reason": "AppStorageV2 is application state/binding infrastructure, not a configured socket or HID receiver."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/AccountUtil.ets|42|45|connect",
+      "decision": "reject",
+      "reason": "AppStorageV2 is application state/binding infrastructure, not a configured socket or HID receiver."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/AccountUtil.ets|50|25|createAuthorizationWithHuaweiIDRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "HuaweiIDProvider",
+        "method": "createAuthorizationWithHuaweiIDRequest"
+      },
+      "evidenceKind": "constructed_receiver",
+      "reason": "Executable constructed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/AccountUtil.ets|57|80|executeRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "AuthenticationController",
+        "method": "executeRequest"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/LocateUtil.ets|27|22|getLastLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getLastLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/LocateUtil.ets|46|5|getCurrentLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|commons/commonLib/src/main/ets/utils/StringUtil.ets|185|25|create",
+      "decision": "reject",
+      "reason": "util.TextDecoder is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "DriverLicenseExam|commons/network/src/main/ets/models/AxiosHttpModel.ets|18|22|create",
+      "decision": "reject",
+      "reason": "Third-party axios factory, not request.agent.create."
+    },
+    {
+      "key": "DriverLicenseExam|commons/network/src/main/ets/models/AxiosHttpModel.ets|25|7|request",
+      "decision": "reject",
+      "reason": "this._instance is an Axios/application wrapper, not HttpRequest returned by http.createHttp."
+    },
+    {
+      "key": "DriverLicenseExam|commons/network/src/main/ets/models/AxiosHttpModel.ets|39|12|request",
+      "decision": "reject",
+      "reason": "this is an Axios/application wrapper, not HttpRequest returned by http.createHttp."
+    },
+    {
+      "key": "DriverLicenseExam|commons/network/src/main/ets/models/AxiosHttpModel.ets|44|12|request",
+      "decision": "reject",
+      "reason": "this is an Axios/application wrapper, not HttpRequest returned by http.createHttp."
+    },
+    {
+      "key": "DriverLicenseExam|commons/network/src/main/ets/models/AxiosHttpModel.ets|49|12|request",
+      "decision": "reject",
+      "reason": "this is an Axios/application wrapper, not HttpRequest returned by http.createHttp."
+    },
+    {
+      "key": "DriverLicenseExam|components/exam/src/main/ets/components/Exam.ets|195|11|close",
+      "decision": "reject",
+      "reason": "this.mockExamDialog is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|components/exam/src/main/ets/components/Exam.ets|209|11|close",
+      "decision": "reject",
+      "reason": "this.mockExamDialog is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|components/module_city_select/src/main/ets/common/Utils.ets|164|37|getCurrentLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/entryability/EntryAbility.ets|41|7|on",
+      "decision": "reject",
+      "reason": "windowClass registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/home/SearchPage.ets|25|29|bind",
+      "decision": "reject",
+      "reason": "this.hotSearch is Function.bind, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/home/SearchPage.ets|26|33|bind",
+      "decision": "reject",
+      "reason": "this.historySearch is Function.bind, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/home/SearchPage.ets|28|28|bind",
+      "decision": "reject",
+      "reason": "this.getSearchResult is Function.bind, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/mine/PersonalInfo.ets|111|21|close",
+      "decision": "reject",
+      "reason": "fs is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/mine/PersonalSetting.ets|32|13|close",
+      "decision": "reject",
+      "reason": "this.logOutDialogController is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/mine/QuickLoginPage.ets|148|29|hasDefaultNetSync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "connection",
+        "method": "hasDefaultNetSync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "DriverLicenseExam|products/entry/src/main/ets/pages/mine/Setting.ets|33|13|close",
+      "decision": "reject",
+      "reason": "this.logOutDialogController is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "FlameChase|entry/src/main/ets/pages/CoreflamesPage.ets|779|27|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "FlameChase|entry/src/main/ets/pages/CoreflamesPage.ets|805|25|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "FlameChase|entry/src/main/ets/pages/Index.ets|204|13|osFullName",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceinfo",
+        "method": "osFullName"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "FlameChase|entry/src/main/ets/utils/BufferUtil.ets|4|21|create",
+      "decision": "reject",
+      "reason": "util.TextDecoder is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "football-harmonyos-next-wearable|entry/src/main/ets/Repo.ets|77|28|request",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "HttpRequest",
+        "method": "request"
+      },
+      "evidenceKind": "factory_receiver",
+      "reason": "Executable factory receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioPlayerService.ets|59|9|createSession",
+      "decision": "reject",
+      "reason": "Application wrapper self-call; the configured AVSession invocation, if present, is a distinct source occurrence."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioPlayerService.ets|125|5|on",
+      "decision": "reject",
+      "reason": "this.session registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioPlayerService.ets|128|5|on",
+      "decision": "reject",
+      "reason": "this.session registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioPlayerService.ets|134|5|off",
+      "decision": "reject",
+      "reason": "this.session registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioPlayerService.ets|135|5|off",
+      "decision": "reject",
+      "reason": "this.session registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioRenderService.ets|81|9|on",
+      "decision": "reject",
+      "reason": "this.renderer registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioRenderService.ets|98|7|start",
+      "decision": "reject",
+      "reason": "this.renderer controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioRenderService.ets|107|7|on",
+      "decision": "reject",
+      "reason": "this.renderer registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioRenderService.ets|170|7|stop",
+      "decision": "reject",
+      "reason": "this.renderer controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/AudioRenderService.ets|194|9|delete",
+      "decision": "reject",
+      "reason": "AppStorage is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/audioplayer/src/main/ets/service/SpeechPlayerService.ets|112|7|stop",
+      "decision": "reject",
+      "reason": "this.ttsEngine controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/datastore/src/main/ets/datasource/datastore/PreferenceManager.ets|84|7|delete",
+      "decision": "reject",
+      "reason": "this.preferences is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/network/src/main/ets/agc/Request.ets|40|7|hasDefaultNet",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "connection",
+        "method": "hasDefaultNet"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|88|5|on",
+      "decision": "reject",
+      "reason": "this.smListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|93|5|on",
+      "decision": "reject",
+      "reason": "this.mdListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|98|5|on",
+      "decision": "reject",
+      "reason": "this.lgListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|102|5|off",
+      "decision": "reject",
+      "reason": "this.smListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|103|5|off",
+      "decision": "reject",
+      "reason": "this.mdListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/BreakpointSystem.ets|104|5|off",
+      "decision": "reject",
+      "reason": "this.lgListener registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/GlobalContext.ets|40|5|delete",
+      "decision": "reject",
+      "reason": "this._objects is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/JsonUtil.ets|26|43|create",
+      "decision": "reject",
+      "reason": "util.TextDecoder is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/LottieUtil.ets|32|5|stop",
+      "decision": "reject",
+      "reason": "lottie controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/WebUtil.ets|168|3|delete",
+      "decision": "reject",
+      "reason": "nodeMap is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/WebUtil.ets|169|3|delete",
+      "decision": "reject",
+      "reason": "controllerMap is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|commons/utils/src/main/ets/utils/WebUtil.ets|170|3|delete",
+      "decision": "reject",
+      "reason": "onPageEndMap is a collection or application-storage receiver, not PhotoAccessHelper."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/components/ImageViewDialog.ets|124|23|createAsset",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "method": "createAsset"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/components/ImageViewDialog.ets|132|17|close",
+      "decision": "reject",
+      "reason": "fileIo is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/components/ImageViewDialog.ets|133|11|close",
+      "decision": "reject",
+      "reason": "this.dialogController is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/components/ZoneDetailModal.ets|155|11|stop",
+      "decision": "reject",
+      "reason": "AudioPlayerService.getInstance() controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|74|7|off",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|77|7|off",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|80|7|off",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|129|11|on",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|143|11|on",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|147|11|on",
+      "decision": "reject",
+      "reason": "MapController event registration, not a geolocation manager API."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|151|15|stop",
+      "decision": "reject",
+      "reason": "AudioPlayerService.getInstance() controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/challenge/src/main/ets/views/MapView.ets|290|9|getCurrentLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/discover/src/main/ets/model/DiscoverModel.ets|63|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/discover/src/main/ets/model/DiscoverModel.ets|65|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/discover/src/main/ets/model/DiscoverModel.ets|66|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/learning/src/main/ets/components/AchievementDialog.ets|28|5|close",
+      "decision": "reject",
+      "reason": "this.controller is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/login/src/main/ets/pages/LoginPage.ets|108|23|createAuthorizationWithHuaweiIDRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "HuaweiIDProvider",
+        "method": "createAuthorizationWithHuaweiIDRequest"
+      },
+      "evidenceKind": "constructed_receiver",
+      "reason": "Executable constructed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/login/src/main/ets/pages/LoginPage.ets|118|7|executeRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "AuthenticationController",
+        "method": "executeRequest"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/login/src/main/ets/pages/LoginPage.ets|144|24|createLoginWithHuaweiIDRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "HuaweiIDProvider",
+        "method": "createLoginWithHuaweiIDRequest"
+      },
+      "evidenceKind": "constructed_receiver",
+      "reason": "Executable constructed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/login/src/main/ets/pages/LoginPage.ets|150|7|executeRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "AuthenticationController",
+        "method": "executeRequest"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/components/ResourceListView.ets|61|5|on",
+      "decision": "reject",
+      "reason": "this.eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/components/ResourceListView.ets|76|45|getData",
+      "decision": "reject",
+      "reason": "this.resDataSource is an application data source, not SystemPasteboard."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/components/TimeSelectDialog.ets|68|15|close",
+      "decision": "reject",
+      "reason": "this.controller is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/components/TimeSelectDialog.ets|89|15|close",
+      "decision": "reject",
+      "reason": "this.controller is a file or UI-controller receiver, not a configured network socket."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/model/UserModel.ets|57|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/model/UserModel.ets|58|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/model/UserModel.ets|59|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/model/UserModel.ets|60|5|on",
+      "decision": "reject",
+      "reason": "eventHub registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/service/UserNetFunc.ets|166|36|getAAID",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.PushKit",
+        "namespace": "AAID",
+        "method": "getAAID"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/views/PhotoView.ets|48|35|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/mine/src/main/ets/views/PhotoView.ets|48|71|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|features/topic/src/main/ets/pages/ThemeSettingPage.ets|57|5|register",
+      "decision": "reject",
+      "reason": "this.breakpointSystem is an application breakpoint helper, not NetConnection."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/MainPage.ets|61|5|register",
+      "decision": "reject",
+      "reason": "this.breakpointSystem is an application breakpoint helper, not NetConnection."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/MainPage.ets|66|11|on",
+      "decision": "reject",
+      "reason": "display registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/MainPage.ets|116|7|off",
+      "decision": "reject",
+      "reason": "display registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/MainPage.ets|117|7|off",
+      "decision": "reject",
+      "reason": "display registers an application, UI, media, display, or session event, not a configured geolocation/sensor event."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/MainPage.ets|207|15|stop",
+      "decision": "reject",
+      "reason": "AudioPlayerService.getInstance() controls a UI, audio, speech, or application service, not the configured network receiver."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/SafePage.ets|35|5|register",
+      "decision": "reject",
+      "reason": "this.breakpointSystem is an application breakpoint helper, not NetConnection."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/SplashPage.ets|81|5|register",
+      "decision": "reject",
+      "reason": "this.breakpointSystem is an application breakpoint helper, not NetConnection."
+    },
+    {
+      "key": "harmonyos4me_hmosworld|products/phone/src/main/ets/pages/SplashPage.ets|162|18|getData",
+      "decision": "reject",
+      "reason": "Application data-model method, not a pasteboard access."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/ConversationDetail.ets|71|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/ConversationDetail.ets|182|41|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/ConversationDetailNone.ets|32|12|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/ConversationList.ets|59|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/ConversationList.ets|164|31|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/DoubleConversationView/productView/ProductUtilView.ets|85|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TabsView/TabsView.ets|64|39|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|24|11|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|52|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|53|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|65|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|66|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|113|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|114|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|122|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|123|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|144|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|160|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|161|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|186|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|187|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|211|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|212|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|223|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|224|15|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|237|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|238|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|250|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|251|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/CalendarSideBarView.ets|260|12|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|148|32|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|168|30|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|179|30|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|184|20|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|186|20|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|189|18|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|246|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|258|17|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|260|16|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|266|12|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "harmonyos4me_ResponsiveLayout|entry/src/main/ets/views/TripleCanlendarView/TripleCalendarView.ets|268|14|deviceType",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceInfo",
+        "method": "deviceType"
+      },
+      "evidenceKind": "namespace_property",
+      "reason": "Executable namespace property resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "HealthyDiet|entry/src/main/ets/MainAbility/MainAbility.ts|32|23|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "OAID|entry/src/main/ets/pages/Index.ets|168|17|getOAID",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AdsKit",
+        "namespace": "identifier",
+        "method": "getOAID"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "ShoppingMall|commons/lib_common/src/main/ets/httprequest/AxiosHttp.ets|56|21|create",
+      "decision": "reject",
+      "reason": "Third-party axios factory, not request.agent.create."
+    },
+    {
+      "key": "ShoppingMall|commons/lib_common/src/main/ets/utils/LoginUtils.ets|82|7|executeRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "AuthenticationController",
+        "method": "executeRequest"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "ShoppingMall|components/module_coupon/src/main/ets/network/models/AxiosHttp.ets|21|21|create",
+      "decision": "reject",
+      "reason": "Third-party axios factory, not request.agent.create."
+    },
+    {
+      "key": "ShoppingMall|components/module_keyboard/src/main/ets/components/Utils.ets|6|18|getDefaultDisplaySync",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ArkUI",
+        "namespace": "display",
+        "method": "display.Display.getDefaultDisplaySync"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "ShoppingMall|products/phone/src/main/ets/viewmodel/IndexViewModel.ets|60|26|createLoginWithHuaweiIDRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "HuaweiIDProvider",
+        "method": "createLoginWithHuaweiIDRequest"
+      },
+      "evidenceKind": "constructed_receiver",
+      "reason": "Executable constructed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "ShoppingMall|products/phone/src/main/ets/viewmodel/IndexViewModel.ets|65|7|executeRequest",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.AccountKit",
+        "namespace": "AuthenticationController",
+        "method": "executeRequest"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "StickyDemo|entry/src/main/ets/pages/Index.ets|7|13|getIpInfo",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.ConnectivityKit",
+        "namespace": "wifiManager",
+        "method": "getIpInfo"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "StickyDemo|entry/src/main/ets/pages/Index.ets|113|13|send",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "TCPSocket",
+        "method": "send"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "StickyDemo|entry/src/main/ets/pages/Index.ets|123|11|bind",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "TCPSocket",
+        "method": "bind"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "StickyDemo|entry/src/main/ets/pages/Index.ets|144|11|connect",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "TCPSocket",
+        "method": "connect"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "TransientTask|entry/src/main/ets/feature/LoadFile.ts|24|18|request",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.NetworkKit",
+        "namespace": "HttpRequest",
+        "method": "request"
+      },
+      "evidenceKind": "factory_receiver",
+      "reason": "Executable factory receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "UseCacheInsteadAddressInquiry|entry/src/main/ets/pages/Index.ets|80|13|getCurrentLocation",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation"
+      },
+      "evidenceKind": "namespace_call",
+      "reason": "Executable namespace call resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "UserFileURI|entry/src/main/ets/pages/Index.ets|80|13|getAssets",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "method": "getAssets"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "UserFileURI|entry/src/main/ets/pages/Index.ets|90|5|getThumbnail",
+      "decision": "accept",
+      "api": {
+        "package": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAsset",
+        "method": "getThumbnail"
+      },
+      "evidenceKind": "typed_receiver",
+      "reason": "Executable typed receiver resolves the configured API owner at this exact source location."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|46|28|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|63|22|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|67|37|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|91|22|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|97|33|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    },
+    {
+      "key": "UserFileURI|entry/src/ohosTest/ets/test/Ability.test.ets|122|22|create",
+      "decision": "reject",
+      "reason": "Driver is a test, decoder, animation, or third-party factory, not request.agent."
+    }
+  ]
+}

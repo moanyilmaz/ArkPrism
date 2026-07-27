@@ -6,7 +6,12 @@ const os = require('os');
 const path = require('path');
 
 const root = path.resolve(__dirname, '..');
+const { sourceScope } = require(path.join(root, 'scripts', 'evaluate_semantic_path_audit.js'));
 const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'arkprism-path-audit-'));
+
+assert.strictEqual(sourceScope({ sourceFile: 'entry/src/main/ets/Page.ets' }), 'production');
+assert.strictEqual(sourceScope({ sourceFile: 'entry/src/ohosTest/ets/Test.ets' }), 'test');
+assert.strictEqual(sourceScope({ sourceFile: 'entry/build/default/cache/Page.ts' }), 'generated');
 
 try {
   const queuePath = path.join(temporary, 'queue.json');

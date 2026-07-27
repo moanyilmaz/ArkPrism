@@ -1,0 +1,451 @@
+{
+  "schemaVersion": 2,
+  "benchmark": "ArkSourceFirst60",
+  "selectionFrozenBeforeFinalRun": true,
+  "readsArkPrismReports": false,
+  "seed": "arkprism-source-first-v1",
+  "population": {
+    "dataset": "E:\\Projects\\ARGUS\\release_20260617\\ARGUS-successful-1015-samples-20260617",
+    "retainedProjects": 1014,
+    "excludedProjects": [
+      "readmigo_harmony-app"
+    ]
+  },
+  "design": {
+    "projects": 60,
+    "importStrata": {
+      "configured_import": 30,
+      "no_configured_import": 30
+    },
+    "sizeStrataPerImportGroup": {
+      "small": 10,
+      "medium": 10,
+      "large": 10
+    },
+    "sizeMeasure": "Number of .ets/.ts source files after excluding generated/dependency trees.",
+    "importEvidence": "Exact occurrence of a configured package or an accepted @ohos/@kit migration alias in source.",
+    "purpose": "Source-first author audit of configured privacy-API occurrences; project selection does not use detector output."
+  },
+  "projects": [
+    {
+      "project": "AbilityFeature",
+      "sourceFiles": 14,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "1c113cd8a97db2ca83b255679f1024bf9b493741774cf9c2c62a3f79b93158b0"
+    },
+    {
+      "project": "Aigis",
+      "sourceFiles": 37,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "4fda32327a591e388f9ba9c5a56a2db7a3fdf0c805b7312a5547f7270f2eb296"
+    },
+    {
+      "project": "ArkUIAnimation",
+      "sourceFiles": 6,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "ef7adcb8408a19c9eda0d07edbe8e9a0bf969cb4be54b8ad72b6df5f801529e2"
+    },
+    {
+      "project": "BindSheet",
+      "sourceFiles": 33,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "f916d377c7118e9d8e00ff30a5503b3acb18cd390e47b4ab052a31f23e23bc40"
+    },
+    {
+      "project": "BringApp",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "2f9d2680a03d7f3bbeac6b3c7eca71b38e2992d8f6ad1af23eaf413760a7d3eb"
+    },
+    {
+      "project": "Chapter13",
+      "sourceFiles": 11,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "16f015d2a4b12e41a948a2aef26c8ca45d174974b24414f942a0a3e4fea1c76f"
+    },
+    {
+      "project": "ClickableJs",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "Component",
+      "sourceFiles": 33,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "d8b78e1364c7935811d44cb8a22bca15c6e050d2079c3562a26ff3cac27e3f04"
+    },
+    {
+      "project": "Container",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "d9bcf32437a2368f3604a20fc280e051659a116b856bbc959581e1aa8f29073a"
+    },
+    {
+      "project": "CustomInputText",
+      "sourceFiles": 13,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "39deecd57d442add03a47e5b6c09e780626c919cb3e3c0f5e2d93762e9edcfa8"
+    },
+    {
+      "project": "CustomScan",
+      "sourceFiles": 32,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "8e5a0aecfd36d2b8456269e889d38e05445c0875c1318dc1c38f22c76eea7ce4"
+    },
+    {
+      "project": "DDMQuery",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "4272a9218aded4a647d4402d0fd21709ac4affc653addf982ee111ea83ab0d2f"
+    },
+    {
+      "project": "DialogDemo",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "DistributedAccount",
+      "sourceFiles": 20,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "835f7cb168e34b9934420f18e2778dc5803736491358178614dfb9de01f20929"
+    },
+    {
+      "project": "DotTest",
+      "sourceFiles": 11,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "f4d4d61cb3b7d0c5e93a686a899965f6be4d2b983f6ebde9f44794eabf4e75ff"
+    },
+    {
+      "project": "Drag",
+      "sourceFiles": 4,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "f0b6f2028a411a1d0474589311d6b7827e7418a042c532af0764e9814bb554ec"
+    },
+    {
+      "project": "DriverLicenseExam",
+      "sourceFiles": 108,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "6dd34ff542e5f4c2a2612bf0e7f27d54cd961185f27a18bfdd55a9cf35358346"
+    },
+    {
+      "project": "Emitter",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "1201010c27d27e5c812ad54a08d9892d7199e671b13877a2a2cd703e66f7a335"
+    },
+    {
+      "project": "FlameChase",
+      "sourceFiles": 28,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "9222efb443fdd458d0ea6b3f2f7cb8580b46671fe6465cbf3372e4ec59412eab"
+    },
+    {
+      "project": "football-harmonyos-next-wearable",
+      "sourceFiles": 22,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "9b3019043b828a719ccd667489600b53dc0f5a577701ec9b183897a0f563e541"
+    },
+    {
+      "project": "FormLauncher",
+      "sourceFiles": 3,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "397258607e4f8dbe9791bb716f529f667790ed4cf3c7278af096abddaaaa8e52"
+    },
+    {
+      "project": "fuzzy_scene_performance_optimization",
+      "sourceFiles": 7,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "0c88dad861495d6534a12b4909c01c19296e753251f6fec1b43346ca4f829e2f"
+    },
+    {
+      "project": "HandleEtsOpenHarmony",
+      "sourceFiles": 3,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "68136a8cea64cd9fc6f5fc2d9b4679ab2d61fa552907889236562afc49302e9e"
+    },
+    {
+      "project": "harmonyos4me_hmosworld",
+      "sourceFiles": 202,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "f6179503b418aafbd69828f7fc435ac995c73bba356fba9cc35633a489b8d3a0"
+    },
+    {
+      "project": "harmonyos4me_ResponsiveLayout",
+      "sourceFiles": 64,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "30901c86312b7a4f2af913a7bb4898909c4db4600e21e646b3b2b97414a62b55"
+    },
+    {
+      "project": "HCECardSimulationDevelopment",
+      "sourceFiles": 17,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "0fca983200ad2376403f15ca63b8aec44ae2a4b23d00c219bfe24c0d0a55f354"
+    },
+    {
+      "project": "HealthyDiet",
+      "sourceFiles": 19,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "415edb8e21dbe528a9539bbac7c6abc5f564387d2fc971551d94f357d27eb9c5"
+    },
+    {
+      "project": "ImageEditorTemplate",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "ImageOperation",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "ImageViewer",
+      "sourceFiles": 20,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "e6e0c67a7f431197629faf498ceff4fbc1b00aee0f728af3ee9ead55f6387f3b"
+    },
+    {
+      "project": "interviewApp",
+      "sourceFiles": 9,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "8c282aff0fb0067908eb62382810d4511311bdad7f41d51139772a3a919ac9a4"
+    },
+    {
+      "project": "JSCanvasComponent",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "MediaController",
+      "sourceFiles": 12,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "94d30bc327a4097006dbc83322c63ff204ff147bd5a5c4d1c5bd706f5b1571c8"
+    },
+    {
+      "project": "MouseEvent",
+      "sourceFiles": 7,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "06e7e61b3057d89ca736282d8eb075ab0f9e62eb4760ffaca8f18491f3deb52c"
+    },
+    {
+      "project": "NativeAPI",
+      "sourceFiles": 4,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "0ed84b749b16ba7c7ac10b025fcf25e65f194d96411a54f2b8fa18494b548849"
+    },
+    {
+      "project": "NativeTemplateDemo",
+      "sourceFiles": 6,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "9747288d7e9d99c924718ecefcdce0e36f45c16029119ceac03f58f3b21d0c76"
+    },
+    {
+      "project": "Npm",
+      "sourceFiles": 14,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "77c3a81b5f5fe1e22ad85a1d26411873e5a57c889e88ed1fa14d8842239cdc13"
+    },
+    {
+      "project": "OAID",
+      "sourceFiles": 7,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b1d2d0dae97fc85f6002ccd103abe1296c67ac2fdc6a70336d8a8c685dbd2f18"
+    },
+    {
+      "project": "PatternLock",
+      "sourceFiles": 14,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "1ffa2c958e8d32c14e3ab7b7791f91e6b97a99bc9fc2f67075149559ed645ae6"
+    },
+    {
+      "project": "Process",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "8317fbaaeb5bfa5627299cdc8550ab9c5ab19d61fde5a95651b1e846458e5bb2"
+    },
+    {
+      "project": "ScanNapiInterfaceDemo",
+      "sourceFiles": 12,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "e28c79f2e4be56871ebd47a23c75501cd5b87c836eebcc306e05589e6cb1d509"
+    },
+    {
+      "project": "ServiceAbility",
+      "sourceFiles": 6,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "a5251093953ef97cf13da0e99816453c01b100e683939aaacf08c69323d4206b"
+    },
+    {
+      "project": "ServiceExtAbility",
+      "sourceFiles": 11,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "ee87b02d31e33b290811edb9fd24be4fb41dff9a2e7be70b802f295ac2d5b2d5"
+    },
+    {
+      "project": "ShoppingMall",
+      "sourceFiles": 173,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "8edb844fb8e9d154eb109bdc6de1eb4270b70f22ac975ce9f13d55ff5ddb7221"
+    },
+    {
+      "project": "StageModel",
+      "sourceFiles": 37,
+      "importStratum": "configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "d6094976de962834e879d28b4f10c71c78c477f8312cb9a128fb0c0a66a893ac"
+    },
+    {
+      "project": "StickyDemo",
+      "sourceFiles": 9,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "409283a691c6c159838d0e98d544be6259c6a8634c76a6e3aa128f29a0a98923"
+    },
+    {
+      "project": "SwitchChart",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "TransientTask",
+      "sourceFiles": 13,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "96cddaf8f8b7d0dd20a4c6d5be9eb9bd94d6eca708a2ee6e5de5782e94a1d077"
+    },
+    {
+      "project": "UseCacheInsteadAddressInquiry",
+      "sourceFiles": 5,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "e297be11ccbd24bf8579e88fb106de42f938fa7b2ca97febb972f46123d91193"
+    },
+    {
+      "project": "UserFileURI",
+      "sourceFiles": 9,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "caf6ea5ac8cee8d0d84c8b4d144437e656483302231df76e67eda2cc610074bf"
+    },
+    {
+      "project": "UseSameLayerRender",
+      "sourceFiles": 13,
+      "importStratum": "configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "e428843c817dc7795c6f2b11cbd967b4651004ad505d914d5421f6f5763fdcb2"
+    },
+    {
+      "project": "UtilBase64Codec",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "5af5ee419093354286c7b19601b23832ac19762d53a959752cae0e9bd75486f0"
+    },
+    {
+      "project": "UtilLruBuffer",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "75eed8821647597f0a77c90954de8d46fd3daca4b6af91587a21830b715d2e0d"
+    },
+    {
+      "project": "UtilRationalNumber",
+      "sourceFiles": 4,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "f4aa3b13d2dd048c7a2a8ff5ecb372d16fcf5e41ba43862e69b486f5be51ccca"
+    },
+    {
+      "project": "UtilScope",
+      "sourceFiles": 5,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "323145ab22eb9dba16311291594db1d6d8e612473a643ee2913d813e3346e69a"
+    },
+    {
+      "project": "UtilStringCodec",
+      "sourceFiles": 3,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "3ee0aba20fbc977a6c7202ffa14071dd8937c829dc3532a7a4b2c9fdcf1a744f"
+    },
+    {
+      "project": "VideoOpenHarmony",
+      "sourceFiles": 2,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "b54347b57a881d2aaaa133f839b010f50b3cf8e6ca1a8fac5005db84c292de72"
+    },
+    {
+      "project": "Web",
+      "sourceFiles": 11,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "large",
+      "sourceTreeSha256": "b4358cf735277f78f4bbb6f40f030792a0f7aa5183d7fa10fd0b788efa708162"
+    },
+    {
+      "project": "Window",
+      "sourceFiles": 4,
+      "importStratum": "no_configured_import",
+      "sizeStratum": "medium",
+      "sourceTreeSha256": "9438c84a5797e623e0dcedf8b967ae00d62576f589a342541b894ff974de959a"
+    },
+    {
+      "project": "XComponent3D",
+      "sourceFiles": 11,
+      "importStratum": "configured_import",
+      "sizeStratum": "small",
+      "sourceTreeSha256": "e2c7242449f7f75bf9cb2f942532fd29d990cfc6ab037c77d426f960af8fd6e8"
+    }
+  ]
+}

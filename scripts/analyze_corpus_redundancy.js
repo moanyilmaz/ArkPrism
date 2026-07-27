@@ -198,8 +198,14 @@ function main() {
   const reportRoot = path.resolve(args.reports);
   const benchmark = readJson(path.resolve(args.benchmark));
   const reviewed = new Set((benchmark.projects || []).map(project => project.projectName));
+  const excludedProjects = new Set(
+    String(args['exclude-projects'] || '')
+      .split(',')
+      .map(value => value.trim())
+      .filter(Boolean),
+  );
   const projectDirs = fs.readdirSync(datasetDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
+    .filter(entry => entry.isDirectory() && !excludedProjects.has(entry.name))
     .map(entry => entry.name)
     .sort((a, b) => a.localeCompare(b));
 
@@ -276,6 +282,7 @@ function main() {
     },
     corpus: {
       projects: projects.length,
+      excludedProjects: [...excludedProjects].sort(),
       sourceFiles: allFiles.length,
       sourceLines: allFiles.reduce((sum, file) => sum + file.lines, 0),
       sourceTokens: allFiles.reduce((sum, file) => sum + file.tokens, 0),
