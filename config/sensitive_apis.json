@@ -173,7 +173,10 @@
         "method": "audio.AudioVolumeManager.getVolumeGroupManager",
         "permission": null,
         "profilingCategory": "device_status.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "getVolumeManager"
+        ]
       },
       {
         "namespace": "audio",

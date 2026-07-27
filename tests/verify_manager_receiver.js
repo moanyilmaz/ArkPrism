@@ -32,6 +32,13 @@ const cases = [
     ],
   },
   {
+    fixture: 'helper_factory_chain_receiver',
+    expected: [
+      'audio.audio.AudioVolumeManager.getVolumeGroupManager|receiver_type',
+      'audio.getAudioManager|undefined',
+    ],
+  },
+  {
     fixture: 'factory_inferred_receiver',
     expected: [
       'AVImageGenerator.fetchFrameByTime|receiver_type',

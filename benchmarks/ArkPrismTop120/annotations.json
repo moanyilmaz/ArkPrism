@@ -2028,9 +2028,9 @@
       "sampleId": "T120-S002",
       "projectName": "Wechat_HarmonyOS",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -3216,9 +3216,9 @@
       "sampleId": "T120-S003",
       "projectName": "legado-Harmony-main",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -4161,9 +4161,9 @@
       "sampleId": "T120-S004",
       "projectName": "Snake_NEXT-main",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -4674,9 +4674,9 @@
       "sampleId": "T120-S005",
       "projectName": "harmony-next-music-sharing",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -5781,9 +5781,9 @@
       "sampleId": "T120-S006",
       "projectName": "STUFFS_NEXT-master",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -8319,9 +8319,9 @@
       "sampleId": "T120-S013",
       "projectName": "harmonyProject-master",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -10020,9 +10020,9 @@
       "sampleId": "T120-S027",
       "projectName": "legado-Harmony-master",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -12666,9 +12666,9 @@
       "sampleId": "T120-S050",
       "projectName": "LiveStreaming",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -12909,9 +12909,9 @@
       "sampleId": "T120-S052",
       "projectName": "readmigo_harmony-app",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@ohos.pasteboard",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -14232,9 +14232,9 @@
       "sampleId": "T120-S063",
       "projectName": "AuthorizedButton",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@ohos.pasteboard",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -15717,9 +15717,9 @@
       "sampleId": "T120-S077",
       "projectName": "ComprehensiveMall",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -16716,9 +16716,9 @@
       "sampleId": "T120-S088",
       "projectName": "harmonyos4me_ZeroOneApp",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
@@ -17256,9 +17256,9 @@
       "sampleId": "T120-S094",
       "projectName": "Express",
       "api": {
-        "key": "pasteboard|getData",
+        "key": "SystemPasteboard|getData",
         "package": "@kit.BasicServicesKit",
-        "namespace": "pasteboard",
+        "namespace": "SystemPasteboard",
         "member": "getData"
       },
       "sourceEvidence": [
