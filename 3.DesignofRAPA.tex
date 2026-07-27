@@ -1,7 +1,7 @@
 \section{Design of \mytool}
 \label{sec:design}
 
-\mytool is designed to resolve the \emph{source identity resolution} bottleneck in \arkts privacy analysis and to produce provenance-annotated evidence subgraphs for auditing. The design is intentionally layered. ArkAnalyzer provides the \arkts IR, project Scene, and call-graph substrate~\cite{arkanalyzer}; HapFlow provides IFDS-based taint propagation over \openharmony programs~\cite{hapflow}. \mytool contributes the missing domain layer: package- and receiver-aware API identity resolution, bounded asynchronous carrier/context recovery, and evidence-preserving subgraph assembly with provenance tracking.
+\mytool resolves the \emph{source identity} bottleneck in \arkts privacy analysis and produces provenance-annotated evidence subgraphs for auditing. ArkAnalyzer provides the \arkts IR, project Scene, and call-graph substrate~\cite{arkanalyzer}; HapFlow provides IFDS-based taint propagation over \openharmony programs~\cite{hapflow}. On this substrate, \mytool adds an evidence-carrying domain layer: package- and receiver-aware API identity resolution, bounded asynchronous carrier/context recovery, and provenance-preserving subgraph assembly.
 
 \subsection{Problem Definition and Notation}
 \label{subsec:problem_def}
@@ -74,13 +74,19 @@ where $call$ is the source API invoke statement, $cb$ is the resolved callback m
 G_u = \langle V_u,E_u,\lambda_u,\omega_u\rangle,
 \end{equation}
 
-where $V_u$ contains API, caller, sink, and taint-fact nodes; $E_u$ contains call, data-flow, and evidence edges, each annotated with a \emph{provenance} label:
+where $V_u$ contains API, caller, sink, and taint-fact nodes; $E_u$ contains call, detector-local sink, configured-query path, and endpoint-link edges. The labeling function $\lambda_u$ records the semantic edge role. The origin function $\omega_u$ is reconstructed from the producing record:
 
 \begin{equation}
-\omega(e) \in \{\mathit{CG},\;\mathit{Callback},\;\mathit{Lifecycle},\;\mathit{IFDS},\;\mathit{Heuristic}\},
+\omega_u(e)=
+\begin{cases}
+\mathit{callType}(e), & e\in E_{call},\\
+\mathit{detector\_local}, & e\in E_{sink},\\
+\tau(q), & e\in E_{path}(q),\\
+\mathit{linkEvidence}(e), & e\in E_{link},
+\end{cases}
 \end{equation}
 
-indicating whether the edge was derived from call-graph resolution, callback analysis, lifecycle model, IFDS propagation, or heuristic association. The provenance label is a derivation record, not a calibrated confidence: IFDS-derived edges depend on CG precision, and a CG edge from a static call may be more reliable than a lifecycle edge from over-approximate transition modeling. Auditors should interpret the label as evidence provenance rather than a global reliability ranking.
+where call types distinguish direct, callback, and lifecycle-implicit context; $\tau(q)$ distinguishes IFDS, asynchronous-supplement, and corroborated paths; and link evidence distinguishes exact-statement from normalized-source-location joins. This representation preserves how each subgraph relation was produced without treating derivation type as a probability of correctness.
 
 \subsection{Architecture Overview}
 
@@ -92,7 +98,7 @@ indicating whether the edge was derived from call-graph resolution, callback ana
 \label{fig:architecture}
 \end{figure}
 
-Figure~\ref{fig:architecture} gives the end-to-end architecture. Project and rule inputs enter ArkAnalyzer for Scene, IR, and call-graph construction. \mytool then adds three core analyses: (1)~API identity resolution computing $\mathit{Id}(v)$, (2)~bounded asynchronous carrier/context recovery computing $\mathit{SrcBind}(call,cb,param)$ where evidence permits, and (3)~provenance-annotated subgraph assembly with $\omega(e)$ labels. Supporting mechanisms (lifecycle modeling and optional context-sensitive CG) enrich the analysis but are not the primary contributions.
+Figure~\ref{fig:architecture} gives the end-to-end architecture. Project and rule inputs enter ArkAnalyzer for Scene, IR, and call-graph construction. \mytool then performs three connected analyses: (1)~API identity resolution computing $\mathit{Id}(v)$ and its witness, (2)~carrier propagation across IR and selected asynchronous continuations, and (3)~subgraph assembly that preserves the derivation label $\omega(e)$ on every evidence edge. Lifecycle ordering and call-graph context supply reachability evidence to this pipeline.
 
 \subsection{Running Example: Why Direct Calls Are Insufficient}
 \label{subsec:running_example}
@@ -102,12 +108,12 @@ Figure~\ref{fig:running_design} shows an anonymized pattern distilled from manua
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figs/2.jpg}
-\caption{Running example of API recognition and evidence construction.}
-\Description{A three-panel example showing an ArkTS source snippet, ArkPrism recognition steps for import normalization, manager receiver recovery, IR alias recovery, and sink evidence, and the resulting evidence subgraph.}
+\caption{Source patterns and their recognition evidence.}
+\Description{A two-panel example showing ArkTS source patterns and ArkPrism recognition steps for import normalization, manager receiver recovery, IR alias recovery, and sink evidence.}
 \label{fig:running_design}
 \end{figure}
 
-A direct-call baseline that only matches \texttt{namespace.method(...)} statements can recover neither \texttt{this.calendarMgr.getCalendar(...)} nor \texttt{agent.create(...)} reliably. The former is a member call whose receiver obtains its privacy meaning from \texttt{calendarManager.getCalendarManager}; the latter is a compound namespace API whose \texttt{request.agent} prefix may be assigned to an IR temporary before \texttt{create} is invoked. \mytool therefore treats API recognition as a rule- and evidence-matching problem over imports, aliases, receiver origins, and IR-lowered expressions. The resulting subgraph links the recognized API node to its lifecycle entry \texttt{aboutToAppear}, local sink evidence, optional taint path, and source snippet, rather than returning a flat method-name hit.
+A direct-call baseline that only matches \texttt{namespace.method(...)} statements can recover neither \texttt{this.calendarMgr.getCalendar(...)} nor \texttt{agent.create(...)} reliably. The former is a member call whose receiver obtains its privacy meaning from \texttt{calendarManager.getCalendarManager}; the latter is a separate compound-namespace example whose \texttt{request.agent} prefix may be assigned to an IR temporary before \texttt{create} is invoked. \mytool treats both cases as rule- and evidence-matching problems over imports, aliases, receiver origins, and IR-lowered expressions, then retains lifecycle context, local sink evidence, configured-query paths, and source metadata instead of returning flat method-name hits.
 
 \subsection{Namespace-constrained Package Migration}
 \label{subsec:pkg_norm}
@@ -127,22 +133,31 @@ The analyzer also derives namespace aliases from import declarations. If a sourc
 key(u)=\langle \mu(pkg_u,ns_u), \sigma(mem_u)\rangle,
 \end{equation}
 
-where $\mu$ applies the migration/export map and import-alias normalization to a package--namespace pair, and $\sigma$ normalizes method/property spelling. Evaluation can then report both $key(u)$ and the stricter raw package signature.
+where $\mu$ applies the migration/export map and import-alias normalization to a package--namespace pair, and $\sigma$ normalizes method/property spelling. The report retains both $key(u)$ and the raw package signature so that normalized and SDK-specific identities remain auditable.
 
 \subsection{Package- and Receiver-aware API Identity Resolution}
 \label{subsec:identity_resolution}
 
-HapFlow's released namespace--method loader resolves configured entries to SDK declarations. It handles directly resolvable methods, but does not encode executable property reads or retain factory-origin evidence for manager/helper receivers. These are limitations of the released loader and schema, not an impossibility result for all method-signature analyses. \mytool addresses them by computing a semantic identity and an acceptance witness for each candidate usage.
+HapFlow's released namespace--method loader resolves configured entries to SDK declarations, but its schema does not encode executable property reads or retain factory-origin evidence for manager/helper receivers. \mytool represents these access forms by computing a semantic identity and an acceptance witness for each candidate usage.
 
 \subsubsection{Identity Function}
 
-Given a candidate statement $s$, \mytool computes $\mathit{Id}(s)$ as defined in Section~\ref{subsec:problem_def}. The key components are $\mathit{Recv}(s)$ (receiver-origin tracing, detailed below) and $\mathit{Acc}(s)$ (access-kind classification).
+Given a candidate statement $s$, \mytool computes $\mathit{Id}(s)$ as defined in Section~\ref{subsec:problem_def}. The key components are $\mathit{Recv}(s)$ (receiver-origin tracing, detailed below) and $\mathit{Acc}(s)$ (access-kind classification). The rule mode is normalized as
+\begin{equation}
+\mathit{Mode}(r_D)=
+\begin{cases}
+\{\mathit{direct},\mathit{assign}\}, & r_D.direct=true,\\
+\{\mathit{indirect}\}, & r_D.direct=false,\\
+\{\mathit{property}\}, & r_D.direct=null.
+\end{cases}
+\end{equation}
 
 The candidate predicate is:
 
 \begin{align}
 Match(s,r_D,I,A) ={} & Compat(I_s,r_D) \nonumber\\
-& \wedge\; \mathit{Id}(s).\mathit{Mem} {=} r_D.mem.
+& \wedge\; \mathit{Id}(s).\mathit{Mem} {=} r_D.mem \nonumber\\
+& \wedge\; \mathit{Acc}(s)\in\mathit{Mode}(r_D).
 \end{align}
 
 Package compatibility only generates candidates. Acceptance additionally requires access-specific evidence:
@@ -204,7 +219,7 @@ The key addition beyond the released namespace--method loader is $\mathit{Recv}(
 \begin{equation}
 \mathit{Recv}(s) \!=\!
 \begin{cases}
-\mathit{Ns}(def), & x {\leftarrow} invoke(q.f()),\;f{\in}R,\\
+\mathit{Ns}(def), & x {\leftarrow} invoke(q.f()),\;f{\in}factory(r_D),\\
 \mathit{Recv}(def), & x {\leftarrow} y,\;y\text{ has known origin},\\
 \mathit{TF}(x), & \mathit{type}(x){=}T,\;T{\in}\mathit{SDK},\\
 \bot, & \text{unresolvable in }k_{recv}\text{ steps.}
@@ -309,7 +324,7 @@ ArkUI components frequently store callback functions in class fields (e.g., \tex
 
 ArkUI builder APIs accept configuration objects whose fields are callback functions (e.g., \texttt{bindPopup(\{builder: popupBuilder\})}). T3 extracts the callback from a named option field, $Arg(bld,f)\to cb$, and adds the recovered owner--builder edge to the report call graph. The pattern is structurally distinct from T1 because the callback is nested inside a lowered object initializer rather than passed as a positional source callback. As with T2, the edge provides call context and is not an IFDS seed.
 
-\subsubsection{T4: Promise \texttt{.then()} Chain Binding}
+\subsubsection{T4: Promise-then Chain Binding}
 
 Promise \texttt{.then()} chains can carry a source return value through Promise resolution to a callback parameter. When the core IFDS result lacks that continuation, the bounded supplement recognizes three sub-patterns:
 
@@ -319,9 +334,9 @@ Promise \texttt{.then()} chains can carry a source return value through Promise 
 
 \textbf{Sequential chaining:} $x.then(cb_1).then(cb_2)$ creates $\bigcup_{i} Edge(cb_{i-1}, cb_{i})$, propagating taint through the chain.
 
-\subsubsection{T5: \texttt{async/await} Bridge Binding}
+\subsubsection{T5: Async/Await Bridge Binding}
 
-An \texttt{async} function that \texttt{await}s a Promise-wrapped source API creates an implicit binding between the resolved value and the local variable:
+An asynchronous function that awaits a Promise-wrapped source API creates an implicit binding between the resolved value and the local variable:
 
 \begin{multline}
 data = await\; promiseMethod() \;\Rightarrow\;\\
@@ -339,16 +354,17 @@ Algorithm~\ref{alg:callback} summarizes the post-IFDS portion (T1, T4, and T5). 
 \label{alg:callback}
 \footnotesize
 \begin{algorithmic}[1]
-\Require Method $m$, IFDS source rules $R_T$, existing outcomes $O$, bounds $B$
-\Ensure $\Call{Deduplicate}{O\cup A}$; each $a\in A$ has provenance \textsc{AsyncSupplement}
+\Require Program Scene $P$, IFDS source rules $R_T$, existing outcomes $O$, bounds $B$
+\Ensure Augmented outcomes $O'$; each new outcome preserves $\epsilon(src)$ and has provenance \textsc{AsyncSupplement}
 \State $A \gets \emptyset$
+\ForAll{application methods $m\in P$}
 \ForAll{invoke statements $s \in m$}
   \State $src \gets \Call{CallSource}{s,R_T}$
   \If{$src \neq \emptyset \land src.carrier = \mathit{callback}$} \Comment{T1}
     \State $cb \gets \Call{Resolve}{s.args[src.cbIdx]}$
     \If{$cb\neq\emptyset \land src.srcIdx<|cb.params|$}
       \State $p \gets cb.params[src.srcIdx]$
-      \State $A \gets A \cup \Call{TraceToSink}{cb,p,\mathit{Path}(s),B}$
+      \State $A \gets A \cup \Call{TraceToSink}{cb,p,\mathit{Path}(s),\epsilon(src),B}$
     \EndIf
   \EndIf
   \If{$s$ is a \texttt{then} invocation on base $b$} \Comment{T4}
@@ -360,28 +376,25 @@ Algorithm~\ref{alg:callback} summarizes the post-IFDS portion (T1, T4, and T5). 
     \If{$si \neq \emptyset$}
       \State $cb \gets \Call{Resolve}{s.args[0]}$
       \If{$cb\neq\emptyset$}
-        \State $A \gets A \cup \Call{TraceThenToSink}{m,si,cb,B}$
+        \State $A \gets A \cup \Call{TraceThenToSink}{m,si,cb,\epsilon(si),B}$
       \EndIf
     \EndIf
   \EndIf
 \EndFor
 \ForAll{await sites $a \in m$ with promise $p$} \Comment{T5}
-  \State $ow \gets \Call{FindPromiseOwner}{p}$
+  \State $ow \gets \Call{FindPromiseOwner}{p,R_T}$
   \If{$ow\neq\emptyset$}
     \State $rf \gets \Call{CollectResolveFacts}{ow}$
     \If{$rf\neq\emptyset$}
-      \State $A \gets A \cup \Call{TraceToSink}{m,a.res,\mathit{Path}(rf)\cup\mathit{Path}(a),B}$
+      \State $A \gets A \cup \Call{TraceToSink}{m,a.res,\mathit{Path}(rf)\cup\mathit{Path}(a),\epsilon(ow),B}$
     \EndIf
   \EndIf
 \EndFor
-\State \Return $\Call{Deduplicate}{O\cup A}$
+\EndFor
+\State $O' \gets \Call{Deduplicate}{O\cup A}$
+\State \Return $O'$
 \end{algorithmic}
 \end{algorithm}
-
-\subsection{Context-Sensitive Call Graph Construction}
-\label{subsec:context_sensitive}
-
-\mytool supports $k$-limited context-sensitive call graph construction using ArkAnalyzer's pointer analysis infrastructure, where $k$ controls the depth of calling context tracked per invocation. At $k=0$ the analysis is context-insensitive; at $k\geq 1$ call sites receive distinct contexts. Context sensitivity is an optional substrate rather than a claimed contribution; the main evaluation fixes the setting for all compared configurations instead of mixing call-graph precision with API-recognition effects.
 
 \subsection{Callback-augmented Call-chain Recovery}
 
@@ -423,13 +436,11 @@ The IFDS query is configured independently by $R_T$ and its sink set $K_T$. Let 
 T_I \subseteq S_T \times K_T \times Path,
 \end{equation}
 
-where $S_T=S_P\uplus S_F$ is the disjoint typed-source universe resolved from $R_T$. Each tuple $\langle s,k,\rho\rangle$ means that the carrier seeded at $s$ may reach configured sink $k$ along path $\rho$. The bounded post-IFDS rules produce a separate set
-
-Each seeded fact also carries an immutable source witness
+where $S_T=S_P\uplus S_F$ is the disjoint typed-source universe resolved from $R_T$. Each tuple $\langle s,k,\rho\rangle$ means that the carrier seeded at $s$ may reach configured sink $k$ along path $\rho$. Each seeded fact carries an immutable source witness
 \begin{equation}
-\epsilon(s)=\langle kind,pkg,ns,cls,mem,carrier,sig,rule\rangle,
+\epsilon(s)=\langle kind,pkg,ns,cls,mem,carrier,sig,rule,loc\rangle,
 \end{equation}
-where $kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}$ and the remaining fields identify the resolved API, carrier position, SDK signature, and rule provenance. Normal, call, and return transfers copy $\epsilon(s)$ unchanged; fact and edge identities include it. Consequently, two values reaching the same statement from different configured sources remain distinct, and the report obtains its source endpoint from $\epsilon(s)$ rather than inferring it from the first statement in $\rho$.
+where $kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}$ and the remaining fields identify the resolved API, carrier position, SDK signature, rule provenance, and normalized source location. Normal, call, return, and exceptional transfers copy $\epsilon(s)$ unchanged; fact and edge identities include it. Consequently, values reaching the same statement from different configured sources remain distinct, and the report obtains its source endpoint from $\epsilon(s)$ rather than inferring it from the first statement in $\rho$. The bounded asynchronous rules preserve the same witness and produce a separate set
 
 \begin{equation}
 T_A \subseteq S_T \times K_T \times Path,
@@ -456,17 +467,19 @@ is created only when project, normalized source location, and compatible API ide
 
 \subsubsection{Provenance Annotation}
 
-Each edge $e \in E_u$ carries a provenance label $\omega(e) \in \{\mathit{IFDS},\;\mathit{Callback},\;\mathit{Lifecycle},\;\mathit{CG},\;\mathit{Heuristic}\}$ (Section~\ref{subsec:problem_def}), recording \emph{how} the edge was derived: $\mathit{IFDS}$ for solver-propagated facts; $\mathit{Callback}$ for a report-CG callback edge or post-IFDS asynchronous supplement; $\mathit{Lifecycle}$ for implicit phase transitions; $\mathit{CG}$ for call-graph edges; and $\mathit{Heuristic}$ for name-based inferences without formal proof. The record also identifies its producing phase, so a callback supplement is not mislabeled as an IFDS proof. Provenance is not a calibrated confidence score: an IFDS edge depends on call-graph precision, and a lifecycle edge may over-approximate feasible order. We therefore evaluate flow classification separately from evidence availability and do not convert provenance labels into an unsupported probability of correctness.
+The report stores provenance at the level where it is produced. A call-chain relation carries a \texttt{callType}; a configured-query path carries $\tau(q)\in\{\mathit{ifds},\mathit{async\_supplement},\mathit{both}\}$; and an endpoint link records \texttt{exact\_statement} or \texttt{source\_location}. Detector-local sink edges are identified by their containing record. Subgraph assembly maps these fields to $\omega_u$ rather than replacing them with a synthetic global confidence score. Consequently, an asynchronous supplement cannot be presented as an IFDS path, and a normalized-location join remains distinguishable from an exact-statement join.
 
-\subsection{Analysis Contract and Soundness Envelope}
+\subsection{Analysis Contract}
 \label{subsec:analysis_contract}
 
-\mytool is a soundy audit analysis, not a proof system. Its recognition claim is relative to (i) ArkAnalyzer successfully lowering a source construct to IR, (ii) the API appearing in the fixed rule set, and (iii) package compatibility plus the required namespace, receiver, origin, or target-signature evidence satisfying $\mathit{Accept}$. Native code, dynamic loading, reflection-like runtime dispatch, and APIs absent from the rule set lie outside this contract. A recognized API is evidence of use, not evidence of a privacy violation.
+\mytool's recognition claim is parameterized by three explicit inputs: ArkAnalyzer IR for the source construct, the fixed API rule set, and the namespace, receiver, origin, or target-signature evidence required by $\mathit{Accept}$. The analysis targets statically represented \arkts code; native code, dynamic loading, reflection-like runtime dispatch, and APIs absent from the rule set are outside the query domain. A recognized API establishes an executable use under this contract, while policy-level violation assessment remains a downstream audit decision.
 
 IFDS and asynchronous-supplement results are may-flows under their respective source/sink and reachability models. The report preserves their producer and does not convert a detector occurrence into an IFDS source without a source-endpoint link. Every run records one of three solver states: complete, resource-bounded, or failed. Resource-bounded and failed cases are never reclassified as zero-flow applications. Edge deduplication is scoped by IR statement, value identity, access path, and source witness; textual equality alone is insufficient because same-named locals in different methods and facts from different seeds are distinct. These requirements are regression-tested on HapBench positive and negative cases and are also enforced by the isolated-process corpus runner.
 
-\subsection{Corpus-scale Hardening}
+\subsection{Scalable Execution}
 
-Corpus-scale execution requires additional engineering. SDK files are loaded lazily into the Scene only when taint analysis starts, avoiding SDK-induced type instability during initial project construction. Source and sink JSON rules expand SDK-path placeholders at runtime. IFDS budgets are explicit. Each project runs in a fresh process because retaining SDK-augmented scenes across projects causes cumulative heap growth; per-project logs and status files make timeouts and failures visible. If pointer analysis fails, the runner records the warning and continues only with evidence whose producing phase completed. These choices prevent incomplete analysis states from silently becoming negative results.
+SDK files are loaded lazily into the Scene when taint analysis starts, keeping frontend construction independent of the query-specific SDK augmentation. Source and sink rules expand SDK-path placeholders at runtime, and IFDS resource bounds are explicit. Each project runs in a fresh process, while per-project logs and status files preserve timeout and failure states. If pointer analysis fails, the runner retains only evidence from completed producing phases. This execution model prevents incomplete states from entering the aggregate as negative results.
+
+Let $C$ be the number of executable call/property candidates, $d$ the maximum number of package/namespace-compatible rules returned by the rule index, and $k_{recv}$ the receiver-definition bound. Identity resolution costs $O(Cdk_{recv})$ time and $O(C)$ output space; in practice $d$ is small because package and namespace indexing precede member matching. The evidence carried by a source fact is immutable and constant-sized, so it refines fact identity without changing the underlying IFDS formulation. The post-IFDS phase is independently capped by the number of source candidates, visited methods and values, emitted outcomes, and path length. It therefore cannot expand into an unbounded event-loop search; paths beyond these bounds are not emitted, and every retained outcome remains labeled as supplementary rather than as an IFDS proof. These bounds make the extra analyses predictable while preserving the provenance needed to distinguish the two producers.
 
 The complete pipeline follows a fixed order: Scene construction, lifecycle modeling, report call-graph construction, import/alias extraction, API identity resolution via $\mathit{Accept}$, callback-augmented chain recovery, detector-local sink tracing, IFDS taint analysis from the lifecycle-aware \texttt{DummyMain}, bounded asynchronous supplementation, endpoint linkage, and subgraph assembly. A key property is that \mytool never treats a missing layer as proof of absence: if a call-chain predecessor is absent, the usage still becomes a local evidence chain; if a taint path has no compatible detector endpoint, both records remain visible but unlinked.

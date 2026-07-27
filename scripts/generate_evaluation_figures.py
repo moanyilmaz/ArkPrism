@@ -18,6 +18,7 @@ from typing import Any
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.path import Path as MplPath
 
@@ -25,7 +26,7 @@ from matplotlib.path import Path as MplPath
 PAPER_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ARK_ROOT = Path(r"E:\arkprism-fse2027-experiments")
 DEFAULT_REPORTS_DIR = (
-    DEFAULT_ARK_ROOT / "experiments" / "argus1014_final_single_20260724_v13"
+    DEFAULT_ARK_ROOT / "experiments" / "argus1014_final_single_20260727_v22"
 )
 FIG_DIR = PAPER_ROOT / "figs"
 OUT_JSON = PAPER_ROOT / "data" / "evaluation_figure_summary.json"
@@ -205,7 +206,9 @@ def compact_category(label: str) -> str:
     return {
         "device_identity.screen": "screen",
         "device_identity.hardware": "hardware",
+        "device_identity.biometric": "biometric",
         "network.connectivity": "net. conn.",
+        "user_data.account": "account",
         "user_data.clipboard": "clipboard",
         "location": "location",
         "network.bluetooth": "bluetooth",
@@ -216,6 +219,29 @@ def compact_category(label: str) -> str:
         "media.camera": "camera",
         "device_status.audio": "audio",
     }.get(label, label.replace("_", "."))
+
+
+def flow_source_scope(flow: dict[str, Any]) -> str:
+    files = [
+        flow.get("sourceFile"),
+        flow.get("sinkFile"),
+        *[item.get("file") for item in flow.get("path", []) or []],
+    ]
+    normalized = [
+        str(value).replace("\\", "/").lower()
+        for value in files
+        if value
+    ]
+    if any("/ohostest/" in f"/{value.strip('/')}/" for value in normalized):
+        return "test"
+    if any(
+        "/build/" in f"/{value.strip('/')}/"
+        or "/.preview/" in f"/{value.strip('/')}/"
+        or "/cache/" in f"/{value.strip('/')}/"
+        for value in normalized
+    ):
+        return "generated"
+    return "production"
 
 
 def heatmap_text(
@@ -417,6 +443,7 @@ def summarize_reports(
     detector_chain: defaultdict[str, Counter[str]] = defaultdict(Counter)
     profiling_counter: Counter[str] = Counter()
     usage_feature_rows: list[dict[str, Any]] = []
+    flow_rows: list[dict[str, Any]] = []
 
     for report in reports:
         usages = report.get("privacyApiUsages", []) or []
@@ -470,6 +497,17 @@ def summarize_reports(
                 "taints": len(taints),
             }
         )
+        for flow in taints:
+            path = flow.get("path", []) or []
+            flow_rows.append(
+                {
+                    "project": report.get("projectName"),
+                    "sourceKind": flow.get("sourceKind", "unknown"),
+                    "provenance": flow.get("provenance", "unknown"),
+                    "sourceScope": flow_source_scope(flow),
+                    "pathStatements": len(path),
+                }
+            )
 
     return {
         "projectRows": project_rows,
@@ -478,6 +516,7 @@ def summarize_reports(
         "detectorChain": detector_chain,
         "profilingCounter": profiling_counter,
         "usageFeatureRows": usage_feature_rows,
+        "flowRows": flow_rows,
     }
 
 
@@ -1160,6 +1199,7 @@ def build_detection_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
 
 def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     project_rows = report_summary["projectRows"]
+    flow_rows = report_summary["flowRows"]
     category_sink = report_summary["categorySink"]
     categories = [
         name for name, _ in report_summary["profilingCounter"].most_common(10)
@@ -1188,11 +1228,11 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
 
     fig, axes = plt.subplots(
         1,
-        3,
-        figsize=(7.15, 2.02),
+        4,
+        figsize=(7.15, 2.05),
         gridspec_kw={
-            "width_ratios": [0.9, 1.6, 1.32],
-            "wspace": 0.44,
+            "width_ratios": [0.82, 1.45, 1.08, 1.13],
+            "wspace": 0.52,
         },
     )
 
@@ -1258,7 +1298,86 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     ax.set_title("(c) Scale vs. evidence volume")
     ax.legend(loc="upper left")
 
-    fig.subplots_adjust(left=0.075, right=0.995, bottom=0.28, top=0.88)
+    ax = axes[3]
+    source_styles = {
+        "privacy_data": (COLORS["blue"], "Privacy source"),
+        "framework_input": (COLORS["orange"], "Framework input"),
+    }
+    provenance_styles = {
+        "ifds": ("-", "IFDS"),
+        "async_supplement": ("--", "Async supplement"),
+        "both": (":", "Both"),
+    }
+    path_groups: dict[str, list[int]] = {}
+    for source_kind, (color, _) in source_styles.items():
+        for provenance, (line_style, _) in provenance_styles.items():
+            lengths = sorted(
+                row["pathStatements"]
+                for row in flow_rows
+                if row["sourceKind"] == source_kind
+                and row["provenance"] == provenance
+                and row["pathStatements"] > 0
+            )
+            if not lengths:
+                continue
+            values = np.asarray(lengths, dtype=float)
+            ecdf = np.arange(1, len(values) + 1) / len(values)
+            ax.step(
+                values,
+                ecdf,
+                where="post",
+                color=color,
+                linestyle=line_style,
+                linewidth=1.25,
+                alpha=0.95,
+            )
+            path_groups[f"{source_kind}|{provenance}"] = lengths
+
+    max_path = max(
+        (row["pathStatements"] for row in flow_rows),
+        default=2,
+    )
+    ax.set_xscale("log", base=2)
+    ticks = [value for value in [1, 2, 4, 8, 16, 32, 64, 128] if value <= max_path]
+    if max_path > 128:
+        ticks.append(256)
+    ax.set_xticks(ticks)
+    ax.get_xaxis().set_major_formatter(mpl.ticker.ScalarFormatter())
+    ax.set_xlim(1, max(2, max_path))
+    ax.set_ylim(0, 1.03)
+    ax.set_xlabel("Statements per path (log2)")
+    ax.set_ylabel("Empirical CDF")
+    ax.set_title("(d) Path-length ECDF by provenance")
+    source_legend = [
+        Line2D([0], [0], color=color, linewidth=1.4, label=label)
+        for color, label in source_styles.values()
+    ]
+    provenance_legend = [
+        Line2D(
+            [0],
+            [0],
+            color=COLORS["dark_gray"],
+            linestyle=line_style,
+            linewidth=1.2,
+            label=label,
+        )
+        for line_style, label in provenance_styles.values()
+    ]
+    first_legend = ax.legend(
+        handles=source_legend,
+        loc="lower right",
+        fontsize=4.7,
+        handlelength=1.5,
+    )
+    ax.add_artist(first_legend)
+    ax.legend(
+        handles=provenance_legend,
+        loc="upper left",
+        fontsize=4.7,
+        handlelength=1.5,
+    )
+
+    fig.subplots_adjust(left=0.068, right=0.995, bottom=0.29, top=0.88)
     output = FIG_DIR / "eval_corpus_landscape.pdf"
     fig.savefig(output, bbox_inches="tight")
     plt.close(fig)
@@ -1273,11 +1392,39 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
             "share": float(cumulative[index] / 100),
         }
 
+    scope_counts: Counter[tuple[str, str]] = Counter(
+        (row["sourceKind"], row["sourceScope"]) for row in flow_rows
+    )
+    scope_projects: defaultdict[tuple[str, str], set[str]] = defaultdict(set)
+    for row in flow_rows:
+        scope_projects[(row["sourceKind"], row["sourceScope"])].add(
+            row["project"]
+        )
+
     return {
         "categories": categories,
         "sinkTypes": SINK_ORDER,
         "categorySinkMatrix": matrix.tolist(),
         "topCutoffs": top_cutoffs,
+        "pathScope": {
+            source_kind: {
+                scope: {
+                    "paths": scope_counts[(source_kind, scope)],
+                    "projects": len(scope_projects[(source_kind, scope)]),
+                }
+                for scope in ["production", "test", "generated"]
+            }
+            for source_kind in ["privacy_data", "framework_input"]
+        },
+        "pathComplexity": {
+            key: {
+                "count": len(lengths),
+                "medianStatements": float(np.median(lengths)),
+                "p95Statements": float(np.percentile(lengths, 95)),
+                "maxStatements": int(max(lengths)),
+            }
+            for key, lengths in path_groups.items()
+        },
     }
 
 

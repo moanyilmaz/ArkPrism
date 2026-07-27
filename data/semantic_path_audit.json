@@ -1,0 +1,249 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "ArkSemanticPath120",
+  "queueSha256": "9ddd1df187e7b3bdefd685a7bc879913cd21352c20699f94c093ec4ef3f8518d",
+  "decisionSha256": "6e8f39403339777d745adcba6490c4fc495ea57dcf89ef745fe539f4cfe23d11",
+  "sample": {
+    "paths": 120,
+    "projects": 48,
+    "sourceKind": {
+      "framework_input": 30,
+      "privacy_data": 90
+    },
+    "provenance": {
+      "async_supplement": 30,
+      "both": 26,
+      "ifds": 64
+    },
+    "sinkFamily": {
+      "logging": 113,
+      "network": 2,
+      "ui": 5
+    },
+    "pathLengthBin": {
+      "long_8_plus": 27,
+      "medium_4_7": 70,
+      "short_1_3": 23
+    },
+    "strata": {
+      "framework_input|ifds|logging|long_8_plus": 10,
+      "framework_input|ifds|logging|medium_4_7": 13,
+      "framework_input|ifds|logging|short_1_3": 2,
+      "framework_input|ifds|ui|long_8_plus": 1,
+      "framework_input|ifds|ui|medium_4_7": 4,
+      "privacy_data|async_supplement|logging|long_8_plus": 9,
+      "privacy_data|async_supplement|logging|medium_4_7": 18,
+      "privacy_data|async_supplement|logging|short_1_3": 3,
+      "privacy_data|both|logging|long_8_plus": 1,
+      "privacy_data|both|logging|medium_4_7": 18,
+      "privacy_data|both|logging|short_1_3": 7,
+      "privacy_data|ifds|logging|long_8_plus": 4,
+      "privacy_data|ifds|logging|medium_4_7": 17,
+      "privacy_data|ifds|logging|short_1_3": 11,
+      "privacy_data|ifds|network|long_8_plus": 2
+    }
+  },
+  "artifactVerification": {
+    "filesVerified": 240,
+    "reportsVerified": 120,
+    "runManifestVerified": true
+  },
+  "metrics": {
+    "sourceIdentityCorrect": {
+      "successes": 120,
+      "total": 120,
+      "estimate": 1,
+      "lower": 0.9689808335812966,
+      "upper": 1
+    },
+    "sinkIdentityCorrect": {
+      "successes": 120,
+      "total": 120,
+      "estimate": 1,
+      "lower": 0.9689808335812966,
+      "upper": 1
+    },
+    "explicitDataDependence": {
+      "successes": 114,
+      "total": 120,
+      "estimate": 0.95,
+      "lower": 0.8951971146376326,
+      "upper": 0.9768856355855343
+    },
+    "reachabilityConsistent": {
+      "successes": 114,
+      "total": 120,
+      "estimate": 0.95,
+      "lower": 0.8951971146376326,
+      "upper": 0.9768856355855343
+    },
+    "provenanceCorrect": {
+      "successes": 120,
+      "total": 120,
+      "estimate": 1,
+      "lower": 0.9689808335812966,
+      "upper": 1
+    },
+    "fullPathCorrect": {
+      "successes": 114,
+      "total": 120,
+      "estimate": 0.95,
+      "lower": 0.8951971146376326,
+      "upper": 0.9768856355855343
+    }
+  },
+  "fullPathBreakdown": {
+    "sourceKind": {
+      "framework_input": {
+        "successes": 24,
+        "total": 30,
+        "estimate": 0.8,
+        "lower": 0.6269430358685175,
+        "upper": 0.9049489282271013
+      },
+      "privacy_data": {
+        "successes": 90,
+        "total": 90,
+        "estimate": 1,
+        "lower": 0.9590643744356734,
+        "upper": 1
+      }
+    },
+    "provenance": {
+      "async_supplement": {
+        "successes": 30,
+        "total": 30,
+        "estimate": 1,
+        "lower": 0.8864866068260312,
+        "upper": 0.9999999999999999
+      },
+      "both": {
+        "successes": 26,
+        "total": 26,
+        "estimate": 1,
+        "lower": 0.8712710781407846,
+        "upper": 1
+      },
+      "ifds": {
+        "successes": 58,
+        "total": 64,
+        "estimate": 0.90625,
+        "lower": 0.810171204003544,
+        "upper": 0.9563217474148016
+      }
+    },
+    "sinkFamily": {
+      "logging": {
+        "successes": 112,
+        "total": 113,
+        "estimate": 0.9911504424778761,
+        "lower": 0.9515691320824156,
+        "upper": 0.9984361239315607
+      },
+      "network": {
+        "successes": 2,
+        "total": 2,
+        "estimate": 1,
+        "lower": 0.34238022750665303,
+        "upper": 1
+      },
+      "ui": {
+        "successes": 0,
+        "total": 5,
+        "estimate": 0,
+        "lower": 0,
+        "upper": 0.43448246478317476
+      }
+    },
+    "pathLengthBin": {
+      "long_8_plus": {
+        "successes": 25,
+        "total": 27,
+        "estimate": 0.9259259259259259,
+        "lower": 0.7663040731697686,
+        "upper": 0.9794453459390113
+      },
+      "medium_4_7": {
+        "successes": 66,
+        "total": 70,
+        "estimate": 0.9428571428571428,
+        "lower": 0.8620804952516177,
+        "upper": 0.9775562208992887
+      },
+      "short_1_3": {
+        "successes": 23,
+        "total": 23,
+        "estimate": 1,
+        "lower": 0.8568833815495731,
+        "upper": 1
+      }
+    },
+    "sourceScope": {
+      "generated": {
+        "successes": 5,
+        "total": 5,
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      },
+      "production": {
+        "successes": 95,
+        "total": 99,
+        "estimate": 0.9595959595959596,
+        "lower": 0.9006797874974577,
+        "upper": 0.9841773610058524
+      },
+      "test": {
+        "successes": 14,
+        "total": 16,
+        "estimate": 0.875,
+        "lower": 0.639771727342413,
+        "upper": 0.9650225122567595
+      }
+    }
+  },
+  "rejected": [
+    {
+      "id": "3b5e1b6b6fe34cb83c4f5c66",
+      "project": "HarmonyOS-Inno",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: onNewWant stores want.uri in OHBridge.wantUri, but InputPage line 65 displays the constant message \"请输入内容\"; no read of wantUri reaches this Toast."
+    },
+    {
+      "id": "27c04af17949a2b4711e2b8b",
+      "project": "HarmonyOS-Inno",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: onCreate stores want.uri in OHBridge.wantUri, while InputPage line 71 formats this.inputText; the reported path omits any value-producing read that could connect the fields."
+    },
+    {
+      "id": "ed3853b17be41cbf07e5e304",
+      "project": "VoiceCallDemo",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: the UIAbility Want reaches readWant, but the reported Toast at Index line 51 is driven only by the permission result and a resource constant."
+    },
+    {
+      "id": "c043c9c9f9de6adb00760dce",
+      "project": "VoiceCallDemo",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: readWant selects an emitter event, but the listener passes a hard-coded EVENT_UI_ANSWER constant to the logger; this is control selection, not explicit value dependence."
+    },
+    {
+      "id": "a0cb9d779f2ceac08f8d6113",
+      "project": "HarmonyOS-Inno",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: onNewWant stores want.uri in OHBridge.wantUri, while InputPage line 71 displays this.inputText; the reported component transition does not carry the stored URI."
+    },
+    {
+      "id": "30cbbcf18141245ab03075a3",
+      "project": "HarmonyOS-Inno",
+      "sourceKind": "framework_input",
+      "provenance": "ifds",
+      "evidence": "Manual source inspection: onCreate stores want.uri in OHBridge.wantUri, but InputPage line 65 displays a fixed validation message and never reads that field."
+    }
+  ]
+}

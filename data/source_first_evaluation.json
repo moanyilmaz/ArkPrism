@@ -1,0 +1,604 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "ArkSourceFirst60",
+  "runManifest": "E:\\arkprism-fse2027-experiments\\experiments\\source_first60_detector_20260727_v3_source_locations\\run_manifest.json",
+  "projects": 60,
+  "goldOccurrences": 90,
+  "detectedOccurrences": 90,
+  "occurrence": {
+    "tp": 90,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "precisionWilson95": {
+      "estimate": 1,
+      "lower": 0.9590643744356734,
+      "upper": 1
+    },
+    "recallWilson95": {
+      "estimate": 1,
+      "lower": 0.9590643744356734,
+      "upper": 1
+    }
+  },
+  "projectClassification": {
+    "tp": 16,
+    "tn": 44,
+    "fp": 0,
+    "fn": 0,
+    "accuracy": 1,
+    "accuracyWilson95": {
+      "estimate": 1,
+      "lower": 0.93982814785791,
+      "upper": 0.9999999999999998
+    },
+    "sensitivity": 1,
+    "specificity": 1
+  },
+  "rejectedNavigationCandidates": 96,
+  "evidence": {
+    "namespace_call": {
+      "gold": 26,
+      "tp": 26,
+      "fn": 0,
+      "recall": 1
+    },
+    "manager_receiver": {
+      "gold": 3,
+      "tp": 3,
+      "fn": 0,
+      "recall": 1
+    },
+    "constructed_receiver": {
+      "gold": 4,
+      "tp": 4,
+      "fn": 0,
+      "recall": 1
+    },
+    "typed_receiver": {
+      "gold": 11,
+      "tp": 11,
+      "fn": 0,
+      "recall": 1
+    },
+    "namespace_property": {
+      "gold": 44,
+      "tp": 44,
+      "fn": 0,
+      "recall": 1
+    },
+    "factory_receiver": {
+      "gold": 2,
+      "tp": 2,
+      "fn": 0,
+      "recall": 1
+    }
+  },
+  "unresolvedConfiguredIdentities": [],
+  "ambiguousConfiguredIdentities": [
+    {
+      "project": "Aigis",
+      "file": "entry/src/main/ets/components/settings.ets",
+      "line": 10,
+      "column": 5,
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "configuredMethod": "getSystemPasteboard"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "method": "getSystemPasteboard",
+        "args": [],
+        "code": "%5 = instanceinvoke pasteboard.<@%unk/%unk: .getSystemPasteboard()>()",
+        "file": "entry/src/main/ets/components/settings.ets",
+        "line": 10,
+        "declaringMethod": "@Aigis/entry/src/main/ets/components/settings.ets: %dflt.copyToPasterBoard(string, @Aigis/entry/src/main/ets/components/settings.ets: %dflt.%AM0())",
+        "permission": null,
+        "profilingCategory": "user_data.clipboard",
+        "column": 5,
+        "originalCode": "pasteboard.getSystemPasteboard()",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "getSystemPasteboard"
+        },
+        {
+          "package": "@ohos.pasteboard",
+          "namespace": "pasteboard",
+          "method": "getSystemPasteboard"
+        }
+      ]
+    },
+    {
+      "project": "Aigis",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "line": 1104,
+      "column": 9,
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "configuredMethod": "getSystemPasteboard"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.BasicServicesKit",
+        "namespace": "pasteboard",
+        "method": "getSystemPasteboard",
+        "args": [],
+        "code": "%7 = instanceinvoke pasteboard.<@%unk/%unk: .getSystemPasteboard()>()",
+        "file": "entry/src/main/ets/pages/Index.ets",
+        "line": 1104,
+        "declaringMethod": "@Aigis/entry/src/main/ets/pages/Index.ets: OTPItem.copyCodeToPateBoard()",
+        "permission": null,
+        "profilingCategory": "user_data.clipboard",
+        "column": 9,
+        "originalCode": "pasteboard.getSystemPasteboard()",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "getSystemPasteboard"
+        },
+        {
+          "package": "@ohos.pasteboard",
+          "namespace": "pasteboard",
+          "method": "getSystemPasteboard"
+        }
+      ]
+    },
+    {
+      "project": "DriverLicenseExam",
+      "file": "commons/commonLib/src/main/ets/model/CommonModel.ets",
+      "line": 42,
+      "column": 30,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getCurrentLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation",
+        "args": [],
+        "code": "%2 = instanceinvoke geoLocationManager.<@%unk/%unk: .getCurrentLocation()>()",
+        "file": "commons/commonLib/src/main/ets/model/CommonModel.ets",
+        "line": 42,
+        "declaringMethod": "@DriverLicenseExam/commons/commonLib/src/main/ets/model/CommonModel.ets: CommonModel.getLocationName()",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 30,
+        "originalCode": "geoLocationManager.getCurrentLocation()",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getCurrentLocation"
+        }
+      ]
+    },
+    {
+      "project": "DriverLicenseExam",
+      "file": "commons/commonLib/src/main/ets/model/CommonModel.ets",
+      "line": 46,
+      "column": 29,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getAddressesFromLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getAddressesFromLocation",
+        "args": [
+          "reverseGeocodeRequest"
+        ],
+        "code": "%4 = instanceinvoke geoLocationManager.<@%unk/%unk: .getAddressesFromLocation()>(reverseGeocodeRequest)",
+        "file": "commons/commonLib/src/main/ets/model/CommonModel.ets",
+        "line": 46,
+        "declaringMethod": "@DriverLicenseExam/commons/commonLib/src/main/ets/model/CommonModel.ets: CommonModel.getLocationName()",
+        "permission": "ohos.permission.LOCATION",
+        "profilingCategory": "location",
+        "column": 29,
+        "originalCode": "geoLocationManager.getAddressesFromLocation(reverseGeocodeRequest)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getAddressesFromLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getAddressesFromLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getAddressesFromLocation"
+        }
+      ]
+    },
+    {
+      "project": "DriverLicenseExam",
+      "file": "commons/commonLib/src/main/ets/utils/LocateUtil.ets",
+      "line": 27,
+      "column": 22,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getLastLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getLastLocation",
+        "args": [],
+        "code": "location = instanceinvoke geoLocationManager.<@%unk/%unk: .getLastLocation()>()",
+        "file": "commons/commonLib/src/main/ets/utils/LocateUtil.ets",
+        "line": 27,
+        "declaringMethod": "@DriverLicenseExam/commons/commonLib/src/main/ets/utils/LocateUtil.ets: LocateUtil.[static]getPreLocationPosition()",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 22,
+        "originalCode": "geoLocationManager.getLastLocation()",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getLastLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getLastLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getLastLocation"
+        }
+      ]
+    },
+    {
+      "project": "DriverLicenseExam",
+      "file": "commons/commonLib/src/main/ets/utils/LocateUtil.ets",
+      "line": 46,
+      "column": 5,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getCurrentLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation",
+        "args": [
+          "request"
+        ],
+        "code": "%1 = instanceinvoke geoLocationManager.<@%unk/%unk: .getCurrentLocation()>(request)",
+        "file": "commons/commonLib/src/main/ets/utils/LocateUtil.ets",
+        "line": 46,
+        "declaringMethod": "@DriverLicenseExam/commons/commonLib/src/main/ets/utils/LocateUtil.ets: LocateUtil.[static]getLocationPosition(Callback<void>)",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 5,
+        "originalCode": "geoLocationManager.getCurrentLocation(request)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getCurrentLocation"
+        }
+      ]
+    },
+    {
+      "project": "DriverLicenseExam",
+      "file": "components/module_city_select/src/main/ets/common/Utils.ets",
+      "line": 164,
+      "column": 37,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getCurrentLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation",
+        "args": [
+          "requestInfo"
+        ],
+        "code": "%1 = instanceinvoke geoLocationManager.<@%unk/%unk: .getCurrentLocation()>(requestInfo)",
+        "file": "components/module_city_select/src/main/ets/common/Utils.ets",
+        "line": 164,
+        "declaringMethod": "@DriverLicenseExam/components/module_city_select/src/main/ets/common/Utils.ets: SystemSceneUtils.[static]getCurrentCityInfo()",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 37,
+        "originalCode": "geoLocationManager.getCurrentLocation(requestInfo)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getCurrentLocation"
+        }
+      ]
+    },
+    {
+      "project": "FlameChase",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "line": 204,
+      "column": 13,
+      "api": {
+        "package": "@kit.BasicServicesKit",
+        "namespace": "deviceinfo",
+        "configuredMethod": "osFullName"
+      },
+      "reportUsage": {
+        "category": "privacy constants",
+        "apiPackage": "@kit.BasicServicesKit",
+        "namespace": "deviceinfo",
+        "method": "osFullName",
+        "args": [],
+        "code": "%63 = deviceInfo.<@%unk/%unk: .osFullName>",
+        "file": "entry/src/main/ets/pages/Index.ets",
+        "line": 204,
+        "declaringMethod": "@FlameChase/entry/src/main/ets/pages/Index.ets: Index.settingsPanelBuilder()",
+        "permission": null,
+        "profilingCategory": "device_identity.software",
+        "column": 13,
+        "originalCode": "deviceInfo.osFullName",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "deviceInfo",
+          "method": "osFullName"
+        },
+        {
+          "package": "@ohos.deviceInfo",
+          "namespace": "deviceInfo",
+          "method": "osFullName"
+        }
+      ]
+    },
+    {
+      "project": "harmonyos4me_hmosworld",
+      "file": "features/challenge/src/main/ets/components/ImageViewDialog.ets",
+      "line": 124,
+      "column": 23,
+      "api": {
+        "package": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "configuredMethod": "createAsset"
+      },
+      "reportUsage": {
+        "category": "indirect invoke",
+        "apiPackage": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "method": "createAsset",
+        "args": [
+          "%2",
+          "'jpg'"
+        ],
+        "code": "%3 = instanceinvoke phAccessHelper.<@%unk/%unk: .createAsset()>(%2, 'jpg')",
+        "file": "features/challenge/src/main/ets/components/ImageViewDialog.ets",
+        "line": 124,
+        "declaringMethod": "@harmonyos4me_hmosworld/features/challenge/src/main/ets/components/ImageViewDialog.ets: ImageViewDialog.SavePicture()",
+        "permission": "ohos.permission.WRITE_IMAGEVIDEO",
+        "profilingCategory": "user_data.media",
+        "matchEvidence": "receiver_origin",
+        "column": 23,
+        "originalCode": "phAccessHelper.createAsset(photoAccessHelper.PhotoType.IMAGE, 'jpg')",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "createAsset"
+        },
+        {
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "photoAccessHelper",
+          "method": "createAsset"
+        }
+      ]
+    },
+    {
+      "project": "harmonyos4me_hmosworld",
+      "file": "features/challenge/src/main/ets/views/MapView.ets",
+      "line": 290,
+      "column": 9,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getCurrentLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation",
+        "args": [
+          "%1"
+        ],
+        "code": "%2 = instanceinvoke geoLocationManager.<@%unk/%unk: .getCurrentLocation()>(%1)",
+        "file": "features/challenge/src/main/ets/views/MapView.ets",
+        "line": 290,
+        "declaringMethod": "@harmonyos4me_hmosworld/features/challenge/src/main/ets/views/MapView.ets: MapView.getDistances()",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 9,
+        "originalCode": "geoLocationManager.getCurrentLocation(this.requestInfo)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getCurrentLocation"
+        }
+      ]
+    },
+    {
+      "project": "UseCacheInsteadAddressInquiry",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "line": 80,
+      "column": 13,
+      "api": {
+        "package": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "configuredMethod": "getCurrentLocation"
+      },
+      "reportUsage": {
+        "category": "direct invoke stmt after assignment",
+        "apiPackage": "@kit.LocationKit",
+        "namespace": "geoLocationManager",
+        "method": "getCurrentLocation",
+        "args": [
+          "requestInfo"
+        ],
+        "code": "%7 = instanceinvoke geoLocationManager.<@%unk/%unk: .getCurrentLocation()>(requestInfo)",
+        "file": "entry/src/main/ets/pages/Index.ets",
+        "line": 80,
+        "declaringMethod": "@UseCacheInsteadAddressInquiry/entry/src/main/ets/pages/Index.ets: Index.%AM1$apiGetLocation(unknown)",
+        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
+        "profilingCategory": "location",
+        "column": 13,
+        "originalCode": "geoLocationManager.getCurrentLocation(requestInfo)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.LocationKit",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geoLocationManager",
+          "namespace": "geoLocationManager",
+          "method": "getCurrentLocation"
+        },
+        {
+          "package": "@ohos.geolocation",
+          "namespace": "geolocation",
+          "method": "getCurrentLocation"
+        }
+      ]
+    },
+    {
+      "project": "UserFileURI",
+      "file": "entry/src/main/ets/pages/Index.ets",
+      "line": 80,
+      "column": 13,
+      "api": {
+        "package": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "configuredMethod": "getAssets"
+      },
+      "reportUsage": {
+        "category": "indirect invoke",
+        "apiPackage": "@kit.MediaLibraryKit",
+        "namespace": "PhotoAccessHelper",
+        "method": "getAssets",
+        "args": [
+          "fetchOption"
+        ],
+        "code": "%5 = instanceinvoke phAccessHelper.<@%unk/%unk: .getAssets()>(fetchOption)",
+        "file": "entry/src/main/ets/pages/Index.ets",
+        "line": 80,
+        "declaringMethod": "@UserFileURI/entry/src/main/ets/pages/Index.ets: %dflt.uriGetAssets()",
+        "permission": "ohos.permission.READ_IMAGEVIDEO",
+        "profilingCategory": "user_data.media",
+        "matchEvidence": "receiver_type",
+        "column": 13,
+        "originalCode": "phAccessHelper.getAssets(fetchOption)",
+        "locationEvidence": "source_ast"
+      },
+      "candidates": [
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "getAssets"
+        },
+        {
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "photoAccessHelper",
+          "method": "getAssets"
+        }
+      ]
+    }
+  ],
+  "falsePositives": [],
+  "falseNegatives": []
+}

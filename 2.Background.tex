@@ -8,7 +8,7 @@ Unlike traditional Android applications, where many lifecycle and callback conve
 
 \openharmony also exposes a broad API ecosystem for device identity, account information, clipboard access, sensors, camera, media, location, network state, Wi-Fi, Bluetooth, telephony, calendar, and other capabilities. Some APIs have migrated from historical \texttt{@ohos.*} packages to newer \texttt{@kit.*} packages, while many apps still contain mixed imports, aliases, default imports, and manager-style APIs. For example, a project may import device information from \texttt{@ohos.deviceInfo}, from \texttt{@kit.BasicServicesKit}, or through a default alias. Similarly, APIs such as pasteboard and request-agent operations may be invoked directly from a namespace or indirectly through an object returned by a manager factory.
 
-This evolution creates a tension: exact package matching under-reports the same conceptual API under different names, while method-name-only matching over-reports common verbs. \mytool reports both namespace-method metrics (migration-compatible) and strict package-signature metrics (alias-sensitive).
+This evolution creates a tension: exact package matching separates historical and consolidated exports of the same API, while method-name-only matching accepts common verbs without an ownership witness. A resolver must normalize documented migrations at namespace granularity while preserving receiver and member constraints.
 
 \subsection{Foundational Static Analysis for ArkTS}
 ArkAnalyzer provides \arkts-aware code representation, IR transformation, Scene construction, call-graph construction, and basic data-flow support~\cite{arkanalyzer}. HapFlow builds on ArkAnalyzer to provide inter-procedural taint analysis for \openharmony, addressing lifecycle/callback entry modeling, closure-captured variables, and source/sink extraction~\cite{hapflow}.
@@ -49,6 +49,6 @@ struct Index {
 
 This example illustrates why a single analysis layer is insufficient: recognition must handle the indirect receiver \texttt{pb}, call-chain recovery must include lifecycle and UI callback edges, taint analysis must handle callback-provided source data, and sink analysis must classify \texttt{hilog.info} as log exposure. \mytool combines these layers in one report.
 
-\subsection{Recurring Failure Modes}
+\subsection{Analysis Requirements}
 \label{subsec:failure_modes}
-Inspection of source/IR pairs and failed taint paths exposed six recurring classes: project-layout misses, package-migration mismatches, lost compound namespaces after IR lowering, unresolved manager receivers, missing callback edges, and lost callback-carried taint. We use these classes to define the analysis stages in Section~\ref{sec:design} and the case-level error taxonomy in Section~\ref{sec:evaluation}; we do not infer their corpus prevalence from the manually selected high-output projects.
+The ArkTS setting induces six recurring analysis requirements: robust project-layout discovery, namespace-constrained package migration, compound-namespace recovery after IR lowering, manager-receiver provenance, callback-edge recovery, and typed propagation of callback-carried values. Section~\ref{sec:design} maps these requirements to explicit analysis stages, while Section~\ref{sec:evaluation} tests them with identity, flow, and asynchronous oracles.

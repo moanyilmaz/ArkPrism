@@ -8,7 +8,7 @@ Table~\ref{tab:hapbench_errors_app} lists every error produced by either executa
 
 \begin{table}[H]
 \centering
-\caption{Complete error inventory for the main HapBench comparison.}
+\caption{Case-level error inventory for the main HapBench comparison.}
 \label{tab:hapbench_errors_app}
 \begin{tabularx}{\columnwidth}{@{}l l l Y@{}}
 \toprule
@@ -28,6 +28,8 @@ HapFlow & FP & \texttt{UnreachableFlow} & Lifecycle cycle creates reachability \
 \end{table}
 
 The two tools agree on 58 outcomes. Of the nine discordant cases, \mytool alone is correct on six and HapFlow alone on three. The exact two-sided McNemar test is therefore based on the discordant pair $(6,3)$ and yields $p=0.508$.
+
+At the finer endpoint-pair unit, \mytool's 52 raw paths canonicalize to 51 source--sink pairs. Source annotations or direct source/IR review confirm 50; the additional pair is the \texttt{NoLeak.log} target at line 14 of \texttt{VirtualDispatch1}, whose allocation receives an empty constant. The retained audit records every pair, its source identity, endpoint lines, provenance, review mode, and decision; an integrity test reproduces TP/FP/FN$=50/1/3$ and 98.04\% precision.
 
 \subsection{Lifecycle-Oracle Sensitivity}
 \label{subsec:app_oracle_sensitivity}
@@ -49,7 +51,7 @@ HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27\% & 96.00\% & 58.82\% & 91.43\%
 \end{tabular}}
 \end{table}
 
-The tools then disagree on nine cases, all classified correctly only by \mytool; the exact two-sided McNemar test gives $p=0.00390625$. This is a post-hoc sensitivity analysis rather than a replacement oracle. It shows that the primary nonsignificant result is conservative with respect to these three lifecycle assumptions, while also making the semantics responsible for the difference explicit. The artifact derives both tables from the same case predictions through \texttt{analyze\_hapbench\_oracle\_sensitivity.js}.
+The tools then disagree on nine cases, all classified correctly only by \mytool; the exact two-sided McNemar test gives $p=0.00390625$. This secondary sensitivity contract does not replace the published oracle; it makes the object and event-order semantics responsible for the difference explicit. The artifact derives both tables from the same case predictions through \texttt{analyze\_hapbench\_oracle\_sensitivity.js}.
 
 \subsection{Uncertainty and Category Robustness}
 
@@ -95,30 +97,28 @@ OpenHarmony-specific APIs & 5 & 100.00\% & 100.00\% \\
 \subsection{Source-first Benchmark Protocol}
 \label{subsec:app_manual_audit}
 
-ArkSourceFirst60 is selected before the evaluated detector run. Projects are partitioned by source-tree size and by whether their imports are compatible with the frozen sensitive-API rules; deterministic hash ordering selects ten projects from each of the six strata. The manifest stores the selection seed, source-tree fingerprint, rule hash, and package-migration hash. Candidate discovery parses executable member accesses and import bindings, but it neither reads a \mytool report nor assigns a gold label.
+ArkSourceFirst60 is selected before the evaluated detector run. Projects are partitioned by source-tree size and by whether their imports are compatible with the fixed sensitive-API rules; deterministic hash ordering selects ten projects from each of the six strata. The manifest stores the selection seed, source-tree fingerprint, rule hash, and package-migration hash. Candidate discovery collects the project-wide SDK-import universe and enumerates statically named calls and property reads compatible with that universe, including static element access, named-import calls, and simple callable aliases. It neither reads a \mytool report nor assigns a gold label.
 
-Manual review accepts an occurrence only when its executable source context establishes the configured package/namespace/member and access kind through an import, SDK receiver type, constructor, manager/factory definition, or executable property read. It rejects comments, strings, declarations, same-name application methods, and unrelated library/controller receivers. The delivered gold file contains 90 accepted occurrences; a companion decision file preserves all 101 accept/reject judgments, including the 11 high-confusion negatives. An integrity test rehashes every source file, validates every exact line and canonical rule key, and rejects duplicate occurrence identities. Evaluation joins detector and gold records on project, normalized file, exact line, canonical API, and access kind.
+Manual review accepts an occurrence only when its executable source context establishes the configured package/namespace/member and access kind through an import, SDK receiver type, constructor, manager/factory definition, or executable property read. It rejects comments, strings, declarations, same-name application methods, and unrelated library/controller receivers. The delivered gold file contains 90 accepted occurrences; a companion decision file preserves all 186 judgments, including 96 receiver- or owner-incompatible negatives. An integrity test rehashes every source file, validates every exact line and column, checks each canonical rule key, and rejects duplicate occurrence identities. Evaluation joins detector and gold records on project, normalized file, exact line and column, canonical API, and access kind.
 
-\subsection{High-output Stress-audit Decision Rule}
+\subsection{High-output Stress-audit Protocol}
 
-The 120-project audit labels an item at project--namespace--member level. A report is accepted only when the recorded source context contains an executable access matching the configured API and one of the following identity witnesses:
+The 120-project stress audit labels project--namespace--member keys. A key is accepted only when executable source establishes the configured API through an imported namespace/package alias, a manager/helper definition chain, an SDK receiver type, or an executable property rule. Comments, strings, declarations, unrelated same-name methods, and ambiguous method-only matches are rejected. Each accepted key retains project, normalized package/namespace/member, access kind, source file/line, and a bounded source excerpt.
 
-\begin{compactitem}
-  \item an imported namespace or package alias invokes the configured member;
-  \item a manager/helper receiver is connected to its configured factory by a visible definition or field assignment;
-  \item an SDK receiver type identifies the configured namespace; or
-  \item an executable field/property access is declared as a property source in the fixed rule set.
-\end{compactitem}
+The construction set contains 1,533 reviewed location rows that canonicalize to 666 confirmed project--API keys. The companion integrity audit resolves every key against the delivered source tree and final rules, verifies file/line bounds and snippets, and checks package/namespace/member compatibility. All 666 records pass. Because the set begins from an earlier output ranking, it is not an exhaustive occurrence oracle.
 
-Comments, string literals, declarations without access, unrelated application methods with the same final token, and ambiguous method-only matches across multiple package namespaces are rejected. For every accepted key, the artifact stores project identifier, normalized package/namespace/member, access kind, source file and line, and a bounded source snippet. Precision is computed over the 666 project--API keys.
+The final detector-only run uses the same frozen build as the corpus and recovers all 666 confirmed keys in all 120 projects. It also reports 182 keys outside the frozen review set. The evaluator therefore defines \emph{confirmed-key reproduction coverage} (666/666) and leaves final-output precision undefined; no unreviewed key enters either side of a precision ratio.
 
-The enriched construction file contained 1,533 report-derived rows, including repeated rows that pointed to the same source evidence. The delivered \texttt{top120\_source\_audit\_annotations.json} canonicalizes them to the 666 audited project--API keys, removes detector-internal fields, and does not contain occurrence-precision, false-negative, or recall counters. Its declared scope is \texttt{output\_selected\_precision\_audit}; both \texttt{occurrencePrecisionDefined} and \texttt{recallDefined} are \texttt{false}. This prevents the source-evidence artifact from being mistaken for an exhaustive occurrence-level or source-first oracle.
+\subsection{Real-project Path-audit Protocol}
+\label{subsec:app_path_audit}
 
-The companion integrity audit independently resolves each record against the delivered source tree and final detector rules. It checks project and file existence, positive line bounds, member text on the recorded line, nonempty snippets, and package/namespace/member compatibility under the same migration and normalization contract as the detector. All 666 records pass these structural checks. This check establishes artifact referential integrity; it does not replace the source-review decision or convert the audit into a recall benchmark.
+The path audit begins from the complete 449-path corpus artifact. A deterministic sampler balances source kind, provenance, sink family, path-length bin, and project diversity, producing 120 records from 48 projects. The fixed queue contains 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and all available network and UI strata. Each record stores the run-manifest hash, report hash, source/sink file hashes, endpoint locations, path statements, source identity, and provenance.
+
+Reviewers inspect the referenced source and IR path and assign five Boolean decisions: source identity, sink identity, explicit value dependence, reachability consistency, and provenance label. The evaluator accepts a complete path only when all five hold, rejects missing decisions, and rehashes all 240 endpoint files and 120 reports before computing metrics. The audit confirms source identity, sink identity, and provenance for 120/120 paths; explicit dependence, reachability, and complete-path correctness hold for 114/120. All 90 privacy-data paths are complete. The six rejected framework-input paths consist of four unrelated static/component-field joins and two lifecycle/event joins without explicit value dependence.
 
 \subsection{Artifact-to-Paper Traceability}
 \label{subsec:app_traceability}
 
-The artifact provides ArkSourceFirst60's selection manifest, review decisions, occurrence gold set, and integrity evaluator; the 64-case ArkIdentityBench progression oracle; machine-readable oracles for all 67 HapBench and 48 ArkAsyncBench cases; and raw output for every evaluated configuration. The evaluators derive confusion matrices, construct/category metrics, paired outcomes, and runtimes. Figure~\ref{fig:eval_hapbench} is generated from evaluator JSON rather than transcribed from the paper. Corpus tables and figures consume one process-isolated run of the final build; change-impact overlays are rejected by the release summarizer. The run manifest and batch summary record the project inventory, analyzer revision and build hash, rule and SDK fingerprints, command line, resource bounds, completion state, and the explicitly excluded partial project.
+The artifact provides ArkSourceFirst60's selection manifest, complete 186-item decision file, occurrence gold set, candidate-enumerator tests, and integrity evaluator; the 64-case ArkIdentityBench oracle; machine-readable oracles and raw outputs for all 67 HapBench and 48 ArkAsyncBench cases; the Top-120 reproduction evaluator; and the complete semantic-path audit. Evaluators derive confusion matrices, construct/category metrics, endpoint-pair outcomes, paired tests, uncertainty intervals, and runtimes. Figure~\ref{fig:eval_hapbench} and Figure~\ref{fig:eval_corpus_landscape} are generated from evaluator JSON rather than transcribed values.
 
-The corpus audit checks three invariants before aggregation: each configured-query path has resolvable source and sink endpoints, each path carries an \texttt{ifds}, \texttt{async\_supplement}, or \texttt{both} provenance tag, and every detector-to-path link references valid records with compatible source evidence. Detector-local sink records and configured-query paths remain separate when this conservative join cannot be established. Figure companion JSON files retain the input manifest and computed values so that figures, tables, and prose cannot silently use different runs.
+Corpus tables and figures consume one verified report per project from a single frozen build, SDK, rule set, and command contract; change-impact overlays are rejected by the release summarizer. The manifest records project inventory, build/source/runner hashes, SDK and rule fingerprints, resource bounds, and completion state. The corpus audit checks that every configured path has resolvable source and sink endpoints, a valid \texttt{ifds}, \texttt{async\_supplement}, or \texttt{both} provenance tag, and valid detector-to-path links when the two evidence universes can be joined. Companion JSON retains every plotted value and input manifest hash.

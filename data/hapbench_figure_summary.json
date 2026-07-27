@@ -3,7 +3,6 @@
   "toolOrder": [
     "HapFlow artifact reproduction",
     "ArkPrism full",
-    "ArkPrism callback-off",
     "ArkPrism no-ir",
     "ArkPrism no-receiver",
     "ArkPrism unbounded-lifecycle"
@@ -83,7 +82,6 @@
     "toolOrder": [
       "HapFlow artifact reproduction",
       "ArkPrism full",
-      "ArkPrism callback-off",
       "ArkPrism no-ir",
       "ArkPrism no-receiver",
       "ArkPrism unbounded-lifecycle"
@@ -94,12 +92,10 @@
         0,
         0,
         0,
-        0,
         0
       ],
       [
         1,
-        0,
         0,
         4,
         0,
@@ -108,7 +104,6 @@
       [
         1,
         0,
-        0,
         1,
         0,
         0
@@ -118,12 +113,10 @@
         0,
         0,
         0,
-        0,
         0
       ],
       [
         3,
-        0,
         0,
         8,
         1,
@@ -134,11 +127,9 @@
         3,
         3,
         3,
-        3,
         2
       ],
       [
-        0,
         0,
         0,
         0,
@@ -152,12 +143,10 @@
         0.0,
         0.0,
         0.0,
-        0.0,
         0.0
       ],
       [
         10.0,
-        0.0,
         0.0,
         40.0,
         0.0,
@@ -166,7 +155,6 @@
       [
         20.0,
         0.0,
-        0.0,
         20.0,
         0.0,
         0.0
@@ -176,12 +164,10 @@
         0.0,
         0.0,
         0.0,
-        0.0,
         0.0
       ],
       [
         13.636363636363637,
-        0.0,
         0.0,
         36.36363636363637,
         4.545454545454546,
@@ -192,11 +178,9 @@
         23.076923076923077,
         23.076923076923077,
         23.076923076923077,
-        23.076923076923077,
         15.384615384615385
       ],
       [
-        0.0,
         0.0,
         0.0,
         0.0,
@@ -207,12 +191,6 @@
   },
   "pairedAblationEffects": {
     "metricDeltaPoints": {
-      "ArkPrism callback-off": {
-        "recall": 0.0,
-        "specificity": 0.0,
-        "f1": 0.0,
-        "mcc": 0.0
-      },
       "ArkPrism no-ir": {
         "recall": -24.52830188679246,
         "specificity": 0.0,
@@ -233,7 +211,6 @@
       }
     },
     "exactTwoSidedMcNemarP": {
-      "ArkPrism callback-off": 1.0,
       "ArkPrism no-ir": 0.000244140625,
       "ArkPrism no-receiver": 1.0,
       "ArkPrism unbounded-lifecycle": 1.0

@@ -1,322 +1,42 @@
 {
   "provenance": {
-    "reportsDir": "E:\\arkprism-fse2027-experiments\\experiments\\argus1015_full_taint_20260724_v4",
-    "detectorOverlay": "E:\\arkprism-fse2027-experiments\\experiments\\detector_factory_api_impact_20260724_v6_dedup",
-    "taintOverlay": "E:\\arkprism-fse2027-experiments\\experiments\\strict_pta_taint_replacement_20260724_v7",
-    "manualBenchmark": "E:\\arkprism-develop-0702\\docs\\generated_argus1015_manual_benchmark_top120\\manual_benchmark_top120_usages.json",
-    "reportCount": 1014,
-    "manualSampleCount": 120,
-    "manualAnnotationCount": 1533
+    "reportsDir": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_final_single_20260727_v22",
+    "runManifest": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_final_single_20260727_v22\\run_manifest.json",
+    "runManifestSha256": "2ba9f0c1e26e2da6127e87177ef830a6b2c485de90074a1d64c0ca16ffab9438",
+    "runStartedAt": "2026-07-27T06:23:51.024Z",
+    "runCompletedAt": "2026-07-27T10:48:04.033Z",
+    "buildSha256": "36d4670e335d83d4fd8d944782c70b6ba7242d9e4a4ba2ce590ce6956b1f295f",
+    "configHashes": {
+      "sensitive_apis.json": "7cce33b670aa510fe5878d1686586e579993b8dd63a819ecba6e69a34c1fd325",
+      "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+      "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+      "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+      "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+      "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e"
+    },
+    "reportCount": 1014
   },
   "aggregate": {
     "projects": 1014,
-    "projectsWithApis": 273,
-    "projectsWithSinks": 185,
-    "projectsWithTaintFlows": 257,
-    "apiUsages": 1896,
-    "sinks": 1542,
-    "taintFlows": 1103
-  },
-  "manualBenchmarkFigure": {
-    "coverageAt120": {
-      "apiUsageAnnotations": 80.85443037974683,
-      "manualGoldApiMethods": 100.0,
-      "dataSinks": 79.50713359273671,
-      "taintFlows": 55.39437896645513
-    },
-    "globalBaselineRecall": {
-      "direct stmt": 17.56756756756757,
-      "direct calls": 62.312312312312315,
-      "+ manager": 77.77777777777779
-    },
-    "detectorCounts": {
-      "direct invoke stmt after assignment": 573,
-      "indirect invoke": 368,
-      "privacy constants": 403,
-      "direct invoke stmt": 189
-    },
-    "evidenceCounts": {
-      "namespace.method": 1362,
-      "member.method": 162,
-      "template-expression": 7,
-      "qualified-compound-call": 2
-    },
-    "projectCoverageProfiles": {
-      "goldSizeQ1": {
-        "D": {
-          "medianRecall": 0.0,
-          "q1Recall": 0.0,
-          "q3Recall": 0.0
-        },
-        "D+A": {
-          "medianRecall": 100.0,
-          "q1Recall": 50.0,
-          "q3Recall": 100.0
-        },
-        "D+A+M": {
-          "medianRecall": 100.0,
-          "q1Recall": 50.0,
-          "q3Recall": 100.0
-        },
-        "Full": {
-          "medianRecall": 100.0,
-          "q1Recall": 100.0,
-          "q3Recall": 100.0
-        }
-      },
-      "goldSizeQ2": {
-        "D": {
-          "medianRecall": 0.0,
-          "q1Recall": 0.0,
-          "q3Recall": 0.0
-        },
-        "D+A": {
-          "medianRecall": 66.66666666666666,
-          "q1Recall": 37.5,
-          "q3Recall": 100.0
-        },
-        "D+A+M": {
-          "medianRecall": 100.0,
-          "q1Recall": 66.66666666666666,
-          "q3Recall": 100.0
-        },
-        "Full": {
-          "medianRecall": 100.0,
-          "q1Recall": 100.0,
-          "q3Recall": 100.0
-        }
-      },
-      "goldSizeQ3": {
-        "D": {
-          "medianRecall": 0.0,
-          "q1Recall": 0.0,
-          "q3Recall": 20.0
-        },
-        "D+A": {
-          "medianRecall": 55.0,
-          "q1Recall": 35.0,
-          "q3Recall": 95.0
-        },
-        "D+A+M": {
-          "medianRecall": 100.0,
-          "q1Recall": 68.75,
-          "q3Recall": 100.0
-        },
-        "Full": {
-          "medianRecall": 100.0,
-          "q1Recall": 100.0,
-          "q3Recall": 100.0
-        }
-      },
-      "goldSizeQ4": {
-        "D": {
-          "medianRecall": 19.805194805194805,
-          "q1Recall": 0.0,
-          "q3Recall": 36.94852941176471
-        },
-        "D+A": {
-          "medianRecall": 71.84210526315789,
-          "q1Recall": 50.0,
-          "q3Recall": 100.0
-        },
-        "D+A+M": {
-          "medianRecall": 94.42724458204333,
-          "q1Recall": 68.92942583732057,
-          "q3Recall": 100.0
-        },
-        "Full": {
-          "medianRecall": 100.0,
-          "q1Recall": 100.0,
-          "q3Recall": 100.0
-        }
-      }
-    },
-    "evidenceAttributionFlows": {
-      "widthEncoding": "Each annotation is weighted by 1/sqrt(total annotations for its evidence form).",
-      "rawEvidenceCounts": {
-        "namespace.method": 1362,
-        "member.method": 162,
-        "template-expression": 7,
-        "qualified-compound-call": 2
-      },
-      "weightedEvidenceToDetector": {
-        "namespace->assigned": 15.038496855244478,
-        "namespace->manager": 6.205073477208983,
-        "namespace->property": 10.757267119877582,
-        "member->manager": 10.92087139832554,
-        "namespace->direct": 4.904446722160812,
-        "member->assigned": 1.0999438818457405,
-        "member->property": 0.07856742013183861,
-        "member->direct": 0.6285393610547089,
-        "template->assigned": 0.7559289460184544,
-        "template->property": 1.889822365046136,
-        "compound->assigned": 1.414213562373095
-      },
-      "weightedDetectorToCategory": {
-        "assigned->screen": 5.229603410922855,
-        "manager->screen": 5.283796192383195,
-        "property->hardware": 10.589148786643936,
-        "assigned->net. conn.": 4.11296562715543,
-        "manager->other": 9.471517318902842,
-        "direct->net. conn.": 0.9754700662861283,
-        "assigned->clipboard": 1.517397880889533,
-        "assigned->other": 7.448616326513951,
-        "direct->other": 4.503323235469052,
-        "manager->clipboard": 2.029265292990995,
-        "property->other": 2.13650811841162,
-        "manager->net. conn.": 0.34136607125752466,
-        "direct->screen": 0.05419278146034048
-      }
-    }
-  },
-  "detectionFigure": {
-    "categoryOrder": [
-      "device_identity.hardware",
-      "network.connectivity",
-      "device_identity.screen",
-      "user_data.account",
-      "user_data.clipboard",
-      "network.bluetooth",
-      "location",
-      "device_status.sensor"
-    ],
-    "categoryDetectorMatrix": [
-      [
-        0,
-        0,
-        0,
-        353
-      ],
-      [
-        39,
-        103,
-        131,
-        0
-      ],
-      [
-        4,
-        215,
-        3,
-        0
-      ],
-      [
-        0,
-        0,
-        180,
-        0
-      ],
-      [
-        1,
-        68,
-        44,
-        0
-      ],
-      [
-        36,
-        33,
-        34,
-        0
-      ],
-      [
-        23,
-        79,
-        0,
-        0
-      ],
-      [
-        71,
-        5,
-        0,
-        0
-      ]
-    ],
-    "detectorChainMatrix": [
-      [
-        156,
-        0,
-        4,
-        47
-      ],
-      [
-        413,
-        46,
-        101,
-        128
-      ],
-      [
-        426,
-        18,
-        4,
-        135
-      ],
-      [
-        164,
-        39,
-        151,
-        63
-      ]
-    ],
-    "detectorUsageCounts": [
-      207,
-      689,
-      583,
-      417
-    ],
-    "detectorSinkRates": [
-      52.17391304347826,
-      49.49201741654572,
-      55.57461406518011,
-      44.12470023980815
-    ],
-    "detectorTaintRates": [
-      25.60386473429952,
-      5.950653120464441,
-      4.288164665523156,
-      0.0
-    ],
-    "apiVolumeBuckets": {
-      "labels": [
-        "0",
-        "1",
-        "2-3",
-        "4-9",
-        ">=10"
-      ],
-      "projects": [
-        741,
-        63,
-        68,
-        90,
-        52
-      ],
-      "sinkRates": [
-        0.0,
-        28.57142857142857,
-        66.17647058823529,
-        82.22222222222221,
-        92.3076923076923
-      ],
-      "taintRates": [
-        20.51282051282051,
-        25.396825396825395,
-        35.294117647058826,
-        40.0,
-        55.769230769230774
-      ]
-    }
+    "projectsWithApis": 353,
+    "projectsWithSinks": 224,
+    "projectsWithTaintFlows": 181,
+    "apiUsages": 2336,
+    "sinks": 1754,
+    "taintFlows": 449
   },
   "corpusFigure": {
     "categories": [
-      "device_identity.hardware",
       "network.connectivity",
       "device_identity.screen",
+      "device_identity.hardware",
       "user_data.account",
       "user_data.clipboard",
-      "network.bluetooth",
       "location",
+      "network.bluetooth",
+      "user_data.media",
       "device_status.sensor",
-      "network.wifi",
-      "device_identity.software"
+      "device_identity.biometric"
     ],
     "sinkTypes": [
       "log",
@@ -327,6 +47,20 @@
     ],
     "categorySinkMatrix": [
       [
+        276,
+        3,
+        4,
+        13,
+        26
+      ],
+      [
+        95,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
         139,
         127,
         2,
@@ -334,38 +68,17 @@
         0
       ],
       [
-        203,
-        3,
-        4,
-        0,
-        9
-      ],
-      [
-        59,
+        103,
         0,
         0,
         0,
         0
       ],
       [
-        100,
-        0,
-        0,
-        0,
-        0
-      ],
-      [
-        36,
+        38,
         0,
         42,
         0,
-        0
-      ],
-      [
-        111,
-        0,
-        1,
-        7,
         0
       ],
       [
@@ -376,6 +89,20 @@
         0
       ],
       [
+        54,
+        0,
+        0,
+        2,
+        0
+      ],
+      [
+        45,
+        0,
+        45,
+        3,
+        0
+      ],
+      [
         93,
         4,
         0,
@@ -383,15 +110,8 @@
         0
       ],
       [
-        85,
+        91,
         0,
-        0,
-        5,
-        0
-      ],
-      [
-        57,
-        2,
         0,
         2,
         0
@@ -399,34 +119,88 @@
     ],
     "topCutoffs": {
       "10": {
-        "apiUsages": 501,
-        "share": 0.26424050632911394
+        "apiUsages": 572,
+        "share": 0.24486301369863014
       },
       "20": {
-        "apiUsages": 735,
-        "share": 0.3876582278481013
+        "apiUsages": 832,
+        "share": 0.3561643835616438
       },
       "50": {
-        "apiUsages": 1127,
-        "share": 0.5944092827004219
+        "apiUsages": 1283,
+        "share": 0.5492294520547946
       },
       "100": {
-        "apiUsages": 1494,
-        "share": 0.7879746835443038
+        "apiUsages": 1706,
+        "share": 0.7303082191780823
       },
       "120": {
-        "apiUsages": 1585,
-        "share": 0.8359704641350212
+        "apiUsages": 1818,
+        "share": 0.7782534246575342
       },
       "236": {
-        "apiUsages": 1859,
-        "share": 0.9804852320675106
+        "apiUsages": 2187,
+        "share": 0.9362157534246576
+      }
+    },
+    "pathScope": {
+      "privacy_data": {
+        "production": {
+          "paths": 231,
+          "projects": 28
+        },
+        "test": {
+          "paths": 2,
+          "projects": 1
+        },
+        "generated": {
+          "paths": 10,
+          "projects": 3
+        }
+      },
+      "framework_input": {
+        "production": {
+          "paths": 49,
+          "projects": 16
+        },
+        "test": {
+          "paths": 157,
+          "projects": 146
+        },
+        "generated": {
+          "paths": 0,
+          "projects": 0
+        }
+      }
+    },
+    "pathComplexity": {
+      "privacy_data|ifds": {
+        "count": 116,
+        "medianStatements": 5.0,
+        "p95Statements": 7.5,
+        "maxStatements": 10
+      },
+      "privacy_data|async_supplement": {
+        "count": 84,
+        "medianStatements": 4.0,
+        "p95Statements": 10.0,
+        "maxStatements": 14
+      },
+      "privacy_data|both": {
+        "count": 43,
+        "medianStatements": 4.0,
+        "p95Statements": 6.899999999999999,
+        "maxStatements": 8
+      },
+      "framework_input|ifds": {
+        "count": 206,
+        "medianStatements": 5.0,
+        "p95Statements": 10.75,
+        "maxStatements": 21
       }
     }
   },
   "figures": [
-    "figs/eval_manual_benchmark_landscape.pdf",
-    "figs/eval_detection_effectiveness.pdf",
     "figs/eval_corpus_landscape.pdf"
   ]
 }

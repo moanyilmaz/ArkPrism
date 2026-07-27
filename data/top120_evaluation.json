@@ -1,0 +1,5460 @@
+{
+  "schemaVersion": 1,
+  "benchmark": {
+    "name": "ArkPrism Top-120 Project-API-Key Source Audit",
+    "version": "2026-07-24",
+    "annotationUnit": "reported_project_api_key",
+    "scope": "output_selected_precision_audit",
+    "path": "E:\\arkprism-fse2027-experiments\\benchmarks\\ArkPrismTop120\\annotations.json",
+    "sha256": "9e1a05f28c290b1060b64973b5c71ac28ca9b08c0edb749114dec6b426912845",
+    "projects": 120,
+    "confirmedProjectApiKeys": 666,
+    "sourceEvidenceLocations": 666
+  },
+  "run": {
+    "path": "E:\\arkprism-fse2027-experiments\\benchmarks\\ArkPrismTop120\\results\\run_manifest.json",
+    "sha256": "3c2c86337dadea44cbb6bbd61646cddc4e975bfea791caa6656351f1c2f377b5",
+    "status": "complete",
+    "projectCount": 120,
+    "completedAt": "2026-07-27T11:05:14.683Z",
+    "build": {
+      "path": "E:\\arkprism-fse2027-experiments\\dist",
+      "entrySha256": "c45809597196232983661584cba583180b9adc4fffdb8f00a31fda248cbada26",
+      "sha256": "36d4670e335d83d4fd8d944782c70b6ba7242d9e4a4ba2ce590ce6956b1f295f",
+      "files": 327,
+      "bytes": 4039993
+    },
+    "implementation": {
+      "runnerPath": "E:\\arkprism-fse2027-experiments\\scripts\\run_argus_batch_isolated.js",
+      "runnerSha256": "084f078d2eb44a76fc751fc3b1d008f33a1c7aa8ec1c0e21f532c8cb80e897d8",
+      "source": {
+        "path": "E:\\arkprism-fse2027-experiments\\src",
+        "sha256": "d6bab71aca89e0a4887b6a713cf57fd0e773963b5e73fb6906618062a393a380",
+        "files": 436,
+        "bytes": 3475573
+      },
+      "packageJsonSha256": "a2dad534f9feb7deb81f2478d48971fd8067133fea96113331569bd4e955a22b",
+      "packageLockSha256": "a4ed0623fe2361a98e231d8a2f6c52f18cc13d9cb0383e4988845be590449190",
+      "tsconfigSha256": "196e2e89c429479466c72c4ec7a0b04fb89f3c0179f9c88cba203b2abd8bb325"
+    },
+    "sdk": {
+      "root": "E:\\OpenHarmony_SDK\\20\\ets",
+      "sha256": "70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6",
+      "files": 13721,
+      "bytes": 311592147,
+      "cache": "E:\\arkprism-fse2027-experiments\\experiments\\.cache\\sdk-4659e75aab4d7579.json",
+      "cacheHit": true
+    },
+    "configHashes": {
+      "sensitive_apis.json": "66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc",
+      "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+      "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+      "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+      "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+      "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e"
+    },
+    "arkArgs": [
+      "--no-taint"
+    ]
+  },
+  "output": {
+    "reports": 120,
+    "privacyApiOccurrences": 1692,
+    "uniqueProjectApiKeys": 848,
+    "unresolvedConfiguredOccurrences": 0
+  },
+  "metrics": {
+    "recoveredConfirmedKeys": 666,
+    "missingConfirmedKeys": 0,
+    "confirmedKeyCoverage": 1,
+    "confirmedKeyCoverageWilson95": {
+      "estimate": 1,
+      "lower": 0.9942651223358775,
+      "upper": 1
+    },
+    "unreviewedOutputKeys": 182,
+    "reviewedOutputPrecisionDefined": false,
+    "reviewedOutputPrecision": null,
+    "reviewedOutputPrecisionWilson95": null,
+    "projectsWithCompleteGoldRecovery": 120,
+    "completeProjectCoverage": 1,
+    "occurrencePrecisionDefined": false,
+    "corpusRecallDefined": false
+  },
+  "stratification": {
+    "evidenceKinds": {
+      "namespace.method": {
+        "gold": 558,
+        "recovered": 558,
+        "missing": 0,
+        "coverage": 1
+      },
+      "member.method": {
+        "gold": 102,
+        "recovered": 102,
+        "missing": 0,
+        "coverage": 1
+      },
+      "template-expression": {
+        "gold": 5,
+        "recovered": 5,
+        "missing": 0,
+        "coverage": 1
+      },
+      "qualified-compound-call": {
+        "gold": 1,
+        "recovered": 1,
+        "missing": 0,
+        "coverage": 1
+      }
+    },
+    "recoveredByNamespace": {
+      "aaid": 3,
+      "access": 22,
+      "appaccount": 4,
+      "asset": 5,
+      "audio": 24,
+      "ble": 14,
+      "bluetoothmanager": 1,
+      "calendarmanager": 6,
+      "camera": 26,
+      "connection": 54,
+      "contact": 7,
+      "deviceinfo": 148,
+      "display": 59,
+      "distributedaccount": 2,
+      "distributeddevicemanager": 11,
+      "geolocationmanager": 60,
+      "iap": 1,
+      "identifier": 8,
+      "inputmethodengine": 1,
+      "nethandover": 3,
+      "netquality": 6,
+      "osaccount": 6,
+      "pasteboard": 43,
+      "photoaccesshelper": 17,
+      "radio": 4,
+      "request": 11,
+      "sensor": 34,
+      "sms": 14,
+      "systempasteboard": 13,
+      "userauth": 11,
+      "websocket": 2,
+      "wifi": 1,
+      "wifimanager": 45
+    },
+    "missingByNamespace": {}
+  },
+  "projectResults": [
+    {
+      "sampleId": "T120-S001",
+      "projectName": "CommonAppDevelopment",
+      "goldKeys": 34,
+      "recoveredGoldKeys": 34,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 7,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "38023c1a13ce6c7187910fe0edfa0e2358d426eefa01457c43e26d6269e04750"
+    },
+    {
+      "sampleId": "T120-S002",
+      "projectName": "Wechat_HarmonyOS",
+      "goldKeys": 44,
+      "recoveredGoldKeys": 44,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "38466315b86c88f493b078d08a2a0911a4153897befa6d4d4dc9ca4f1d962915"
+    },
+    {
+      "sampleId": "T120-S003",
+      "projectName": "legado-Harmony-main",
+      "goldKeys": 38,
+      "recoveredGoldKeys": 38,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "3b258d3ca25c53749c879d0ae171e962e4445cd783941d750ef304db22b2cbef"
+    },
+    {
+      "sampleId": "T120-S004",
+      "projectName": "Snake_NEXT-main",
+      "goldKeys": 19,
+      "recoveredGoldKeys": 19,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "3174f300beed13a377af1f72006b4965ef9c0be6cafd37abfce96e40d4f0f5b1"
+    },
+    {
+      "sampleId": "T120-S005",
+      "projectName": "harmony-next-music-sharing",
+      "goldKeys": 41,
+      "recoveredGoldKeys": 41,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "d6904a2becd3f7322c48b3d4eb92ee424477229ee6aaa6ed46e991a324ae117b"
+    },
+    {
+      "sampleId": "T120-S006",
+      "projectName": "STUFFS_NEXT-master",
+      "goldKeys": 33,
+      "recoveredGoldKeys": 33,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b11351a2a0169c0348c9643a8929dbd2f61630b0ed2fce1128fdd7951cfded79"
+    },
+    {
+      "sampleId": "T120-S007",
+      "projectName": "applications_settings",
+      "goldKeys": 13,
+      "recoveredGoldKeys": 13,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 4,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "78c70e1a8f54d827706aedb71a695495cc49e18a318a9fee863912232b72c371"
+    },
+    {
+      "sampleId": "T120-S008",
+      "projectName": "harmonyos4me_ResponsiveLayout",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b3471c7f0451dbeab2c871fe64e53fb91994b357bae2ee0d078acdf78115ad39"
+    },
+    {
+      "sampleId": "T120-S009",
+      "projectName": "harmonyos4me_ZUtils",
+      "goldKeys": 26,
+      "recoveredGoldKeys": 26,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "d0b96c38d4f8fb89e82384add04b39926070a988f9835e620698161542d5d2fd"
+    },
+    {
+      "sampleId": "T120-S010",
+      "projectName": "harmonyos4me_MultiVideoApplication",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "87d6851e6566c6218d1537ddf6e9cca97dedfa3b5d4586ae23cfa393ec9acb84"
+    },
+    {
+      "sampleId": "T120-S011",
+      "projectName": "harmony-arkts-chat-app-ui",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 4,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "d88aa319c4b1632eedfd0e05680ced2f818aa63a3a5d44635cd46fc645205d64"
+    },
+    {
+      "sampleId": "T120-S012",
+      "projectName": "harmonyos_samples_network-query",
+      "goldKeys": 14,
+      "recoveredGoldKeys": 14,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "34fedbc9721adb6bd9528828e7caacd63d9e451698211cce2011c831f892bdeb"
+    },
+    {
+      "sampleId": "T120-S013",
+      "projectName": "harmonyProject-master",
+      "goldKeys": 20,
+      "recoveredGoldKeys": 20,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "c68adf2a386c2169226e4d87c73b2a24f4a2f5858abfe78b7435ada9de6849c1"
+    },
+    {
+      "sampleId": "T120-S014",
+      "projectName": "harmonyos_samples_CustomCamera",
+      "goldKeys": 8,
+      "recoveredGoldKeys": 8,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "74c9603380740b70cb9c9e052f5e80aca501c8f6be4f07808401564295d30ce9"
+    },
+    {
+      "sampleId": "T120-S015",
+      "projectName": "Dictionareow",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a9ba7346cc467726ee4175fc7dea06156eda6e9a503fc2322b3caea7e2076c77"
+    },
+    {
+      "sampleId": "T120-S016",
+      "projectName": "Photos",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "6643a4df4b2dc12d2861bdd081ecde33a48a445ce901fcbae9c5012c1ceaa5cb"
+    },
+    {
+      "sampleId": "T120-S017",
+      "projectName": "applications_systemui",
+      "goldKeys": 7,
+      "recoveredGoldKeys": 7,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "36e25dc2ddcc91e7cfadb1c5b5aac28757813abfae8eb868c99493e0c2e7f109"
+    },
+    {
+      "sampleId": "T120-S018",
+      "projectName": "Gramony",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "678297800371cb8bbb5d0cfd80bb46d55d82271d7cf1c2b9dc66825eb7d9d57f"
+    },
+    {
+      "sampleId": "T120-S019",
+      "projectName": "Homogram",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "ca644863b8ac02c9ae359b1c35209054fddc2dd4c0fd8bcf8d2128b7fc488e0d"
+    },
+    {
+      "sampleId": "T120-S020",
+      "projectName": "harmonyos4me_readerkit_samplecode_arkts",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "30f7a908c05494d27c698468b6ff5c392ee5e054b61ae3f9b9b35156677baf66"
+    },
+    {
+      "sampleId": "T120-S021",
+      "projectName": "UserAuthentication",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "641c3096cb52656197e1ae800da3315566cbb70190ba8ec8bee8ac18dfb38309"
+    },
+    {
+      "sampleId": "T120-S022",
+      "projectName": "Melotopia-HMOS",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "0d690fd2d43d693f339df5347acf831a353be860f290e0910d1ed2ef6f707bc5"
+    },
+    {
+      "sampleId": "T120-S023",
+      "projectName": "MultiVideoApplication",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "063299bbf826b505c7c6afce47f82b4110d3b3a0d0fda9f937dc971473c2bd90"
+    },
+    {
+      "sampleId": "T120-S024",
+      "projectName": "harmonyos4me_MultiDeviceCommunication",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "8025066e380ec611f6f5f18a821c5bc182434c707a99f18ab56907b4a6a49cec"
+    },
+    {
+      "sampleId": "T120-S025",
+      "projectName": "uitest",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "da3c31038dd3ccd2d9af9fceb9a4b333eb157c8673bfdafb0668a14f5314c9b2"
+    },
+    {
+      "sampleId": "T120-S026",
+      "projectName": "ChildrenEducation",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 4,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "ad035dcd20835797e14e7d0946e1f2dc46c4c3dcf569d03a09879470fa2aed94"
+    },
+    {
+      "sampleId": "T120-S027",
+      "projectName": "legado-Harmony-master",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "d1b25a1d8669067b69898eb19f642906d1ce1a1e5764b88efc78da2c2e933b35"
+    },
+    {
+      "sampleId": "T120-S028",
+      "projectName": "siyuan-harmony",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "db9a74f7449dd97224cce11bdd0a093d304cd4f1867ebea762543ecb30efc496"
+    },
+    {
+      "sampleId": "T120-S029",
+      "projectName": "Spaceow",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "aad752d816b89cc456effe54634e0e91ee5495bb6222dd9482103e7bd9e46254"
+    },
+    {
+      "sampleId": "T120-S030",
+      "projectName": "DistributedAuthentication",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b63078ef27de75061f83a3c85af0445dd1e60e171049241f212a8804b666fac3"
+    },
+    {
+      "sampleId": "T120-S031",
+      "projectName": "harmonyos_samples_continue-progress",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "816d6659a1dae371876db44ebe23648b81c7c43da31e094461aa30c0a06fd06a"
+    },
+    {
+      "sampleId": "T120-S032",
+      "projectName": "HarmonyOS-Inno",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "aa296028d4583de1c4771df4de9253a8508fbea13223b2631363df73bcf0f92c"
+    },
+    {
+      "sampleId": "T120-S033",
+      "projectName": "harmonyos4me_HMRouter",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b41f498e22b0e81069ce1f1075609095d66ece80913d5fe56e24cd05faca2a92"
+    },
+    {
+      "sampleId": "T120-S034",
+      "projectName": "Renameow",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1cc50de26e463d9def312145d9229e6af9a588d855c6e37482992dc60cab0f01"
+    },
+    {
+      "sampleId": "T120-S035",
+      "projectName": "Wake-HarmonyOS",
+      "goldKeys": 7,
+      "recoveredGoldKeys": 7,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 7,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "19359c465b56f4baf3e17ac2eeb1a14721a99eeeb2e1ba37a1fb8e9edab67915"
+    },
+    {
+      "sampleId": "T120-S036",
+      "projectName": "Aigis",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "09975ef29fea212f224f6112b6097c743bc63988800c729d303aa0aa052f46ba"
+    },
+    {
+      "sampleId": "T120-S037",
+      "projectName": "Audio",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "7c4458c7107a43b00ac31cbd324573dbdba8b3b68e799d4f532420e8d56b5b89"
+    },
+    {
+      "sampleId": "T120-S038",
+      "projectName": "Camera_js",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b403c03c148c9ef31f2492db4803a1c7d8620a93f827db39d0896206a3ac76ef"
+    },
+    {
+      "sampleId": "T120-S039",
+      "projectName": "MNUIKitDemo",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1637d3a2d3ac601234b7901f915083d2933b0acb6a03f357af97731d1c5b9b7c"
+    },
+    {
+      "sampleId": "T120-S040",
+      "projectName": "SmartHome",
+      "goldKeys": 9,
+      "recoveredGoldKeys": 9,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 5,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b56188ea7f82c1143993c4e211e2c30474396c7f9466fce35c9529b29b606768"
+    },
+    {
+      "sampleId": "T120-S041",
+      "projectName": "Wlan",
+      "goldKeys": 10,
+      "recoveredGoldKeys": 10,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "afec3ce3c83ddc0bc8a8fa78ef36e11453cdc1109b8f3ec2e39e7f3231950eb8"
+    },
+    {
+      "sampleId": "T120-S042",
+      "projectName": "aloeplayer_ohos",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "7f4f44dc48713c74aa5b029423e32fc651309ca5ad46b4ddcc6f7922ffeffd5c"
+    },
+    {
+      "sampleId": "T120-S043",
+      "projectName": "AVCodec",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "eaf2fb422d4fcc55fc3448307007b865ca39c452fdb88b67813f7359fb12a7a2"
+    },
+    {
+      "sampleId": "T120-S044",
+      "projectName": "FoldableAdaptation",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "cc2ac856276b147fb5e77676b5ffb796ec3834c085ef15d8e14dc30dce66a3c4"
+    },
+    {
+      "sampleId": "T120-S045",
+      "projectName": "harmonyos_samples_graphic-creation",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "dccca1ddb9c49993391066ca89e3c995688eb1aed294d0ed99cde11af17ffcd5"
+    },
+    {
+      "sampleId": "T120-S046",
+      "projectName": "harmonyos4me_transitions-collection",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "16926bd735fcd2afa8928750ba9ca1faf42658222be44552aa47e397e7e6d465"
+    },
+    {
+      "sampleId": "T120-S047",
+      "projectName": "com.example.myapplication2",
+      "goldKeys": 9,
+      "recoveredGoldKeys": 9,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "8d270b178234e63331576995debf4628f6751ab7805be54142ce1a278fe8c945"
+    },
+    {
+      "sampleId": "T120-S048",
+      "projectName": "Exam",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b983e6c302dce8823e7d75e81b141f6dd1d2fbd544959a6f31da1cd652d171dc"
+    },
+    {
+      "sampleId": "T120-S049",
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "bf4ce339e650453f76ad208980120cb24541f73dd7807859ad015fa5a14b84ed"
+    },
+    {
+      "sampleId": "T120-S050",
+      "projectName": "LiveStreaming",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "120ab751a2c0ad4fc534bbe618414c4d101b767543a53b8ac2377b32fb188416"
+    },
+    {
+      "sampleId": "T120-S051",
+      "projectName": "NetworkObserver",
+      "goldKeys": 7,
+      "recoveredGoldKeys": 7,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "312b5c11855935f394fcfc7d62f18b62c1aa6642e01ffe24857fbac9d3ece8c4"
+    },
+    {
+      "sampleId": "T120-S052",
+      "projectName": "readmigo_harmony-app",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 4,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "63f2e8bfebec98012d892cb27a4c2ad6ae112c59795e467798b4e58eadda30d2"
+    },
+    {
+      "sampleId": "T120-S053",
+      "projectName": "SensorJsSamples",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "8a8121fa23fc8c0bd0ea1aee316c612da3b51b94906649eb6f7a103418b5d2f6"
+    },
+    {
+      "sampleId": "T120-S054",
+      "projectName": "bluetoothSample",
+      "goldKeys": 8,
+      "recoveredGoldKeys": 8,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 6,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "9c530d2213271df3bcc3d288ac8068653ec3fa3c2b77230ae58c62f733bb7a87"
+    },
+    {
+      "sampleId": "T120-S055",
+      "projectName": "FinVideo",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b6243755c839f4df6f4481a0a97a3e938c8b30be80093415df56f54aaf4aec56"
+    },
+    {
+      "sampleId": "T120-S056",
+      "projectName": "harmonyos_samples_LandscapePortraitToggle",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "9be88197c9917f68079b0474f06f16aaaf9fad81875b24bec6cd528538ae8890"
+    },
+    {
+      "sampleId": "T120-S057",
+      "projectName": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "159a6a044936c031ace0795369b042d91d24a0f602022d9bf587d12fdedff0a6"
+    },
+    {
+      "sampleId": "T120-S058",
+      "projectName": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "9a8bfc7acca1d9b9cc4bef5bd83726686226a49f0072e3bef35d86447e8a8a0b"
+    },
+    {
+      "sampleId": "T120-S059",
+      "projectName": "harmonyos4me_exam-project",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "6c43762a7a010503ff303731832f8aa3be5c20ce8b398219bd166a9b6709b506"
+    },
+    {
+      "sampleId": "T120-S060",
+      "projectName": "harmonyos4me_login-and-logout",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a56af3afc35a7b4d78be9013461fddaaf93c2127aa6b4f660da08492caf495d8"
+    },
+    {
+      "sampleId": "T120-S061",
+      "projectName": "Notes",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 5,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "e7d8756a5f7c04d07242ba54cbf76dcc9318b5d115d9c7f890c33fa07991f516"
+    },
+    {
+      "sampleId": "T120-S062",
+      "projectName": "pasteboard",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "882cf0a60d8718503b80691c868b55d25a7de51b0072ab4a3c1f18536e8bbf32"
+    },
+    {
+      "sampleId": "T120-S063",
+      "projectName": "AuthorizedButton",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "c09631892657498a87479453c95835415c0d72e564861d53619c5c61005fbfdb"
+    },
+    {
+      "sampleId": "T120-S064",
+      "projectName": "Camera",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1c6a2a933c14c656bf803ebc98e58e07c6647bc5dda8d209350d39b11a2e4265"
+    },
+    {
+      "sampleId": "T120-S065",
+      "projectName": "DeadlinerNEXT",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 5,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "3bcf79d9833687b0475919f59744b55461f2f83300cf0845bee759d39c514f90"
+    },
+    {
+      "sampleId": "T120-S066",
+      "projectName": "harmonyos4me_location-service",
+      "goldKeys": 7,
+      "recoveredGoldKeys": 7,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "0793327af8ac9a3c5cb1e399d787151a11fad98d62791f9763e1539dc4f46c59"
+    },
+    {
+      "sampleId": "T120-S067",
+      "projectName": "KikaInputMethod",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "886d8c466bb6f33f7f2ed9433bafd1f7603a0e89055c2ccce4011998699dc6f9"
+    },
+    {
+      "sampleId": "T120-S068",
+      "projectName": "NetConnection_Manage_case",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 5,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "f3609678e07945818d9661b1e9a627a7c6da130b73f5aae5bba96fbd1617a7dc"
+    },
+    {
+      "sampleId": "T120-S069",
+      "projectName": "PostpartumCareCenter",
+      "goldKeys": 6,
+      "recoveredGoldKeys": 6,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "0726b3ca7c3e8d3b5cbb3ef8adf6bc7999539445d9bd03b4390c08a8182a8378"
+    },
+    {
+      "sampleId": "T120-S070",
+      "projectName": "ReminderAgentManager",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "56d09cc8ed679210fdd03c6c41b9cef7e80eaf39aaa4fe0defc1361c778ece5b"
+    },
+    {
+      "sampleId": "T120-S071",
+      "projectName": "Sensor",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "63b1776b174ea550e4a85401a9aad6e29b40841ec255e5d675fef3e04ff9913d"
+    },
+    {
+      "sampleId": "T120-S072",
+      "projectName": "WifiHotspotManager",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "0b14b2c4feae9861c1730b459d62104cc1265a46c2207c79cb8bc9c2bd81ec97"
+    },
+    {
+      "sampleId": "T120-S073",
+      "projectName": "Application",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b659c211035827013590a9d2d879bf659fe1841da3105518d086fb2686c59e4f"
+    },
+    {
+      "sampleId": "T120-S074",
+      "projectName": "BikeTravel",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "836f83a8b7184d6f57e97926e90743ff757879bb8db875869881d24988906e1d"
+    },
+    {
+      "sampleId": "T120-S075",
+      "projectName": "birthday_reminder",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "f3322e1a17ed679e489b34be415847495801f0dbc8c2dc6bec3854109ea40a69"
+    },
+    {
+      "sampleId": "T120-S076",
+      "projectName": "CarBeautyCare",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a9393ef9f2cb879fb018dc39a9b78280e60ddd6d82b6fe1a78587431c51b563b"
+    },
+    {
+      "sampleId": "T120-S077",
+      "projectName": "ComprehensiveMall",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "78612dd36eff86ce8a3016890eec05d8177dfe73f8287d70f782b254799b751c"
+    },
+    {
+      "sampleId": "T120-S078",
+      "projectName": "delay_related_performance",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a8c54ac7d694648f847ac9eebcfc1d126a5832f2cf1ebf65e4bb1635c6014e47"
+    },
+    {
+      "sampleId": "T120-S079",
+      "projectName": "DistributedFilemanager",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "f39579f71d1a72ecbdf1e3a26730a3aa9f84fe343da926a5da8b8324f0e7176a"
+    },
+    {
+      "sampleId": "T120-S080",
+      "projectName": "DriverLicenseExam",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "6578de0121758dd84f284e195ed17f9c3ec4790fbec27b5964cfc366de30af8b"
+    },
+    {
+      "sampleId": "T120-S081",
+      "projectName": "DriverLicenseExam-master",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "956acf912de6b2b3d41b7e16efbcfed8df3109b4b517626e178453da360a4d55"
+    },
+    {
+      "sampleId": "T120-S082",
+      "projectName": "etohos",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b1e0c792867c380a25f7cdcdadf5ae253d0fc464394ebb56725e7b23337a6c89"
+    },
+    {
+      "sampleId": "T120-S083",
+      "projectName": "harmonyos4me_aicharacter-recognition",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "3f2f2aae444e11dd2cbb076e9c74c260085d239af36116260652744c22cd07b3"
+    },
+    {
+      "sampleId": "T120-S084",
+      "projectName": "harmonyos4me_hmosworld",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1c39806d78dd28dfdf9138d6ba5a7d439a546e3af4f3b4862d2efbe2f0f0e23f"
+    },
+    {
+      "sampleId": "T120-S085",
+      "projectName": "harmonyos4me_ibest-ui",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "09edb511ce6b8f9455932045d65575b1036edac29e57f73a36ca5c4d76215352"
+    },
+    {
+      "sampleId": "T120-S086",
+      "projectName": "harmonyos4me_Immersive",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "930c42268a6e36a8699425bbdc75dcea3a77ed36e6380e9984ed44eda75ca18f"
+    },
+    {
+      "sampleId": "T120-S087",
+      "projectName": "harmonyos4me_SmoothSwitchShortVideos",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "241964ea26ad9163914497b7b92eef311356e3e56c1f1f50d60657465dd6a098"
+    },
+    {
+      "sampleId": "T120-S088",
+      "projectName": "harmonyos4me_ZeroOneApp",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "e03d55837156f4af9a58d865fee30036c3625684ef5c53d6cf3a79650a4e8100"
+    },
+    {
+      "sampleId": "T120-S089",
+      "projectName": "HomeDecoration",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1bb58d0edb3a72237c42f62a3e31eeb6806e861297b300a3faa6729d6cb949aa"
+    },
+    {
+      "sampleId": "T120-S090",
+      "projectName": "QRCodeScan",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "0d0cead7bc3e63032f014c23a6dbb12a44c29a349af79ef38eb7d4cbe487b30c"
+    },
+    {
+      "sampleId": "T120-S091",
+      "projectName": "BookRead",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 4,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "8b2418db76865277413adca159f38feae8ac9c641d9a9cdc234088ef5d7916e3"
+    },
+    {
+      "sampleId": "T120-S092",
+      "projectName": "CalendarViewSwitch",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "695905f073da6233a0a696cbc6b31f306a64f489b3c62e42297286ce422930ca"
+    },
+    {
+      "sampleId": "T120-S093",
+      "projectName": "EnterpriseRecruitment",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b56e835483194f4fc977d46d149beed82ad29e26033203229a9fa4c070fc5cbf"
+    },
+    {
+      "sampleId": "T120-S094",
+      "projectName": "Express",
+      "goldKeys": 4,
+      "recoveredGoldKeys": 4,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a64bb6ac3195ab20974ee6845a54dd2ed9b589285e6a99259e3d943d2b7a30ac"
+    },
+    {
+      "sampleId": "T120-S095",
+      "projectName": "FlameChase",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "a2b9f675b0d708446dd971b3ae599058dcf1b3f95d767612811c9a8d8b3f9726"
+    },
+    {
+      "sampleId": "T120-S096",
+      "projectName": "PedometerApp",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "209bc29f9793d64c8fd64c16dd9cc4e3df93586822884cf5e9b72f19b2479608"
+    },
+    {
+      "sampleId": "T120-S097",
+      "projectName": "SecurityComponent",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "202acc7d270197d7ddb03b1c84eb4c8a497ea017a97456fd5ecf0f86c7b9e734"
+    },
+    {
+      "sampleId": "T120-S098",
+      "projectName": "VoiceCallDemo",
+      "goldKeys": 5,
+      "recoveredGoldKeys": 5,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 7,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "eb153673c5d6042f5986f2f1b529e90c2fbaaa65a7ec91aa7e78eb3e866ad02a"
+    },
+    {
+      "sampleId": "T120-S099",
+      "projectName": "WebShortDrama",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "9fe114487cbfb6ad325821dcea004c21bec91ec71058ef9b0934f915219e0296"
+    },
+    {
+      "sampleId": "T120-S100",
+      "projectName": "ArkTSGraphicsDraw",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1cc3f7dd8fe758a4b4b94fdd2612f4ee57f67a24ae2d8a60d19241bbe8422032"
+    },
+    {
+      "sampleId": "T120-S101",
+      "projectName": "Asset",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "2366f40d6fdc17ef4f11b081099b47c967bcc1883f699ba7ca0af8037670bafc"
+    },
+    {
+      "sampleId": "T120-S102",
+      "projectName": "AssetStoreArkTS",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "95765594da71de327298bdf28b4eb01c42c8e39d2d2a0d7fe337341c662ece91"
+    },
+    {
+      "sampleId": "T120-S103",
+      "projectName": "BindSheet",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "7d1be81f8d4dca030b5a21259472199281dc7de1e88dd7fd92f4cb65f4e0cae5"
+    },
+    {
+      "sampleId": "T120-S104",
+      "projectName": "DistributedNote",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "40dcd6218855b479c858b687cf83ed3d1d69977477a681c3ef83cd568f5ba815"
+    },
+    {
+      "sampleId": "T120-S105",
+      "projectName": "FinancialManagement",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 3,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "c532e0668dda2f1d3417f8cdc013aaca00f21ed6321957db1143c12d71578d62"
+    },
+    {
+      "sampleId": "T120-S106",
+      "projectName": "harmonyos_samples_fluent-news-homepage",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "4a52094ff6a5abd675d632b5cccb063515292f621a9709195ececbc6253a541c"
+    },
+    {
+      "sampleId": "T120-S107",
+      "projectName": "harmonyos_samples_iapkit-sample-clientdemo-arkts",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "cbf7ca6136a49d34f46f758396be8b3730aa8123b564fb123bc2a1de0147e1b7"
+    },
+    {
+      "sampleId": "T120-S108",
+      "projectName": "harmonyos_samples_knock-share",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b37ab7d5ded5669c23717e881c0ab518895bfce687157a2145300508cfe24434"
+    },
+    {
+      "sampleId": "T120-S109",
+      "projectName": "harmonyos4me_cloud-foundation-kit_-sample-code_-arkts",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "9ecad162ccdbc7cee8206002d12ec4ffad320a442e7970dcb6ae6a52d6ad9d88"
+    },
+    {
+      "sampleId": "T120-S110",
+      "projectName": "harmonyos4me_fluent-news-homepage",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "64b1ea2f9c7bc23e16f0ffc3e90711f7c5d42c44306c031d7252f7c7b4d365a6"
+    },
+    {
+      "sampleId": "T120-S111",
+      "projectName": "harmonyos4me_ohos_smart_dialog",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "3f435c44d19891dd2323c5a4317d28f68273f657a8d1592e8acb06e45eee2c44"
+    },
+    {
+      "sampleId": "T120-S112",
+      "projectName": "harmonyos4me_TaoYao",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "b5acc9e3b60f177ae1eb4b747be64348b023fb031b8531682f9bec4376787b18"
+    },
+    {
+      "sampleId": "T120-S113",
+      "projectName": "MoneyTrack",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "21d8305e2c0e049247867ef66e5c7eb1188679f52b902453a29ddf230e2ab082"
+    },
+    {
+      "sampleId": "T120-S114",
+      "projectName": "MoneyTrack-master",
+      "goldKeys": 2,
+      "recoveredGoldKeys": 2,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "d2ddbd27489fc6b4d1d57602f0e6e959d172a261ae970105546f8625595e8a74"
+    },
+    {
+      "sampleId": "T120-S115",
+      "projectName": "MultiCommunityApplication",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "1fa0a94f2594806d881c6772fb510a58138385da3db2e7f1d08fa1f0b74b1d96"
+    },
+    {
+      "sampleId": "T120-S116",
+      "projectName": "MultiMedia",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 1,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "6c4855d2ffd0f8f93fa001f9cb7acedc79b1cbc9a2d3039eacef89177c47dfb1"
+    },
+    {
+      "sampleId": "T120-S117",
+      "projectName": "Navigation",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "55be46bd266df2fbd52af78131de22f78ee07aee0e2897044ac977add3ca4261"
+    },
+    {
+      "sampleId": "T120-S118",
+      "projectName": "OfficeAttendance",
+      "goldKeys": 3,
+      "recoveredGoldKeys": 3,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 2,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "30d25b14af3af8640fe1c9118ce81f23b520f4143ff1431840711267a45951a1"
+    },
+    {
+      "sampleId": "T120-S119",
+      "projectName": "OHAudio",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "eb780cdf1668a4263341e676374a533f72702978c70016a79ab369f8da904d95"
+    },
+    {
+      "sampleId": "T120-S120",
+      "projectName": "PixelMap",
+      "goldKeys": 1,
+      "recoveredGoldKeys": 1,
+      "missingGoldKeys": 0,
+      "unreviewedOutputKeys": 0,
+      "completeGoldRecovery": true,
+      "outputReportSha256": "c8a75174ce02407faa1cd5a154e660252f73fe45dc2377927431051df2bb076f"
+    }
+  ],
+  "missingConfirmedKeys": [],
+  "unreviewedOutputKeys": [
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/entry/src/main/ets/entryformability/EntryFormAbility.ets",
+          "line": 51,
+          "column": 44,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        },
+        {
+          "file": "feature/photopickandsave/src/main/ets/components/SaveNetWorkPictures.ets",
+          "line": 47,
+          "column": 5,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        },
+        {
+          "file": "feature/skeletondiagram/src/main/ets/view/SkeletonDiagram.ets",
+          "line": 63,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "gattclientdevice|setcharacteristicchangenotification",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/bluetooth/src/main/ets/viewmodel/BluetoothClientModel.ets",
+          "line": 271,
+          "column": 15,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "setCharacteristicChangeNotification",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "gattclientdevice|writedescriptorvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/bluetooth/src/main/ets/viewmodel/BluetoothClientModel.ets",
+          "line": 277,
+          "column": 15,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "writeDescriptorValue",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/networkstatusobserver/src/main/ets/utils/NetUtils.ets",
+          "line": 279,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/faceandfingerprintunlocking/src/main/ets/view/MainPage.ets",
+          "line": 92,
+          "column": 9,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/faceandfingerprintunlocking/src/main/ets/view/MainPage.ets",
+          "line": 107,
+          "column": 9,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CommonAppDevelopment",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/dealstridesolution/src/main/ets/model/CameraService.ets",
+          "line": 150,
+          "column": 23,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "CommonAppDevelopment/CommonAppDevelopment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 11,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "Wechat_HarmonyOS/Wechat_HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wechat_HarmonyOS",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 8,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "Wechat_HarmonyOS/Wechat_HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "apiKey": "systempasteboard|getunifieddatasync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/utils.ets",
+          "line": 7,
+          "column": 18,
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "member": "getUnifiedDataSync",
+          "report": "legado-Harmony-main/legado-Harmony-main-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 12,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "legado-Harmony-main/legado-Harmony-main-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "legado-Harmony-main",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 9,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "legado-Harmony-main/legado-Harmony-main-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 11,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "Snake_NEXT-main/Snake_NEXT-main-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets_bjc/pages/audio.ets",
+          "line": 57,
+          "column": 9,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "Snake_NEXT-main/Snake_NEXT-main-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Snake_NEXT-main",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 8,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "Snake_NEXT-main/Snake_NEXT-main-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets_bjc/pages/camera.ets",
+          "line": 56,
+          "column": 25,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "Snake_NEXT-main/Snake_NEXT-main-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "apiKey": "request|downloadfile",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/DownloadUtils.ets",
+          "line": 63,
+          "column": 36,
+          "package": "@ohos.request",
+          "namespace": "request",
+          "member": "downloadFile",
+          "report": "harmony-next-music-sharing/harmony-next-music-sharing-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 11,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "harmony-next-music-sharing/harmony-next-music-sharing-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-next-music-sharing",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 8,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmony-next-music-sharing/harmony-next-music-sharing-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 12,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "STUFFS_NEXT-master/STUFFS_NEXT-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 9,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "STUFFS_NEXT-master/STUFFS_NEXT-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "STUFFS_NEXT-master",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 13,
+          "column": 45,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "STUFFS_NEXT-master/STUFFS_NEXT-master-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 14,
+          "column": 46,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "STUFFS_NEXT-master/STUFFS_NEXT-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_settings",
+      "apiKey": "access|disablebluetooth",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/abilityDialog/BluetoothDialog.ets",
+          "line": 106,
+          "column": 11,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "disableBluetooth",
+          "report": "applications_settings/applications_settings-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_settings",
+      "apiKey": "access|getstate",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/abilityDialog/BluetoothDialog.ets",
+          "line": 124,
+          "column": 23,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "applications_settings/applications_settings-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_settings",
+      "apiKey": "access|enablebluetooth",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/abilityDialog/BluetoothDialog.ets",
+          "line": 129,
+          "column": 13,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "enableBluetooth",
+          "report": "applications_settings/applications_settings-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_settings",
+      "apiKey": "connection|getremoteprofileuuids",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/bluetoothPairedDeviceInfo.ets",
+          "line": 137,
+          "column": 7,
+          "package": "@ohos.bluetooth.connection",
+          "namespace": "connection",
+          "member": "getRemoteProfileUuids",
+          "report": "applications_settings/applications_settings-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_ZUtils",
+      "apiKey": "session|downloadtofile",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "zutils/src/main/ets/utils/NetUtil.ets",
+          "line": 69,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "downloadToFile",
+          "report": "harmonyos4me_ZUtils/harmonyos4me_ZUtils-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "apiKey": "websocket|close",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/ChatPage.ets",
+          "line": 118,
+          "column": 5,
+          "package": "@ohos.net.webSocket",
+          "namespace": "WebSocket",
+          "member": "close",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "apiKey": "websocket|send",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/ChatPage.ets",
+          "line": 148,
+          "column": 7,
+          "package": "@ohos.net.webSocket",
+          "namespace": "WebSocket",
+          "member": "send",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "apiKey": "websocket|connect",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/ChatPage.ets",
+          "line": 196,
+          "column": 7,
+          "package": "@ohos.net.webSocket",
+          "namespace": "WebSocket",
+          "member": "connect",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmony-arkts-chat-app-ui",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/HttpUtil.ets",
+          "line": 107,
+          "column": 12,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/HttpUtil.ets",
+          "line": 118,
+          "column": 12,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/HttpUtil.ets",
+          "line": 129,
+          "column": 12,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/HttpUtil.ets",
+          "line": 140,
+          "column": 12,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/HttpUtil.ets",
+          "line": 70,
+          "column": 7,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmony-arkts-chat-app-ui/harmony-arkts-chat-app-ui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_network-query",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/view/NetworkMonitor.ets",
+          "line": 133,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "harmonyos_samples_network-query/harmonyos_samples_network-query-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/audio.ets",
+          "line": 11,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "harmonyProject-master/harmonyProject-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyProject-master",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/camera.ets",
+          "line": 8,
+          "column": 21,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmonyProject-master/harmonyProject-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_CustomCamera",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "camera/src/main/ets/cameramanagers/CameraManager.ets",
+          "line": 35,
+          "column": 28,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmonyos_samples_CustomCamera/harmonyos_samples_CustomCamera-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_CustomCamera",
+      "apiKey": "avimagegenerator|fetchframebytime",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "camera/src/main/ets/cameramanagers/VideoManager.ets",
+          "line": 396,
+          "column": 24,
+          "package": "@kit.MediaKit",
+          "namespace": "AVImageGenerator",
+          "member": "fetchFrameByTime",
+          "report": "harmonyos_samples_CustomCamera/harmonyos_samples_CustomCamera-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Photos",
+      "apiKey": "photoasset|getthumbnail",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/base/UserFileDataItem.ts",
+          "line": 169,
+          "column": 39,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileDataItem.ts",
+          "line": 231,
+          "column": 30,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/AlbumDataItem.ts",
+          "line": 94,
+          "column": 32,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Photos/Photos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Photos",
+      "apiKey": "photoasset|commitmodify",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/base/UserFileDataItem.ts",
+          "line": 323,
+          "column": 13,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "commitModify",
+          "report": "Photos/Photos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Photos",
+      "apiKey": "photoaccesshelper|getalbums",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 70,
+          "column": 27,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 118,
+          "column": 32,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 139,
+          "column": 32,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 176,
+          "column": 27,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 279,
+          "column": 29,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 281,
+          "column": 29,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 319,
+          "column": 32,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 422,
+          "column": 27,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 462,
+          "column": 27,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/base/UserFileModel.ts",
+          "line": 482,
+          "column": 22,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/AlbumDataImpl.ts",
+          "line": 102,
+          "column": 0,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/AlbumDataImpl.ts",
+          "line": 174,
+          "column": 0,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAccessHelper",
+          "member": "getAlbums",
+          "report": "Photos/Photos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_systemui",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/pc/controlpanel/src/main/ets/pages/index.ets",
+          "line": 149,
+          "column": 23,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "applications_systemui/applications_systemui-arkprism-report.json"
+        },
+        {
+          "file": "product/pc/notificationpanel/src/main/ets/pages/index.ets",
+          "line": 113,
+          "column": 23,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "applications_systemui/applications_systemui-arkprism-report.json"
+        },
+        {
+          "file": "common/src/main/ets/default/TintStateManager.ts",
+          "line": 78,
+          "column": 15,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "applications_systemui/applications_systemui-arkprism-report.json"
+        },
+        {
+          "file": "common/src/main/ets/default/TintStateManager.ts",
+          "line": 78,
+          "column": 0,
+          "package": "@ohos.window",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "applications_systemui/applications_systemui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "applications_systemui",
+      "apiKey": "radio|getnetworkstate",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/signalcomponent/src/main/ets/default/signalModel.ts",
+          "line": 85,
+          "column": 9,
+          "package": "@ohos.telephony.radio",
+          "namespace": "radio",
+          "member": "getNetworkState",
+          "report": "applications_systemui/applications_systemui-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Gramony",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/home/src/main/ets/utils/push.ets",
+          "line": 180,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "Gramony/Gramony-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Homogram",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/home/src/main/ets/utils/push.ets",
+          "line": 180,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "Homogram/Homogram-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "UserAuthentication",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 113,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 322,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 399,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 73,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 251,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 329,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "UserAuthentication",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 157,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 343,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 437,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 95,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 273,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/testPage.ets",
+          "line": 361,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "UserAuthentication/UserAuthentication-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Melotopia-HMOS",
+      "apiKey": "avmetadataextractor|fetchmetadata",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/functions/common/convert.ets",
+          "line": 16,
+          "column": 26,
+          "package": "@kit.MediaKit",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "Melotopia-HMOS/Melotopia-HMOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "MultiVideoApplication",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/base/src/main/ets/utils/DeviceScreen.ets",
+          "line": 26,
+          "column": 25,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "MultiVideoApplication/MultiVideoApplication-arkprism-report.json"
+        },
+        {
+          "file": "commons/base/src/main/ets/utils/DeviceScreen.ets",
+          "line": 38,
+          "column": 25,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "MultiVideoApplication/MultiVideoApplication-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/utils/src/main/ets/quicklogin/QuickLogin.ets",
+          "line": 16,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        },
+        {
+          "file": "scenes/tabs/minepage/src/main/ets/components/LoginState.ets",
+          "line": 106,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/utils/src/main/ets/quicklogin/QuickLogin.ets",
+          "line": 23,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        },
+        {
+          "file": "scenes/tabs/minepage/src/main/ets/components/LoginState.ets",
+          "line": 113,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/utils/src/main/ets/utils/AuthUtil.ets",
+          "line": 86,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ChildrenEducation",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/utils/src/main/ets/utils/AuthUtil.ets",
+          "line": 100,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "ChildrenEducation/ChildrenEducation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "legado-Harmony-master",
+      "apiKey": "systempasteboard|getunifieddatasync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/utils.ets",
+          "line": 7,
+          "column": 18,
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "member": "getUnifiedDataSync",
+          "report": "legado-Harmony-master/legado-Harmony-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "siyuan-harmony",
+      "apiKey": "reminderagent|publishreminder",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/JSHarmony.ets",
+          "line": 82,
+          "column": 22,
+          "package": "@kit.BackgroundTasksKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "siyuan-harmony/siyuan-harmony-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "siyuan-harmony",
+      "apiKey": "systempasteboard|getdatasync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/JSHarmony.ets",
+          "line": 180,
+          "column": 44,
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "member": "getDataSync",
+          "report": "siyuan-harmony/siyuan-harmony-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/JSHarmony.ets",
+          "line": 198,
+          "column": 44,
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "member": "getDataSync",
+          "report": "siyuan-harmony/siyuan-harmony-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/JSHarmony.ets",
+          "line": 212,
+          "column": 22,
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "member": "getDataSync",
+          "report": "siyuan-harmony/siyuan-harmony-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_continue-progress",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/NetworkUtil.ets",
+          "line": 39,
+          "column": 43,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "harmonyos_samples_continue-progress/harmonyos_samples_continue-progress-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_continue-progress",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/view/longlist/HomeContent.ets",
+          "line": 51,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "harmonyos_samples_continue-progress/harmonyos_samples_continue-progress-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/view/longlist/WaterFlowView.ets",
+          "line": 54,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "harmonyos_samples_continue-progress/harmonyos_samples_continue-progress-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 78,
+          "column": 24,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        },
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 83,
+          "column": 24,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        },
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 102,
+          "column": 24,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        },
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 149,
+          "column": 27,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        },
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 150,
+          "column": 28,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        },
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 140,
+          "column": 5,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "apiKey": "connection|getdefaultnetsync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 107,
+          "column": 21,
+          "package": "@ohos.net.connection",
+          "namespace": "connection",
+          "member": "getDefaultNetSync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HarmonyOS-Inno",
+      "apiKey": "connection|getnetcapabilitiessync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "ets/cocos/oh-adapter/sys-ability-polyfill.ets",
+          "line": 109,
+          "column": 22,
+          "package": "@ohos.net.connection",
+          "namespace": "connection",
+          "member": "getNetCapabilitiesSync",
+          "report": "HarmonyOS-Inno/HarmonyOS-Inno-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "nethandle|getaddressesbyname",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 71,
+          "column": 47,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "member": "getAddressesByName",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "udpsocket|send",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 96,
+          "column": 19,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "send",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "udpsocket|getstate",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 109,
+          "column": 35,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "getState",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 134,
+          "column": 35,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "getState",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "udpsocket|bind",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 120,
+          "column": 27,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "bind",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 145,
+          "column": 27,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "bind",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "udpsocket|setextraoptions",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 123,
+          "column": 27,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "setExtraOptions",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "udpsocket|close",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 158,
+          "column": 19,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "close",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/utils/NET.ets",
+          "line": 159,
+          "column": 19,
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "member": "close",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Wake-HarmonyOS",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 149,
+          "column": 9,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "Wake-HarmonyOS/Wake-HarmonyOS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Aigis",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/crypto/authUtils.ets",
+          "line": 123,
+          "column": 9,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "Aigis/Aigis-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Aigis",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/crypto/authUtils.ets",
+          "line": 134,
+          "column": 9,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "Aigis/Aigis-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Audio",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/VolumePanel.ets",
+          "line": 74,
+          "column": 18,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "Audio/Audio-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/VolumePanel.ets",
+          "line": 75,
+          "column": 18,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "Audio/Audio-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Camera_js",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/GlobalContext.ts",
+          "line": 73,
+          "column": 23,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "Camera_js/Camera_js-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 124,
+          "column": 20,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "Camera_js/Camera_js-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Camera_js",
+      "apiKey": "camera|createcamerainput",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/model/CameraService.ts",
+          "line": 1243,
+          "column": 26,
+          "package": "@ohos.multimedia.camera",
+          "namespace": "camera",
+          "member": "createCameraInput",
+          "report": "Camera_js/Camera_js-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Camera_js",
+      "apiKey": "photoasset|getthumbnail",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/views/ModeSwitchPage.ets",
+          "line": 193,
+          "column": 33,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Camera_js/Camera_js-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/views/ModeSwitchPage.ets",
+          "line": 480,
+          "column": 55,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Camera_js/Camera_js-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "SmartHome",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "products/phone/src/main/ets/pages/Index.ets",
+          "line": 158,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "SmartHome",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "products/phone/src/main/ets/pages/Index.ets",
+          "line": 163,
+          "column": 5,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        },
+        {
+          "file": "components/login/src/main/ets/views/QuickLogin.ets",
+          "line": 182,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "SmartHome",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/login/src/main/ets/views/QuickLogin.ets",
+          "line": 173,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "SmartHome",
+      "apiKey": "gattclientdevice|readcharacteristicvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/bluetooth_scan/src/main/ets/model/BleClientModel.ets",
+          "line": 65,
+          "column": 5,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "readCharacteristicValue",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "SmartHome",
+      "apiKey": "gattclientdevice|writecharacteristicvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/bluetooth_scan/src/main/ets/model/BleClientModel.ets",
+          "line": 76,
+          "column": 5,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "writeCharacteristicValue",
+          "report": "SmartHome/SmartHome-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "apiKey": "avmetadataextractor|fetchmetadata",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/entryability/CastView.ets",
+          "line": 301,
+          "column": 28,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/entryability/FfmpegPlugin.ets",
+          "line": 685,
+          "column": 5,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/entryability/FfmpegPlugin.ets",
+          "line": 1054,
+          "column": 28,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Player.ets",
+          "line": 427,
+          "column": 9,
+          "package": "@kit.MediaKit",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/VideoLib.ets",
+          "line": 468,
+          "column": 13,
+          "package": "@kit.MediaKit",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/WantProcessUtil.ets",
+          "line": 28,
+          "column": 5,
+          "package": "@kit.MediaKit",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchMetadata",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "apiKey": "avimagegenerator|fetchframebytime",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/entryability/CastView.ets",
+          "line": 333,
+          "column": 33,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVImageGenerator",
+          "member": "fetchFrameByTime",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/entryability/FfmpegPlugin.ets",
+          "line": 1085,
+          "column": 32,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVImageGenerator",
+          "member": "fetchFrameByTime",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/VideoInfoUtil.ets",
+          "line": 190,
+          "column": 5,
+          "package": "@kit.MediaKit",
+          "namespace": "AVImageGenerator",
+          "member": "fetchFrameByTime",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "aloeplayer_ohos",
+      "apiKey": "avmetadataextractor|fetchalbumcover",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/entryability/CastView.ets",
+          "line": 346,
+          "column": 33,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchAlbumCover",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/entryability/FfmpegPlugin.ets",
+          "line": 1109,
+          "column": 32,
+          "package": "@ohos.multimedia.media",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchAlbumCover",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/utils/VideoInfoUtil.ets",
+          "line": 155,
+          "column": 32,
+          "package": "@kit.MediaKit",
+          "namespace": "AVMetadataExtractor",
+          "member": "fetchAlbumCover",
+          "report": "aloeplayer_ohos/aloeplayer_ohos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "AVCodec",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 128,
+          "column": 47,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "AVCodec/AVCodec-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/recorder/Recorder.ets",
+          "line": 197,
+          "column": 25,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "AVCodec/AVCodec-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_graphic-creation",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/model/CameraService.ets",
+          "line": 44,
+          "column": 28,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmonyos_samples_graphic-creation/harmonyos_samples_graphic-creation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_graphic-creation",
+      "apiKey": "photoasset|getthumbnail",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/view/CameraView.ets",
+          "line": 296,
+          "column": 31,
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "harmonyos_samples_graphic-creation/harmonyos_samples_graphic-creation-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/view/CameraView.ets",
+          "line": 348,
+          "column": 31,
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "harmonyos_samples_graphic-creation/harmonyos_samples_graphic-creation-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "com.example.myapplication2",
+      "apiKey": "audio|getaudioscene",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 138,
+          "column": 5,
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "member": "getAudioScene",
+          "report": "com.example.myapplication2/com.example.myapplication2-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Exam",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/login_info/src/main/ets/utils/AccountUtil.ets",
+          "line": 42,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "Exam/Exam-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Exam",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/login_info/src/main/ets/utils/AccountUtil.ets",
+          "line": 51,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "Exam/Exam-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/Utils.ets",
+          "line": 68,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/Utils.ets",
+          "line": 101,
+          "column": 5,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/components/AvatarAndNickname.ets",
+          "line": 49,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/components/Phone.ets",
+          "line": 54,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/HomePage.ets",
+          "line": 220,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 165,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/Utils.ets",
+          "line": 92,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/components/AvatarAndNickname.ets",
+          "line": 37,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/components/Phone.ets",
+          "line": 38,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 156,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/HomePage.ets",
+          "line": 209,
+          "column": 26,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "harmonyos4me_accountkit-samplecode-clientdemo-arkts/harmonyos4me_accountkit-samplecode-clientdemo-arkts-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "LiveStreaming",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/widgets/src/main/ets/util/AccountUtil.ets",
+          "line": 76,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "LiveStreaming/LiveStreaming-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "LiveStreaming",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/widgets/src/main/ets/util/AccountUtil.ets",
+          "line": 80,
+          "column": 13,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "LiveStreaming/LiveStreaming-arkprism-report.json"
+        },
+        {
+          "file": "components/module_login/src/main/ets/components/LoginService.ets",
+          "line": 443,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "LiveStreaming/LiveStreaming-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "LiveStreaming",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_login/src/main/ets/components/LoginService.ets",
+          "line": 434,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "LiveStreaming/LiveStreaming-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetworkObserver",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/NetUtils.ets",
+          "line": 278,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "NetworkObserver/NetworkObserver-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/api/client/HttpClient.ets",
+          "line": 140,
+          "column": 26,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/core/widget/DailyWordExtensionAbility.ets",
+          "line": 81,
+          "column": 24,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/core/widget/WatchVocabCardExtensionAbility.ets",
+          "line": 59,
+          "column": 24,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/features/ai-tools/service/LlmAdapter.ets",
+          "line": 285,
+          "column": 26,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "apiKey": "httprequest|requestinstream",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/api/client/SseClient.ets",
+          "line": 68,
+          "column": 5,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "requestInStream",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/core/theme/Breakpoints.ets",
+          "line": 172,
+          "column": 32,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "readmigo_harmony-app",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/features/multi-device/service/ProgressSync.ets",
+          "line": 93,
+          "column": 7,
+          "package": "@ohos.net.connection",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/features/multi-device/service/sync/SyncEngine.ets",
+          "line": 141,
+          "column": 7,
+          "package": "@ohos.net.connection",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "readmigo_harmony-app/readmigo_harmony-app-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "gattclientdevice|readcharacteristicvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/bluetoothService/GattClientManager.ets",
+          "line": 245,
+          "column": 7,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "readCharacteristicValue",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "gattclientdevice|writecharacteristicvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/bluetoothService/GattClientManager.ets",
+          "line": 279,
+          "column": 7,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "writeCharacteristicValue",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "gattclientdevice|readdescriptorvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/bluetoothService/GattClientManager.ets",
+          "line": 320,
+          "column": 7,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "readDescriptorValue",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "gattclientdevice|writedescriptorvalue",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/bluetoothService/GattClientManager.ets",
+          "line": 358,
+          "column": 7,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "member": "writeDescriptorValue",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "gattserver|close",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/bluetoothService/GattServerManager.ets",
+          "line": 286,
+          "column": 7,
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattServer",
+          "member": "close",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "bluetoothSample",
+      "apiKey": "access|getstate",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 101,
+          "column": 26,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 104,
+          "column": 25,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 497,
+          "column": 32,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 500,
+          "column": 32,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 492,
+          "column": 30,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 517,
+          "column": 32,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 507,
+          "column": 30,
+          "package": "@ohos.bluetooth.access",
+          "namespace": "access",
+          "member": "getState",
+          "report": "bluetoothSample/bluetoothSample-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "apiKey": "nethandle|getaddressesbyname",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/NetworkHandover.ets",
+          "line": 139,
+          "column": 21,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "member": "getAddressesByName",
+          "report": "harmonyos_samples_network-boost-kit-sample-code-arkts/harmonyos_samples_network-boost-kit-sample-code-arkts-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/detectBarcode/DecodeCameraYuv.ets",
+          "line": 274,
+          "column": 28,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts/harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_login-and-logout",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/util/JudgeHasNet.ets",
+          "line": 26,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "harmonyos4me_login-and-logout/harmonyos4me_login-and-logout-arkprism-report.json"
+        },
+        {
+          "file": "login/src/main/ets/util/JudgeHasNet.ets",
+          "line": 26,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "harmonyos4me_login-and-logout/harmonyos4me_login-and-logout-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Notes",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "common/utils/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "Notes/Notes-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Notes",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "common/utils/src/main/ets/utils/AccountUtil.ets",
+          "line": 61,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "Notes/Notes-arkprism-report.json"
+        },
+        {
+          "file": "common/utils/src/main/ets/utils/AccountUtil.ets",
+          "line": 96,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "Notes/Notes-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Notes",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "common/utils/src/main/ets/utils/AccountUtil.ets",
+          "line": 89,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "Notes/Notes-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Notes",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/secretlock/src/main/ets/util/AuthUtil.ets",
+          "line": 84,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "Notes/Notes-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Notes",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/secretlock/src/main/ets/util/AuthUtil.ets",
+          "line": 98,
+          "column": 7,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "Notes/Notes-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "pasteboard",
+      "apiKey": "systempasteboard|getunifieddata",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 109,
+          "column": 17,
+          "package": "@ohos.pasteboard",
+          "namespace": "SystemPasteboard",
+          "member": "getUnifiedData",
+          "report": "pasteboard/pasteboard-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 158,
+          "column": 19,
+          "package": "@ohos.pasteboard",
+          "namespace": "SystemPasteboard",
+          "member": "getUnifiedData",
+          "report": "pasteboard/pasteboard-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 182,
+          "column": 17,
+          "package": "@ohos.pasteboard",
+          "namespace": "SystemPasteboard",
+          "member": "getUnifiedData",
+          "report": "pasteboard/pasteboard-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Camera",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 103,
+          "column": 20,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "Camera/Camera-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Camera",
+      "apiKey": "photoasset|getthumbnail",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/views/ModeSwitchPage.ets",
+          "line": 461,
+          "column": 75,
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "PhotoAsset",
+          "member": "getThumbnail",
+          "report": "Camera/Camera-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/ai/core/DirectProvider.ets",
+          "line": 20,
+          "column": 26,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/ai/core/ProxyProvider.ets",
+          "line": 33,
+          "column": 26,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "apiKey": "session|fetch",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 80,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 99,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 131,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 183,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 227,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/common/network/WebUtils.ets",
+          "line": 242,
+          "column": 26,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "fetch",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/account/HuaweiAccountUtils.ets",
+          "line": 67,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/account/HuaweiAccountUtils.ets",
+          "line": 76,
+          "column": 26,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DeadlinerNEXT",
+      "apiKey": "reminderagent|publishreminder",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/notification/ReminderUtils.ets",
+          "line": 92,
+          "column": 20,
+          "package": "@kit.BackgroundTasksKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "DeadlinerNEXT/DeadlinerNEXT-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "KikaInputMethod",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/model/KeyboardController.ets",
+          "line": 389,
+          "column": 15,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "KikaInputMethod/KikaInputMethod-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/model/KeyboardController.ets",
+          "line": 453,
+          "column": 15,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "KikaInputMethod/KikaInputMethod-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "apiKey": "tcpsocket|connect",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 56,
+          "column": 3,
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "member": "connect",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "apiKey": "netconnection|register",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 99,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 292,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "member": "register",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "apiKey": "tcpsocket|send",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 72,
+          "column": 5,
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "member": "send",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "apiKey": "tcpsocket|close",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 94,
+          "column": 11,
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "member": "close",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "NetConnection_Manage_case",
+      "apiKey": "nethandle|getaddressesbyname",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 430,
+          "column": 0,
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "member": "getAddressesByName",
+          "report": "NetConnection_Manage_case/NetConnection_Manage_case-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "PostpartumCareCenter",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "scenes/mine/src/main/ets/pages/Mine.ets",
+          "line": 146,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "PostpartumCareCenter/PostpartumCareCenter-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "PostpartumCareCenter",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "scenes/mine/src/main/ets/pages/Mine.ets",
+          "line": 153,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "PostpartumCareCenter/PostpartumCareCenter-arkprism-report.json"
+        },
+        {
+          "file": "components/utils/src/main/ets/utils/AccountUtil.ets",
+          "line": 62,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "PostpartumCareCenter/PostpartumCareCenter-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Application",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonlib/src/main/ets/utils/AccountUtil.ets",
+          "line": 75,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "Application/Application-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BikeTravel",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/bike_home/src/main/ets/pages/ManualInput.ets",
+          "line": 170,
+          "column": 37,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "BikeTravel/BikeTravel-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BikeTravel",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/bike_mine/src/main/ets/pages/LoginWithHuaweiIDComponent.ets",
+          "line": 47,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "BikeTravel/BikeTravel-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BikeTravel",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/bike_mine/src/main/ets/pages/LoginWithHuaweiIDComponent.ets",
+          "line": 57,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "BikeTravel/BikeTravel-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "birthday_reminder",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/managers/AIModelManager.ets",
+          "line": 352,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/ai/AIService.ets",
+          "line": 493,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/ai/SimpleAIService.ets",
+          "line": 263,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/calendar/CalendarApiService.ets",
+          "line": 111,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/calendar/CalendarApiService.ets",
+          "line": 148,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/calendar/CalendarApiService.ets",
+          "line": 181,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/calendar/LunarService.ets",
+          "line": 151,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/llm/LLMService.ets",
+          "line": 385,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/lunar/OnlineLunarService.ets",
+          "line": 196,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/lunar/OnlineLunarService.ets",
+          "line": 381,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 58,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 91,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 123,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 154,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 178,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 208,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/sync/CloudStorageProvider.ets",
+          "line": 260,
+          "column": 30,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "birthday_reminder",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/services/media/MediaManager.ets",
+          "line": 135,
+          "column": 28,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "birthday_reminder",
+      "apiKey": "reminderagent|publishreminder",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/services/notification/ReminderScheduler.ets",
+          "line": 151,
+          "column": 33,
+          "package": "@kit.ReminderAgentKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/notification/ReminderScheduler.ets",
+          "line": 243,
+          "column": 33,
+          "package": "@kit.ReminderAgentKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/notification/ReminderScheduler.ets",
+          "line": 290,
+          "column": 33,
+          "package": "@kit.ReminderAgentKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/notification/ReminderScheduler.ets",
+          "line": 434,
+          "column": 13,
+          "package": "@kit.ReminderAgentKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/services/notification/TimedReminderService.ets",
+          "line": 147,
+          "column": 32,
+          "package": "@kit.BackgroundTasksKit",
+          "namespace": "reminderAgent",
+          "member": "publishReminder",
+          "report": "birthday_reminder/birthday_reminder-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CarBeautyCare",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 53,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "CarBeautyCare/CarBeautyCare-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CarBeautyCare",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "CarBeautyCare/CarBeautyCare-arkprism-report.json"
+        },
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 92,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "CarBeautyCare/CarBeautyCare-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "CarBeautyCare",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 85,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "CarBeautyCare/CarBeautyCare-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ComprehensiveMall",
+      "apiKey": "systempasteboard|getdatasync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_address_manage/src/main/ets/pages/AddressEditPage.ets",
+          "line": 470,
+          "column": 44,
+          "package": "@ohos.pasteboard",
+          "namespace": "SystemPasteboard",
+          "member": "getDataSync",
+          "report": "ComprehensiveMall/ComprehensiveMall-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ComprehensiveMall",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_login/src/main/ets/pages/HuaweiQuickLoginPage.ets",
+          "line": 262,
+          "column": 17,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "ComprehensiveMall/ComprehensiveMall-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "ComprehensiveMall",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_login/src/main/ets/pages/HuaweiQuickLoginPage.ets",
+          "line": 269,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "ComprehensiveMall/ComprehensiveMall-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "delay_related_performance",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/FriendMoment.ets",
+          "line": 104,
+          "column": 5,
+          "package": "@ohos.net.http",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "delay_related_performance/delay_related_performance-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DriverLicenseExam",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 50,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "DriverLicenseExam/DriverLicenseExam-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DriverLicenseExam",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "DriverLicenseExam/DriverLicenseExam-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DriverLicenseExam-master",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 50,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "DriverLicenseExam-master/DriverLicenseExam-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "DriverLicenseExam-master",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonLib/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "DriverLicenseExam-master/DriverLicenseExam-master-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "etohos",
+      "apiKey": "distributeddevicemanager|getavailabledevicelistsync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/entryability/EntryAbility.ets",
+          "line": 783,
+          "column": 12,
+          "package": "@ohos.distributedDeviceManager",
+          "namespace": "DeviceManager",
+          "member": "getAvailableDeviceListSync",
+          "report": "etohos/etohos-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/entryability/EntryAbility.ets",
+          "line": 799,
+          "column": 22,
+          "package": "@ohos.distributedDeviceManager",
+          "namespace": "DeviceManager",
+          "member": "getAvailableDeviceListSync",
+          "report": "etohos/etohos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "etohos",
+      "apiKey": "httprequest|request",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/utils/HttpUtils.ets",
+          "line": 57,
+          "column": 7,
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "member": "request",
+          "report": "etohos/etohos-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_aicharacter-recognition",
+      "apiKey": "camera|getcameramanager",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/common/utils/Camera.ets",
+          "line": 39,
+          "column": 22,
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "member": "getCameraManager",
+          "report": "harmonyos4me_aicharacter-recognition/harmonyos4me_aicharacter-recognition-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_hmosworld",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/login/src/main/ets/pages/LoginPage.ets",
+          "line": 108,
+          "column": 23,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "harmonyos4me_hmosworld/harmonyos4me_hmosworld-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_hmosworld",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/login/src/main/ets/pages/LoginPage.ets",
+          "line": 118,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_hmosworld/harmonyos4me_hmosworld-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/pages/LoginPage.ets",
+          "line": 150,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "harmonyos4me_hmosworld/harmonyos4me_hmosworld-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "harmonyos4me_hmosworld",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/login/src/main/ets/pages/LoginPage.ets",
+          "line": 144,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "harmonyos4me_hmosworld/harmonyos4me_hmosworld-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HomeDecoration",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonlib/src/main/ets/utils/AccountUtil.ets",
+          "line": 53,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "HomeDecoration/HomeDecoration-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HomeDecoration",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/commonlib/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 13,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "HomeDecoration/HomeDecoration-arkprism-report.json"
+        },
+        {
+          "file": "components/module_login/src/main/ets/components/LoginService.ets",
+          "line": 444,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "HomeDecoration/HomeDecoration-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "HomeDecoration",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_login/src/main/ets/components/LoginService.ets",
+          "line": 435,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "HomeDecoration/HomeDecoration-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "QRCodeScan",
+      "apiKey": "camera|createcamerainput",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "Feature/src/main/ets/qrcodescan/CameraService.ets",
+          "line": 68,
+          "column": 24,
+          "package": "@ohos.multimedia.camera",
+          "namespace": "camera",
+          "member": "createCameraInput",
+          "report": "QRCodeScan/QRCodeScan-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BookRead",
+      "apiKey": "session|downloadtofile",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/common/src/main/ets/utils/FileUtils.ets",
+          "line": 87,
+          "column": 39,
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "member": "downloadToFile",
+          "report": "BookRead/BookRead-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BookRead",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/book_person/src/main/ets/views/LoginPage.ets",
+          "line": 189,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "BookRead/BookRead-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BookRead",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/book_person/src/main/ets/views/LoginPage.ets",
+          "line": 202,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "BookRead/BookRead-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "BookRead",
+      "apiKey": "display|getalldisplays",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "feature/book_read_kit/src/main/ets/components/ExpandableText.ets",
+          "line": 35,
+          "column": 5,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getAllDisplays",
+          "report": "BookRead/BookRead-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "EnterpriseRecruitment",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/Mine.ets",
+          "line": 183,
+          "column": 23,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "EnterpriseRecruitment/EnterpriseRecruitment-arkprism-report.json"
+        },
+        {
+          "file": "commons/component/src/main/ets/utils/AccountUtil.ets",
+          "line": 50,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "EnterpriseRecruitment/EnterpriseRecruitment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "EnterpriseRecruitment",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "product/phone/src/main/ets/pages/Mine.ets",
+          "line": 190,
+          "column": 78,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "EnterpriseRecruitment/EnterpriseRecruitment-arkprism-report.json"
+        },
+        {
+          "file": "commons/component/src/main/ets/utils/AccountUtil.ets",
+          "line": 57,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "EnterpriseRecruitment/EnterpriseRecruitment-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Express",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/business_mine/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 310,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "Express/Express-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Express",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/business_mine/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 319,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "Express/Express-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "display|getdefaultdisplaysync",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/controller/FloatWindowController.ets",
+          "line": 80,
+          "column": 15,
+          "package": "@ohos.display",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/controller/FloatWindowController.ets",
+          "line": 80,
+          "column": 0,
+          "package": "@ohos.window",
+          "namespace": "display",
+          "member": "display.Display.getDefaultDisplaySync",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|close",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 30,
+          "column": 9,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "close",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        },
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 76,
+          "column": 11,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "close",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|bind",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 34,
+          "column": 13,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "bind",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|connect",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 55,
+          "column": 13,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "connect",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|setextraoptions",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 63,
+          "column": 13,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "setExtraOptions",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|send",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 90,
+          "column": 13,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "send",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "VoiceCallDemo",
+      "apiKey": "tcpsocket|getstate",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/net/SocketImpl.ets",
+          "line": 104,
+          "column": 25,
+          "package": "@ohos.net.socket",
+          "namespace": "TCPSocket",
+          "member": "getState",
+          "report": "VoiceCallDemo/VoiceCallDemo-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "WebShortDrama",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/widgets/src/main/ets/util/AccountUtil.ets",
+          "line": 24,
+          "column": 26,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 31,
+          "column": 26,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 59,
+          "column": 26,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "WebShortDrama",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/widgets/src/main/ets/util/AccountUtil.ets",
+          "line": 29,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "commons/widgets/src/main/ets/util/Utils.ets",
+          "line": 58,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 36,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 64,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 105,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        },
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 132,
+          "column": 24,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "WebShortDrama",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "features/login/src/main/ets/HmsAccountSdkWrapper.ts",
+          "line": 96,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "WebShortDrama/WebShortDrama-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Asset",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 45,
+          "column": 5,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "Asset/Asset-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "Asset",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 57,
+          "column": 5,
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "Asset/Asset-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "AssetStoreArkTS",
+      "apiKey": "userauth|getuserauthinstance",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 46,
+          "column": 30,
+          "package": "@ohos.userIAM.userAuth",
+          "namespace": "userAuth",
+          "member": "getUserAuthInstance",
+          "report": "AssetStoreArkTS/AssetStoreArkTS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "AssetStoreArkTS",
+      "apiKey": "userauthinstance|on",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 47,
+          "column": 7,
+          "package": "@ohos.userIAM.userAuth",
+          "namespace": "UserAuthInstance",
+          "member": "on('result')",
+          "report": "AssetStoreArkTS/AssetStoreArkTS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "AssetStoreArkTS",
+      "apiKey": "userauthinstance|start",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/pages/Index.ets",
+          "line": 58,
+          "column": 7,
+          "package": "@ohos.userIAM.userAuth",
+          "namespace": "UserAuthInstance",
+          "member": "start",
+          "report": "AssetStoreArkTS/AssetStoreArkTS-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "FinancialManagement",
+      "apiKey": "huaweiidprovider|createloginwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_base/src/main/ets/utils/AccountUtil.ets",
+          "line": 50,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createLoginWithHuaweiIDRequest",
+          "report": "FinancialManagement/FinancialManagement-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "FinancialManagement",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "components/module_base/src/main/ets/utils/AccountUtil.ets",
+          "line": 54,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "FinancialManagement/FinancialManagement-arkprism-report.json"
+        },
+        {
+          "file": "scenes/business_mine/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 329,
+          "column": 7,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "FinancialManagement/FinancialManagement-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "FinancialManagement",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "scenes/business_mine/src/main/ets/pages/QuickLoginPage.ets",
+          "line": 320,
+          "column": 25,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "FinancialManagement/FinancialManagement-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "MultiMedia",
+      "apiKey": "camera|createcamerainput",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "entry/src/main/ets/model/CameraService.ts",
+          "line": 148,
+          "column": 24,
+          "package": "@ohos.multimedia.camera",
+          "namespace": "camera",
+          "member": "createCameraInput",
+          "report": "MultiMedia/MultiMedia-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "OfficeAttendance",
+      "apiKey": "huaweiidprovider|createauthorizationwithhuaweiidrequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/common_lib/src/main/ets/utils/AccountUtil.ets",
+          "line": 44,
+          "column": 28,
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "member": "createAuthorizationWithHuaweiIDRequest",
+          "report": "OfficeAttendance/OfficeAttendance-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "projectName": "OfficeAttendance",
+      "apiKey": "authenticationcontroller|executerequest",
+      "configured": true,
+      "occurrences": [
+        {
+          "file": "commons/common_lib/src/main/ets/utils/AccountUtil.ets",
+          "line": 49,
+          "column": 80,
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "member": "executeRequest",
+          "report": "OfficeAttendance/OfficeAttendance-arkprism-report.json"
+        }
+      ]
+    }
+  ],
+  "unresolvedOutputOccurrences": [],
+  "metricContract": {
+    "confirmedKeyCoverage": "Fraction of the 666 manually confirmed project-API keys reproduced by this run.",
+    "reviewedOutputPrecision": "Defined only when every project-API key emitted by this run is present in the manually reviewed key set.",
+    "occurrencePrecision": "Undefined because the Top-120 audit canonicalizes repeated report rows to project-API keys.",
+    "corpusRecall": "Undefined because benchmark projects and candidates were selected from an earlier ArkPrism output."
+  }
+}

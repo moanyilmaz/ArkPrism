@@ -383,7 +383,6 @@ def main() -> None:
     ordered_names = [
         "HapFlow artifact reproduction",
         "ArkPrism full",
-        "ArkPrism callback-off",
         "ArkPrism no-ir",
         "ArkPrism no-receiver",
         "ArkPrism unbounded-lifecycle",
