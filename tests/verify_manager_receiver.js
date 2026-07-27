@@ -37,6 +37,9 @@ const cases = [
       'audio.audio.AudioVolumeManager.getVolumeGroupManager|receiver_type',
       'audio.getAudioManager|undefined',
     ],
+    expectedSourceLocations: [
+      { method: 'audio.AudioVolumeManager.getVolumeGroupManager', fragment: '.getVolumeGroupManager' },
+    ],
   },
   {
     fixture: 'factory_inferred_receiver',

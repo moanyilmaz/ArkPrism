@@ -288,7 +288,7 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
             const call = ts.isCallExpression(node.parent) && node.parent.expression === node
                 ? node.parent
                 : undefined;
-            const start = node.getStart(source);
+            const start = node.name.getStart(source);
             const location = source.getLineAndCharacterOfPosition(start);
             occurrences.push({
                 member: node.name.text,
