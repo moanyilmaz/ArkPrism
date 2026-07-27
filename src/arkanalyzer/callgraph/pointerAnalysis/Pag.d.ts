@@ -197,7 +197,9 @@ export declare class Pag extends BaseExplicitGraph {
     private stashAddrEdge;
     private addrEdge;
     private clonedNodeMap;
+    private rejectedContainerFieldEdges;
     getCG(): CallGraph;
+    getRejectedContainerFieldEdges(): number;
     getOrClonePagNode(src: PagNode, basePt: NodeID): PagNode;
     getOrClonePagFieldNode(src: PagInstanceFieldNode, basePt: NodeID): PagInstanceFieldNode | undefined;
     getOrClonePagContainerFieldNode(basePt: NodeID, src?: PagArrayNode, base?: Local): PagInstanceFieldNode | undefined;

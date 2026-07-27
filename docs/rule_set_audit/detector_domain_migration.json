@@ -1,0 +1,619 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-24T14:24:43.281Z",
+  "definition": "Explicit package/namespace/member corrections for detector profiling domains. API identity and matching semantics are unchanged.",
+  "beforeSha256": "99cf5507cd9dcf35fdbedefd2862543d34a6f5872025341a991ed27ff5196175",
+  "afterSha256": "727c3b38a3cc578c91720b0ba1d46c297165370a0f69378242d84cf3860b99ab",
+  "entries": 716,
+  "changes": 67,
+  "beforeCategories": {
+    "device_identity.ad_tracking": 6,
+    "device_identity.biometric": 4,
+    "device_identity.device_info": 14,
+    "device_identity.distributed": 1,
+    "device_identity.hardware": 23,
+    "device_identity.network": 8,
+    "device_identity.screen": 2,
+    "device_identity.sim": 8,
+    "device_identity.software": 18,
+    "device_identity.transaction": 3,
+    "device_identity.unique_id": 2,
+    "device_status.audio": 9,
+    "device_status.health": 5,
+    "device_status.input": 3,
+    "device_status.sensor": 89,
+    "Financial information.Asset information": 2,
+    "Identifiers.diskSN": 1,
+    "location": 49,
+    "media.camera": 8,
+    "network.bluetooth": 105,
+    "network.connectivity": 182,
+    "network.wifi": 67,
+    "user_data.account": 27,
+    "user_data.audio": 16,
+    "user_data.calendar": 6,
+    "user_data.clipboard": 18,
+    "user_data.contacts": 17,
+    "user_data.media": 14,
+    "user_data.sms": 5,
+    "user_preference.settings": 4
+  },
+  "afterCategories": {
+    "device_identity.ad_tracking": 6,
+    "device_identity.biometric": 6,
+    "device_identity.device_info": 14,
+    "device_identity.distributed": 4,
+    "device_identity.hardware": 21,
+    "device_identity.network": 8,
+    "device_identity.screen": 2,
+    "device_identity.sim": 9,
+    "device_identity.software": 18,
+    "device_identity.transaction": 3,
+    "device_identity.unique_id": 2,
+    "device_management.policy": 9,
+    "device_status.audio": 9,
+    "device_status.health": 5,
+    "device_status.input": 4,
+    "device_status.screen": 1,
+    "device_status.sensor": 89,
+    "financial.asset": 2,
+    "location": 49,
+    "media.camera": 8,
+    "network.bluetooth": 62,
+    "network.cellular": 12,
+    "network.connectivity": 181,
+    "network.nearlink": 5,
+    "network.nfc": 4,
+    "network.wifi": 66,
+    "storage.distributed": 4,
+    "system.security": 3,
+    "user_data.account": 34,
+    "user_data.audio": 9,
+    "user_data.calendar": 6,
+    "user_data.clipboard": 18,
+    "user_data.contacts": 17,
+    "user_data.game_profile": 1,
+    "user_data.media": 13,
+    "user_data.notification": 2,
+    "user_data.sms": 5,
+    "user_preference.settings": 5
+  },
+  "changedRules": [
+    {
+      "packageName": "@kit.ArkUI",
+      "namespace": "window",
+      "member": "getVisibleWindowInfo",
+      "from": "network.bluetooth",
+      "to": "device_status.screen",
+      "rule": "visible-window-state"
+    },
+    {
+      "packageName": "@kit.AssetStoreKit",
+      "namespace": "asset",
+      "member": "query",
+      "from": "Financial information.Asset information",
+      "to": "financial.asset",
+      "rule": "canonical-financial-label"
+    },
+    {
+      "packageName": "@kit.AssetStoreKit",
+      "namespace": "asset",
+      "member": "querySync",
+      "from": "Financial information.Asset information",
+      "to": "financial.asset",
+      "rule": "canonical-financial-label"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "member": "diskSN",
+      "from": "Identifiers.diskSN",
+      "to": "device_identity.hardware",
+      "rule": "canonical-hardware-identifier"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AppAccountManager",
+      "member": "setDataSyncEnabled",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AppAccountManager",
+      "member": "checkDataSyncEnabled",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AppAccountManager",
+      "member": "checkAppAccountSyncEnable",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AppAccountManager",
+      "member": "setAppAccountSyncEnable",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AppAccountManager",
+      "member": "getAllAccessibleAccounts",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AccountManager",
+      "member": "checkOsAccountConstraintEnabled",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "AccountManager",
+      "member": "isOsAccountConstraintEnable",
+      "from": "network.bluetooth",
+      "to": "user_data.account",
+      "rule": "account-management"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "DomainServerConfigManager",
+      "member": "addServerConfig",
+      "from": "user_data.audio",
+      "to": "network.connectivity",
+      "rule": "domain-server-configuration"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "DomainServerConfigManager",
+      "member": "updateServerConfig",
+      "from": "user_data.audio",
+      "to": "network.connectivity",
+      "rule": "domain-server-configuration"
+    },
+    {
+      "packageName": "@kit.BasicServicesKit",
+      "namespace": "intelligentScene",
+      "member": "isDoNotDisturbEnabled",
+      "from": "network.bluetooth",
+      "to": "user_preference.settings",
+      "rule": "do-not-disturb-setting"
+    },
+    {
+      "packageName": "@kit.ConnectivityKit",
+      "namespace": "nfcController",
+      "member": "enableNfc",
+      "from": "network.bluetooth",
+      "to": "network.nfc",
+      "rule": "nfc-control"
+    },
+    {
+      "packageName": "@kit.ConnectivityKit",
+      "namespace": "nfcController",
+      "member": "disableNfc",
+      "from": "network.bluetooth",
+      "to": "network.nfc",
+      "rule": "nfc-control"
+    },
+    {
+      "packageName": "@kit.ConnectivityKit",
+      "namespace": "NdefFormatableTag",
+      "member": "NdefFormatableTag.format",
+      "from": "network.bluetooth",
+      "to": "network.nfc",
+      "rule": "nfc-control"
+    },
+    {
+      "packageName": "@kit.ConnectivityKit",
+      "namespace": "NdefFormatableTag",
+      "member": "NdefFormatableTag.formatReadOnly",
+      "from": "network.bluetooth",
+      "to": "network.nfc",
+      "rule": "nfc-control"
+    },
+    {
+      "packageName": "@kit.CoreFileKit",
+      "namespace": "fileIo",
+      "member": "connectDfs",
+      "from": "network.connectivity",
+      "to": "storage.distributed",
+      "rule": "distributed-file-service"
+    },
+    {
+      "packageName": "@kit.CoreFileKit",
+      "namespace": "fileIo",
+      "member": "disconnectDfs",
+      "from": "network.connectivity",
+      "to": "storage.distributed",
+      "rule": "distributed-file-service"
+    },
+    {
+      "packageName": "@kit.DeviceSecurityKit",
+      "namespace": "",
+      "member": "checkSysIntegrity",
+      "from": "device_identity.hardware",
+      "to": "system.security",
+      "rule": "system-integrity"
+    },
+    {
+      "packageName": "@kit.DeviceSecurityKit",
+      "namespace": "",
+      "member": "checkSysIntegrityOnLocal",
+      "from": "device_identity.hardware",
+      "to": "system.security",
+      "rule": "system-integrity"
+    },
+    {
+      "packageName": "@kit.DeviceSecurityKit",
+      "namespace": "",
+      "member": "checkSysIntegrityEnhanced",
+      "from": "device_identity.hardware",
+      "to": "system.security",
+      "rule": "system-integrity"
+    },
+    {
+      "packageName": "@kit.DistributedServiceKit",
+      "namespace": "DeviceManager",
+      "member": "getAvailableDeviceListSync",
+      "from": "network.bluetooth",
+      "to": "device_identity.distributed",
+      "rule": "distributed-device-discovery"
+    },
+    {
+      "packageName": "@kit.DistributedServiceKit",
+      "namespace": "DeviceManager",
+      "member": "getAvailableDeviceList",
+      "from": "network.bluetooth",
+      "to": "device_identity.distributed",
+      "rule": "distributed-device-discovery"
+    },
+    {
+      "packageName": "@kit.DistributedServiceKit",
+      "namespace": "DeviceManager",
+      "member": "startDiscovering",
+      "from": "network.wifi",
+      "to": "device_identity.distributed",
+      "rule": "distributed-device-discovery"
+    },
+    {
+      "packageName": "@kit.GameServiceKit",
+      "namespace": "gamePlayer",
+      "member": "getLocalPlayer",
+      "from": "user_data.media",
+      "to": "user_data.game_profile",
+      "rule": "game-profile"
+    },
+    {
+      "packageName": "@kit.GameServiceKit",
+      "namespace": "gameNearbyTransfer",
+      "member": "acceptCollaboration",
+      "from": "user_data.audio",
+      "to": "network.connectivity",
+      "rule": "game-nearby-transfer"
+    },
+    {
+      "packageName": "@kit.InputKit",
+      "namespace": "inputDevice",
+      "member": "setFunctionKeyEnabled",
+      "from": "network.bluetooth",
+      "to": "device_status.input",
+      "rule": "input-control"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "adminManager",
+      "member": "disableAdmin",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "adminManager",
+      "member": "startAdminProvision",
+      "from": "user_data.audio",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "adminManager",
+      "member": "enableDeviceAdmin",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "adminManager",
+      "member": "disableDeviceAdmin",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "applicationManager",
+      "member": "setAbilityDisabled",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "applicationManager",
+      "member": "isAbilityDisabled",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "addApn",
+      "from": "user_data.audio",
+      "to": "network.cellular",
+      "rule": "mdm-apn"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "deleteApn",
+      "from": "network.connectivity",
+      "to": "network.cellular",
+      "rule": "mdm-apn"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "updateApn",
+      "from": "user_data.audio",
+      "to": "network.cellular",
+      "rule": "mdm-apn"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "setPreferredApn",
+      "from": "network.connectivity",
+      "to": "network.cellular",
+      "rule": "mdm-apn"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "queryApn",
+      "from": "user_data.audio",
+      "to": "network.cellular",
+      "rule": "mdm-apn"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "systemManager",
+      "member": "setNTPServer",
+      "from": "network.connectivity",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "systemManager",
+      "member": "setInstallLocalEnterpriseAppEnabled",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "systemManager",
+      "member": "getInstallLocalEnterpriseAppEnabled",
+      "from": "network.bluetooth",
+      "to": "device_management.policy",
+      "rule": "mdm-policy"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "telephonyManager",
+      "member": "setSimDisabled",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "mdm-cellular"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "telephonyManager",
+      "member": "setSimEnabled",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "mdm-cellular"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "telephonyManager",
+      "member": "isSimDisabled",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "mdm-cellular"
+    },
+    {
+      "packageName": "@kit.NearLinkKit",
+      "namespace": "RemoteDevice",
+      "member": "getConnectionState",
+      "from": "network.connectivity",
+      "to": "network.nearlink",
+      "rule": "nearlink"
+    },
+    {
+      "packageName": "@kit.NearLinkKit",
+      "namespace": "Client",
+      "member": "setPropertyNotification",
+      "from": "network.bluetooth",
+      "to": "network.nearlink",
+      "rule": "nearlink"
+    },
+    {
+      "packageName": "@kit.NearLinkKit",
+      "namespace": "Client",
+      "member": "on( 'connectionStateChange')",
+      "from": "network.connectivity",
+      "to": "network.nearlink",
+      "rule": "nearlink"
+    },
+    {
+      "packageName": "@kit.NearLinkKit",
+      "namespace": "Client",
+      "member": "off( 'connectionStateChange')",
+      "from": "network.connectivity",
+      "to": "network.nearlink",
+      "rule": "nearlink"
+    },
+    {
+      "packageName": "@kit.NearLinkKit",
+      "namespace": "Server",
+      "member": "off( 'connectionStateChange')",
+      "from": "network.connectivity",
+      "to": "network.nearlink",
+      "rule": "nearlink"
+    },
+    {
+      "packageName": "@kit.NetworkBoostKit",
+      "namespace": "netBoost",
+      "member": "setLowPowerMode",
+      "from": "network.bluetooth",
+      "to": "network.connectivity",
+      "rule": "network-boost"
+    },
+    {
+      "packageName": "@kit.NotificationKit",
+      "namespace": "notificationExtensionSubscription",
+      "member": "getUserGrantedEnabledBundles",
+      "from": "network.bluetooth",
+      "to": "user_data.notification",
+      "rule": "notification-access"
+    },
+    {
+      "packageName": "@kit.RemoteCommunicationKit",
+      "namespace": "Session",
+      "member": "fetchForSendable",
+      "from": "network.bluetooth",
+      "to": "network.connectivity",
+      "rule": "remote-communication"
+    },
+    {
+      "packageName": "@kit.RemoteCommunicationKit",
+      "namespace": "DefaultSession",
+      "member": "fetchForSendable",
+      "from": "network.bluetooth",
+      "to": "network.connectivity",
+      "rule": "remote-communication"
+    },
+    {
+      "packageName": "@kit.TelephonyKit",
+      "namespace": "data",
+      "member": "isCellularDataEnabled",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "cellular-data"
+    },
+    {
+      "packageName": "@kit.TelephonyKit",
+      "namespace": "data",
+      "member": "isCellularDataEnabledSync",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "cellular-data"
+    },
+    {
+      "packageName": "@kit.TelephonyKit",
+      "namespace": "data",
+      "member": "isCellularDataRoamingEnabled",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "cellular-data"
+    },
+    {
+      "packageName": "@kit.TelephonyKit",
+      "namespace": "data",
+      "member": "isCellularDataRoamingEnabledSync",
+      "from": "network.bluetooth",
+      "to": "network.cellular",
+      "rule": "cellular-data"
+    },
+    {
+      "packageName": "@kit.TelephonyKit",
+      "namespace": "eSIM",
+      "member": "addProfile",
+      "from": "network.bluetooth",
+      "to": "device_identity.sim",
+      "rule": "esim-profile"
+    },
+    {
+      "packageName": "@kit.UserAuthenticationKit",
+      "namespace": "userAuth",
+      "member": "getAvailableStatus",
+      "from": "network.bluetooth",
+      "to": "device_identity.biometric",
+      "rule": "user-authentication"
+    },
+    {
+      "packageName": "@kit.UserAuthenticationKit",
+      "namespace": "UserAuth",
+      "member": "getAvailableStatus",
+      "from": "network.bluetooth",
+      "to": "device_identity.biometric",
+      "rule": "user-authentication"
+    },
+    {
+      "packageName": "@ohos.data.rdb",
+      "namespace": "RdbStore",
+      "member": "setDistributedTables",
+      "from": "network.bluetooth",
+      "to": "storage.distributed",
+      "rule": "distributed-database"
+    },
+    {
+      "packageName": "@ohos.data.rdb",
+      "namespace": "RdbStore",
+      "member": "obtainDistributedTableName",
+      "from": "network.bluetooth",
+      "to": "storage.distributed",
+      "rule": "distributed-database"
+    },
+    {
+      "packageName": "@ohos.reminderAgent",
+      "namespace": "reminderAgent",
+      "member": "publishReminder",
+      "from": "network.bluetooth",
+      "to": "user_data.notification",
+      "rule": "reminder-data"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "isNetworkInterfaceDisabledSync",
+      "from": "network.bluetooth",
+      "to": "network.connectivity",
+      "rule": "mdm-network-interface"
+    },
+    {
+      "packageName": "@kit.MDMKit",
+      "namespace": "networkManager",
+      "member": "setNetworkInterfaceDisabledSync",
+      "from": "network.bluetooth",
+      "to": "network.connectivity",
+      "rule": "mdm-network-interface"
+    }
+  ]
+}

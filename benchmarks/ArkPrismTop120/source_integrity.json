@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "manifest": "source_manifest.json",
+  "checks": {
+    "expectedProjects": 120,
+    "actualProjects": 120,
+    "verifiedProjects": 120,
+    "expectedFiles": 29250,
+    "verifiedFiles": 29250,
+    "expectedBytes": 2564659822,
+    "verifiedBytes": 2564659822
+  },
+  "failures": [],
+  "passed": true
+}

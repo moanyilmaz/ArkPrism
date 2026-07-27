@@ -22,6 +22,7 @@ export interface PrivacyDataAPI {
     method: string;
     permission?: string;            // required permission, if any
     profilingCategory?: string;     // profiling dimension for multi-source collaboration
+    receiverFactories?: string[];   // factory methods that produce the API receiver
 }
 
 /** A system package containing privacy APIs */
@@ -49,10 +50,13 @@ export interface PrivacyDataApiResult {
     file: string;
     declaringMethod?: string;       // method signature where this API is called
     line?: number;                  // source line number
+    column?: number;                // source column number
+    locationEvidence?: "arkir" | "source_ast";
     originalCode?: string;          // original ArkTS source code
     permission?: string;
     profilingCategory?: string;
     callbackHost?: string;          // for callback invoke: the host method name
+    matchEvidence?: "namespace" | "receiver_origin" | "receiver_type" | "target_signature";
 }
 
 // ==================== Layer 3-4: Call Graph & Chain Types ====================
@@ -189,6 +193,19 @@ export interface TaintPathStep {
 
 /** A detected taint flow from source to sink */
 export interface TaintFlowResult {
+    provenance: "ifds" | "async_supplement" | "both";
+    sourceKind: "privacy_data" | "framework_input";
+    sourceIdentity: {
+        module: string;
+        namespace: string;
+        className: string;
+        apiName: string;
+        sourceType: string;
+        sourceIndex: number;
+        callbackIndex: number;
+        methodSignature: string;
+        ruleOrigin: string;
+    };
     sourceApi: string;          // Source statement or API signature
     sourceFile: string;         // Source file / position
     sourceLine: number;         // Source line number
@@ -197,6 +214,39 @@ export interface TaintFlowResult {
     sinkLine: number;           // Sink line number
     taintedValue: string;       // The tainted value being tracked
     path: TaintPathStep[];      // Complete propagation path from source to sink
+}
+
+/** A conservative join between detector evidence and an independent taint flow */
+export interface TaintFlowLink {
+    apiUsageIndex: number;
+    taintFlowIndex: number;
+    evidence: "exact_statement" | "source_location";
+}
+
+export interface TaintAnalysisMetadata {
+    status: "SUCCESS" | "PARTIAL_SUCCESS";
+    pointerAnalysis: {
+        requested: boolean;
+        status: "SUCCESS" | "SKIPPED";
+        rejectedContainerFieldEdges: number;
+    };
+    ifds: {
+        sources: number;
+        sinks: number;
+        rawFlows: number;
+        edgesProcessed: number;
+        malformedCfgEdges: number;
+        budgetExceeded: boolean;
+        batching: boolean;
+        batches: number;
+    };
+    callback: {
+        enabled: boolean;
+        rawFlows: number;
+    };
+    flowsBeforeDeduplication: number;
+    uniqueFlows: number;
+    duplicatesRemoved: number;
 }
 
 // ==================== Layer 6: Output Types ====================
@@ -233,6 +283,8 @@ export interface ArkPrismOutput {
     multiSourceCollaborations: MultiSourceCollaboration[];
     permissionUsages: PermissionResult[];
     taintFlows?: TaintFlowResult[];
+    taintFlowLinks?: TaintFlowLink[];
+    taintAnalysis?: TaintAnalysisMetadata;
     statistics: {
         totalFilesAnalyzed: number;
         totalMethodsAnalyzed: number;

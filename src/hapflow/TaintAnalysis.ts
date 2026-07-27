@@ -6,15 +6,15 @@ import { Value } from "../arkanalyzer";
 import { ArkAssignStmt, ArkInvokeStmt, ArkReturnStmt, ArkThrowStmt, Stmt } from "../arkanalyzer";
 import { ArkMethod } from "../arkanalyzer";
 import { Constant } from "../arkanalyzer";
-import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
+import { AbstractRef, ArkArrayRef, ArkCaughtExceptionRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { DataflowSolver } from "./DataflowSolver";
 import { AbstractInvokeExpr, ArkAwaitExpr, ArkInstanceInvokeExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from "../arkanalyzer";
 import { ArrayType, ClassType, ClosureType, FunctionType, LexicalEnvType, UnclearReferenceType, UndefinedType } from "../arkanalyzer";
 import { MethodSignature } from "../arkanalyzer";
 import { PointerAnalysis } from "../arkanalyzer";
 import * as fs from 'fs';
-import { Source } from "./Source";
-import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
+import { Source, validateSourceRuleObject } from "./Source";
+import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, TaintOutcomeEqual, ValueDependsOn, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
 import { TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
@@ -28,6 +28,10 @@ import { INSTANCE_INIT_METHOD_NAME } from "../arkanalyzer";
 const logger = Logger.getLogger(LOG_MODULE_TYPE.ARKANALYZER, 'HapFlow');
 const SDK_PATH_PLACEHOLDER = '${OPENHARMONY_SDK_PATH}';
 const HMS_SDK_PATH_PLACEHOLDER = '${HMS_SDK_PATH}';
+
+function irRecoveryEnabled(): boolean {
+    return process.env.ARKPRISM_DISABLE_IR_RECOVERY !== '1';
+}
 
 function normalizeSdkPathForTypeImports(sdkPath?: string): string {
     return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
@@ -60,6 +64,40 @@ function loadRuleObjects(filePath: string, sdkPath?: string): any[] {
     return expandSdkPathPlaceholders(objects, sdkPath) as any[];
 }
 
+function canonicalizeFieldAccess(ref: ArkInstanceFieldRef): MultiRef | undefined {
+    const fields = [ref.getFieldSignature()];
+    let base = ref.getBase();
+    const visited = new Set<Local>();
+
+    while (!visited.has(base)) {
+        visited.add(base);
+        const declaringStmt = base.getDeclaringStmt();
+        if (!(declaringStmt instanceof ArkAssignStmt)) break;
+        const rightOp = declaringStmt.getRightOp();
+        if (!(rightOp instanceof ArkInstanceFieldRef)) break;
+        fields.unshift(rightOp.getFieldSignature());
+        base = rightOp.getBase();
+    }
+
+    return fields.length > 1 ? new MultiRef(base, fields) : undefined;
+}
+
+export function getParameterInstanceForArgument(method: ArkMethod, argumentIndex: number): Value | undefined {
+    if (!Number.isInteger(argumentIndex) || argumentIndex < 0) return undefined;
+
+    const parameters = method.getParameters();
+    const parameterOffset = parameters[0]?.getType() instanceof LexicalEnvType ? 1 : 0;
+    return method.getParameterInstances()[argumentIndex + parameterOffset];
+}
+
+export function shouldPropagateErrorPayload(
+    isZeroFact: boolean,
+    arguments_: Value[],
+    dataValue: Value
+): boolean {
+    return !isZeroFact && arguments_.some(argument => ValueDependsOn(argument, dataValue));
+}
+
 export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private zeroValue: TaintFact;
     private entryPoint: Stmt;
@@ -67,6 +105,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private scene: Scene;
     private sources: Map<string, Source> = new Map();
     private sinks: MethodSignature[] = [];
+    private sinkMatchers: Array<{ method: string, owners: string[] }> = [];
     private santizations: MethodSignature[] = [];
     private pointerAnalysis: PointerAnalysis | undefined;
     private detectOutcome: TaintFact[] = [];
@@ -86,6 +125,22 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         this.entryMethod = method;
         this.scene = method.getDeclaringArkFile().getScene();
         this.pointerAnalysis = pta;
+    }
+
+    private createSourceFact(value: Value, statement: Stmt, source: Source): TaintFact {
+        const sourceKind = source.rule.sourceKind;
+        if (!sourceKind) {
+            throw new Error(`Source rule lacks source_kind: ${source.methodSignature.toString()}`);
+        }
+        return new TaintFact(value, [statement], TaintFact.createSourceEvidence(
+            statement,
+            sourceKind,
+            source.sourceType,
+            source.methodSignature.toString(),
+            source.rule,
+            source.sourceIndex,
+            source.callbackIndex
+        ));
     }
 
     /**
@@ -139,7 +194,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         // Collect all callback-type sources first
         const callbackSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
         const returnSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
-        const constantSources: Array<{ method: ArkMethod, stmt: ArkAssignStmt, value: Local }> = [];
 
         for (const method of this.scene.getMethods()) {
             const fileName = method.getDeclaringArkFile().getName();
@@ -159,11 +213,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             for (const block of cfg.getBlocks()) {
                 for (const stmt of block.getStmts()) {
-                    if (stmt instanceof ArkAssignStmt && stmt.getLeftOp() instanceof Local &&
-                        /^deviceInfo\.<.*\.[A-Za-z0-9_]+>$/.test(stmt.getRightOp().toString())) {
-                        constantSources.push({ method, stmt, value: stmt.getLeftOp() as Local });
-                    }
-
                     if (stmt.containsInvokeExpr()) {
                         const invokeExpr = stmt.getInvokeExpr();
                         if (!invokeExpr) continue;
@@ -181,16 +230,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         console.log(`[HAPFLOW]   Found ${callbackSources.length} callback source invocations`);
         console.log(`[HAPFLOW]   Found ${returnSources.length} return source invocations`);
-        console.log(`[HAPFLOW]   Found ${constantSources.length} privacy constant reads`);
 
-        if (callbackSources.length === 0 && returnSources.length === 0 && constantSources.length === 0) {
+        if (callbackSources.length === 0 && returnSources.length === 0) {
             console.log(`[HAPFLOW] Callback analysis: no direct sources found`);
             return;
         }
 
         // Process callback sources with budget limits
         for (const { method, stmt, invokeExpr, source } of callbackSources) {
-            if (sourceCount++ > MAX_SOURCES) {
+            if (sourceCount++ >= MAX_SOURCES) {
                 console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
                 break;
             }
@@ -215,21 +263,6 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 this.analyzePromiseChaining(method, stmt, invokeExpr, source);
             } catch (e) {
                 console.log(`[HAPFLOW]   Return source failed: ${e}`);
-            }
-        }
-
-        for (const { method, stmt, value } of constantSources) {
-            if (sourceCount++ >= MAX_SOURCES) {
-                console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
-                break;
-            }
-
-            try {
-                const fact = new TaintFact(value);
-                fact.addPath(stmt);
-                this.traceReturnedValueDataFlow(method, value, fact);
-            } catch (e) {
-                console.log(`[HAPFLOW]   Constant source failed: ${e}`);
             }
         }
 
@@ -288,26 +321,20 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             return 0;
         }
 
-        // Get callback parameters
-        const paramInstances = callbackMethod.getParameterInstances();
-        if (!paramInstances || paramInstances.length === 0) return 0;
+        const sourceParam = this.getConfiguredCallbackSourceParameter(callbackMethod, source);
+        if (!sourceParam) return 0;
 
-        // Skip error parameter if present
-        const startIndex = paramInstances.length > 1 && paramInstances[0]?.toString().includes('err') ? 1 : 0;
-
-        let flowsFound = 0;
-        for (let i = startIndex; i < paramInstances.length; i++) {
-            const param = paramInstances[i];
-            if (param instanceof Local) {
-                const fact = new TaintFact(param);
-                fact.addPath(stmt);
-                const prevOutcomeCount = this.detectOutcome.length;
-                this.traceCallbackParamDataFlowSafe(callbackMethod, param, fact, maxStates, maxPathLen, shouldContinue);
-                flowsFound += this.detectOutcome.length - prevOutcomeCount;
-            }
-        }
-
-        return flowsFound;
+        const fact = this.createSourceFact(sourceParam, stmt, source);
+        const prevOutcomeCount = this.detectOutcome.length;
+        this.traceCallbackParamDataFlowSafe(
+            callbackMethod,
+            sourceParam,
+            fact,
+            maxStates,
+            maxPathLen,
+            shouldContinue
+        );
+        return this.detectOutcome.length - prevOutcomeCount;
     }
 
     /**
@@ -363,10 +390,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
 
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
-            const currentVarStr = currentVar.toString();
-
             // Use method signature + variable string for visited key
-            const key = method.getSignature().toString() + '|' + currentVar.toString();
+            const key = method.getSignature().toString() + '|' + currentVar.toString()
+                + '|' + currentFact.getSourceIdentityKey();
             if (visited.has(key)) continue;
             visited.add(key);
 
@@ -387,48 +413,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                     for (let argIdx = 0; argIdx < sinkArgs.length; argIdx++) {
                         const arg = sinkArgs[argIdx];
-                        const argStr = arg.toString();
+                        if (ValueDependsOn(arg, currentVar)) {
+                            const sinkFact = currentFact.copyForValue(currentVar, s);
 
-                        // Direct match
-                        if (ValueEqual(arg, currentVar)) {
-                            const sinkFact = new TaintFact(currentVar);
-                            sinkFact.addPaths(currentFact.getPath());
-                            sinkFact.addPath(s);
-
-                            let isNew = true;
-                            for (const existing of this.detectOutcome) {
-                                const existingPath = existing.getPath();
-                                const newPath = sinkFact.getPath();
-                                if (existingPath.length > 0 && newPath.length > 0 &&
-                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
-                                    isNew = false;
-                                    break;
-                                }
-                            }
-                            if (isNew) {
-                                this.detectOutcome.push(sinkFact);
-                            } else {
-                            }
-                        }
-                        // Check for string concatenation containing the variable
-                        else if (argStr.includes(currentVarStr)) {
-                            const sinkFact = new TaintFact(currentVar);
-                            sinkFact.addPaths(currentFact.getPath());
-                            sinkFact.addPath(s);
-
-                            let isNew = true;
-                            for (const existing of this.detectOutcome) {
-                                const existingPath = existing.getPath();
-                                const newPath = sinkFact.getPath();
-                                if (existingPath.length > 0 && newPath.length > 0 &&
-                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
-                                    isNew = false;
-                                    break;
-                                }
-                            }
-                            if (isNew) {
-                                this.detectOutcome.push(sinkFact);
-                            }
+                            this.appendDistinctOutcome(sinkFact);
                         }
                     }
                 }
@@ -440,12 +428,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 const leftOp = s.getLeftOp();
                 const rightOp = s.getRightOp();
 
-                // Check if rightOp uses currentVar
-                const rightOpStr = rightOp.toString();
-                if (rightOpStr.includes(currentVarStr) && leftOp instanceof Local) {
-                    const newFact = new TaintFact(leftOp);
-                    newFact.addPaths(currentFact.getPath());
-                    newFact.addPath(s);
+                if (ValueDependsOn(rightOp, currentVar) && leftOp instanceof Local) {
+                    const newFact = currentFact.copyForValue(leftOp, s);
                     worklist.push({ var: leftOp, fact: newFact });
                 }
             }
@@ -499,21 +483,24 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             return;
         }
 
-        // Get callback parameters from the lambda method
+        const sourceParam = this.getConfiguredCallbackSourceParameter(callbackMethod, source);
+        if (!sourceParam) return;
+        const fact = this.createSourceFact(sourceParam, stmt, source);
+        this.traceCallbackParamDataFlow(callbackMethod, sourceParam, fact);
+    }
+
+    private getConfiguredCallbackSourceParameter(callbackMethod: ArkMethod, source: Source): Local | null {
         const paramInstances = callbackMethod.getParameterInstances();
-        if (!paramInstances || paramInstances.length === 0) return;
-
-        // Check each callback parameter (skip error parameter if present)
-        const startIndex = paramInstances.length > 1 && paramInstances[0]?.toString().includes('err') ? 1 : 0;
-
-        for (let i = startIndex; i < paramInstances.length; i++) {
-            const param = paramInstances[i];
-            if (param instanceof Local) {
-                const fact = new TaintFact(param);
-                fact.addPath(stmt);
-                this.traceCallbackParamDataFlow(callbackMethod, param, fact);
-            }
+        if (!paramInstances || paramInstances.length === 0 || source.sourceIndex < 0) {
+            return null;
         }
+        const parameters = callbackMethod.getParameters();
+        const lexicalOffset = parameters.length > 0
+            && parameters[0].getType() instanceof LexicalEnvType
+            ? 1
+            : 0;
+        const parameter = paramInstances[source.sourceIndex + lexicalOffset];
+        return parameter instanceof Local ? parameter : null;
     }
 
     /**
@@ -559,26 +546,54 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * or async/await: const info = await selectContacts()
      */
     private analyzePromiseChaining(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source): void {
-        // Pattern 1: API().then(callback) - the invoke result is passed to .then()
+        // Pattern 1: API().then(callback) or promise.then(callback).
         if (stmt instanceof ArkAssignStmt) {
             const resultVar = stmt.getDef();
             if (resultVar instanceof Local) {
                 this.analyzeThenChaining(method, resultVar, stmt, source);
+                this.analyzeAwaitChaining(method, resultVar, stmt, source);
             }
         }
 
-        // Pattern 2: async/await - trace returned Promise value
+        // Pattern 2: const value = await API(). The fallback is deliberately
+        // limited to an explicit await; ordinary synchronous return sources are
+        // handled by IFDS so flow-sensitive kills and reachability are preserved.
         if (stmt instanceof ArkAssignStmt) {
             const leftOp = stmt.getLeftOp();
             const rightOp = stmt.getRightOp();
-
-            if (rightOp instanceof AbstractInvokeExpr) {
-                const sourceCheck = callSource(rightOp, this.sources, this.scene, this.pointerAnalysis);
-                if (sourceCheck && sourceCheck.sourceType === 'return' && leftOp instanceof Local) {
-                    const fact = new TaintFact(leftOp);
-                    fact.addPath(stmt);
+            if (rightOp instanceof ArkAwaitExpr && leftOp instanceof Local) {
+                const promise = rightOp.getPromise();
+                const sourceCheck = promise instanceof AbstractInvokeExpr
+                    ? callSource(promise, this.sources, this.scene, this.pointerAnalysis)
+                    : undefined;
+                if (promise === invokeExpr || sourceCheck?.sourceType === 'return') {
+                    const fact = this.createSourceFact(leftOp, stmt, sourceCheck || source);
                     this.traceReturnedValueDataFlow(method, leftOp, fact);
                 }
+            }
+        }
+    }
+
+    private analyzeAwaitChaining(
+        method: ArkMethod,
+        promiseVar: Local,
+        sourceStmt: Stmt,
+        source: Source
+    ): void {
+        const cfg = method.getCfg();
+        if (!cfg) return;
+
+        for (const block of cfg.getBlocks()) {
+            for (const stmt of block.getStmts()) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                const leftOp = stmt.getLeftOp();
+                const rightOp = stmt.getRightOp();
+                if (!(leftOp instanceof Local) || !(rightOp instanceof ArkAwaitExpr)) continue;
+                if (!ValueEqual(rightOp.getPromise(), promiseVar)) continue;
+
+                const fact = this.createSourceFact(leftOp, sourceStmt, source);
+                fact.addPath(stmt);
+                this.traceReturnedValueDataFlow(method, leftOp, fact);
             }
         }
     }
@@ -600,7 +615,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         if (base instanceof AbstractInvokeExpr) {
             const source = callSource(base, this.sources, this.scene, this.pointerAnalysis);
             if (source && source.sourceType === 'return') {
-                this.processThenCallback(method, stmt, invokeExpr);
+                this.processThenCallback(method, stmt, invokeExpr, source, stmt);
             }
             return;
         }
@@ -608,19 +623,25 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         // Case 2: Intermediate variable - let x = sourceApi(); x.then(callback)
         if (!(base instanceof Local)) return;
 
-        const sourceInvoke = this.findSourceInvokeForVariable(method, base);
-        if (!sourceInvoke) return;
+        const sourceCall = this.findSourceInvokeForVariable(method, base);
+        if (!sourceCall) return;
 
-        const source = callSource(sourceInvoke, this.sources, this.scene, this.pointerAnalysis);
+        const source = callSource(sourceCall.invokeExpr, this.sources, this.scene, this.pointerAnalysis);
         if (!source || source.sourceType !== 'return') return;
 
-        this.processThenCallback(method, stmt, invokeExpr);
+        this.processThenCallback(method, stmt, invokeExpr, source, sourceCall.statement);
     }
 
     /**
      * Process the callback of a .then() call and trace data flow.
      */
-    private processThenCallback(method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr): void {
+    private processThenCallback(
+        method: ArkMethod,
+        stmt: Stmt,
+        invokeExpr: AbstractInvokeExpr,
+        source: Source,
+        sourceStmt: Stmt
+    ): void {
         const args = invokeExpr.getArgs();
         if (args.length === 0) return;
 
@@ -695,8 +716,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
 
         if (resolvedParam) {
-            const fact = new TaintFact(resolvedParam);
-            fact.addPath(stmt);
+            const fact = this.createSourceFact(resolvedParam, sourceStmt, source);
+            if (sourceStmt !== stmt) fact.addPath(stmt);
             this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
         }
     }
@@ -705,7 +726,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * Find the source invoke statement that assigns a value to the given variable.
      * Also handles Promise chains like: let x = sourceApi().then(callback)
      */
-    private findSourceInvokeForVariable(method: ArkMethod, localVar: Local): AbstractInvokeExpr | null {
+    private findSourceInvokeForVariable(
+        method: ArkMethod,
+        localVar: Local
+    ): { invokeExpr: AbstractInvokeExpr, statement: Stmt } | null {
         const cfg = method.getCfg();
         if (!cfg) return null;
 
@@ -726,12 +750,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             if (thenBase instanceof AbstractInvokeExpr) {
                                 const source = callSource(thenBase, this.sources, this.scene, this.pointerAnalysis);
                                 if (source && source.sourceType === 'return') {
-                                    return thenBase;
+                                    return { invokeExpr: thenBase, statement: stmt };
                                 }
                             }
                         }
                     }
-                    return rightOp;
+                    return { invokeExpr: rightOp, statement: stmt };
                 }
             }
         }
@@ -790,8 +814,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 // For .then() success callback, the resolved value is the first param
                 const resolvedParam = resolvedParams[0];
                 if (resolvedParam instanceof Local) {
-                    const fact = new TaintFact(resolvedParam);
-                    fact.addPath(sourceStmt);
+                    const fact = this.createSourceFact(resolvedParam, sourceStmt, source);
                     fact.addPath(stmt);
                     this.traceCallbackParamDataFlow(callbackMethod, resolvedParam, fact);
                     this.tracePromiseResolveToAwaitSinks(method, callbackMethod, resolvedParam, fact);
@@ -836,8 +859,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
 
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
-            const currentVarStr = currentVar.toString();
-            const key = method.getSignature().toString() + '|' + currentVarStr;
+            const key = method.getSignature().toString() + '|' + currentVar.toString()
+                + '|' + currentFact.getSourceIdentityKey();
             if (visited.has(key)) continue;
             visited.add(key);
 
@@ -854,12 +877,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 if (methodName !== 'resolve') continue;
 
                 for (const arg of invokeExpr.getArgs()) {
-                    if (this.valueDependsOn(arg, currentVar, currentVarStr)) {
-                        const resolveFact = new TaintFact(currentVar);
-                        for (const p of currentFact.getPath()) {
-                            resolveFact.addPath(p);
-                        }
-                        resolveFact.addPath(stmt);
+                    if (ValueDependsOn(arg, currentVar)) {
+                        const resolveFact = currentFact.copyForValue(currentVar, stmt);
                         resolved.push(resolveFact);
                         break;
                     }
@@ -887,7 +906,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     this.pushTaintWorkItem(worklist, rightOp, currentFact, stmt);
                 }
 
-                if (leftOp instanceof Local && this.valueDependsOn(rightOp, currentVar, currentVarStr)) {
+                if (leftOp instanceof Local && ValueDependsOn(rightOp, currentVar)) {
                     this.pushTaintWorkItem(worklist, leftOp, currentFact, stmt);
                 }
             }
@@ -897,19 +916,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     }
 
     private pushTaintWorkItem(worklist: Array<{ var: Value, fact: TaintFact }>, value: Value, currentFact: TaintFact, stmt: Stmt): void {
-        const newFact = new TaintFact(value);
-        for (const p of currentFact.getPath()) {
-            newFact.addPath(p);
-        }
-        newFact.addPath(stmt);
+        const newFact = currentFact.copyForValue(value, stmt);
         worklist.push({ var: value, fact: newFact });
-    }
-
-    private valueDependsOn(value: Value, currentVar: Value, currentVarStr: string): boolean {
-        if (ValueEqual(value, currentVar)) return true;
-        const uses = value.getUses ? value.getUses() : [];
-        if (uses.some(use => ValueEqual(use, currentVar))) return true;
-        return value.toString().includes(currentVarStr);
     }
 
     private findPromiseOwnerMethod(executorMethod: ArkMethod): ArkMethod | null {
@@ -988,10 +996,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (!promiseStmt) continue;
 
                     for (const resolveFact of resolveFacts) {
-                        const awaitedFact = new TaintFact(leftOp);
-                        for (const p of resolveFact.getPath()) {
-                            awaitedFact.addPath(p);
-                        }
+                        const awaitedFact = resolveFact.copyForValue(leftOp);
                         awaitedFact.addPath(promiseStmt);
                         awaitedFact.addPath(stmt);
                         awaitedResults.push({ value: leftOp, stmt, fact: awaitedFact });
@@ -1066,10 +1071,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
 
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
-            const currentVarStr = currentVar.toString();
-
             // Use method signature + variable string for visited key (no path, to avoid state explosion)
-            const key = method.getSignature().toString() + '|' + currentVar.toString();
+            const key = method.getSignature().toString() + '|' + currentVar.toString()
+                + '|' + currentFact.getSourceIdentityKey();
             if (visited.has(key)) continue;
             visited.add(key);
 
@@ -1088,26 +1092,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (this.callSink(invokeExpr)) {
                         const args = invokeExpr.getArgs();
                         for (const arg of args) {
-                            if (ValueEqual(arg, currentVar) || arg.toString().includes(currentVarStr)) {
-                                const sinkFact = new TaintFact(currentVar);
-                                for (const p of currentFact.getPath()) {
-                                    sinkFact.addPath(p);
-                                }
-                                sinkFact.addPath(stmt);
+                            if (ValueDependsOn(arg, currentVar)) {
+                                const sinkFact = currentFact.copyForValue(currentVar, stmt);
 
-                                let isNew = true;
-                                for (const existing of this.detectOutcome) {
-                                    const existingPath = existing.getPath();
-                                    const newPath = sinkFact.getPath();
-                                    if (existingPath.length > 0 && newPath.length > 0 &&
-                                        existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
-                                        isNew = false;
-                                        break;
-                                    }
-                                }
-                                if (isNew) {
-                                    this.detectOutcome.push(sinkFact);
-                                }
+                                this.appendDistinctOutcome(sinkFact);
                             }
                         }
                     }
@@ -1122,20 +1110,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     const rightOp = stmt.getRightOp();
 
                     if (ValueEqual(rightOp, currentVar) && leftOp instanceof Local) {
-                        const newFact = new TaintFact(leftOp);
-                        for (const p of currentFact.getPath()) {
-                            newFact.addPath(p);
-                        }
-                        newFact.addPath(stmt);
+                        const newFact = currentFact.copyForValue(leftOp, stmt);
                         worklist.push({ var: leftOp, fact: newFact });
                     }
 
-                    if (leftOp instanceof Local && rightOp.toString().includes(currentVarStr)) {
-                        const newFact = new TaintFact(leftOp);
-                        for (const p of currentFact.getPath()) {
-                            newFact.addPath(p);
-                        }
-                        newFact.addPath(stmt);
+                    if (leftOp instanceof Local && ValueDependsOn(rightOp, currentVar)) {
+                        const newFact = currentFact.copyForValue(leftOp, stmt);
                         worklist.push({ var: leftOp, fact: newFact });
                     }
 
@@ -1143,23 +1123,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (rightOp instanceof ArkInstanceInvokeExpr && leftOp instanceof Local) {
                         const base = rightOp.getBase();
                         if (ValueEqual(base, currentVar)) {
-                            const newFact = new TaintFact(leftOp);
-                            for (const p of currentFact.getPath()) {
-                                newFact.addPath(p);
-                            }
-                            newFact.addPath(stmt);
+                            const newFact = currentFact.copyForValue(leftOp, stmt);
                             worklist.push({ var: leftOp, fact: newFact });
                         }
                     }
 
                     if (rightOp instanceof AbstractInvokeExpr && leftOp instanceof Local) {
                         const args = rightOp.getArgs();
-                        if (args.some(arg => ValueEqual(arg, currentVar) || arg.toString().includes(currentVarStr))) {
-                            const newFact = new TaintFact(leftOp);
-                            for (const p of currentFact.getPath()) {
-                                newFact.addPath(p);
-                            }
-                            newFact.addPath(stmt);
+                        if (args.some(arg => ValueDependsOn(arg, currentVar))) {
+                            const newFact = currentFact.copyForValue(leftOp, stmt);
                             worklist.push({ var: leftOp, fact: newFact });
                         }
                     }
@@ -1211,7 +1183,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             const { var: currentVar, fact: currentFact } = worklist.pop()!;
 
             // Use method signature + variable string for visited key (no path, to avoid state explosion)
-            const key = method.getSignature().toString() + '|' + currentVar.toString();
+            const key = method.getSignature().toString() + '|' + currentVar.toString()
+                + '|' + currentFact.getSourceIdentityKey();
             if (visited.has(key)) continue;
             visited.add(key);
 
@@ -1232,26 +1205,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     for (const arg of args) {
                         if (ValueEqual(arg, currentVar)) {
                             // Found a sink!
-                            const sinkFact = new TaintFact(currentVar);
-                            for (const p of currentFact.getPath()) {
-                                sinkFact.addPath(p);
-                            }
-                            sinkFact.addPath(stmt);
+                            const sinkFact = currentFact.copyForValue(currentVar, stmt);
 
-                            // Check if this is a new detection
-                            let isNew = true;
-                            for (const existing of this.detectOutcome) {
-                                const existingPath = existing.getPath();
-                                const newPath = sinkFact.getPath();
-                                if (existingPath.length > 0 && newPath.length > 0 &&
-                                    existingPath[existingPath.length - 1] === newPath[newPath.length - 1]) {
-                                    isNew = false;
-                                    break;
-                                }
-                            }
-                            if (isNew) {
-                                this.detectOutcome.push(sinkFact);
-                            }
+                            this.appendDistinctOutcome(sinkFact);
                         }
                     }
                 }
@@ -1265,11 +1221,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                 if (ValueEqual(rightOp, currentVar)) {
                     // currentVar is assigned to leftOp
-                    const newFact = new TaintFact(leftOp);
-                    for (const p of currentFact.getPath()) {
-                        newFact.addPath(p);
-                    }
-                    newFact.addPath(stmt);
+                    const newFact = currentFact.copyForValue(leftOp, stmt);
 
                     if (leftOp instanceof Local) {
                         worklist.push({ var: leftOp, fact: newFact });
@@ -1282,31 +1234,19 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                 // Check if currentVar is used as base for field access
                 if (currentVar instanceof Local && rightOp instanceof ArkInstanceFieldRef && LocalEqual(rightOp.getBase(), currentVar)) {
-                    const newFact = new TaintFact(rightOp);
-                    for (const p of currentFact.getPath()) {
-                        newFact.addPath(p);
-                    }
-                    newFact.addPath(stmt);
+                    const newFact = currentFact.copyForValue(rightOp, stmt);
                     worklist.push({ var: rightOp, fact: newFact });
                 }
 
                 // Check if currentVar is used as base for array access (e.g., data[0])
                 if (currentVar instanceof Local && rightOp instanceof ArkArrayRef && LocalEqual(rightOp.getBase(), currentVar)) {
-                    const newFact = new TaintFact(rightOp);
-                    for (const p of currentFact.getPath()) {
-                        newFact.addPath(p);
-                    }
-                    newFact.addPath(stmt);
+                    const newFact = currentFact.copyForValue(rightOp, stmt);
                     worklist.push({ var: rightOp, fact: newFact });
                 }
 
                 // Check if currentVar is an ArkArrayRef and rightOp is field access on it (e.g., data[0].placeName)
                 if (currentVar instanceof ArkArrayRef && rightOp instanceof ArkInstanceFieldRef && ValueEqual(rightOp.getBase(), currentVar)) {
-                    const newFact = new TaintFact(rightOp);
-                    for (const p of currentFact.getPath()) {
-                        newFact.addPath(p);
-                    }
-                    newFact.addPath(stmt);
+                    const newFact = currentFact.copyForValue(rightOp, stmt);
                     worklist.push({ var: rightOp, fact: newFact });
                 }
 
@@ -1325,11 +1265,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                     if (baseUsed && leftOp instanceof Local) {
                         // leftOp depends on tainted data from method call
-                        const newFact = new TaintFact(leftOp);
-                        for (const p of currentFact.getPath()) {
-                            newFact.addPath(p);
-                        }
-                        newFact.addPath(stmt);
+                        const newFact = currentFact.copyForValue(leftOp, stmt);
                         worklist.push({ var: leftOp, fact: newFact });
                     }
                 }
@@ -1341,17 +1277,20 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     const uses = rightOp.getUses ? rightOp.getUses() : [];
                     for (const use of uses) {
                         if (ValueEqual(use, currentVar)) {
-                            const newFact = new TaintFact(leftOp);
-                            for (const p of currentFact.getPath()) {
-                                newFact.addPath(p);
-                            }
-                            newFact.addPath(stmt);
+                            const newFact = currentFact.copyForValue(leftOp, stmt);
                             worklist.push({ var: leftOp, fact: newFact });
                             break;
                         }
                     }
                 }
             }
+        }
+    }
+
+    private appendDistinctOutcome(outcome: TaintFact): void {
+        const duplicate = this.detectOutcome.some(existing => TaintOutcomeEqual(existing, outcome));
+        if (!duplicate) {
+            this.detectOutcome.push(outcome);
         }
     }
 
@@ -1365,7 +1304,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     public callSink(expr: AbstractInvokeExpr): boolean {
         const methodSignature = expr.getMethodSignature().toString();
-        const methodName = expr.getMethodSignature().getMethodSubSignature().getMethodName();
+        const methodName = expr.getMethodSignature().getMethodSubSignature().getMethodName().toLowerCase();
 
         // Check internal sinks first (these are guaranteed sinks)
         if (INTERNAL_SINK_METHOD_toString.includes(methodSignature)) {
@@ -1373,18 +1312,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
 
         // Also check for common log sink methods
-        if (LOG_SINK_METHODS.includes(methodName)) {
+        if (LOG_SINK_METHODS.map(name => name.toLowerCase()).includes(methodName)) {
             return true;
         }
 
-        // console.* methods should always be considered sinks
-        const declaringClass = expr.getMethodSignature().getDeclaringClassSignature().toString();
-        if (declaringClass.includes('console')) {
-            return true;
-        }
+        const declaringClass = expr.getMethodSignature().getDeclaringClassSignature().toString().toLowerCase();
+        const receiver = expr instanceof ArkInstanceInvokeExpr
+            ? expr.getBase().toString().toLowerCase()
+            : declaringClass;
 
-        // Also check if methodName is console method (log, info, warn, error, debug)
-        if (['log', 'info', 'warn', 'error', 'debug', 'print'].includes(methodName)) {
+        // Built-in console and system hilog receivers are explicit log sinks.
+        if (declaringClass.includes('console') || receiver === 'console' || receiver === 'hilog') {
             return true;
         }
 
@@ -1395,10 +1333,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
         }
 
-        // For SDK methods with unknown signature, fuzzy match by method name
+        // Unknown SDK signatures require both an exact method token and receiver
+        // evidence. Substring-only matching incorrectly treats Map.set() as
+        // pasteboard.setData() and arbitrary Logger.info() as hilog.info().
         if (methodSignature.includes('@%unk') || methodSignature.includes('@unk')) {
-            for (const sink of this.sinks) {
-                if (sink.toString().includes(methodName)) {
+            const normalizedReceiver = receiver.replace(/[^a-z0-9_.]/g, '');
+            for (const matcher of this.sinkMatchers) {
+                if (matcher.method !== methodName) continue;
+                if (matcher.owners.some(owner =>
+                    normalizedReceiver === owner
+                    || normalizedReceiver.endsWith(`.${owner}`)
+                    || normalizedReceiver.includes(owner))) {
                     return true;
                 }
             }
@@ -1411,6 +1356,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const callExpr = srcStmt.getInvokeExpr();
         const dataValue = dataFact.getValue();
         if (callExpr && this.callSink(callExpr)) {
+            if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
+                console.log(`[HAPFLOW][SINK-FACT] ${srcStmt.toString()} <= ${dataValue.toString()}`);
+            }
             for (const param of callExpr.getArgs()) {
                 if (ValueEqual(param, dataValue) || dataValue instanceof ArkInstanceFieldRef && param instanceof Local && LocalEqual(dataValue.getBase(), param)) {
                     dataFact.addPath(srcStmt);
@@ -1419,7 +1367,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     for (let i = 0; i < this.detectOutcome.length; i++) {
                         const outcomeValue = this.detectOutcome[i].getValue();
                         const outcomePath = this.detectOutcome[i].getPath();
-                        if (ValueEqual(outcomeValue, dataFact.getValue()) && outcomePath[outcomePath.length - 1] == srcStmt) {
+                        if (ValueEqual(outcomeValue, dataFact.getValue())
+                            && this.detectOutcome[i].hasSameSource(dataFact)
+                            && outcomePath[outcomePath.length - 1] == srcStmt) {
                             if (outcomePath.every(item => dataFactPaths.includes(item))) {
                                 newOutcome = false;
                             } else if (dataFactPaths.every(item => outcomePath.includes(item))) {
@@ -1437,8 +1387,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     }
 
     protected addTaintFromSourceAssgin(dataFact: TaintFact, stmt: ArkAssignStmt, ret: Set<TaintFact>) {
-        if (this.getZeroValue() == dataFact && callSource(stmt.getRightOp(), this.sources, this.scene, this.pointerAnalysis)) {
-            propagateFact(stmt.getDef()!, stmt, ret);
+        const source = callSource(stmt.getRightOp(), this.sources, this.scene, this.pointerAnalysis);
+        if (this.getZeroValue() == dataFact && source) {
+            ret.add(this.createSourceFact(stmt.getDef()!, stmt, source));
         }
     }
 
@@ -1462,12 +1413,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (!paramRef) {
                         return;
                     }
-                    propagateFact(paramRef, stmt, ret);
+                    ret.add(this.createSourceFact(paramRef, stmt, source));
                 }
             } else if (source.sourceType == 'ArgIn') {
                 const paramOffset = method.getParameters()[0]?.getType() instanceof LexicalEnvType ? 1 : 0;
                 const param = method.getParameterInstances()[source.sourceIndex + paramOffset];
-                propagateFact(param, stmt, ret);
+                if (param) ret.add(this.createSourceFact(param, stmt, source));
             }
         }
     }
@@ -1515,7 +1466,36 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     let stmt: ArkAssignStmt = (srcStmt as ArkAssignStmt);
                     let assigned: Value = stmt.getLeftOp();
                     let rightOp: Value = stmt.getRightOp();
+                    if (process.env.ARKPRISM_DEBUG_IFDS === '1'
+                        && rightOp instanceof ArkInstanceFieldRef
+                        && rightOp.getBase().getName() === 'err') {
+                        console.log(
+                            `[HAPFLOW][EXCEPTION-FIELD] fact=${dataValue.toString()} `
+                            + `base=${rightOp.getBase().toString()} equal=${ValueEqual(rightOp.getBase(), dataValue)}`
+                        );
+                    }
                     checkerInstance.addTaintFromSourceAssgin(dataFact, stmt, ret);
+
+                    if (irRecoveryEnabled()
+                        && rightOp instanceof ArkCaughtExceptionRef
+                        && ValueEqual(assigned, dataValue)) {
+                        ret.add(dataFact);
+                    }
+
+                    if (irRecoveryEnabled()
+                        && rightOp instanceof ArkInstanceInvokeExpr
+                        && rightOp.getBase().getName() === 'JSON'
+                        && rightOp.getMethodSignature().getMethodSubSignature().getMethodName() === 'stringify') {
+                        const serializedValue = rightOp.getArgs()[0];
+                        const taintedContainer = dataValue instanceof ArkInstanceFieldRef
+                            || dataValue instanceof ArkArrayRef
+                            || dataValue instanceof MultiRef
+                            ? dataValue.getBase()
+                            : undefined;
+                        if (serializedValue && taintedContainer && ValueEqual(serializedValue, taintedContainer)) {
+                            propagateFact(assigned, srcStmt, ret, dataFact);
+                        }
+                    }
 
                     if (dataValue instanceof ArkInstanceFieldRef && rightOp == dataValue.getBase()) {
                         const leftOp = srcStmt.getLeftOp();
@@ -1560,9 +1540,22 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         const uses = new Set([...rightOp.getUses(), rightOp]);
                         for (const use of uses) {
                             if (ValueEqual(use, dataFact.getValue())) {
+                                if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
+                                    console.log(
+                                        `[HAPFLOW][ASSIGN] ${dataFact.getValue().toString()} -> `
+                                        + `${assigned.toString()} at ${srcStmt.toString()}`
+                                    );
+                                }
                                 tainted = true;
                                 propagateFact(assigned, srcStmt, ret, dataFact);
-                                if (assigned instanceof ArkArrayRef) {
+                                if (irRecoveryEnabled() && assigned instanceof ArkInstanceFieldRef) {
+                                    const canonicalAccess = canonicalizeFieldAccess(assigned);
+                                    if (canonicalAccess) {
+                                        propagateFact(canonicalAccess, srcStmt, ret, dataFact);
+                                    }
+                                }
+                                if (assigned instanceof ArkArrayRef &&
+                                    !(assigned.getIndex() instanceof Constant)) {
                                     propagateFact(assigned.getBase(), srcStmt, ret, dataFact);
                                 }
 
@@ -1601,22 +1594,31 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     const invokeExpr = srcStmt.getInvokeExpr();
                     const source = callSource(invokeExpr!, checkerInstance.sources, checkerInstance.scene, checkerInstance.pointerAnalysis);
                     if (source && source.sourceType == 'ArgIn') {
-                        propagateFact(invokeExpr!.getArgs()[source.sourceIndex], srcStmt, ret);
+                        const argument = invokeExpr!.getArgs()[source.sourceIndex];
+                        if (argument) ret.add(checkerInstance.createSourceFact(argument, srcStmt, source));
                     }
                     // Handle return-type sources: when the API returns sensitive data (e.g., getAddressesFromLocation)
                     // The return value flows through Promise.then() to the callback parameter
                     if (source && source.sourceType == 'return') {
                         // Create a special taint fact for the invoke expression result
                         // This will propagate through .then() callbacks automatically
-                        const invokeResultFact = new TaintFact(invokeExpr!);
-                        invokeResultFact.addPath(srcStmt);
+                        const invokeResultFact = checkerInstance.createSourceFact(invokeExpr!, srcStmt, source);
                         ret.add(invokeResultFact);
                     }
-                    if (invokeExpr instanceof ArkInstanceInvokeExpr && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() == 'constructor' &&
-                        invokeExpr.getBase().getType().toString().includes('Error')) {
+                    if (invokeExpr instanceof ArkInstanceInvokeExpr
+                        && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() == 'constructor'
+                        && invokeExpr.getBase().getType().toString().includes('Error')
+                        && shouldPropagateErrorPayload(
+                            dataFact === checkerInstance.getZeroValue(),
+                            invokeExpr.getArgs(),
+                            dataValue
+                        )) {
                         propagateFact(invokeExpr.getBase(), srcStmt, ret, dataFact);
                     }
                 } else if (srcStmt instanceof ArkThrowStmt && ValueEqual(srcStmt.getOp(), dataFact.getValue())) {
+                    if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
+                        console.log(`[HAPFLOW][EXCEPTION] throw ${dataFact.getValue().toString()} -> ${tgtStmt.toString()}`);
+                    }
                     propagateFact(tgtStmt.getDef()!, srcStmt, ret, dataFact);
                 }
                 // Map.set, Set.add, Array.push
@@ -1628,8 +1630,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         || (baseType.toString().includes('@internal/lib.es2015.collection.d.ts: Set') || baseType instanceof UnclearReferenceType && baseType.getName() == 'Set') && expr.getMethodSignature().getMethodSubSignature().getMethodName() == 'add' && ValueEqual(expr.getArgs()[0], dataValue)
                         || baseType instanceof ArrayType && expr.getMethodSignature().getMethodSubSignature().getMethodName() == 'push' && ValueEqual(expr.getArgs()[0], dataValue)
                     ) {
-                        const taint = new TaintFact(base);
-                        taint.addPath(srcStmt);
+                        const taint = dataFact.copyForValue(base, srcStmt);
                         ret.add(taint);
                     }
                 }
@@ -1658,7 +1659,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     ret.add(dataFact);
                 } else {
                     const callExpr = srcStmt.getInvokeExpr()!;
-                    if (callExpr instanceof ArkInstanceInvokeExpr && (dataValue instanceof ArkInstanceFieldRef || dataValue instanceof MultiRef) && callExpr.getBase().getName() == dataValue.getBase().getName()) {
+                    if (callExpr instanceof ArkInstanceInvokeExpr
+                        && (dataValue instanceof ArkInstanceFieldRef || dataValue instanceof MultiRef)
+                        && (callExpr.getBase().getName() == dataValue.getBase().getName()
+                            || (irRecoveryEnabled()
+                                && callExpr.getBase().getName() === 'super'
+                                && dataValue.getBase().getName() === 'this'))) {
                         const _this = getThisAssignStmt(method).getDef();
                         let ref;
                         if (dataValue instanceof ArkInstanceFieldRef) {
@@ -1670,7 +1676,64 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     } else if (callExpr instanceof ArkStaticInvokeExpr && dataValue instanceof ArkStaticFieldRef && callExpr.getMethodSignature().getDeclaringClassSignature() == dataValue.getFieldSignature().getDeclaringSignature()) {
                         ret.add(dataFact);
                     }
+
+                    // Older ArkAnalyzer IR keeps the lexical environment on the
+                    // call argument rather than materializing ClosureFieldRef
+                    // assignments at the nested method entry. Transfer only
+                    // captures explicitly listed by that lexical environment.
+                    for (const arg of irRecoveryEnabled() ? callExpr.getArgs() : []) {
+                        const argType = arg.getType();
+                        const lexicalEnv = argType instanceof ClosureType
+                            ? argType.getLexicalEnv()
+                            : argType instanceof LexicalEnvType
+                                ? argType
+                                : undefined;
+                        if (!lexicalEnv) continue;
+
+                        for (const captured of lexicalEnv.getClosures()) {
+                            const capturedLocal = method.getBody()?.getLocals().get(captured.getName());
+                            if (!capturedLocal) continue;
+
+                            if (dataValue instanceof Local && ValueEqual(captured, dataValue)) {
+                                propagateFact(capturedLocal, srcStmt, ret, dataFact);
+                            } else if (dataValue instanceof ArkInstanceFieldRef
+                                && ValueEqual(captured, dataValue.getBase())) {
+                                propagateFact(
+                                    new ArkInstanceFieldRef(capturedLocal, dataValue.getFieldSignature()),
+                                    srcStmt,
+                                    ret,
+                                    dataFact
+                                );
+                            } else if (dataValue instanceof MultiRef
+                                && ValueEqual(captured, dataValue.getBase())) {
+                                propagateFact(
+                                    new MultiRef(capturedLocal, dataValue.getFieldSignatures()),
+                                    srcStmt,
+                                    ret,
+                                    dataFact
+                                );
+                            }
+                        }
+                    }
+
                     let closures = getClosures(method);
+                    if (process.env.ARKPRISM_DEBUG_IFDS === '1' && method.getSignature().toString().includes('[')) {
+                        const entryStmts = method.getCfg()?.getStartingBlock()?.getStmts() ?? [];
+                        for (const entryStmt of entryStmts) {
+                            const rightOp = entryStmt instanceof ArkAssignStmt ? entryStmt.getRightOp() : undefined;
+                            console.log(
+                                `[HAPFLOW][CLOSURE-IR] ${entryStmt.toString()} `
+                                + `rightType=${rightOp?.getType()?.constructor?.name || '<none>'}:`
+                                + `${rightOp?.getType()?.toString() || '<none>'}`
+                            );
+                        }
+                    }
+                    if (process.env.ARKPRISM_DEBUG_IFDS === '1' && closures) {
+                        console.log(
+                            `[HAPFLOW][CLOSURE] callee=${method.getSignature().toString()} `
+                            + `fact=${dataValue.toString()} captured=${closures.map(value => value.toString()).join(',')}`
+                        );
+                    }
                     if (closures) {
                         for (const cl of closures) {
                             if (dataValue instanceof Local && ValueEqual(cl, dataValue)) {
@@ -1730,21 +1793,49 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     return ret;
                 }
                 const args = callStmt.getInvokeExpr().getArgs();
-                const stmts = [...method.getCfg()!.getBlocks()][0].getStmts();
                 for (let i = 0; i < args.length; i++) {
-                    if (dataValue instanceof ArkInstanceFieldRef && dataValue.getBase().getName() == args[i].toString()) {
-                        const realParameter = stmts[i].getDef();
+                    const realParameter = getParameterInstanceForArgument(method, i);
+                    const argType = args[i].getType();
+                    const lexicalEnv = argType instanceof ClosureType
+                        ? argType.getLexicalEnv()
+                        : argType instanceof LexicalEnvType
+                            ? argType
+                            : undefined;
+                    if (lexicalEnv && lexicalEnv.getClosures().some(captured => ValueEqual(captured, dataValue))) {
                         if (realParameter) {
-                            const retRef = new ArkInstanceFieldRef(realParameter as Local, dataValue.getFieldSignature());
+                            propagateFact(realParameter, srcStmt, ret, dataFact);
+                        }
+                    }
+
+                    if (dataValue instanceof ArkInstanceFieldRef && dataValue.getBase().getName() == args[i].toString()) {
+                        if (realParameter instanceof Local) {
+                            const retRef = new ArkInstanceFieldRef(realParameter, dataValue.getFieldSignature());
                             propagateFact(retRef, srcStmt, ret, dataFact);
                         }
                     } else if (dataValue instanceof Local && dataValue.toString() == args[i].toString()) {
-                        if (method.getParameters().length <= i) {
-                            break;
+                        if (realParameter) {
+                            propagateFact(realParameter, srcStmt, ret, dataFact);
                         }
-                        propagateFact(method.getParameterInstances()[i + (method.getParameters()[0].getType() instanceof LexicalEnvType ? 1 : 0)], srcStmt, ret, dataFact);
                     }
                 }
+
+                const invokeExpr = callStmt.getInvokeExpr();
+                if (invokeExpr instanceof ArkPtrInvokeExpr
+                    && dataValue instanceof Local
+                    && ValueEqual(invokeExpr.getFuncPtrLocal(), dataValue)) {
+                    let ancestor: TaintFact | undefined | null = dataFact.getLast();
+                    while (ancestor && ValueEqual(ancestor.getValue(), dataValue)) {
+                        ancestor = ancestor.getLast();
+                    }
+                    const capturedValue = ancestor?.getValue();
+                    if (capturedValue instanceof Local) {
+                        const capturedLocal = method.getBody()?.getLocals().get(capturedValue.getName());
+                        if (capturedLocal) {
+                            propagateFact(capturedLocal, srcStmt, ret, dataFact);
+                        }
+                    }
+                }
+
                 checkerInstance.data2Sink(srcStmt, dataFact);
                 return ret;
             }
@@ -1774,6 +1865,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         }
                     } else if (dataValue instanceof ArkStaticFieldRef) {
                         ret.add(dataFact);
+                        const callee = srcStmt.getCfg().getDeclaringMethod();
+                        const expr = callStmt.getInvokeExpr();
+                        if (irRecoveryEnabled()
+                            && callee.getDeclaringArkClass().getCategory() === ClassCategory.OBJECT
+                            && callee.getName() === INSTANCE_INIT_METHOD_NAME
+                            && expr instanceof ArkInstanceInvokeExpr) {
+                            // Object-literal fields are emitted as static refs
+                            // in this ArkAnalyzer IR. The initialized object
+                            // carries that field taint back to its call site.
+                            propagateFact(expr.getBase(), srcStmt, ret, dataFact);
+                        }
                     } else if (dataValue instanceof ArkInstanceFieldRef && dataValue.getBase().getName() == "this") {
                         const expr = callStmt.getInvokeExpr();
                         if (expr instanceof ArkInstanceInvokeExpr) {
@@ -1800,6 +1902,18 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                                     }
                                 });
                             }
+                        } else if (irRecoveryEnabled()
+                            && expr instanceof ArkStaticInvokeExpr
+                            && expr.getMethodSignature().getMethodSubSignature().getMethodName() === 'super') {
+                            const callerThis = getThisAssignStmt(callStmt.getCfg().getDeclaringMethod()).getDef();
+                            if (callerThis instanceof Local) {
+                                propagateFact(
+                                    new ArkInstanceFieldRef(callerThis, dataValue.getFieldSignature()),
+                                    srcStmt,
+                                    ret,
+                                    dataFact
+                                );
+                            }
                         } else if (expr instanceof ArkPtrInvokeExpr) {
                             const method = checkerInstance.scene.getMethod((expr.getFuncPtrLocal().getType() as FunctionType).getMethodSignature());
                             if (method?.getDeclaringArkClass() == callStmt.getCfg().getDeclaringMethod().getDeclaringArkClass()) {
@@ -1813,6 +1927,32 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             propagateFact(mRef, srcStmt, ret, dataFact);
                         }
                     } else {
+                        const callee = srcStmt.getCfg().getDeclaringMethod();
+                        const calleeEnvType = callee.getParameters()[0]?.getType();
+                        if (irRecoveryEnabled() && calleeEnvType instanceof LexicalEnvType) {
+                            for (const captured of calleeEnvType.getClosures()) {
+                                if (dataValue instanceof Local && dataValue.getName() === captured.getName()) {
+                                    propagateFact(captured, srcStmt, ret, dataFact);
+                                } else if (dataValue instanceof ArkInstanceFieldRef
+                                    && dataValue.getBase().getName() === captured.getName()) {
+                                    propagateFact(
+                                        new ArkInstanceFieldRef(captured, dataValue.getFieldSignature()),
+                                        srcStmt,
+                                        ret,
+                                        dataFact
+                                    );
+                                } else if (dataValue instanceof MultiRef
+                                    && dataValue.getBase().getName() === captured.getName()) {
+                                    propagateFact(
+                                        new MultiRef(captured, dataValue.getFieldSignatures()),
+                                        srcStmt,
+                                        ret,
+                                        dataFact
+                                    );
+                                }
+                            }
+                        }
+
                         let closures = getClosures(srcStmt.getCfg().getDeclaringMethod());
                         if (closures) {
                             if (dataValue instanceof Local && isClosureLocal(dataValue)) {
@@ -1846,6 +1986,42 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                                         propagateFact(local, srcStmt, ret, dataFact);
                                         break;
                                     }
+                                }
+                            }
+                        }
+
+                        // Older IR records captured variables only on the
+                        // ClosureType argument. Map writes in the nested method
+                        // back to those exact caller locals on callback return.
+                        const callExpr = callStmt.getInvokeExpr();
+                        for (const arg of irRecoveryEnabled() ? callExpr?.getArgs() || [] : []) {
+                            const argType = arg.getType();
+                            const lexicalEnv = argType instanceof ClosureType
+                                ? argType.getLexicalEnv()
+                                : argType instanceof LexicalEnvType
+                                    ? argType
+                                    : undefined;
+                            if (!lexicalEnv) continue;
+
+                            for (const captured of lexicalEnv.getClosures()) {
+                                if (dataValue instanceof Local && dataValue.getName() === captured.getName()) {
+                                    propagateFact(captured, srcStmt, ret, dataFact);
+                                } else if (dataValue instanceof ArkInstanceFieldRef
+                                    && dataValue.getBase().getName() === captured.getName()) {
+                                    propagateFact(
+                                        new ArkInstanceFieldRef(captured, dataValue.getFieldSignature()),
+                                        srcStmt,
+                                        ret,
+                                        dataFact
+                                    );
+                                } else if (dataValue instanceof MultiRef
+                                    && dataValue.getBase().getName() === captured.getName()) {
+                                    propagateFact(
+                                        new MultiRef(captured, dataValue.getFieldSignatures()),
+                                        srcStmt,
+                                        ret,
+                                        dataFact
+                                    );
                                 }
                             }
                         }
@@ -1904,6 +2080,16 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 if (!(defValue && defValue == dataValue)) {
                     ret.add(dataFact);
                 }
+                const invokeExpr = srcStmt.getInvokeExpr();
+                if (invokeExpr instanceof ArkInstanceInvokeExpr
+                    && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() === 'constructor'
+                    && invokeExpr.getBase().getType().toString().includes('Error')
+                    && invokeExpr.getArgs().some(arg => ValueEqual(arg, dataValue))) {
+                    if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
+                        console.log(`[HAPFLOW][EXCEPTION] Error payload ${dataValue.toString()} -> ${invokeExpr.getBase().toString()}`);
+                    }
+                    propagateFact(invokeExpr.getBase(), srcStmt, ret, dataFact);
+                }
                 return ret;
             }
 
@@ -1922,12 +2108,28 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     factEqual(d1: TaintFact, d2: TaintFact): boolean {
         let value1 = d1.getValue(), value2 = d2.getValue();
-        return ValueEqual(value1, value2);
+        return ValueEqual(value1, value2) && d1.hasSameSource(d2);
     }
 
     public addSinksFromJson(filePath: string, sdkPath?: string) {
         const objects = loadRuleObjects(filePath, sdkPath);
         for (const object of objects) {
+            const method = String(object.api_name || '')
+                .split('.')
+                .filter(Boolean)
+                .pop()
+                ?.toLowerCase();
+            const owners = [
+                object.namespace,
+                object.class,
+                String(object.api_name || '').includes('.') ? String(object.api_name).split('.')[0] : '',
+                String(object.module || '').split(/[./]/).filter(Boolean).pop(),
+            ]
+                .map(value => String(value || '').toLowerCase().replace(/[^a-z0-9_]/g, ''))
+                .filter(Boolean);
+            if (method) {
+                this.sinkMatchers.push({ method, owners: [...new Set(owners)] });
+            }
             let methodSignatures: MethodSignature[] = [];
             methodSignatures = Json2ArkMethodSignature(object.module, object.namespace || '', object.class || '', object.api_name, this.scene, object.parameters);
 
@@ -1944,7 +2146,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     public addSourcesFromJson(filePath: string, sdkPath?: string) {
         const objects = loadRuleObjects(filePath, sdkPath)
-        for (const object of objects) {
+        for (const [index, object] of objects.entries()) {
+            const sourceKind = validateSourceRuleObject(object, filePath, index);
             let methodSignatures: MethodSignature[] = [];
             methodSignatures = Json2ArkMethodSignature(object.module, object.namespace || '', object.class || '', object.api_name, this.scene, object.parameters);
 
@@ -1968,7 +2171,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 }
             }
             for (const ms of methodSignatures) {
-                this.sources.set(ms.toString(), new Source(ms, sourceType, sourceIndex, callbackIndex));
+                this.sources.set(ms.toString(), new Source(ms, sourceType, sourceIndex, callbackIndex, {
+                    module: String(object.module || ''),
+                    namespace: String(object.namespace || ''),
+                    className: String(object.class || ''),
+                    apiName: String(object.api_name || ''),
+                    parameterTypes: Array.isArray(object.parameters)
+                        ? object.parameters.map((parameter: any) => String(parameter?.type || ''))
+                        : [],
+                    sourceKind,
+                    ruleOrigin: String(object.rule_origin || '')
+                }));
             }
         }
     }

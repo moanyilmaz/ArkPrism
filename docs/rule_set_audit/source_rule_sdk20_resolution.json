@@ -1,0 +1,314 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-24T15:31:51.748Z",
+  "sdk": {
+    "apiLevel": 20,
+    "root": "${OPENHARMONY_SDK_PATH}",
+    "evidence": "Declaration file and line recorded in every replacement rule."
+  },
+  "before": {
+    "rules": 258,
+    "unknownCarrierRules": 29,
+    "sha256": "28791d8b3b24821e4545869df07d4b3e6f83262a942b97d7a53dabdc24a1313c"
+  },
+  "after": {
+    "rules": 258,
+    "unknownCarrierRules": 0,
+    "sha256": "30bc8d8dee650881f1abd2f411b9ca004d00b66b7af4f959bb5ca85a86a7cce0"
+  },
+  "removed": [
+    {
+      "id": "@ohos.geoLocationManager|geoLocationManager||flushCachedGnssLocations",
+      "disposition": "no_sensitive_return_carrier"
+    },
+    {
+      "id": "@kit.DistributedServiceKit|distributedDeviceManager||distributedDeviceManager.DeviceManager.getLocalDeviceId",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|CalendarManager||getCalendar",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|CalendarManager||getAllCalendars",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|Calendar||getEvents",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|Calendar||getConfig",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|Calendar||getAccount",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.calendarManager|Calendar||queryEventInstances",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.contact|contact||queryContactsCount",
+      "disposition": "not_declared_in_api20"
+    },
+    {
+      "id": "@ohos.deviceInfo|deviceInfo||serial",
+      "disposition": "detector_only_property"
+    },
+    {
+      "id": "@ohos.deviceInfo|deviceInfo||udid",
+      "disposition": "detector_only_property"
+    },
+    {
+      "id": "@ohos.deviceInfo|deviceInfo||ODID",
+      "disposition": "detector_only_property"
+    },
+    {
+      "id": "@ohos.deviceInfo|deviceInfo||diskSN",
+      "disposition": "detector_only_property"
+    },
+    {
+      "id": "@ohos.deviceInfo|SystemPasteboard||getData",
+      "disposition": "superseded_by_existing_sdk_typed_rules"
+    },
+    {
+      "id": "@ohos.deviceInfo|SystemPasteboard||getDataSync",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.deviceInfo|SystemPasteboard||getUnifiedData",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.deviceInfo|SystemPasteboard||getUnifiedDataSync",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.deviceInfo|SystemPasteboard||getDataWithProgress",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.deviceInfo|wallpaper||getFile",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVImageGenerator||fetchFrameByTime",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVImageGenerator||fetchScaledFrameByTime",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVMetadataExtractor||fetchFrameByTime",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVMetadataExtractor||fetchFramesByTimes",
+      "disposition": "not_declared_in_api20"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVMetadataExtractor||fetchMetadata",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.multimedia.media|AVMetadataExtractor||fetchAlbumCover",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.sensor|sensor||getSensorListByDeviceSync",
+      "disposition": "capability_metadata_not_privacy_carrier"
+    },
+    {
+      "id": "@ohos.wifiManager|access||getPersistentDeviceIds",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.wifiManager|connection||getLocalName",
+      "disposition": "replaced_by_sdk20_declaration"
+    },
+    {
+      "id": "@ohos.wifiManager|connection||getPairedDevices",
+      "disposition": "replaced_by_sdk20_declaration"
+    }
+  ],
+  "added": [
+    {
+      "id": "@ohos.distributedDeviceManager|distributedDeviceManager|DeviceManager|getLocalDeviceId",
+      "sourceType": "return",
+      "carrier": "string",
+      "sdkDeclaration": "@ohos.distributedDeviceManager.d.ts:210"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|CalendarManager|getCalendar",
+      "sourceType": "return",
+      "carrier": "Promise<Calendar>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:147"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|CalendarManager|getCalendar",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<Calendar>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:173"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|CalendarManager|getCalendar",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<Calendar>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:197"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|CalendarManager|getAllCalendars",
+      "sourceType": "return",
+      "carrier": "Promise<Calendar[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:209"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|CalendarManager|getAllCalendars",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<Calendar[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:221"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|getEvents",
+      "sourceType": "return",
+      "carrier": "Promise<Event[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:367"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|getEvents",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<Event[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:376"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|getEvents",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<Event[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:383"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|getConfig",
+      "sourceType": "return",
+      "carrier": "CalendarConfig",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:390"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|getAccount",
+      "sourceType": "return",
+      "carrier": "CalendarAccount",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:413"
+    },
+    {
+      "id": "@ohos.calendarManager|calendarManager|Calendar|queryEventInstances",
+      "sourceType": "return",
+      "carrier": "Promise<Event[]>",
+      "sdkDeclaration": "@ohos.calendarManager.d.ts:425"
+    },
+    {
+      "id": "@ohos.pasteboard|pasteboard|SystemPasteboard|getDataSync",
+      "sourceType": "return",
+      "carrier": "PasteData",
+      "sdkDeclaration": "@ohos.pasteboard.d.ts:1426"
+    },
+    {
+      "id": "@ohos.pasteboard|pasteboard|SystemPasteboard|getUnifiedData",
+      "sourceType": "return",
+      "carrier": "Promise<unifiedDataChannel.UnifiedData>",
+      "sdkDeclaration": "@ohos.pasteboard.d.ts:1580"
+    },
+    {
+      "id": "@ohos.pasteboard|pasteboard|SystemPasteboard|getUnifiedDataSync",
+      "sourceType": "return",
+      "carrier": "unifiedDataChannel.UnifiedData",
+      "sdkDeclaration": "@ohos.pasteboard.d.ts:1592"
+    },
+    {
+      "id": "@ohos.pasteboard|pasteboard|SystemPasteboard|getDataWithProgress",
+      "sourceType": "return",
+      "carrier": "Promise<PasteData>",
+      "sdkDeclaration": "@ohos.pasteboard.d.ts:1690"
+    },
+    {
+      "id": "@ohos.wallpaper|wallpaper||getFile",
+      "sourceType": "return",
+      "carrier": "Promise<number>",
+      "sdkDeclaration": "@ohos.wallpaper.d.ts:163"
+    },
+    {
+      "id": "@ohos.wallpaper|wallpaper||getFile",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<number>",
+      "sdkDeclaration": "@ohos.wallpaper.d.ts:151"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVMetadataExtractor|fetchFrameByTime",
+      "sourceType": "return",
+      "carrier": "Promise<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:608"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVImageGenerator|fetchFrameByTime",
+      "sourceType": "return",
+      "carrier": "Promise<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:1059"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVImageGenerator|fetchFrameByTime",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:1047"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVImageGenerator|fetchScaledFrameByTime",
+      "sourceType": "return",
+      "carrier": "Promise<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:1072"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVMetadataExtractor|fetchMetadata",
+      "sourceType": "return",
+      "carrier": "Promise<AVMetadata>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:545"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVMetadataExtractor|fetchMetadata",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<AVMetadata>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:527"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVMetadataExtractor|fetchAlbumCover",
+      "sourceType": "return",
+      "carrier": "Promise<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:583"
+    },
+    {
+      "id": "@ohos.multimedia.media|media|AVMetadataExtractor|fetchAlbumCover",
+      "sourceType": "callback",
+      "carrier": "AsyncCallback<image.PixelMap>",
+      "sdkDeclaration": "@ohos.multimedia.media.d.ts:565"
+    },
+    {
+      "id": "@ohos.bluetooth.access|access||getPersistentDeviceIds",
+      "sourceType": "return",
+      "carrier": "string[]",
+      "sdkDeclaration": "@ohos.bluetooth.access.d.ts:360"
+    },
+    {
+      "id": "@ohos.bluetooth.connection|connection||getLocalName",
+      "sourceType": "return",
+      "carrier": "string",
+      "sdkDeclaration": "@ohos.bluetooth.connection.d.ts:428"
+    },
+    {
+      "id": "@ohos.bluetooth.connection|connection||getPairedDevices",
+      "sourceType": "return",
+      "carrier": "Array<string>",
+      "sdkDeclaration": "@ohos.bluetooth.connection.d.ts:471"
+    }
+  ],
+  "duplicateReplacements": []
+}

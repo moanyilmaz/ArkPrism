@@ -119,6 +119,9 @@ class PointerAnalysis extends AbstractAnalysis_1.AbstractAnalysis {
     getPTD() {
         return this.ptd;
     }
+    getRejectedContainerFieldEdges() {
+        return this.pag.getRejectedContainerFieldEdges();
+    }
     getStat() {
         let ret = this.cg.getStat();
         ret += '\n' + this.pagBuilder.getStat();

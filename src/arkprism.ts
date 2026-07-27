@@ -24,8 +24,12 @@ import { detectMultiSourceCollaborations } from './multiSourceAnalyzer';
 import { analyzeDataSinks } from './dataSinkAnalyzer';
 import { analyzePermissions } from './permissionAnalyzer';
 import { generateDot } from './dotExporter';
-import { ArkPrismOutput, PrivacyDataApiResult, TaintFlowResult, DataFlowStats, RecursivePatternStats } from './prototypes';
+import {
+    ArkPrismOutput, PrivacyDataApiResult, TaintAnalysisMetadata,
+    TaintFlowResult, DataFlowStats, RecursivePatternStats
+} from './prototypes';
 import { runHapflowAnalysis, HapflowOptions } from './hapflowRunner';
+import { linkTaintFlowsToPrivacyUsages } from './evidenceLinker';
 import { analyzeViewTrees } from './viewTreeAnalyzer';
 import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
 import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector';
@@ -199,9 +203,10 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
 
     // HapFlow IFDS Taint Analysis
     let taintFlows: TaintFlowResult[] = [];
+    let taintAnalysis: TaintAnalysisMetadata | undefined;
     if (!opts.noTaint) {
         try {
-            taintFlows = runHapflowAnalysis(scene, {
+            const taintResult = runHapflowAnalysis(scene, {
                 noPta: opts.noPta,
                 sdkPath: opts.sdkPath,
                 ifdsBatchSize: opts.ifdsBatchSize,
@@ -214,12 +219,15 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
                 callbackMaxStates: opts.callbackMaxStates,
                 callbackMaxPathLen: opts.callbackMaxPathLen
             });
+            taintFlows = taintResult.flows;
+            taintAnalysis = taintResult.metadata;
             console.log(`[HAPFLOW] Taint analysis complete: ${taintFlows.length} flows detected.`);
         } catch (e) {
             console.log(`[WARN] HapFlow taint analysis failed: ${e}`);
             if (e instanceof Error && e.stack) {
                 console.log(e.stack);
             }
+            throw e;
         }
     }
 
@@ -228,6 +236,7 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
 
     // Build output
     let chainsWithPath = callChainResults.filter((c: any) => c.chain && c.chain.length > 0).length;
+    const taintFlowLinks = linkTaintFlowsToPrivacyUsages(allApiResults, taintFlows);
     let output: ArkPrismOutput = {
         projectName,
         projectDirectory: projectDir,
@@ -237,6 +246,8 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
         multiSourceCollaborations: multiSourceResults,
         permissionUsages: permissionResults,
         taintFlows: taintFlows.length > 0 ? taintFlows : undefined,
+        taintFlowLinks: taintFlowLinks.length > 0 ? taintFlowLinks : undefined,
+        taintAnalysis,
         statistics: {
             totalFilesAnalyzed: filesAnalyzed,
             totalMethodsAnalyzed: methodsAnalyzed,
@@ -295,7 +306,7 @@ IFDS Options:
   --ifds-timeout-ms <n>         Timeout in milliseconds (default: 900000)
 
 Callback Analysis Options:
-  --callback-analysis <true|false>   Enable direct callback analysis (default: false)
+  --callback-analysis <true|false>   Enable direct callback analysis (default: true)
   --callback-max-methods <n>         Max methods to scan (default: 100000)
   --callback-max-sources <n>         Max sources to analyze (default: 5000)
   --callback-max-states <n>          Max states per source (default: 10000)

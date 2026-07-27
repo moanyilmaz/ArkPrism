@@ -430,6 +430,7 @@
     "@kit.AudioKit",
     "@kit.AVSessionKit",
     "@kit.BackgroundTasksKit",
+    "@kit.ReminderAgentKit",
     "@kit.BasicServicesKit",
     "@kit.CalendarKit",
     "@kit.CameraKit",

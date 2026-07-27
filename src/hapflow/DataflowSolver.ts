@@ -14,7 +14,7 @@
  */
 
 import { Scene } from '../arkanalyzer';
-import { AbstractInvokeExpr, ArkPtrInvokeExpr } from '../arkanalyzer';
+import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkNewExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from '../arkanalyzer';
 import { ArkAssignStmt, ArkInvokeStmt, ArkReturnStmt, ArkReturnVoidStmt, ArkThrowStmt, Stmt } from '../arkanalyzer';
 import { ArkMethod } from '../arkanalyzer';
 import { DataflowProblem, FlowFunction } from '../arkanalyzer';
@@ -27,8 +27,8 @@ import { RapidTypeAnalysis } from '../arkanalyzer';
 import { Logger, LOG_MODULE_TYPE } from '../arkanalyzer';
 import { TaintFact } from './TaintFact';
 import { Local } from '../arkanalyzer';
-import { ArkInstanceFieldRef, ArkParameterRef } from '../arkanalyzer';
-import { FunctionType } from '../arkanalyzer';
+import { ArkArrayRef, ArkInstanceFieldRef, ArkParameterRef } from '../arkanalyzer';
+import { ClassType, FunctionType } from '../arkanalyzer';
 import { PointerAnalysis } from '../arkanalyzer';
 import { CallGraphBuilder } from '../arkanalyzer';
 
@@ -40,6 +40,10 @@ import { AliasType } from '../arkanalyzer/core/base/Type';
 import { CallSite } from '../arkanalyzer/callgraph/model/CallGraph';
 
 const logger_hapflow = Logger.getLogger(LOG_MODULE_TYPE.ARKANALYZER, 'HapFlow');
+
+function irRecoveryEnabled(): boolean {
+    return process.env.ARKPRISM_DISABLE_IR_RECOVERY !== '1';
+}
 
 /*
 this program is roughly an implementation of the paper: Practical Extensions to the IFDS Algorithm.
@@ -58,6 +62,7 @@ export abstract class DataflowSolver<D extends object> {
     protected zeroFact: D;
     protected entryFact: D | undefined;
     protected inComing: Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
+    private exactIncoming: WeakMap<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
     protected endSummary: Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
     protected summaryEdge: Set<PathEdge<D>>;
     protected scene: Scene;
@@ -66,8 +71,11 @@ export abstract class DataflowSolver<D extends object> {
     protected laterEdges: Set<PathEdge<D>> = new Set();
     protected pointerAnalysis: PointerAnalysis | undefined;
 
-    // O(1) edge key set for fast duplicate detection
+    // O(1) edge key set. Object-scoped IDs prevent same-named locals and
+    // statements in different methods from being merged.
     private edgeKeys: Set<string> = new Set();
+    private objectIds: WeakMap<object, number> = new WeakMap();
+    private nextObjectId: number = 1;
 
     // Budget limits for IFDS analysis
     protected maxEdges: number = 1000000;
@@ -76,6 +84,7 @@ export abstract class DataflowSolver<D extends object> {
     private startTime: number = 0;
     protected edgesProcessed: number = 0;
     protected budgetExceeded: boolean = false;
+    protected malformedCfgEdges: number = 0;
 
     constructor(problem: DataflowProblem<D>, scene: Scene, pta?: PointerAnalysis, entryFact?: D) {
         this.problem = problem;
@@ -86,6 +95,7 @@ export abstract class DataflowSolver<D extends object> {
         this.workList = new Array<PathEdge<D>>();
         this.pathEdgeSet = new Set<PathEdge<D>>();
         this.inComing = new Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>();
+        this.exactIncoming = new WeakMap<PathEdgePoint<D>, Set<PathEdgePoint<D>>>();
         this.endSummary = new Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>();
         this.summaryEdge = new Set<PathEdge<D>>();
         this.stmtNexts = new Map();
@@ -107,10 +117,15 @@ export abstract class DataflowSolver<D extends object> {
     /**
      * Get current solver stats.
      */
-    public getStats(): { budgetExceeded: boolean; edgesProcessed: number } {
+    public getStats(): {
+        budgetExceeded: boolean;
+        edgesProcessed: number;
+        malformedCfgEdges: number;
+    } {
         return {
             budgetExceeded: this.budgetExceeded,
-            edgesProcessed: this.edgesProcessed
+            edgesProcessed: this.edgesProcessed,
+            malformedCfgEdges: this.malformedCfgEdges
         };
     }
 
@@ -118,7 +133,11 @@ export abstract class DataflowSolver<D extends object> {
         this.startTime = Date.now();
         this.edgesProcessed = 0;
         this.budgetExceeded = false;
+        this.malformedCfgEdges = 0;
         this.edgeKeys.clear();
+        this.objectIds = new WeakMap();
+        this.nextObjectId = 1;
+        this.exactIncoming = new WeakMap();
         this.init();
         this.doSolve();
         if (this.budgetExceeded) {
@@ -140,14 +159,12 @@ export abstract class DataflowSolver<D extends object> {
         let edge: PathEdge<D> = new PathEdge<D>(edgePoint, edgePoint);
         this.workList.push(edge);
         this.pathEdgeSet.add(edge);
+        this.edgeKeys.add(this.edgeKey(edge));
 
-        // build CG using CallGraphBuilder + CHA
+        // Resolve calls on demand, as in HapFlow's reference solver. Building a
+        // separate graph here loses edges from the synthetic DummyMain.
         let callGraph = new CallGraph(this.scene);
-        let cgBuilder = new CallGraphBuilder(callGraph, this.scene);
-        cgBuilder.buildDirectCallGraphForScene();
-        cgBuilder.setEntries();
         this.CG = new ClassHierarchyAnalysis(this.scene, callGraph);
-        this.CG.start(true);
 
         this.buildStmtMapInClass();
         this.setCfg4AllStmt();
@@ -169,11 +186,29 @@ export abstract class DataflowSolver<D extends object> {
         }
     }
 
-    protected addStmtNext4ExceptionalSuccessorBlocks(block: BasicBlock, stmt: Stmt, set: Set<Stmt>) {
-        const exceptionalSuccessorBlocks = block.getExceptionalSuccessorBlocks();
-        if (exceptionalSuccessorBlocks && exceptionalSuccessorBlocks.length > 0) {
-            for (const successor of exceptionalSuccessorBlocks) {
-                set.add(successor.getStmts()[0]);
+    protected addStmtNext4ExceptionalSuccessorBlocks(
+        block: BasicBlock,
+        stmt: Stmt,
+        set: Set<Stmt>,
+        includeSuccessorRegions: boolean = false
+    ) {
+        const protectedBlocks = includeSuccessorRegions
+            ? [block, ...block.getSuccessors().filter(
+                (successor): successor is BasicBlock => successor !== undefined && successor !== null
+            )]
+            : [block];
+        for (const protectedBlock of protectedBlocks) {
+            for (const successor of protectedBlock.getExceptionalSuccessorBlocks() || []) {
+                if (!successor) {
+                    this.malformedCfgEdges++;
+                    continue;
+                }
+                const firstStmt = successor.getStmts()[0];
+                if (firstStmt) {
+                    set.add(firstStmt);
+                } else {
+                    this.malformedCfgEdges++;
+                }
             }
         }
         this.stmtNexts.set(stmt, set);
@@ -188,15 +223,40 @@ export abstract class DataflowSolver<D extends object> {
                 this.addStmtNext4ExceptionalSuccessorBlocks(block, stmt, set);
             }
             else if (stmtIndex !== stmts.length - 1) {
-                this.stmtNexts.set(stmt, new Set([stmts[stmtIndex + 1]]));
+                const set = new Set([stmts[stmtIndex + 1]]);
+                if (this.statementMayTransferToExceptionHandler(stmt)) {
+                    // ArkAnalyzer can attach a try-region handler to the next
+                    // block rather than the block containing the throwing
+                    // expression. Inspect one CFG step without inventing an
+                    // unrelated catch target.
+                    this.addStmtNext4ExceptionalSuccessorBlocks(block, stmt, set, irRecoveryEnabled());
+                } else {
+                    this.stmtNexts.set(stmt, set);
+                }
             } else {
                 const set: Set<Stmt> = new Set();
                 for (const successor of block.getSuccessors()) {
-                    set.add(successor.getStmts()[0]);
+                    if (!successor) {
+                        this.malformedCfgEdges++;
+                        continue;
+                    }
+                    const firstStmt = successor.getStmts()[0];
+                    if (firstStmt) {
+                        set.add(firstStmt);
+                    } else {
+                        this.malformedCfgEdges++;
+                    }
                 }
                 this.addStmtNext4ExceptionalSuccessorBlocks(block, stmt, set);
             }
         }
+    }
+
+    private statementMayTransferToExceptionHandler(stmt: Stmt): boolean {
+        return stmt.getUses().some(value =>
+            value instanceof ArkArrayRef ||
+            value.getUses().some(nested => nested instanceof ArkArrayRef)
+        );
     }
 
     protected setCfg4AllStmt() {
@@ -211,7 +271,19 @@ export abstract class DataflowSolver<D extends object> {
         let callees: Set<ArkMethod> = new Set();
         const invokeExpr = invokeStmt.getInvokeExpr();
 
-        if (invokeExpr instanceof ArkPtrInvokeExpr) {
+        if (irRecoveryEnabled()
+            && invokeExpr instanceof ArkStaticInvokeExpr
+            && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() === 'super') {
+            const callerClass = invokeStmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass();
+            const superClass = callerClass?.getSuperClass();
+            for (const method of superClass?.getMethods(true) || []) {
+                if (method.getName() === 'constructor'
+                    && method.getParameters().length === invokeExpr.getArgs().length
+                    && method.getCfg()) {
+                    callees.add(method);
+                }
+            }
+        } else if (invokeExpr instanceof ArkPtrInvokeExpr) {
             const ptrLocal = invokeExpr.getFuncPtrLocal();
             let functionType = ptrLocal.getType();
             if (functionType instanceof AliasType && (functionType as AliasType).getOriginalType() instanceof FunctionType) {
@@ -251,21 +323,150 @@ export abstract class DataflowSolver<D extends object> {
                 }
             }
         }
+        this.addInstanceInitializerCallees(invokeStmt, callees);
+        if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
+            const resolved = [...callees].map(method => method.getSignature().toString()).join(', ');
+            console.log(`[HAPFLOW][CALL] ${invokeStmt.toString()} -> ${resolved || '<unresolved>'}`);
+        }
         return callees;
     }
 
+    private addInstanceInitializerCallees(callNode: ArkInvokeStmt, callees: Set<ArkMethod>): void {
+        if (!irRecoveryEnabled()) return;
+        const invokeExpr = callNode.getInvokeExpr();
+        if (!(invokeExpr instanceof ArkInstanceInvokeExpr)
+            || invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() !== 'constructor') {
+            return;
+        }
+
+        // Field and object-literal initializers execute as part of construction.
+        // Some ArkAnalyzer IR versions materialize %instInit but omit its invoke.
+        for (const constructor of [...callees]) {
+            const initializer = constructor.getDeclaringArkClass().getInstanceInitMethod();
+            if (initializer?.getCfg()) {
+                callees.add(initializer);
+            }
+        }
+    }
+
     protected getAllCalleeMethodsFromCG(callNode: ArkInvokeStmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
-        const callSite = this.CG.getCallGraph().getCallSiteByStmt(callNode);
+        const pointerResolved = this.getPointerResolvedCallees(callNode, paramFuncs);
+        if (pointerResolved.size > 0) {
+            const refined = this.refineByReceiverDefinitions(callNode, pointerResolved);
+            return this.getActualCalleesFromParams(callNode, refined);
+        }
+
+        const callerMethod = callNode.getCfg()?.getDeclaringMethod();
+        const callerNode = callerMethod
+            ? this.CG.getCallGraph().getCallGraphNodeByMethod(callerMethod.getSignature())
+            : this.CG.getCallGraph().getCallGraphNodeByMethod(this.problem.getEntryMethod().getSignature());
+        const callSites = this.CG.resolveCall(callerNode.getID(), callNode);
         let methods: Set<ArkMethod> = new Set();
-        if (callSite) {
+        for (const callSite of callSites) {
             const method = this.scene.getMethod(this.CG.getCallGraph().getMethodByFuncID(callSite.calleeFuncID)!);
             if (method && !paramFuncs.includes(method)) {
                 methods.add(method);
             }
         }
 
+        methods = this.refineByReceiverDefinitions(callNode, methods);
         methods = this.getActualCalleesFromParams(callNode, methods);
         return methods;
+    }
+
+    private getPointerResolvedCallees(callNode: ArkInvokeStmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
+        const methods = new Set<ArkMethod>();
+        if (!this.pointerAnalysis) return methods;
+
+        const callerMethod = callNode.getCfg()?.getDeclaringMethod();
+        if (!callerMethod) return methods;
+
+        const callGraph = this.pointerAnalysis.getCallGraph();
+        const callerNode = callGraph.getCallGraphNodeByMethod(callerMethod.getSignature());
+        for (const edge of callerNode.getOutgoingEdges()) {
+            // ArkAnalyzer records PTA-resolved virtual calls per edge, but the
+            // bundled version does not expose a public accessor for the set.
+            const indirectCalls = (edge as unknown as { indirectCalls?: Set<Stmt> }).indirectCalls;
+            const sameCallSite = [...(indirectCalls || [])].some(stmt =>
+                stmt === callNode ||
+                (stmt.toString() === callNode.toString() &&
+                    stmt.getCfg()?.getDeclaringMethod().getSignature().toString() ===
+                    callNode.getCfg()?.getDeclaringMethod().getSignature().toString())
+            );
+            if (!sameCallSite) continue;
+
+            const signature = callGraph.getMethodByFuncID(edge.getDstNode().getID());
+            const method = signature ? this.scene.getMethod(signature) : null;
+            if (method?.getCfg() && !paramFuncs.includes(method)) {
+                methods.add(method);
+            }
+        }
+        return methods;
+    }
+
+    private refineByReceiverDefinitions(callNode: ArkInvokeStmt, methods: Set<ArkMethod>): Set<ArkMethod> {
+        if (process.env.ARKPRISM_DISABLE_RECEIVER_REFINEMENT === '1') return methods;
+        const invokeExpr = callNode.getInvokeExpr();
+        if (!(invokeExpr instanceof ArkInstanceInvokeExpr)) return methods;
+
+        const caller = callNode.getCfg()?.getDeclaringMethod();
+        if (!caller) return methods;
+
+        const classNames = this.collectReceiverClassNames(invokeExpr.getBase(), caller, 0, new Set());
+        if (classNames.size === 0) return methods;
+
+        const refined = new Set([...methods].filter(method =>
+            classNames.has(method.getDeclaringArkClass().getName())
+        ));
+        return refined.size > 0 ? refined : methods;
+    }
+
+    private collectReceiverClassNames(
+        value: Local,
+        method: ArkMethod,
+        depth: number,
+        visited: Set<string>
+    ): Set<string> {
+        const names = new Set<string>();
+        if (depth > 3) return names;
+
+        const visitKey = `${method.getSignature().toString()}|${value.getName()}`;
+        if (visited.has(visitKey)) return names;
+        visited.add(visitKey);
+
+        for (const stmt of method.getCfg()?.getStmts() || []) {
+            if (!(stmt instanceof ArkAssignStmt) || !ValueEqual(stmt.getLeftOp(), value)) continue;
+            const rightOp = stmt.getRightOp();
+            if (rightOp instanceof ArkNewExpr) {
+                const type = rightOp.getType();
+                if (type instanceof ClassType) {
+                    names.add(type.getClassSignature().getClassName());
+                }
+                continue;
+            }
+
+            if (rightOp instanceof AbstractInvokeExpr) {
+                const callee = this.scene.getMethod(rightOp.getMethodSignature());
+                if (!callee?.getCfg()) continue;
+                for (const returnStmt of callee.getCfg()!.getStmts()) {
+                    if (!(returnStmt instanceof ArkReturnStmt)) continue;
+                    const returned = returnStmt.getOp();
+                    if (returned instanceof Local) {
+                        for (const name of this.collectReceiverClassNames(returned, callee, depth + 1, visited)) {
+                            names.add(name);
+                        }
+                    }
+                }
+                continue;
+            }
+
+            if (rightOp instanceof Local) {
+                for (const name of this.collectReceiverClassNames(rightOp, method, depth + 1, visited)) {
+                    names.add(name);
+                }
+            }
+        }
+        return names;
     }
 
     protected getActualCalleesFromParams(callNode: ArkInvokeStmt, methods: Set<ArkMethod>): Set<ArkMethod> {
@@ -318,12 +519,45 @@ export abstract class DataflowSolver<D extends object> {
     /**
      * Generate a unique key for an edge for O(1) duplicate detection.
      */
+    private objectKey(value: unknown): string {
+        if ((typeof value === 'object' && value !== null) || typeof value === 'function') {
+            const objectValue = value as object;
+            let id = this.objectIds.get(objectValue);
+            if (id === undefined) {
+                id = this.nextObjectId++;
+                this.objectIds.set(objectValue, id);
+            }
+            return `o${id}`;
+        }
+        return `${typeof value}:${String(value)}`;
+    }
+
     protected edgeKey(edge: PathEdge<D>): string {
-        const startNode = edge.edgeStart.node?.toString() || '';
-        const endNode = edge.edgeEnd.node?.toString() || '';
-        const startFact = edge.edgeStart.fact ? (edge.edgeStart.fact as any).getValue?.()?.toString() || '' : '';
-        const endFact = edge.edgeEnd.fact ? (edge.edgeEnd.fact as any).getValue?.()?.toString() || '' : '';
-        return `${startNode}|${startFact}|${endNode}|${endFact}`;
+        const startValue = (edge.edgeStart.fact as any)?.getValue?.() ?? edge.edgeStart.fact;
+        const endValue = (edge.edgeEnd.fact as any)?.getValue?.() ?? edge.edgeEnd.fact;
+        const startSource = (edge.edgeStart.fact as any)?.getSourceIdentityKey?.() ?? 'unseeded';
+        const endSource = (edge.edgeEnd.fact as any)?.getSourceIdentityKey?.() ?? 'unseeded';
+        const startNode = this.objectKey(edge.edgeStart.node);
+        const endNode = this.objectKey(edge.edgeEnd.node);
+        const startFact = this.objectKey(startValue);
+        const endFact = this.objectKey(endValue);
+        return `${startNode}|${startFact}|${startSource}|${endNode}|${endFact}|${endSource}`;
+    }
+
+    protected edgePointEqual(left: PathEdgePoint<D>, right: PathEdgePoint<D>): boolean {
+        return left.node === right.node && this.problem.factEqual(left.fact, right.fact);
+    }
+
+    protected findEquivalentPoint<T>(
+        points: Map<PathEdgePoint<D>, T>,
+        target: PathEdgePoint<D>
+    ): PathEdgePoint<D> | undefined {
+        for (const point of points.keys()) {
+            if (this.edgePointEqual(point, target)) {
+                return point;
+            }
+        }
+        return undefined;
     }
 
     protected propagate(edge: PathEdge<D>) {
@@ -369,20 +603,60 @@ export abstract class DataflowSolver<D extends object> {
 
     protected getCallEdgePoints(edge: PathEdge<D>): Set<PathEdgePoint<D>> {
         let startEdgePoint = edge.edgeStart;
-        let callEdgePoints = this.inComing.get(startEdgePoint);
+        let callEdgePoints = this.exactIncoming.get(startEdgePoint);
+        if (!callEdgePoints) {
+            const incomingKey = this.findEquivalentPoint(this.inComing, startEdgePoint);
+            callEdgePoints = incomingKey ? this.inComing.get(incomingKey) : undefined;
+        }
         if (callEdgePoints == undefined) {
-            if (startEdgePoint.node.getCfg()!.getDeclaringMethod() == this.problem.getEntryMethod()) {
+            const declaringMethod = startEdgePoint.node.getCfg()?.getDeclaringMethod();
+            if (declaringMethod == this.problem.getEntryMethod()) {
                 return new Set();
             }
-            throw new Error('incoming does not have ' + startEdgePoint.node.getCfg()?.getDeclaringMethod().toString());
+            const methodSignature = declaringMethod?.getSignature?.().toString() || 'unknown';
+            const nodeText = startEdgePoint.node?.toString?.() || 'unknown';
+            const factText = (startEdgePoint.fact as any)?.getValue?.()?.toString?.() || 'unknown';
+            let sameNodeEntries = 0;
+            let equivalentFactEntries = 0;
+            for (const point of this.inComing.keys()) {
+                if (point.node === startEdgePoint.node) sameNodeEntries++;
+                if (this.problem.factEqual(point.fact, startEdgePoint.fact)) equivalentFactEntries++;
+            }
+            throw new Error(
+                `incoming invariant violation: method=${methodSignature}, node=${nodeText}, `
+                + `fact=${factText}, incomingEntries=${this.inComing.size}, `
+                + `sameNodeEntries=${sameNodeEntries}, equivalentFactEntries=${equivalentFactEntries}`
+            );
         }
         return callEdgePoints;
+    }
+
+    protected recordIncoming(
+        startEdgePoint: PathEdgePoint<D>,
+        callEdgePoint: PathEdgePoint<D>
+    ): void {
+        let coming = this.exactIncoming.get(startEdgePoint);
+        if (!coming) {
+            const incomingKey = this.findEquivalentPoint(this.inComing, startEdgePoint);
+            coming = incomingKey ? this.inComing.get(incomingKey) : undefined;
+        }
+
+        if (!coming) {
+            coming = new Set<PathEdgePoint<D>>();
+            this.inComing.set(startEdgePoint, coming);
+        }
+        coming.add(callEdgePoint);
+
+        // Keep an identity-stable alias for every propagated method-start edge.
+        // ArkIR values may be refined after insertion, so semantic fact equality
+        // alone is not a stable map key over the complete solver lifetime.
+        this.exactIncoming.set(startEdgePoint, coming);
     }
 
     protected propagateIfExitCalled(callEdgePoint: PathEdgePoint<D>, returnSitePoint: PathEdgePoint<D>): void {
         let startOfCaller: Stmt = this.getStartStmt(callEdgePoint.node);
         for (let pathEdge of this.pathEdgeSet) {
-            if (pathEdge.edgeStart.node == startOfCaller && pathEdge.edgeEnd == callEdgePoint) {
+            if (pathEdge.edgeStart.node == startOfCaller && this.edgePointEqual(pathEdge.edgeEnd, callEdgePoint)) {
                 this.propagate(new PathEdge<D>(pathEdge.edgeStart, returnSitePoint));
             }
         }
@@ -391,7 +665,8 @@ export abstract class DataflowSolver<D extends object> {
     protected processExitNode(edge: PathEdge<D>) {
         let startEdgePoint: PathEdgePoint<D> = edge.edgeStart;
         let exitEdgePoint: PathEdgePoint<D> = edge.edgeEnd;
-        const summary = this.endSummary.get(startEdgePoint);
+        const summaryKey = this.findEquivalentPoint(this.endSummary, startEdgePoint);
+        const summary = summaryKey ? this.endSummary.get(summaryKey) : undefined;
         if (summary == undefined) {
             this.endSummary.set(startEdgePoint, new Set([exitEdgePoint]));
         } else {
@@ -429,9 +704,6 @@ export abstract class DataflowSolver<D extends object> {
             let flowFunction: FlowFunction<D> = this.problem.getNormalFlowFunction(end.node, stmt);
             let set: Set<D> = flowFunction.getDataFacts(end.fact);
             for (let fact of set) {
-                if (end.node instanceof ArkThrowStmt) {
-                    stmt = [...this.getChildren(stmt)][0];
-                }
                 let edgePoint: PathEdgePoint<D> = new PathEdgePoint<D>(stmt, fact);
                 const newEdge = new PathEdge<D>(start, edgePoint);
                 this.propagate(newEdge);
@@ -447,7 +719,7 @@ export abstract class DataflowSolver<D extends object> {
         let callees = this.getCallees(invokeStmt);
         let returnSite: Stmt = this.getReturnSiteOfCall(callEdgePoint.node);
         for (let cacheEdge of this.summaryEdge) {
-            if (cacheEdge.edgeStart === edge.edgeEnd && cacheEdge.edgeEnd.node === returnSite) {
+            if (this.edgePointEqual(cacheEdge.edgeStart, edge.edgeEnd) && cacheEdge.edgeEnd.node === returnSite) {
                 this.propagate(new PathEdge<D>(start, cacheEdge.edgeEnd));
                 return;
             }
@@ -476,23 +748,14 @@ export abstract class DataflowSolver<D extends object> {
         let callEdgePoint: PathEdgePoint<D> = edge.edgeEnd;
         let startEdgePoint: PathEdgePoint<D> = new PathEdgePoint(firstStmt, fact);
         this.propagate(new PathEdge<D>(startEdgePoint, startEdgePoint));
-        let coming: Set<PathEdgePoint<D>> | undefined = undefined;
-        for (const incoming of this.inComing.keys()) {
-            if (this.problem.factEqual(incoming.fact, startEdgePoint.fact) && incoming.node == startEdgePoint.node) {
-                coming = this.inComing.get(incoming);
-                break;
-            }
-        }
-        if (coming == undefined) {
-            this.inComing.set(startEdgePoint, new Set([callEdgePoint]));
-        } else {
-            coming.add(callEdgePoint);
-        }
+        this.recordIncoming(startEdgePoint, callEdgePoint);
         let exitEdgePoints: Set<PathEdgePoint<D>> = new Set();
-        for (const end of Array.from(this.endSummary.keys())) {
-            if (this.problem.factEqual(end.fact, fact) && end.node == firstStmt) {
-                exitEdgePoints = this.endSummary.get(end)!;
-            }
+        const summaryKey = this.findEquivalentPoint(
+            this.endSummary,
+            new PathEdgePoint<D>(firstStmt, fact)
+        );
+        if (summaryKey) {
+            exitEdgePoints = this.endSummary.get(summaryKey)!;
         }
         let returnSite: Stmt = this.getReturnSiteOfCall(callEdgePoint.node);
         for (let exitEdgePoint of exitEdgePoints) {
@@ -536,6 +799,11 @@ export abstract class DataflowSolver<D extends object> {
                 }
             }
             if (expr instanceof AbstractInvokeExpr) {
+                if (irRecoveryEnabled()
+                    && expr instanceof ArkStaticInvokeExpr
+                    && expr.getMethodSignature().getMethodSubSignature().getMethodName() === 'super') {
+                    return true;
+                }
                 const file = this.scene.getFile(expr.getMethodSignature().getDeclaringClassSignature().getDeclaringFileSignature());
                 if (file && this.scene.getFiles().includes(file)) {
                     return true;

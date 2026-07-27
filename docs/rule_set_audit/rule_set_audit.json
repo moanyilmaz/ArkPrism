@@ -1,0 +1,1171 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-27T09:09:50.324Z",
+  "scope": "Structural consistency only; semantic completeness and privacy categorization require independent expert review.",
+  "hashes": {
+    "sensitive_apis.json": "7cce33b670aa510fe5878d1686586e579993b8dd63a819ecba6e69a34c1fd325",
+    "system_packages14.json": "6f31602268edb4d52fe975188ddd88181141bc2c7b1309038e82b49b5d9eb4b0",
+    "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+    "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980"
+  },
+  "detector": {
+    "packageGroups": 58,
+    "entries": 716,
+    "uniquePackageNamespaceMembers": 710,
+    "uniqueNamespaceMembers": 665,
+    "accessKinds": {
+      "direct": 453,
+      "manager_receiver": 213,
+      "property": 50
+    },
+    "categories": {
+      "network.connectivity": 181,
+      "device_status.sensor": 89,
+      "network.wifi": 66,
+      "network.bluetooth": 62,
+      "location": 49,
+      "user_data.account": 34,
+      "device_identity.hardware": 21,
+      "device_identity.software": 18,
+      "user_data.clipboard": 18,
+      "user_data.contacts": 17,
+      "device_identity.device_info": 14,
+      "user_data.media": 13,
+      "network.cellular": 12,
+      "device_identity.sim": 9,
+      "device_management.policy": 9,
+      "device_status.audio": 9,
+      "user_data.audio": 9,
+      "device_identity.network": 8,
+      "media.camera": 8,
+      "device_identity.ad_tracking": 6,
+      "device_identity.biometric": 6,
+      "user_data.calendar": 6,
+      "device_status.health": 5,
+      "network.nearlink": 5,
+      "user_data.sms": 5,
+      "user_preference.settings": 5,
+      "device_identity.distributed": 4,
+      "device_status.input": 4,
+      "network.nfc": 4,
+      "storage.distributed": 4,
+      "device_identity.transaction": 3,
+      "system.security": 3,
+      "device_identity.screen": 2,
+      "device_identity.unique_id": 2,
+      "financial.asset": 2,
+      "user_data.notification": 2,
+      "device_status.screen": 1,
+      "user_data.game_profile": 1
+    },
+    "permissionCoverage": {
+      "withPermission": 568,
+      "withoutPermission": 148,
+      "distinctPermissions": 74
+    },
+    "receiverFactories": {
+      "entriesWithFactories": 7,
+      "distinctFactories": 3,
+      "managerEntriesUsingTypeOrTargetOnly": [
+        {
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "method": "createLoginWithHuaweiIDRequest"
+        },
+        {
+          "package": "@kit.AccountKit",
+          "namespace": "HuaweiIDProvider",
+          "method": "createAuthorizationWithHuaweiIDRequest"
+        },
+        {
+          "package": "@kit.AccountKit",
+          "namespace": "AuthenticationController",
+          "method": "executeRequest"
+        },
+        {
+          "package": "@kit.ArkUI",
+          "namespace": "display",
+          "method": "display.Display.getDefaultDisplaySync"
+        },
+        {
+          "package": "@kit.ArkUI",
+          "namespace": "display",
+          "method": "display.Display.getAllDisplays"
+        },
+        {
+          "package": "@kit.AudioKit",
+          "namespace": "audio",
+          "method": "audio.AudioVolumeManager.getVolumeGroupManager"
+        },
+        {
+          "package": "@kit.AudioKit",
+          "namespace": "AudioHapticManager",
+          "method": "createPlayer"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "getData"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "getDataSync"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "getUnifiedData"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "getUnifiedDataSync"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "getDataWithProgress"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "pasteboard.SystemPasteboard.getData"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "pasteboard.PasteData.getPrimaryText"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "osAccount",
+          "method": "osAccount.AccountManager.getOsAccountLocalId"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "appAccount",
+          "method": "appAccount.AppAccountManager.createAccount"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "appAccount",
+          "method": "appAccount.AppAccountManager.getAllAccounts"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "distributedAccount",
+          "method": "distributedAccount.DistributedAccountAbility.getOsAccountDistributedInfo"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "osAccount",
+          "method": "getOsAccountLocalId"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "appAccount",
+          "method": "appAccount.AppAccountManager.getAccountCredential"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "getData"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "getPrimaryData"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "pasteboard",
+          "method": "getPrimaryText"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AppAccountManager",
+          "method": "setDataSyncEnabled"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AppAccountManager",
+          "method": "checkDataSyncEnabled"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AppAccountManager",
+          "method": "checkAppAccountSyncEnable"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AppAccountManager",
+          "method": "setAppAccountSyncEnable"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AppAccountManager",
+          "method": "getAllAccessibleAccounts"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AccountManager",
+          "method": "checkOsAccountConstraintEnabled"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "AccountManager",
+          "method": "isOsAccountConstraintEnable"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "DomainServerConfigManager",
+          "method": "addServerConfig"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "DomainServerConfigManager",
+          "method": "updateServerConfig"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "setAppShareOptions"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "SystemPasteboard",
+          "method": "removeAppShareOptions"
+        },
+        {
+          "package": "@kit.BasicServicesKit",
+          "namespace": "DownloadTask",
+          "method": "getTaskMimeType"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "CalendarManager",
+          "method": "getCalendar"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "CalendarManager",
+          "method": "getAllCalendars"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "Calendar",
+          "method": "getEvents"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "Calendar",
+          "method": "getConfig"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "Calendar",
+          "method": "getAccount"
+        },
+        {
+          "package": "@kit.CalendarKit",
+          "namespace": "Calendar",
+          "method": "queryEventInstances"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "camera.CameraManager.getSupportedCameras"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "getSupportedCameras"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "getCameraOutputCapability"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "createCameraInput"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "getCameraAvailabilityCallback"
+        },
+        {
+          "package": "@kit.CameraKit",
+          "namespace": "camera",
+          "method": "getSupportedModes"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattServer",
+          "method": "close"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattServer",
+          "method": "getConnectedState"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattServer",
+          "method": "onBlePhyUpdate"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattServer",
+          "method": "offBlePhyUpdate"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "readCharacteristicValue"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "readDescriptorValue"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "writeCharacteristicValue"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "writeDescriptorValue"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "setBLEMtuSize"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "setCharacteristicChangeNotification"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "setCharacteristicChangeIndication"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "getConnectedState"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "updateConnectionParam"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "onBlePhyUpdate"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "GattClientDevice",
+          "method": "offBlePhyUpdate"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "BleScanner",
+          "method": "startScan"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "BleScanner",
+          "method": "stopScan"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "HidDeviceProfile",
+          "method": "connect"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "HidDeviceProfile",
+          "method": "onVirtualCableUnplug"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "HidDeviceProfile",
+          "method": "offVirtualCableUnplug"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "NdefFormatableTag",
+          "method": "NdefFormatableTag.format"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "NdefFormatableTag",
+          "method": "NdefFormatableTag.formatReadOnly"
+        },
+        {
+          "package": "@kit.ConnectivityKit",
+          "namespace": "TagSession",
+          "method": "resetConnection()"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "distributedDeviceManager",
+          "method": "distributedDeviceManager.DeviceManager.getLocalDeviceId"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getAvailableDeviceListSync"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getAvailableDeviceList"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getLocalDeviceNetworkId"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getLocalDeviceId"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getDeviceName"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "getDeviceType"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "DeviceManager",
+          "method": "startDiscovering"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "Connection",
+          "method": "connect()"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "Connection",
+          "method": "disconnect()"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "Connection",
+          "method": "close()"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "Connection",
+          "method": "getPeerDeviceId()"
+        },
+        {
+          "package": "@kit.DistributedServiceKit",
+          "namespace": "Connection",
+          "method": "sendData()"
+        },
+        {
+          "package": "@kit.HealthServiceKit",
+          "namespace": "workout",
+          "method": "workout.readActivityReport"
+        },
+        {
+          "package": "@kit.HealthServiceKit",
+          "namespace": "workout",
+          "method": "workout.getCurrentSportInfo"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "AbsAlbum",
+          "method": "getAssets"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "getAssets"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "getBurstAssets"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "getAlbums"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAsset",
+          "method": "getThumbnail"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAsset",
+          "method": "getReadOnlyFd"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "Album",
+          "method": "getAssets"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAccessHelper",
+          "method": "createAsset"
+        },
+        {
+          "package": "@kit.MediaLibraryKit",
+          "namespace": "PhotoAsset",
+          "method": "commitModify"
+        },
+        {
+          "package": "@kit.NearLinkKit",
+          "namespace": "RemoteDevice",
+          "method": "getConnectionState"
+        },
+        {
+          "package": "@kit.NearLinkKit",
+          "namespace": "Client",
+          "method": "setPropertyNotification"
+        },
+        {
+          "package": "@kit.NearLinkKit",
+          "namespace": "Client",
+          "method": "on( 'connectionStateChange')"
+        },
+        {
+          "package": "@kit.NearLinkKit",
+          "namespace": "Client",
+          "method": "off( 'connectionStateChange')"
+        },
+        {
+          "package": "@kit.NearLinkKit",
+          "namespace": "Server",
+          "method": "off( 'connectionStateChange')"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "connection",
+          "method": "getNetHandle"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "wifiManager",
+          "method": "isWifiConnected"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "wifiManager",
+          "method": "getWifiProfile"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "NetConnection",
+          "method": "register"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "method": "getAddressesByName"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "method": "getAddressesByNameWithOptions"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "NetHandle",
+          "method": "getAddressByName"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "method": "request"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "HttpRequest",
+          "method": "requestInStream"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "bind"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "send"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "getState"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "UDPSocket",
+          "method": "setExtraOptions"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "MulticastSocket",
+          "method": "addMembership"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "MulticastSocket",
+          "method": "dropMembership"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "MulticastSocket",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "bind"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "connect"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "send"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "getRemoteAddress"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "getState"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocket",
+          "method": "setExtraOptions"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketServer",
+          "method": "listen"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketServer",
+          "method": "getState"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketServer",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketServer",
+          "method": "setExtraOptions"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketServer",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketConnection",
+          "method": "send"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketConnection",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketConnection",
+          "method": "getRemoteAddress"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TCPSocketConnection",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TLSSocket",
+          "method": "bind"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TLSSocketServer",
+          "method": "listen"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TLSSocketServer",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TLSSocketServer",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "TLSSocketConnection",
+          "method": "getSocketFd"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocket",
+          "method": "connect"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocket",
+          "method": "send"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocket",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocketServer",
+          "method": "start"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocketServer",
+          "method": "send"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocketServer",
+          "method": "listAllConnections"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocketServer",
+          "method": "close"
+        },
+        {
+          "package": "@kit.NetworkKit",
+          "namespace": "WebSocketServer",
+          "method": "stop"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "fetch"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "fetchForSendable"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "get"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "post"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "put"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "downloadToFile"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "uploadFromFile"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "downloadToStream"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "uploadFromStream"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "head"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "Session",
+          "method": "delete"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "fetch"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "fetchForSendable"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "get"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "post"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "put"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "downloadToFile"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "uploadFromFile"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "downloadToStream"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "uploadFromStream"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "head"
+        },
+        {
+          "package": "@kit.RemoteCommunicationKit",
+          "namespace": "DefaultSession",
+          "method": "delete"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.ACCELEROMETER_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.GYROSCOPE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.GYROSCOPE_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.HEART_RATE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.LINEAR_ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.PEDOMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.PEDOMETER_DETECTION"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.ACCELEROMETER_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.GYROSCOPE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.GYROSCOPE_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.HEART_RATE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.LINEAR_ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.PEDOMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.PEDOMETER_DETECTION"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.ACCELEROMETER_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.GYROSCOPE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.GYROSCOPE_UNCALIBRATED"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.HEART_RATE"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.LINEAR_ACCELEROMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.PEDOMETER"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.PEDOMETER_DETECTION"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "on.LINEAR_ACCELERATION"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "once.LINEAR_ACCELERATION"
+        },
+        {
+          "package": "@kit.SensorServiceKit",
+          "namespace": "sensor",
+          "method": "off.LINEAR_ACCELERATION"
+        },
+        {
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "method": "on('result')"
+        },
+        {
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuthInstance",
+          "method": "start"
+        },
+        {
+          "package": "@kit.UserAuthenticationKit",
+          "namespace": "UserAuth",
+          "method": "getAvailableStatus"
+        },
+        {
+          "package": "@ohos.account.appAccount",
+          "namespace": "appAccount",
+          "method": "appAccount.AppAccountManager.getAccountCredential"
+        },
+        {
+          "package": "@ohos.data.rdb",
+          "namespace": "RdbStore",
+          "method": "setDistributedTables"
+        },
+        {
+          "package": "@ohos.data.rdb",
+          "namespace": "RdbStore",
+          "method": "obtainDistributedTableName"
+        },
+        {
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "photoAccessHelper",
+          "method": "getAssets"
+        },
+        {
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "photoAccessHelper",
+          "method": "createAsset"
+        },
+        {
+          "package": "@ohos.file.photoAccessHelper",
+          "namespace": "photoAccessHelper",
+          "method": "delete"
+        },
+        {
+          "package": "@ohos.multimedia.camera",
+          "namespace": "camera",
+          "method": "getSupportedCameras"
+        },
+        {
+          "package": "@ohos.pasteboard",
+          "namespace": "pasteboard",
+          "method": "getData"
+        },
+        {
+          "package": "@ohos.pasteboard",
+          "namespace": "pasteboard",
+          "method": "getPrimaryText"
+        }
+      ]
+    },
+    "integrity": {
+      "missingRequiredFields": [],
+      "invalidDirectCall": [],
+      "exactDuplicates": [
+        {
+          "key": "@kit.basicserviceskit|deviceinfo|marketname|property|||device_identity.hardware",
+          "count": 2
+        },
+        {
+          "key": "@kit.basicserviceskit|deviceinfo|osfullname|property|||device_identity.software",
+          "count": 2
+        },
+        {
+          "key": "@kit.basicserviceskit|deviceinfo|productseries|property|||device_identity.hardware",
+          "count": 2
+        },
+        {
+          "key": "@kit.basicserviceskit|deviceinfo|securitypatchtag|property|||device_identity.software",
+          "count": 2
+        }
+      ],
+      "accessModeVariants": [
+        {
+          "key": "@kit.userauthenticationkit|userauth|getavailablestatus",
+          "modes": [
+            "direct",
+            "manager_receiver"
+          ]
+        }
+      ]
+    }
+  },
+  "packageInventory": {
+    "entries": 465,
+    "uniqueEntries": 465,
+    "duplicates": 0
+  },
+  "ifds": {
+    "sources": {
+      "entries": 257,
+      "sourceTypes": {
+        "callback": 159,
+        "return": 98
+      },
+      "sourceKinds": {
+        "privacy_data": 257
+      },
+      "ruleOrigins": {
+        "typed_privacy_source_inventory": 228,
+        "sdk20_verified_privacy_source": 29
+      },
+      "sensitivities": {
+        "high": 168,
+        "medium": 89
+      },
+      "exactDuplicates": [],
+      "invalidEntries": []
+    },
+    "sinks": {
+      "entries": 29,
+      "exactDuplicates": [],
+      "invalidEntries": []
+    }
+  }
+}

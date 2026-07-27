@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "propertyRules": 50,
+  "changed": 39,
+  "criterion": "A simple member in the deviceInfo/deviceinfo namespace is an SDK property read, not a callable method.",
+  "rules": [
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "serial",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "udid",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "ODID",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "diskSN",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "marketName",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "productSeries",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "productMode",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "productModelAlias",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "softwareModel",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "hardwareModel",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "displayVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "chipType",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "securityPatchTag",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "osReleaseType",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "osFullName",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "majorVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "seniorVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "featureVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "buildVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "sdkApiVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "firstApiVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "versionId",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "distributionOSVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "distributionOSApiVersion",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceinfo",
+      "property": "distributionOSApiName",
+      "previousDirectCall": false
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "deviceType",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "manufacture",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "brand",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "marketName",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "productSeries",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "productModel",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "displayVersion",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "incrementalVersion",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "osFullName",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "securityPatchTag",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@kit.BasicServicesKit",
+      "namespace": "deviceInfo",
+      "property": "bootloaderVersion",
+      "previousDirectCall": null
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "deviceName",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "brand",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "manufacturer",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "productModel",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "osFullName",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "osVersionName",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "serial",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "displayVersion",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "incrementalVersion",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "securityPatchTag",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "productSeries",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "softwareModel",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "hardwareModel",
+      "previousDirectCall": true
+    },
+    {
+      "package": "@ohos.deviceInfo",
+      "namespace": "deviceInfo",
+      "property": "hardwareProfileId",
+      "previousDirectCall": true
+    }
+  ]
+}

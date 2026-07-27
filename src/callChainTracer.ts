@@ -18,7 +18,7 @@ import {
     Scene, ArkMethod, CallGraph, ArkIfStmt,
     ArkInvokeStmt, ArkAssignStmt, BasicBlock,
     getCallbackMethodFromStmt, Stmt,
-    ClassHierarchyAnalysis, DominanceFinder, DominanceTree,
+    ClassHierarchyAnalysis,
     CallGraphNode
 } from './arkanalyzer';
 import {
@@ -838,6 +838,90 @@ function determineCallType(callerName: string, calleeName: string): "direct" | "
 
 // ---- Extraction functions ----
 
+/**
+ * Compute immediate dominators with the Cooper-Harvey-Kennedy algorithm.
+ *
+ * DominanceFinder assumes that CFG blocks are already in a suitable order.
+ * ArkAnalyzer does not guarantee that ordering, so irreducible or generated
+ * ArkUI CFGs can make its fixed-point iteration oscillate. Reverse postorder
+ * provides the ordering required for convergence without dropping CFG nodes.
+ */
+export function computeImmediateDominators(cfg: any, blocks: BasicBlock[]): Map<BasicBlock, BasicBlock> {
+    const idoms = new Map<BasicBlock, BasicBlock>();
+    const start = cfg.getStartingBlock?.() as BasicBlock | undefined;
+    if (!start || blocks.length === 0) return idoms;
+
+    const blockSet = new Set(blocks);
+    if (!blockSet.has(start)) return idoms;
+
+    const visited = new Set<BasicBlock>([start]);
+    const postorder: BasicBlock[] = [];
+    const stack: Array<{ block: BasicBlock; expanded: boolean }> = [
+        { block: start, expanded: false }
+    ];
+
+    while (stack.length > 0) {
+        const item = stack.pop()!;
+        if (item.expanded) {
+            postorder.push(item.block);
+            continue;
+        }
+
+        stack.push({ block: item.block, expanded: true });
+        const successors = Array.from(item.block.getSuccessors())
+            .filter(successor => blockSet.has(successor));
+        for (let i = successors.length - 1; i >= 0; i--) {
+            const successor = successors[i];
+            if (!visited.has(successor)) {
+                visited.add(successor);
+                stack.push({ block: successor, expanded: false });
+            }
+        }
+    }
+
+    const reversePostorder = postorder.reverse();
+    const rpoIndex = new Map<BasicBlock, number>();
+    reversePostorder.forEach((block, index) => rpoIndex.set(block, index));
+    idoms.set(start, start);
+
+    const intersect = (left: BasicBlock, right: BasicBlock): BasicBlock => {
+        let finger1 = left;
+        let finger2 = right;
+        while (finger1 !== finger2) {
+            while (rpoIndex.get(finger1)! > rpoIndex.get(finger2)!) {
+                finger1 = idoms.get(finger1)!;
+            }
+            while (rpoIndex.get(finger2)! > rpoIndex.get(finger1)!) {
+                finger2 = idoms.get(finger2)!;
+            }
+        }
+        return finger1;
+    };
+
+    let changed = true;
+    while (changed) {
+        changed = false;
+        for (let i = 1; i < reversePostorder.length; i++) {
+            const block = reversePostorder[i];
+            const definedPredecessors = Array.from(block.getPredecessors())
+                .filter(predecessor => idoms.has(predecessor));
+            if (definedPredecessors.length === 0) continue;
+
+            let newIdom = definedPredecessors[0];
+            for (let j = 1; j < definedPredecessors.length; j++) {
+                newIdom = intersect(definedPredecessors[j], newIdom);
+            }
+
+            if (idoms.get(block) !== newIdom) {
+                idoms.set(block, newIdom);
+                changed = true;
+            }
+        }
+    }
+
+    return idoms;
+}
+
 function extractControlStructures(method: ArkMethod): ControlStructureInfo[] {
     let results: ControlStructureInfo[] = [];
     let file = extractFilePath(method);
@@ -845,7 +929,7 @@ function extractControlStructures(method: ArkMethod): ControlStructureInfo[] {
         let body = method.getBody();
         if (!body) return results;
         let cfg = body.getCfg();
-        let blocks = cfg.getBlocks();
+        let blocks = Array.from(cfg.getBlocks());
 
         // Build block ordering for loop detection via back-edges
         let blockOrder = new Map<BasicBlock, number>();
@@ -854,52 +938,32 @@ function extractControlStructures(method: ArkMethod): ControlStructureInfo[] {
             blockOrder.set(block, idx++);
         }
 
-        // Build dominance tree for precise "if dominates API call" analysis
-        let immDominators: Map<BasicBlock, BasicBlock> | null = null;
+        // Build immediate dominators for precise "if dominates API call" analysis.
+        let immDominators = new Map<BasicBlock, BasicBlock>();
         try {
-            let domFinder = new DominanceFinder(cfg);
-            let idoms = domFinder.getImmediateDominators();
-            if (idoms) {
-                immDominators = new Map<BasicBlock, BasicBlock>();
-                // idoms is typically an array or map of blockIdx -> domBlockIdx
-                let blockArr = Array.from(blocks);
-                let blockIdxMap = domFinder.getBlockToIdx();
-                if (blockIdxMap && idoms) {
-                    // Build BasicBlock -> BasicBlock mapping from the idx-based result
-                    for (let [block, blockIdx] of blockIdxMap) {
-                        let domIdx = idoms[blockIdx];
-                        if (domIdx !== undefined && domIdx >= 0 && domIdx < blockArr.length) {
-                            // Find the block with this idx
-                            for (let [b, bi] of blockIdxMap) {
-                                if (bi === domIdx) {
-                                    immDominators.set(block, b);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch { /* DominanceFinder may fail on some CFGs */ }
-
-        // Helper: check if blockA dominates blockB using immediate dominators
-        function isDominatedBy(blockB: BasicBlock, blockA: BasicBlock): boolean {
-            if (!immDominators) return false;
-            let current: BasicBlock | undefined = blockB;
-            let visited = new Set<BasicBlock>();
-            while (current && !visited.has(current)) {
-                if (current === blockA) return true;
-                visited.add(current);
-                current = immDominators.get(current);
-            }
-            return false;
-        }
+            immDominators = computeImmediateDominators(cfg, blocks);
+        } catch { /* Malformed CFGs keep conservative non-dominating evidence. */ }
 
         // Collect all blocks containing invoke statements (API call candidates)
         let invokeBlocks = new Set<BasicBlock>();
         for (let block of blocks) {
             if (blockContainsInvoke(block)) {
                 invokeBlocks.add(block);
+            }
+        }
+
+        // A block dominates an invocation iff it occurs on the invocation's
+        // immediate-dominator chain. Compute the union once for the method.
+        let invokeDominators = new Set<BasicBlock>();
+        for (const invokeBlock of invokeBlocks) {
+            let current: BasicBlock | undefined = invokeBlock;
+            const visitedDominators = new Set<BasicBlock>();
+            while (current && !visitedDominators.has(current)) {
+                invokeDominators.add(current);
+                visitedDominators.add(current);
+                const parent = immDominators.get(current);
+                if (!parent || parent === current) break;
+                current = parent;
             }
         }
 
@@ -939,13 +1003,7 @@ function extractControlStructures(method: ArkMethod): ControlStructureInfo[] {
                 else if (trueBranchHasInvoke && falseBranchHasInvoke) branchSide = 'both_branches';
 
                 // Dominance check: does this if-block dominate any invoke block?
-                let dominatesInvoke = false;
-                for (let invokeBlock of invokeBlocks) {
-                    if (isDominatedBy(invokeBlock, block)) {
-                        dominatesInvoke = true;
-                        break;
-                    }
-                }
+                let dominatesInvoke = invokeDominators.has(block);
 
                 results.push({
                     type: "if",
@@ -1075,17 +1133,44 @@ function extractSourceSnippet(method: ArkMethod, projectDir?: string): SourceSni
     } catch { return null; }
 }
 
+function getCachedControlStructures(
+    method: ArkMethod,
+    cache: Map<string, ControlStructureInfo[]>
+): ControlStructureInfo[] {
+    const signature = method.getSignature().toString();
+    if (!cache.has(signature)) {
+        cache.set(signature, extractControlStructures(method));
+    }
+    return cache.get(signature)!;
+}
+
+function getCachedSourceSnippet(
+    method: ArkMethod,
+    projectDir: string | undefined,
+    cache: Map<string, SourceSnippetInfo | null>
+): SourceSnippetInfo | null {
+    const signature = method.getSignature().toString();
+    if (!cache.has(signature)) {
+        cache.set(signature, extractSourceSnippet(method, projectDir));
+    }
+    return cache.get(signature) ?? null;
+}
+
 function buildDeclaringMethodApiChain(
     apiUsageIndex: number,
     apiResult: PrivacyDataApiResult,
     apiMethodSig: string,
     methodMap: Map<string, ArkMethod>,
+    controlStructureCache: Map<string, ControlStructureInfo[]>,
+    sourceSnippetCache: Map<string, SourceSnippetInfo | null>,
     projectDir?: string
 ): CallChainResult {
     const method = methodMap.get(apiMethodSig);
     const apiMethodName = extractMethodName(apiMethodSig);
     const displayName = extractDisplayName(apiMethodSig);
-    const snippet = method ? extractSourceSnippet(method, projectDir) : null;
+    const snippet = method
+        ? getCachedSourceSnippet(method, projectDir, sourceSnippetCache)
+        : null;
 
     return {
         apiUsageIndex,
@@ -1100,7 +1185,9 @@ function buildDeclaringMethodApiChain(
             callee: `${apiResult.namespace}.${apiResult.method}`,
             callType: "direct"
         }],
-        controlStructures: method ? extractControlStructures(method) : [],
+        controlStructures: method
+            ? getCachedControlStructures(method, controlStructureCache)
+            : [],
         sourceSnippets: snippet ? [snippet] : []
     };
 }
@@ -1138,6 +1225,8 @@ export function traceCallChains(
     for (const method of scene.getMethods()) {
         methodMap.set(method.getSignature().toString(), method);
     }
+    const controlStructureCache = new Map<string, ControlStructureInfo[]>();
+    const sourceSnippetCache = new Map<string, SourceSnippetInfo | null>();
 
     let callChainResults: CallChainResult[] = [];
 
@@ -1150,7 +1239,15 @@ export function traceCallChains(
         let apiMethodName = extractMethodName(apiMethodSig);
         if (isEntryMethod(apiMethodName)) {
             // API is directly in an entry method — create a self-contained chain
-            callChainResults.push(buildDeclaringMethodApiChain(i, apiResult, apiMethodSig, methodMap, projectDir));
+            callChainResults.push(buildDeclaringMethodApiChain(
+                i,
+                apiResult,
+                apiMethodSig,
+                methodMap,
+                controlStructureCache,
+                sourceSnippetCache,
+                projectDir
+            ));
             continue;
         }
 
@@ -1248,7 +1345,9 @@ export function traceCallChains(
                 chain.push(link);
                 let method = methodMap.get(path[j]);
                 if (method) {
-                    controlStructures = controlStructures.concat(extractControlStructures(method));
+                    controlStructures = controlStructures.concat(
+                        getCachedControlStructures(method, controlStructureCache)
+                    );
                 }
             }
 
@@ -1256,7 +1355,7 @@ export function traceCallChains(
             for (let sigStr of path) {
                 let method = methodMap.get(sigStr);
                 if (method) {
-                    let snippet = extractSourceSnippet(method, projectDir);
+                    let snippet = getCachedSourceSnippet(method, projectDir, sourceSnippetCache);
                     if (snippet) sourceSnippets.push(snippet);
                 }
             }
@@ -1305,7 +1404,15 @@ export function traceCallChains(
             // No framework/user-interaction entry found. Keep the chain precise by
             // reporting the declaring method as the local entry instead of inventing
             // an upstream caller.
-            callChainResults.push(buildDeclaringMethodApiChain(i, apiResult, apiMethodSig, methodMap, projectDir));
+            callChainResults.push(buildDeclaringMethodApiChain(
+                i,
+                apiResult,
+                apiMethodSig,
+                methodMap,
+                controlStructureCache,
+                sourceSnippetCache,
+                projectDir
+            ));
         }
     }
 

@@ -527,9 +527,13 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
         this.stashAddrEdge = new Set();
         this.addrEdge = new Set();
         this.clonedNodeMap = new Map();
+        this.rejectedContainerFieldEdges = 0;
     }
     getCG() {
         return this.cg;
+    }
+    getRejectedContainerFieldEdges() {
+        return this.rejectedContainerFieldEdges;
     }
     /*
      * Clone a PagNode with same cid/value/stmt,
@@ -602,10 +606,12 @@ class Pag extends BaseExplicitGraph_1.BaseExplicitGraph {
             // exceeded the k-limit).
             // In such situation, the `baseNode` will be a PagNewExprNode instead of a PagNewContainerExprNode,
             // and a warning will be raised.
+            this.rejectedContainerFieldEdges++;
             logger.warn(`[PTA]: Trying to clone an array from a PagNewExprNode instead of a PagNewContainerExprNode`);
         }
         else {
-            throw new Error(`Error clone array field node ${baseNode.getValue()}`);
+            this.rejectedContainerFieldEdges++;
+            logger.warn(`[PTA]: Ignoring container field edge with non-container base ${baseNode.getValue()}`);
         }
         return undefined;
     }

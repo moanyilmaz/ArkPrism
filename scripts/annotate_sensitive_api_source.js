@@ -19,21 +19,9 @@ const DEFAULT_EXCLUDED_DIRS = new Set([
 
 const DEFAULT_EXTENSIONS = new Set(['.ets', '.ts', '.js', '.vue']);
 
-const PACKAGE_ALIASES = new Map([
-  ['@ohos.distributedDeviceManager', ['@kit.DistributedServiceKit']],
-  ['@kit.DistributedServiceKit', ['@ohos.distributedDeviceManager']],
-  ['@ohos.deviceInfo', ['@kit.BasicServicesKit']],
-  ['@kit.BasicServicesKit', ['@ohos.deviceInfo', '@ohos.request', '@ohos.pasteboard']],
-  ['@ohos.multimedia.audio', ['@kit.AudioKit']],
-  ['@kit.AudioKit', ['@ohos.multimedia.audio']],
-  ['@ohos.geoLocationManager', ['@kit.LocationKit']],
-  ['@ohos.geolocation', ['@kit.LocationKit', '@ohos.geoLocationManager']],
-  ['@kit.LocationKit', ['@ohos.geoLocationManager', '@ohos.geolocation']],
-  ['@ohos.sensor', ['@kit.SensorServiceKit']],
-  ['@kit.SensorServiceKit', ['@ohos.sensor']],
-  ['@ohos.wifiManager', ['@kit.ConnectivityKit']],
-  ['@kit.ConnectivityKit', ['@ohos.wifiManager']],
-]);
+const PACKAGE_ALIASES = new Map(
+  Object.entries(require('../config/package_aliases.json')),
+);
 
 function parseArgs(argv) {
   const args = {
@@ -41,6 +29,7 @@ function parseArgs(argv) {
     reportsDir: 'out_full_sdk_20260702_final2',
     sensitiveApisPath: path.join('config', 'sensitive_apis.json'),
     outputDir: path.join('docs', 'generated_source_annotations'),
+    projectManifest: '',
   };
 
   for (let i = 0; i < argv.length; i++) {
@@ -49,10 +38,12 @@ function parseArgs(argv) {
     else if (arg === '--reports') args.reportsDir = argv[++i];
     else if (arg === '--sensitive-apis') args.sensitiveApisPath = argv[++i];
     else if (arg === '--output-dir') args.outputDir = argv[++i];
+    else if (arg === '--project-manifest') args.projectManifest = argv[++i];
     else if (arg === '--help' || arg === '-h') {
       console.log([
         'Usage:',
         '  node scripts/annotate_sensitive_api_source.js --dataset dataset --reports out --output-dir docs/generated_source_annotations',
+        '    [--project-manifest benchmarks/ArkSourceFirst60/selection_manifest.json]',
         '',
         'Scans source files for sensitive API evidence from config/sensitive_apis.json.',
         'Outputs both raw method-string hits and import-qualified namespace.method hits.',
@@ -123,6 +114,10 @@ function namespaceMatches(ruleNamespace, importedName, importFrom) {
 
   if (importFrom === '@ohos.deviceInfo' && importedName === 'deviceInfo') {
     return ruleNamespace === 'deviceInfo' || ruleNamespace === 'deviceinfo';
+  }
+
+  if (importFrom === '@ohos.identifier.oaid' && importedName === 'identifier') {
+    return ruleNamespace === 'identifier';
   }
 
   if ((importFrom === '@ohos.geoLocationManager' || importFrom === '@ohos.geolocation' || importFrom === '@kit.LocationKit') &&
@@ -279,6 +274,7 @@ function parseNamedImports(namedClause) {
 function defaultImportNameForPackage(importFrom, localName) {
   if (importFrom === '@ohos.deviceInfo') return 'deviceInfo';
   if (importFrom === '@ohos.distributedDeviceManager') return 'deviceManager';
+  if (importFrom === '@ohos.identifier.oaid') return 'identifier';
   if (importFrom === '@ohos.wifiManager') return 'wifiManager';
   const suffix = importFrom.split(/[./]/).filter(Boolean).pop();
   return suffix || localName;
@@ -784,10 +780,14 @@ function main() {
   fs.mkdirSync(outputDir, { recursive: true });
 
   const { rulesByPackage, methodNames } = loadRules(path.resolve(args.sensitiveApisPath));
-  const projects = fs.readdirSync(datasetDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory())
-    .map(entry => entry.name)
-    .sort();
+  const projects = args.projectManifest
+    ? readJson(path.resolve(args.projectManifest)).projects
+      .map(project => project.project)
+      .sort()
+    : fs.readdirSync(datasetDir, { withFileTypes: true })
+      .filter(entry => entry.isDirectory())
+      .map(entry => entry.name)
+      .sort();
 
   const projectResults = projects.map(projectName =>
     analyzeProject(projectName, datasetDir, reportsDir, rulesByPackage, methodNames)
@@ -798,6 +798,7 @@ function main() {
     datasetDir,
     reportsDir,
     sensitiveApisPath: path.resolve(args.sensitiveApisPath),
+    projectManifest: args.projectManifest ? path.resolve(args.projectManifest) : null,
     projectCount: projectResults.length,
     totalRawMethodHits: projectResults.reduce((n, p) => n + p.rawHits.length, 0),
     totalPresenceHits: projectResults.reduce((n, p) => n + p.presenceApiCount, 0),

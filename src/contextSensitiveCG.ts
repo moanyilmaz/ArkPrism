@@ -298,7 +298,7 @@ export interface ContextSensitiveComparisonResult {
 function countEdges(cg: CallGraph): number {
     let count = 0;
     for (const node of cg.nodesItor()) {
-        count += cg.getOutgoingEdges(node.getID())?.length ?? 0;
+        count += node.getOutgoingEdges().size;
     }
     return count;
 }

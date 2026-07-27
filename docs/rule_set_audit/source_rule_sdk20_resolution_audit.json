@@ -1,0 +1,3108 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-27T03:30:41.661Z",
+  "sdk": {
+    "path": "E:\\OpenHarmony_SDK\\20\\ets",
+    "loadedDeclarationFiles": 2898
+  },
+  "sources": {
+    "path": "E:\\arkprism-fse2027-experiments\\config\\hapflow_sources.json",
+    "rules": 257,
+    "resolvedRules": 257,
+    "resolvedSignatures": 257,
+    "unresolvedRules": 0,
+    "ambiguousRules": 0,
+    "signatureCollisions": 0,
+    "carrierMismatches": 0
+  },
+  "unresolved": [],
+  "ambiguous": [],
+  "collisions": [],
+  "carrierMismatches": [],
+  "resolutions": [
+    {
+      "index": 0,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAllAccounts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAllAccounts()"
+      ]
+    },
+    {
+      "index": 1,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAllAccounts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAllAccounts(AsyncCallback<Array<AppAccountInfo>>)"
+      ]
+    },
+    {
+      "index": 2,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAllAccounts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAllAccounts(string, AsyncCallback<Array<AppAccountInfo>>)"
+      ]
+    },
+    {
+      "index": 3,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAccountCredential",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAccountCredential(string, string, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 4,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAllAccounts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAllAccounts(string)"
+      ]
+    },
+    {
+      "index": 5,
+      "module": "@ohos.account.appAccount",
+      "namespace": "appAccount",
+      "className": "AppAccountManager",
+      "apiName": "getAccountCredential",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.appAccount.d.ts: appAccount.AppAccountManager.getAccountCredential(string, string)"
+      ]
+    },
+    {
+      "index": 6,
+      "module": "@ohos.account.osAccount",
+      "namespace": "osAccount",
+      "className": "AccountManager",
+      "apiName": "getOsAccountLocalId",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.osAccount.d.ts: osAccount.AccountManager.getOsAccountLocalId()"
+      ]
+    },
+    {
+      "index": 7,
+      "module": "@ohos.account.osAccount",
+      "namespace": "osAccount",
+      "className": "AccountManager",
+      "apiName": "getOsAccountLocalId",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.account.osAccount.d.ts: osAccount.AccountManager.getOsAccountLocalId(AsyncCallback<number>)"
+      ]
+    },
+    {
+      "index": 8,
+      "module": "@ohos.bluetooth.ble",
+      "namespace": "ble",
+      "className": "GattClientDevice",
+      "apiName": "getDeviceName",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.ble.d.ts: ble.GattClientDevice.getDeviceName(AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 9,
+      "module": "@ohos.bluetooth.ble",
+      "namespace": "ble",
+      "className": "GattClientDevice",
+      "apiName": "getDeviceName",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.ble.d.ts: ble.GattClientDevice.getDeviceName()"
+      ]
+    },
+    {
+      "index": 10,
+      "module": "@ohos.bluetooth.ble",
+      "namespace": "ble",
+      "className": "GattClientDevice",
+      "apiName": "getRssiValue",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.ble.d.ts: ble.GattClientDevice.getRssiValue()"
+      ]
+    },
+    {
+      "index": 11,
+      "module": "@ohos.bluetooth.ble",
+      "namespace": "ble",
+      "className": "GattClientDevice",
+      "apiName": "getRssiValue",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.ble.d.ts: ble.GattClientDevice.getRssiValue(AsyncCallback<number>)"
+      ]
+    },
+    {
+      "index": 12,
+      "module": "@ohos.bluetoothManager",
+      "namespace": "bluetoothManager",
+      "className": "",
+      "apiName": "getRemoteDeviceName",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetoothManager.d.ts: bluetoothManager.%dflt.getRemoteDeviceName(string)"
+      ]
+    },
+    {
+      "index": 13,
+      "module": "@ohos.bluetoothManager",
+      "namespace": "bluetoothManager",
+      "className": "",
+      "apiName": "getProfileInstance",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetoothManager.d.ts: bluetoothManager.%dflt.getProfileInstance(ProfileId)"
+      ]
+    },
+    {
+      "index": 14,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "addContact",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.addContact(Context, Contact)"
+      ]
+    },
+    {
+      "index": 15,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "selectContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.selectContacts(ContactSelectionOptions, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 16,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "selectContacts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.selectContacts()"
+      ]
+    },
+    {
+      "index": 17,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(string, Holder, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 18,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(Context, string, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 19,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(string, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 20,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(string, ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 21,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(Context, string, ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 22,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(Context, string, Holder, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 23,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "selectContacts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.selectContacts(ContactSelectionOptions)"
+      ]
+    },
+    {
+      "index": 24,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(string, Holder, ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 25,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(Context, string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 26,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "selectContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.selectContacts(AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 27,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 28,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 29,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Context, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 30,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContact(Context, string, Holder, ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 31,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Context, Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 32,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 33,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 34,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Context, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 35,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 36,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Context, Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 37,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(Context, string, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 38,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Context, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 39,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContacts",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContacts(Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 40,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(Context, string, Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 41,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(string, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 42,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(string, Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 43,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(string, Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 44,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(string, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 45,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(Context, string, Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 46,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(Context, string, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 47,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(string, Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 48,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 49,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(Context, string, Holder, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 50,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(string, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 51,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(string, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 52,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(Context, string, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 53,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByEmail",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByEmail(Context, string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 54,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(Context, string, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 55,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(Context, string, Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 56,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(Holder, AsyncCallback<Array<Group>>)"
+      ]
+    },
+    {
+      "index": 57,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(string, Holder, ContactAttributes, AsyncCallback<Array<Contact>>)"
+      ]
+    },
+    {
+      "index": 58,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(AsyncCallback<Array<Group>>)"
+      ]
+    },
+    {
+      "index": 59,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 60,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(Context, AsyncCallback<Array<Group>>)"
+      ]
+    },
+    {
+      "index": 61,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(Holder)"
+      ]
+    },
+    {
+      "index": 62,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryContactsByPhoneNumber",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryContactsByPhoneNumber(Context, string, Holder, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 63,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(Context, Holder)"
+      ]
+    },
+    {
+      "index": 64,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryHolders",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryHolders(AsyncCallback<Array<Holder>>)"
+      ]
+    },
+    {
+      "index": 65,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryGroups",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryGroups(Context, Holder, AsyncCallback<Array<Group>>)"
+      ]
+    },
+    {
+      "index": 66,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryHolders",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryHolders(Context, AsyncCallback<Array<Holder>>)"
+      ]
+    },
+    {
+      "index": 67,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryHolders",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryHolders(Context)"
+      ]
+    },
+    {
+      "index": 68,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryHolders",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryHolders()"
+      ]
+    },
+    {
+      "index": 69,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(number, Holder, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 70,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(Context, number, Holder, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 71,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(number, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 72,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(Context, number, Holder)"
+      ]
+    },
+    {
+      "index": 73,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(number, Holder)"
+      ]
+    },
+    {
+      "index": 74,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 75,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryKey",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryKey(Context, number, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 76,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(Context, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 77,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 78,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(Context, ContactAttributes, AsyncCallback<Contact>)"
+      ]
+    },
+    {
+      "index": 79,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(Context, ContactAttributes)"
+      ]
+    },
+    {
+      "index": 80,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "queryMyCard",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.queryMyCard(ContactAttributes)"
+      ]
+    },
+    {
+      "index": 81,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "isLocalContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.isLocalContact(Context, number, AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 82,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "isLocalContact",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.isLocalContact(number, AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 83,
+      "module": "@ohos.contact",
+      "namespace": "contact",
+      "className": "",
+      "apiName": "isMyCard",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.contact.d.ts: contact.%dflt.isMyCard(number, AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 84,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "AbsAlbum",
+      "apiName": "getAssets",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.AbsAlbum.getAssets(FetchOptions, AsyncCallback<FetchResult<PhotoAsset>>)"
+      ]
+    },
+    {
+      "index": 85,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "AbsAlbum",
+      "apiName": "getAssets",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.AbsAlbum.getAssets(FetchOptions)"
+      ]
+    },
+    {
+      "index": 86,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "PhotoAccessHelper",
+      "apiName": "getAssets",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.PhotoAccessHelper.getAssets(FetchOptions)"
+      ]
+    },
+    {
+      "index": 87,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "PhotoAccessHelper",
+      "apiName": "createAsset",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.PhotoAccessHelper.createAsset(PhotoType, string, CreateOptions, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 88,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "PhotoAccessHelper",
+      "apiName": "createAsset",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.PhotoAccessHelper.createAsset(PhotoType, string, CreateOptions)"
+      ]
+    },
+    {
+      "index": 89,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "PhotoAccessHelper",
+      "apiName": "getAssets",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.PhotoAccessHelper.getAssets(FetchOptions, AsyncCallback<FetchResult<PhotoAsset>>)"
+      ]
+    },
+    {
+      "index": 90,
+      "module": "@ohos.file.photoAccessHelper",
+      "namespace": "photoAccessHelper",
+      "className": "PhotoAccessHelper",
+      "apiName": "createAsset",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.file.photoAccessHelper.d.ts: photoAccessHelper.PhotoAccessHelper.createAsset(PhotoType, string, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 91,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "off",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.off('locationChange', Callback<Location>)"
+      ]
+    },
+    {
+      "index": 92,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.on('locationChange', LocationRequest, Callback<Location>)"
+      ]
+    },
+    {
+      "index": 93,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "off",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.off('cachedGnssLocationsReporting', Callback<Array<Location>>)"
+      ]
+    },
+    {
+      "index": 94,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.on('cachedGnssLocationsReporting', CachedGnssLocationsRequest, Callback<Array<Location>>)"
+      ]
+    },
+    {
+      "index": 95,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.on('gnssStatusChange', Callback<SatelliteStatusInfo>)"
+      ]
+    },
+    {
+      "index": 96,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.on('nmeaMessageChange', Callback<string>)"
+      ]
+    },
+    {
+      "index": 97,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getCurrentLocation(CurrentLocationRequest, AsyncCallback<Location>)"
+      ]
+    },
+    {
+      "index": 98,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getCurrentLocation(AsyncCallback<Location>)"
+      ]
+    },
+    {
+      "index": 99,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getLastLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getLastLocation(AsyncCallback<Location>)"
+      ]
+    },
+    {
+      "index": 100,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "isLocationEnabled",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.isLocationEnabled()"
+      ]
+    },
+    {
+      "index": 101,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getCurrentLocation(CurrentLocationRequest)"
+      ]
+    },
+    {
+      "index": 102,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getLastLocation",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getLastLocation()"
+      ]
+    },
+    {
+      "index": 103,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "isLocationEnabled",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.isLocationEnabled(AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 104,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getAddressesFromLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getAddressesFromLocation(ReverseGeoCodeRequest, AsyncCallback<Array<GeoAddress>>)"
+      ]
+    },
+    {
+      "index": 105,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "requestEnableLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.requestEnableLocation(AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 106,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getCachedGnssLocationsSize",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getCachedGnssLocationsSize(AsyncCallback<number>)"
+      ]
+    },
+    {
+      "index": 107,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "getAddressesFromLocationName",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.getAddressesFromLocationName(GeoCodeRequest, AsyncCallback<Array<GeoAddress>>)"
+      ]
+    },
+    {
+      "index": 108,
+      "module": "@ohos.geolocation",
+      "namespace": "geolocation",
+      "className": "",
+      "apiName": "flushCachedGnssLocations",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geolocation.d.ts: geolocation.%dflt.flushCachedGnssLocations(AsyncCallback<boolean>)"
+      ]
+    },
+    {
+      "index": 109,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "off",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.off('locationError', Callback<LocationError>)"
+      ]
+    },
+    {
+      "index": 110,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('locationChange', LocationRequest|ContinuousLocationRequest, Callback<Location>)"
+      ]
+    },
+    {
+      "index": 111,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('locationError', Callback<LocationError>)"
+      ]
+    },
+    {
+      "index": 112,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('locationEnabledChange', Callback<boolean>)"
+      ]
+    },
+    {
+      "index": 113,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "off",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.off('cachedGnssLocationsChange', Callback<Array<Location>>)"
+      ]
+    },
+    {
+      "index": 114,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "off",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.off('locationChange', Callback<Location>)"
+      ]
+    },
+    {
+      "index": 115,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('nmeaMessage', Callback<string>)"
+      ]
+    },
+    {
+      "index": 116,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('countryCodeChange', Callback<CountryCode>)"
+      ]
+    },
+    {
+      "index": 117,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('satelliteStatusChange', Callback<SatelliteStatusInfo>)"
+      ]
+    },
+    {
+      "index": 118,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCurrentLocation(CurrentLocationRequest|SingleLocationRequest)"
+      ]
+    },
+    {
+      "index": 119,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCurrentLocation(CurrentLocationRequest|SingleLocationRequest, AsyncCallback<Location>)"
+      ]
+    },
+    {
+      "index": 120,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getLastLocation",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getLastLocation()"
+      ]
+    },
+    {
+      "index": 121,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('bluetoothScanResultChange', Callback<BluetoothScanResult>)"
+      ]
+    },
+    {
+      "index": 122,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getAddressesFromLocation",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getAddressesFromLocation(ReverseGeoCodeRequest)"
+      ]
+    },
+    {
+      "index": 123,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getAddressesFromLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getAddressesFromLocation(ReverseGeoCodeRequest, AsyncCallback<Array<GeoAddress>>)"
+      ]
+    },
+    {
+      "index": 124,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCachedGnssLocationsSize",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCachedGnssLocationsSize(AsyncCallback<number>)"
+      ]
+    },
+    {
+      "index": 125,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCurrentLocation",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCurrentLocation(AsyncCallback<Location>)"
+      ]
+    },
+    {
+      "index": 126,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "flushCachedGnssLocations",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.flushCachedGnssLocations(AsyncCallback<void>)"
+      ]
+    },
+    {
+      "index": 127,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCountryCode",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCountryCode(AsyncCallback<CountryCode>)"
+      ]
+    },
+    {
+      "index": 128,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCountryCode",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCountryCode()"
+      ]
+    },
+    {
+      "index": 129,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.on('cachedGnssLocationsChange', CachedGnssLocationsRequest, Callback<Array<Location>>)"
+      ]
+    },
+    {
+      "index": 130,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getPoiInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getPoiInfo()"
+      ]
+    },
+    {
+      "index": 131,
+      "module": "@ohos.geoLocationManager",
+      "namespace": "geoLocationManager",
+      "className": "",
+      "apiName": "getCurrentWifiBssidForLocating",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.geoLocationManager.d.ts: geoLocationManager.%dflt.getCurrentWifiBssidForLocating()"
+      ]
+    },
+    {
+      "index": 132,
+      "module": "@ohos.identifier.oaid",
+      "namespace": "identifier",
+      "className": "",
+      "apiName": "getOAID",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.identifier.oaid.d.ts: identifier.%dflt.getOAID()"
+      ]
+    },
+    {
+      "index": 133,
+      "module": "@ohos.identifier.oaid",
+      "namespace": "identifier",
+      "className": "",
+      "apiName": "getOAID",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.identifier.oaid.d.ts: identifier.%dflt.getOAID(AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 134,
+      "module": "@ohos.inputMethodEngine",
+      "namespace": "inputMethodEngine",
+      "className": "",
+      "apiName": "getInputMethodAbility",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.inputMethodEngine.d.ts: inputMethodEngine.%dflt.getInputMethodAbility()"
+      ]
+    },
+    {
+      "index": 135,
+      "module": "@ohos.multimedia.audio",
+      "namespace": "audio",
+      "className": "",
+      "apiName": "createAudioCapturer",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.audio.d.ts: audio.%dflt.createAudioCapturer(AudioCapturerOptions, AsyncCallback<AudioCapturer>)"
+      ]
+    },
+    {
+      "index": 136,
+      "module": "@ohos.multimedia.audio",
+      "namespace": "audio",
+      "className": "",
+      "apiName": "createAudioCapturer",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.audio.d.ts: audio.%dflt.createAudioCapturer(AudioCapturerOptions)"
+      ]
+    },
+    {
+      "index": 137,
+      "module": "@ohos.multimedia.audio",
+      "namespace": "audio",
+      "className": "AudioManager",
+      "apiName": "getAudioScene",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.audio.d.ts: audio.AudioManager.getAudioScene(AsyncCallback<AudioScene>)"
+      ]
+    },
+    {
+      "index": 138,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getDefaultNetSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getDefaultNetSync()"
+      ]
+    },
+    {
+      "index": 139,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getAllNets",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getAllNets(AsyncCallback<Array<NetHandle>>)"
+      ]
+    },
+    {
+      "index": 140,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getDefaultNet",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getDefaultNet()"
+      ]
+    },
+    {
+      "index": 141,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getDefaultNet",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getDefaultNet(AsyncCallback<NetHandle>)"
+      ]
+    },
+    {
+      "index": 142,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getAllNetsSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getAllNetsSync()"
+      ]
+    },
+    {
+      "index": 143,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getAllNets",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getAllNets()"
+      ]
+    },
+    {
+      "index": 144,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getNetCapabilities",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getNetCapabilities(NetHandle)"
+      ]
+    },
+    {
+      "index": 145,
+      "module": "@ohos.net.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getNetCapabilities",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.net.connection.d.ts: connection.%dflt.getNetCapabilities(NetHandle, AsyncCallback<NetCapabilities>)"
+      ]
+    },
+    {
+      "index": 146,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "",
+      "apiName": "getSystemPasteboard",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.%dflt.getSystemPasteboard()"
+      ]
+    },
+    {
+      "index": 147,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "PasteData",
+      "apiName": "getPrimaryText",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.PasteData.getPrimaryText()"
+      ]
+    },
+    {
+      "index": 148,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getData",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getData(AsyncCallback<PasteData>)"
+      ]
+    },
+    {
+      "index": 149,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getData",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getData()"
+      ]
+    },
+    {
+      "index": 150,
+      "module": "@ohos.resourceManager",
+      "namespace": "resourceManager",
+      "className": "ResourceManager",
+      "apiName": "getDeviceCapability",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.resourceManager.d.ts: resourceManager.ResourceManager.getDeviceCapability(_AsyncCallback<DeviceCapability>)"
+      ]
+    },
+    {
+      "index": 151,
+      "module": "@ohos.resourceManager",
+      "namespace": "resourceManager",
+      "className": "ResourceManager",
+      "apiName": "getDeviceCapability",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.resourceManager.d.ts: resourceManager.ResourceManager.getDeviceCapability()"
+      ]
+    },
+    {
+      "index": 152,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.ACCELEROMETER, Callback<AccelerometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 153,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.ACCELEROMETER_UNCALIBRATED, Callback<AccelerometerUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 154,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.BAROMETER, Callback<BarometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 155,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.GRAVITY, Callback<GravityResponse>, Options)"
+      ]
+    },
+    {
+      "index": 156,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.GYROSCOPE, Callback<GyroscopeResponse>, Options)"
+      ]
+    },
+    {
+      "index": 157,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.AMBIENT_LIGHT, Callback<LightResponse>, Options)"
+      ]
+    },
+    {
+      "index": 158,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.GYROSCOPE_UNCALIBRATED, Callback<GyroscopeUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 159,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.HALL, Callback<HallResponse>, Options)"
+      ]
+    },
+    {
+      "index": 160,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.MAGNETIC_FIELD, Callback<MagneticFieldResponse>, Options)"
+      ]
+    },
+    {
+      "index": 161,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.ORIENTATION, Callback<OrientationResponse>, Options)"
+      ]
+    },
+    {
+      "index": 162,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.HEART_RATE, Callback<HeartRateResponse>, Options)"
+      ]
+    },
+    {
+      "index": 163,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.MAGNETIC_FIELD_UNCALIBRATED, Callback<MagneticFieldUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 164,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.PEDOMETER_DETECTION, Callback<PedometerDetectionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 165,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.LINEAR_ACCELEROMETER, Callback<LinearAccelerometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 166,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.WEAR_DETECTION, Callback<WearDetectionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 167,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.PROXIMITY, Callback<ProximityResponse>, Options)"
+      ]
+    },
+    {
+      "index": 168,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.ROTATION_VECTOR, Callback<RotationVectorResponse>, Options)"
+      ]
+    },
+    {
+      "index": 169,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.PEDOMETER, Callback<PedometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 170,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorId.SIGNIFICANT_MOTION, Callback<SignificantMotionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 171,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_ACCELEROMETER_UNCALIBRATED, Callback<AccelerometerUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 172,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_ACCELEROMETER, Callback<AccelerometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 173,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_HEART_RATE, Callback<HeartRateResponse>, Options)"
+      ]
+    },
+    {
+      "index": 174,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_GYROSCOPE, Callback<GyroscopeResponse>, Options)"
+      ]
+    },
+    {
+      "index": 175,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_LINEAR_ACCELERATION, Callback<LinearAccelerometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 176,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_HUMIDITY, Callback<HumidityResponse>, Options)"
+      ]
+    },
+    {
+      "index": 177,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD, Callback<MagneticFieldResponse>, Options)"
+      ]
+    },
+    {
+      "index": 178,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_PEDOMETER_DETECTION, Callback<PedometerDetectionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 179,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_PROXIMITY, Callback<ProximityResponse>, Options)"
+      ]
+    },
+    {
+      "index": 180,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_ROTATION_VECTOR, Callback<RotationVectorResponse>, Options)"
+      ]
+    },
+    {
+      "index": 181,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_SIGNIFICANT_MOTION, Callback<SignificantMotionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 182,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_WEAR_DETECTION, Callback<WearDetectionResponse>, Options)"
+      ]
+    },
+    {
+      "index": 183,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD_UNCALIBRATED, Callback<MagneticFieldUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 184,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_ORIENTATION, Callback<OrientationResponse>, Options)"
+      ]
+    },
+    {
+      "index": 185,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_PEDOMETER, Callback<PedometerResponse>, Options)"
+      ]
+    },
+    {
+      "index": 186,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(SensorType.SENSOR_TYPE_ID_GYROSCOPE_UNCALIBRATED, Callback<GyroscopeUncalibratedResponse>, Options)"
+      ]
+    },
+    {
+      "index": 187,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSingleSensorSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSingleSensorSync(SensorId)"
+      ]
+    },
+    {
+      "index": 188,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSingleSensorByDeviceSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSingleSensorByDeviceSync(SensorId, number)"
+      ]
+    },
+    {
+      "index": 189,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSingleSensor",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSingleSensor(SensorId)"
+      ]
+    },
+    {
+      "index": 190,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSingleSensor",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSingleSensor(SensorId, AsyncCallback<Sensor>)"
+      ]
+    },
+    {
+      "index": 191,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSensorList",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSensorList(AsyncCallback<Array<Sensor>>)"
+      ]
+    },
+    {
+      "index": 192,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSensorListSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSensorListSync()"
+      ]
+    },
+    {
+      "index": 193,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "getSensorList",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.getSensorList()"
+      ]
+    },
+    {
+      "index": 194,
+      "module": "@ohos.sensor",
+      "namespace": "sensor",
+      "className": "",
+      "apiName": "on",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.sensor.d.ts: sensor.%dflt.on('sensorStatusChange', Callback<SensorStatusEvent>)"
+      ]
+    },
+    {
+      "index": 195,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimOperatorNumeric",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimOperatorNumeric(number)"
+      ]
+    },
+    {
+      "index": 196,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getISOCountryCodeForSimSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getISOCountryCodeForSimSync(number)"
+      ]
+    },
+    {
+      "index": 197,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimSpn",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimSpn(number, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 198,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimOperatorNumeric",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimOperatorNumeric(number, AsyncCallback<string>)"
+      ]
+    },
+    {
+      "index": 199,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimState",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimState(number, AsyncCallback<SimState>)"
+      ]
+    },
+    {
+      "index": 200,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimState",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimState(number)"
+      ]
+    },
+    {
+      "index": 201,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimSpn",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimSpn(number)"
+      ]
+    },
+    {
+      "index": 202,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimAccountInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimAccountInfo(number)"
+      ]
+    },
+    {
+      "index": 203,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getSimAccountInfo",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getSimAccountInfo(number, AsyncCallback<IccAccountInfo>)"
+      ]
+    },
+    {
+      "index": 204,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getActiveSimAccountInfoList",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getActiveSimAccountInfoList(AsyncCallback<Array<IccAccountInfo>>)"
+      ]
+    },
+    {
+      "index": 205,
+      "module": "@ohos.telephony.sim",
+      "namespace": "sim",
+      "className": "",
+      "apiName": "getActiveSimAccountInfoList",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.telephony.sim.d.ts: sim.%dflt.getActiveSimAccountInfoList()"
+      ]
+    },
+    {
+      "index": 206,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getScanResults",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getScanResults(AsyncCallback<Array<WifiScanInfo>>)"
+      ]
+    },
+    {
+      "index": 207,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getScanResults",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getScanResults()"
+      ]
+    },
+    {
+      "index": 208,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getScanInfoList",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getScanInfoList()"
+      ]
+    },
+    {
+      "index": 209,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getLinkedInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getLinkedInfo()"
+      ]
+    },
+    {
+      "index": 210,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getMultiLinkedInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getMultiLinkedInfo()"
+      ]
+    },
+    {
+      "index": 211,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getLinkedInfo",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getLinkedInfo(AsyncCallback<WifiLinkedInfo>)"
+      ]
+    },
+    {
+      "index": 212,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getLinkedInfoSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getLinkedInfoSync()"
+      ]
+    },
+    {
+      "index": 213,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getCandidateConfigs",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getCandidateConfigs()"
+      ]
+    },
+    {
+      "index": 214,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getDeviceMacAddress",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getDeviceMacAddress()"
+      ]
+    },
+    {
+      "index": 215,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getIpInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getIpInfo()"
+      ]
+    },
+    {
+      "index": 216,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getCountryCode",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getCountryCode()"
+      ]
+    },
+    {
+      "index": 217,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getDeviceConfigs",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getDeviceConfigs()"
+      ]
+    },
+    {
+      "index": 218,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pLinkedInfo",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pLinkedInfo()"
+      ]
+    },
+    {
+      "index": 219,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getCurrentGroup",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getCurrentGroup()"
+      ]
+    },
+    {
+      "index": 220,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getCurrentGroup",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getCurrentGroup(AsyncCallback<WifiP2pGroupInfo>)"
+      ]
+    },
+    {
+      "index": 221,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getScanResultsSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getScanResultsSync()"
+      ]
+    },
+    {
+      "index": 222,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pLinkedInfo",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pLinkedInfo(AsyncCallback<WifiP2pLinkedInfo>)"
+      ]
+    },
+    {
+      "index": 223,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getIpv6Info",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getIpv6Info()"
+      ]
+    },
+    {
+      "index": 224,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pPeerDevices",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pPeerDevices()"
+      ]
+    },
+    {
+      "index": 225,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pPeerDevices",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pPeerDevices(AsyncCallback<WifiP2pDevice[]>)"
+      ]
+    },
+    {
+      "index": 226,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pLocalDevice",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pLocalDevice(AsyncCallback<WifiP2pDevice>)"
+      ]
+    },
+    {
+      "index": 227,
+      "module": "@ohos.wifiManager",
+      "namespace": "wifiManager",
+      "className": "",
+      "apiName": "getP2pLocalDevice",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wifiManager.d.ts: wifiManager.%dflt.getP2pLocalDevice()"
+      ]
+    },
+    {
+      "index": 228,
+      "module": "@ohos.distributedDeviceManager",
+      "namespace": "distributedDeviceManager",
+      "className": "DeviceManager",
+      "apiName": "getLocalDeviceId",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.distributedDeviceManager.d.ts: distributedDeviceManager.DeviceManager.getLocalDeviceId()"
+      ]
+    },
+    {
+      "index": 229,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "CalendarManager",
+      "apiName": "getCalendar",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.CalendarManager.getCalendar(CalendarAccount)"
+      ]
+    },
+    {
+      "index": 230,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "CalendarManager",
+      "apiName": "getCalendar",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.CalendarManager.getCalendar(CalendarAccount, AsyncCallback<Calendar>)"
+      ]
+    },
+    {
+      "index": 231,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "CalendarManager",
+      "apiName": "getCalendar",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.CalendarManager.getCalendar(AsyncCallback<Calendar>)"
+      ]
+    },
+    {
+      "index": 232,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "CalendarManager",
+      "apiName": "getAllCalendars",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.CalendarManager.getAllCalendars()"
+      ]
+    },
+    {
+      "index": 233,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "CalendarManager",
+      "apiName": "getAllCalendars",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.CalendarManager.getAllCalendars(AsyncCallback<Calendar[]>)"
+      ]
+    },
+    {
+      "index": 234,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "getEvents",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.getEvents(EventFilter, keyof Event[])"
+      ]
+    },
+    {
+      "index": 235,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "getEvents",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.getEvents(EventFilter, keyof Event[], AsyncCallback<Event[]>)"
+      ]
+    },
+    {
+      "index": 236,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "getEvents",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.getEvents(AsyncCallback<Event[]>)"
+      ]
+    },
+    {
+      "index": 237,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "getConfig",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.getConfig()"
+      ]
+    },
+    {
+      "index": 238,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "getAccount",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.getAccount()"
+      ]
+    },
+    {
+      "index": 239,
+      "module": "@ohos.calendarManager",
+      "namespace": "calendarManager",
+      "className": "Calendar",
+      "apiName": "queryEventInstances",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.calendarManager.d.ts: calendarManager.Calendar.queryEventInstances(number, number, number[], keyof Event[])"
+      ]
+    },
+    {
+      "index": 240,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getDataSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getDataSync()"
+      ]
+    },
+    {
+      "index": 241,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getUnifiedData",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getUnifiedData()"
+      ]
+    },
+    {
+      "index": 242,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getUnifiedDataSync",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getUnifiedDataSync()"
+      ]
+    },
+    {
+      "index": 243,
+      "module": "@ohos.pasteboard",
+      "namespace": "pasteboard",
+      "className": "SystemPasteboard",
+      "apiName": "getDataWithProgress",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.pasteboard.d.ts: pasteboard.SystemPasteboard.getDataWithProgress(GetDataParams)"
+      ]
+    },
+    {
+      "index": 244,
+      "module": "@ohos.wallpaper",
+      "namespace": "wallpaper",
+      "className": "",
+      "apiName": "getFile",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wallpaper.d.ts: wallpaper.%dflt.getFile(WallpaperType)"
+      ]
+    },
+    {
+      "index": 245,
+      "module": "@ohos.wallpaper",
+      "namespace": "wallpaper",
+      "className": "",
+      "apiName": "getFile",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.wallpaper.d.ts: wallpaper.%dflt.getFile(WallpaperType, AsyncCallback<number>)"
+      ]
+    },
+    {
+      "index": 246,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVMetadataExtractor",
+      "apiName": "fetchFrameByTime",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVMetadataExtractor.fetchFrameByTime(number, AVImageQueryOptions, PixelMapParams)"
+      ]
+    },
+    {
+      "index": 247,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVImageGenerator",
+      "apiName": "fetchFrameByTime",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVImageGenerator.fetchFrameByTime(number, AVImageQueryOptions, PixelMapParams)"
+      ]
+    },
+    {
+      "index": 248,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVImageGenerator",
+      "apiName": "fetchFrameByTime",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVImageGenerator.fetchFrameByTime(number, AVImageQueryOptions, PixelMapParams, AsyncCallback<image.PixelMap>)"
+      ]
+    },
+    {
+      "index": 249,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVImageGenerator",
+      "apiName": "fetchScaledFrameByTime",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVImageGenerator.fetchScaledFrameByTime(number, AVImageQueryOptions, OutputSize)"
+      ]
+    },
+    {
+      "index": 250,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVMetadataExtractor",
+      "apiName": "fetchMetadata",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVMetadataExtractor.fetchMetadata()"
+      ]
+    },
+    {
+      "index": 251,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVMetadataExtractor",
+      "apiName": "fetchMetadata",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVMetadataExtractor.fetchMetadata(AsyncCallback<AVMetadata>)"
+      ]
+    },
+    {
+      "index": 252,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVMetadataExtractor",
+      "apiName": "fetchAlbumCover",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVMetadataExtractor.fetchAlbumCover()"
+      ]
+    },
+    {
+      "index": 253,
+      "module": "@ohos.multimedia.media",
+      "namespace": "media",
+      "className": "AVMetadataExtractor",
+      "apiName": "fetchAlbumCover",
+      "sourceType": "callback",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.multimedia.media.d.ts: media.AVMetadataExtractor.fetchAlbumCover(AsyncCallback<image.PixelMap>)"
+      ]
+    },
+    {
+      "index": 254,
+      "module": "@ohos.bluetooth.access",
+      "namespace": "access",
+      "className": "",
+      "apiName": "getPersistentDeviceIds",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.access.d.ts: access.%dflt.getPersistentDeviceIds()"
+      ]
+    },
+    {
+      "index": 255,
+      "module": "@ohos.bluetooth.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getLocalName",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.connection.d.ts: connection.%dflt.getLocalName()"
+      ]
+    },
+    {
+      "index": 256,
+      "module": "@ohos.bluetooth.connection",
+      "namespace": "connection",
+      "className": "",
+      "apiName": "getPairedDevices",
+      "sourceType": "return",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.bluetooth.connection.d.ts: connection.%dflt.getPairedDevices()"
+      ]
+    }
+  ]
+}

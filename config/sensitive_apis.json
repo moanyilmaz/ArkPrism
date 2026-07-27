@@ -34,26 +34,12 @@
         "permission": null,
         "profilingCategory": "user_data.account",
         "directCall": false
-      },
-      {
-        "namespace": "AuthenticationController",
-        "method": "executeRequest",
-        "permission": null,
-        "profilingCategory": "user_data.account",
-        "directCall": false
       }
     ]
   },
   {
     "systemPackage": "@kit.AdsKit",
     "privacyApis": [
-      {
-        "namespace": "identifier",
-        "method": "getOAID",
-        "permission": "ohos.permission.APP_TRACKING_CONSENT",
-        "profilingCategory": "device_identity.ad_tracking",
-        "directCall": true
-      },
       {
         "namespace": "identifier",
         "method": "getOAID",
@@ -112,7 +98,7 @@
         "namespace": "window",
         "method": "getVisibleWindowInfo",
         "permission": "ohos.permission.VISIBLE_WINDOW_INFO",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_status.screen",
         "directCall": true
       }
     ]
@@ -143,14 +129,14 @@
         "namespace": "asset",
         "method": "query",
         "permission": null,
-        "profilingCategory": "Financial information.Asset information",
+        "profilingCategory": "financial.asset",
         "directCall": true
       },
       {
         "namespace": "asset",
         "method": "querySync",
         "permission": null,
-        "profilingCategory": "Financial information.Asset information",
+        "profilingCategory": "financial.asset",
         "directCall": true
       }
     ]
@@ -163,7 +149,10 @@
         "method": "getAudioScene",
         "permission": null,
         "profilingCategory": "device_status.audio",
-        "directCall": true
+        "directCall": true,
+        "receiverFactories": [
+          "getAudioManager"
+        ]
       },
       {
         "namespace": "audio",
@@ -224,35 +213,28 @@
         "method": "serial",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "udid",
         "permission": null,
         "profilingCategory": "device_identity.unique_id",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "ODID",
         "permission": null,
         "profilingCategory": "device_identity.ad_tracking",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "diskSN",
         "permission": "ohos.permission.ACCESS_DISK_PHY_INFO",
-        "profilingCategory": "Identifiers.diskSN",
-        "directCall": false
-      },
-      {
-        "namespace": "SystemPasteboard",
-        "method": "getData",
-        "permission": "ohos.permission.READ_PASTEBOARD",
-        "profilingCategory": "user_data.clipboard",
-        "directCall": false
+        "profilingCategory": "device_identity.hardware",
+        "directCall": null
       },
       {
         "namespace": "SystemPasteboard",
@@ -297,158 +279,151 @@
         "directCall": true
       },
       {
-        "namespace": "wallpaper",
-        "method": "getFile",
-        "permission": "ohos.permission.GET_WALLPAPER",
-        "profilingCategory": "user_preference.settings",
-        "directCall": true
-      },
-      {
         "namespace": "deviceinfo",
         "method": "marketName",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "productSeries",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "productMode",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "productModelAlias",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "softwareModel",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "hardwareModel",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "displayVersion",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "chipType",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "securityPatchTag",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "osReleaseType",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "osFullName",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "majorVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "seniorVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "featureVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "buildVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "sdkApiVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "firstApiVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "versionId",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "distributionOSVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "distributionOSApiVersion",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "deviceinfo",
         "method": "distributionOSApiName",
         "permission": null,
         "profilingCategory": "device_identity.software",
-        "directCall": false
+        "directCall": null
       },
       {
         "namespace": "pasteboard",
@@ -678,63 +653,63 @@
         "namespace": "AppAccountManager",
         "method": "setDataSyncEnabled",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AppAccountManager",
         "method": "checkDataSyncEnabled",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AppAccountManager",
         "method": "checkAppAccountSyncEnable",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AppAccountManager",
         "method": "setAppAccountSyncEnable",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AppAccountManager",
         "method": "getAllAccessibleAccounts",
         "permission": "ohos.permission.GET_ALL_APP_ACCOUNTS",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AccountManager",
         "method": "checkOsAccountConstraintEnabled",
         "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "AccountManager",
         "method": "isOsAccountConstraintEnable",
         "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.account",
         "directCall": false
       },
       {
         "namespace": "DomainServerConfigManager",
         "method": "addServerConfig",
         "permission": "ohos.permission.MANAGE_DOMAIN_ACCOUNT_SERVER_CONFIGS",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.connectivity",
         "directCall": false
       },
       {
         "namespace": "DomainServerConfigManager",
         "method": "updateServerConfig",
         "permission": "ohos.permission.MANAGE_DOMAIN_ACCOUNT_SERVER_CONFIGS",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.connectivity",
         "directCall": false
       },
       {
@@ -783,7 +758,7 @@
         "namespace": "intelligentScene",
         "method": "isDoNotDisturbEnabled",
         "permission": "ohos.permission.GET_DONOTDISTURB_STATE",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_preference.settings",
         "directCall": true
       }
     ]
@@ -800,42 +775,7 @@
       },
       {
         "namespace": "CalendarManager",
-        "method": "getCalendar",
-        "permission": "ohos.permission.READ_CALENDAR",
-        "profilingCategory": "user_data.calendar",
-        "directCall": false
-      },
-      {
-        "namespace": "CalendarManager",
-        "method": "getCalendar",
-        "permission": "ohos.permission.READ_CALENDAR",
-        "profilingCategory": "user_data.calendar",
-        "directCall": false
-      },
-      {
-        "namespace": "CalendarManager",
         "method": "getAllCalendars",
-        "permission": "ohos.permission.READ_CALENDAR",
-        "profilingCategory": "user_data.calendar",
-        "directCall": false
-      },
-      {
-        "namespace": "CalendarManager",
-        "method": "getAllCalendars",
-        "permission": "ohos.permission.READ_CALENDAR",
-        "profilingCategory": "user_data.calendar",
-        "directCall": false
-      },
-      {
-        "namespace": "Calendar",
-        "method": "getEvents",
-        "permission": "ohos.permission.READ_CALENDAR",
-        "profilingCategory": "user_data.calendar",
-        "directCall": false
-      },
-      {
-        "namespace": "Calendar",
-        "method": "getEvents",
         "permission": "ohos.permission.READ_CALENDAR",
         "profilingCategory": "user_data.calendar",
         "directCall": false
@@ -957,13 +897,6 @@
       },
       {
         "namespace": "wifiManager",
-        "method": "getScanResults",
-        "permission": "ohos.permission.GET_WIFI_INFO",
-        "profilingCategory": "network.wifi",
-        "directCall": true
-      },
-      {
-        "namespace": "wifiManager",
         "method": "getCandidateConfigs",
         "permission": "ohos.permission.GET_WIFI_INFO",
         "profilingCategory": "network.wifi",
@@ -972,13 +905,6 @@
       {
         "namespace": "wifiManager",
         "method": "getDeviceConfigs",
-        "permission": "ohos.permission.GET_WIFI_INFO",
-        "profilingCategory": "network.wifi",
-        "directCall": true
-      },
-      {
-        "namespace": "wifiManager",
-        "method": "getLinkedInfo",
         "permission": "ohos.permission.GET_WIFI_INFO",
         "profilingCategory": "network.wifi",
         "directCall": true
@@ -1400,14 +1326,14 @@
         "namespace": "nfcController",
         "method": "enableNfc",
         "permission": "ohos.permission.MANAGE_SECURE_SETTINGS",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.nfc",
         "directCall": true
       },
       {
         "namespace": "nfcController",
         "method": "disableNfc",
         "permission": "ohos.permission.MANAGE_SECURE_SETTINGS",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.nfc",
         "directCall": true
       },
       {
@@ -1659,14 +1585,14 @@
         "namespace": "NdefFormatableTag",
         "method": "NdefFormatableTag.format",
         "permission": "ohos.permission.NFC_TAG",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.nfc",
         "directCall": false
       },
       {
         "namespace": "NdefFormatableTag",
         "method": "NdefFormatableTag.formatReadOnly",
         "permission": "ohos.permission.NFC_TAG",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.nfc",
         "directCall": false
       },
       {
@@ -1690,48 +1616,6 @@
       },
       {
         "namespace": "contact",
-        "method": "isLocalContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "isLocalContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "isLocalContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "isMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "isMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "isMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
         "method": "isMyCard",
         "permission": "ohos.permission.READ_CONTACTS",
         "profilingCategory": "user_data.contacts",
@@ -1746,168 +1630,7 @@
       },
       {
         "namespace": "contact",
-        "method": "queryMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryMyCard",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
         "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContact",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContacts",
         "permission": "ohos.permission.READ_CONTACTS",
         "profilingCategory": "user_data.contacts",
         "directCall": true
@@ -1928,168 +1651,7 @@
       },
       {
         "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByPhoneNumber",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
         "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryContactsByEmail",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryGroups",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryGroups",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryGroups",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryGroups",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryGroups",
         "permission": "ohos.permission.READ_CONTACTS",
         "profilingCategory": "user_data.contacts",
         "directCall": true
@@ -2104,62 +1666,6 @@
       {
         "namespace": "contact",
         "method": "queryHolders",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryHolders",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryHolders",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryHolders",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryKey",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryKey",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryKey",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryKey",
-        "permission": "ohos.permission.READ_CONTACTS",
-        "profilingCategory": "user_data.contacts",
-        "directCall": true
-      },
-      {
-        "namespace": "contact",
-        "method": "queryKey",
         "permission": "ohos.permission.READ_CONTACTS",
         "profilingCategory": "user_data.contacts",
         "directCall": true
@@ -2222,14 +1728,14 @@
         "namespace": "fileIo",
         "method": "connectDfs",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "storage.distributed",
         "directCall": true
       },
       {
         "namespace": "fileIo",
         "method": "disconnectDfs",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "storage.distributed",
         "directCall": true
       }
     ]
@@ -2241,21 +1747,21 @@
         "namespace": "",
         "method": "checkSysIntegrity",
         "permission": null,
-        "profilingCategory": "device_identity.hardware",
+        "profilingCategory": "system.security",
         "directCall": true
       },
       {
         "namespace": "",
         "method": "checkSysIntegrityOnLocal",
         "permission": null,
-        "profilingCategory": "device_identity.hardware",
+        "profilingCategory": "system.security",
         "directCall": true
       },
       {
         "namespace": "",
         "method": "checkSysIntegrityEnhanced",
         "permission": null,
-        "profilingCategory": "device_identity.hardware",
+        "profilingCategory": "system.security",
         "directCall": true
       }
     ]
@@ -2274,14 +1780,14 @@
         "namespace": "DeviceManager",
         "method": "getAvailableDeviceListSync",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.distributed",
         "directCall": false
       },
       {
         "namespace": "DeviceManager",
         "method": "getAvailableDeviceList",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.distributed",
         "directCall": false
       },
       {
@@ -2316,7 +1822,7 @@
         "namespace": "DeviceManager",
         "method": "startDiscovering",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.wifi",
+        "profilingCategory": "device_identity.distributed",
         "directCall": false
       },
       {
@@ -2377,21 +1883,14 @@
         "namespace": "gamePlayer",
         "method": "getLocalPlayer",
         "permission": null,
-        "profilingCategory": "user_data.media",
-        "directCall": true
-      },
-      {
-        "namespace": "gamePlayer",
-        "method": "getLocalPlayer",
-        "permission": null,
-        "profilingCategory": "user_data.media",
+        "profilingCategory": "user_data.game_profile",
         "directCall": true
       },
       {
         "namespace": "gameNearbyTransfer",
         "method": "acceptCollaboration",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.connectivity",
         "directCall": true
       }
     ]
@@ -2414,20 +1913,6 @@
       {
         "namespace": "healthStore",
         "method": "readDataSource",
-        "permission": null,
-        "profilingCategory": "device_status.health",
-        "directCall": true
-      },
-      {
-        "namespace": "healthStore",
-        "method": "readData",
-        "permission": null,
-        "profilingCategory": "device_status.health",
-        "directCall": true
-      },
-      {
-        "namespace": "healthStore",
-        "method": "readData",
         "permission": null,
         "profilingCategory": "device_status.health",
         "directCall": true
@@ -2467,28 +1952,7 @@
       },
       {
         "namespace": "iap",
-        "method": "queryOwnedPurchases",
-        "permission": null,
-        "profilingCategory": "device_identity.transaction",
-        "directCall": true
-      },
-      {
-        "namespace": "iap",
         "method": "queryPurchaseRecords",
-        "permission": null,
-        "profilingCategory": "device_identity.transaction",
-        "directCall": true
-      },
-      {
-        "namespace": "iap",
-        "method": "queryPurchaseRecords",
-        "permission": null,
-        "profilingCategory": "device_identity.transaction",
-        "directCall": true
-      },
-      {
-        "namespace": "iap",
-        "method": "queryPurchases",
         "permission": null,
         "profilingCategory": "device_identity.transaction",
         "directCall": true
@@ -2509,7 +1973,7 @@
         "namespace": "inputDevice",
         "method": "setFunctionKeyEnabled",
         "permission": "ohos.permission.INPUT_KEYBOARD_CONTROLLER",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_status.input",
         "directCall": true
       }
     ]
@@ -2568,28 +2032,7 @@
       },
       {
         "namespace": "geoLocationManager",
-        "method": "getCurrentLocation",
-        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
-        "profilingCategory": "location",
-        "directCall": true
-      },
-      {
-        "namespace": "geoLocationManager",
-        "method": "getCurrentLocation",
-        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
-        "profilingCategory": "location",
-        "directCall": true
-      },
-      {
-        "namespace": "geoLocationManager",
         "method": "getLastLocation",
-        "permission": "ohos.permission.APPROXIMATELY_LOCATION",
-        "profilingCategory": "location",
-        "directCall": true
-      },
-      {
-        "namespace": "geoLocationManager",
-        "method": "getCachedGnssLocationsSize",
         "permission": "ohos.permission.APPROXIMATELY_LOCATION",
         "profilingCategory": "location",
         "directCall": true
@@ -2722,42 +2165,42 @@
         "namespace": "adminManager",
         "method": "disableAdmin",
         "permission": "ohos.permission.MANAGE_ENTERPRISE_DEVICE_ADMIN",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "adminManager",
         "method": "startAdminProvision",
         "permission": "ohos.permission.START_PROVISIONING_MESSAGE",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "adminManager",
         "method": "enableDeviceAdmin",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_DEVICE_ADMIN",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "adminManager",
         "method": "disableDeviceAdmin",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_DEVICE_ADMIN",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "applicationManager",
         "method": "setAbilityDisabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APPLICATION",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "applicationManager",
         "method": "isAbilityDisabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APPLICATION",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
@@ -2883,14 +2326,14 @@
         "namespace": "networkManager",
         "method": "isNetworkInterfaceDisabledSync",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_NETWORK",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.connectivity",
         "directCall": true
       },
       {
         "namespace": "networkManager",
         "method": "setNetworkInterfaceDisabledSync",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_NETWORK",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.connectivity",
         "directCall": true
       },
       {
@@ -2981,35 +2424,35 @@
         "namespace": "networkManager",
         "method": "addApn",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APN",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "networkManager",
         "method": "deleteApn",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APN",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "networkManager",
         "method": "updateApn",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APN",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "networkManager",
         "method": "setPreferredApn",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APN",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "networkManager",
         "method": "queryApn",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_APN",
-        "profilingCategory": "user_data.audio",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
@@ -3037,21 +2480,21 @@
         "namespace": "systemManager",
         "method": "setNTPServer",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_SYSTEM",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "systemManager",
         "method": "setInstallLocalEnterpriseAppEnabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_SYSTEM",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
         "namespace": "systemManager",
         "method": "getInstallLocalEnterpriseAppEnabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_SYSTEM",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_management.policy",
         "directCall": true
       },
       {
@@ -3128,21 +2571,21 @@
         "namespace": "telephonyManager",
         "method": "setSimDisabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_TELEPHONY",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "telephonyManager",
         "method": "setSimEnabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_TELEPHONY",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "telephonyManager",
         "method": "isSimDisabled",
         "permission": "ohos.permission.ENTERPRISE_MANAGE_TELEPHONY",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       }
     ]
@@ -3155,63 +2598,60 @@
         "method": "fetchFrameByTime",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
-      },
-      {
-        "namespace": "AVImageGenerator",
-        "method": "fetchFrameByTime",
-        "permission": null,
-        "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVImageGenerator"
+        ]
       },
       {
         "namespace": "AVImageGenerator",
         "method": "fetchScaledFrameByTime",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVImageGenerator"
+        ]
       },
       {
         "namespace": "AVMetadataExtractor",
         "method": "fetchFrameByTime",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVMetadataExtractor"
+        ]
       },
       {
         "namespace": "AVMetadataExtractor",
         "method": "fetchFramesByTimes",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVMetadataExtractor"
+        ]
       },
       {
         "namespace": "AVMetadataExtractor",
         "method": "fetchMetadata",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
-      },
-      {
-        "namespace": "AVMetadataExtractor",
-        "method": "fetchMetadata",
-        "permission": null,
-        "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVMetadataExtractor"
+        ]
       },
       {
         "namespace": "AVMetadataExtractor",
         "method": "fetchAlbumCover",
         "permission": null,
         "profilingCategory": "user_data.audio",
-        "directCall": false
-      },
-      {
-        "namespace": "AVMetadataExtractor",
-        "method": "fetchAlbumCover",
-        "permission": null,
-        "profilingCategory": "user_data.audio",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "createAVMetadataExtractor"
+        ]
       }
     ]
   },
@@ -3226,20 +2666,6 @@
         "directCall": false
       },
       {
-        "namespace": "AbsAlbum",
-        "method": "getAssets",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAssets",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
         "namespace": "PhotoAccessHelper",
         "method": "getAssets",
         "permission": "ohos.permission.READ_IMAGEVIDEO",
@@ -3261,34 +2687,6 @@
         "directCall": false
       },
       {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAlbums",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAlbums",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAsset",
-        "method": "getThumbnail",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAsset",
-        "method": "getThumbnail",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
         "namespace": "PhotoAsset",
         "method": "getThumbnail",
         "permission": "ohos.permission.READ_IMAGEVIDEO",
@@ -3298,48 +2696,6 @@
       {
         "namespace": "PhotoAsset",
         "method": "getReadOnlyFd",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAsset",
-        "method": "getReadOnlyFd",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAssets",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getBurstAssets",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAlbums",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAccessHelper",
-        "method": "getAlbums",
-        "permission": "ohos.permission.READ_IMAGEVIDEO",
-        "profilingCategory": "user_data.media",
-        "directCall": false
-      },
-      {
-        "namespace": "PhotoAsset",
-        "method": "getThumbnail",
         "permission": "ohos.permission.READ_IMAGEVIDEO",
         "profilingCategory": "user_data.media",
         "directCall": false
@@ -3374,35 +2730,35 @@
         "namespace": "RemoteDevice",
         "method": "getConnectionState",
         "permission": "ohos.permission.ACCESS_NEARLINK",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.nearlink",
         "directCall": false
       },
       {
         "namespace": "Client",
         "method": "setPropertyNotification",
         "permission": "ohos.permission.ACCESS_NEARLINK",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.nearlink",
         "directCall": false
       },
       {
         "namespace": "Client",
         "method": "on( 'connectionStateChange')",
         "permission": "ohos.permission.ACCESS_NEARLINK",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.nearlink",
         "directCall": false
       },
       {
         "namespace": "Client",
         "method": "off( 'connectionStateChange')",
         "permission": "ohos.permission.ACCESS_NEARLINK",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.nearlink",
         "directCall": false
       },
       {
         "namespace": "Server",
         "method": "off( 'connectionStateChange')",
         "permission": "ohos.permission.ACCESS_NEARLINK",
-        "profilingCategory": "network.connectivity",
+        "profilingCategory": "network.nearlink",
         "directCall": false
       }
     ]
@@ -3498,7 +2854,7 @@
         "namespace": "netBoost",
         "method": "setLowPowerMode",
         "permission": "ohos.permission.INTERNET",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.connectivity",
         "directCall": true
       }
     ]
@@ -4222,7 +3578,7 @@
         "namespace": "notificationExtensionSubscription",
         "method": "getUserGrantedEnabledBundles",
         "permission": "ohos.permission.SUBSCRIBE_NOTIFICATION",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.notification",
         "directCall": true
       }
     ]
@@ -4230,13 +3586,6 @@
   {
     "systemPackage": "@kit.PushKit",
     "privacyApis": [
-      {
-        "namespace": "AAID",
-        "method": "getAAID",
-        "permission": null,
-        "profilingCategory": "device_identity.ad_tracking",
-        "directCall": true
-      },
       {
         "namespace": "AAID",
         "method": "getAAID",
@@ -4260,7 +3609,7 @@
         "namespace": "Session",
         "method": "fetchForSendable",
         "permission": "ohos.permission.INTERNET",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.connectivity",
         "directCall": false
       },
       {
@@ -4337,7 +3686,7 @@
         "namespace": "DefaultSession",
         "method": "fetchForSendable",
         "permission": "ohos.permission.INTERNET",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.connectivity",
         "directCall": false
       },
       {
@@ -4765,21 +4114,7 @@
       },
       {
         "namespace": "sensor",
-        "method": "getSensorList",
-        "permission": null,
-        "profilingCategory": "device_status.sensor",
-        "directCall": true
-      },
-      {
-        "namespace": "sensor",
         "method": "getSensorListSync",
-        "permission": null,
-        "profilingCategory": "device_status.sensor",
-        "directCall": true
-      },
-      {
-        "namespace": "sensor",
-        "method": "getSingleSensor",
         "permission": null,
         "profilingCategory": "device_status.sensor",
         "directCall": true
@@ -5071,20 +4406,6 @@
       },
       {
         "namespace": "sim",
-        "method": "getSimAccountInfo",
-        "permission": "ohos.permission.GET_TELEPHONY_STATE",
-        "profilingCategory": "device_identity.sim",
-        "directCall": true
-      },
-      {
-        "namespace": "sim",
-        "method": "getActiveSimAccountInfoList",
-        "permission": "ohos.permission.GET_TELEPHONY_STATE",
-        "profilingCategory": "device_identity.sim",
-        "directCall": true
-      },
-      {
-        "namespace": "sim",
         "method": "getActiveSimAccountInfoList",
         "permission": "ohos.permission.GET_TELEPHONY_STATE",
         "profilingCategory": "device_identity.sim",
@@ -5095,27 +4416,6 @@
         "method": "getNetworkState",
         "permission": "ohos.permission.GET_NETWORK_INFO",
         "profilingCategory": "network.connectivity",
-        "directCall": true
-      },
-      {
-        "namespace": "radio",
-        "method": "getNetworkState",
-        "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.connectivity",
-        "directCall": true
-      },
-      {
-        "namespace": "radio",
-        "method": "getNetworkState",
-        "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.connectivity",
-        "directCall": true
-      },
-      {
-        "namespace": "radio",
-        "method": "getOperatorName",
-        "permission": null,
-        "profilingCategory": "device_identity.network",
         "directCall": true
       },
       {
@@ -5227,35 +4527,35 @@
         "namespace": "data",
         "method": "isCellularDataEnabled",
         "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "data",
         "method": "isCellularDataEnabledSync",
         "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "data",
         "method": "isCellularDataRoamingEnabled",
         "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "data",
         "method": "isCellularDataRoamingEnabledSync",
         "permission": "ohos.permission.GET_NETWORK_INFO",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "network.cellular",
         "directCall": true
       },
       {
         "namespace": "eSIM",
         "method": "addProfile",
         "permission": "ohos.permission.SET_TELEPHONY_ESIM_STATE_OPEN",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.sim",
         "directCall": true
       },
       {
@@ -5316,14 +4616,14 @@
         "namespace": "userAuth",
         "method": "getAvailableStatus",
         "permission": "ohos.permission.ACCESS_BIOMETRIC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.biometric",
         "directCall": true
       },
       {
         "namespace": "UserAuth",
         "method": "getAvailableStatus",
         "permission": "ohos.permission.ACCESS_BIOMETRIC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "device_identity.biometric",
         "directCall": false
       }
     ]
@@ -5331,13 +4631,6 @@
   {
     "systemPackage": "@kit.VisionKit",
     "privacyApis": [
-      {
-        "namespace": "",
-        "method": "startLivenessDetection",
-        "permission": "ohos.permission.CAMERA",
-        "profilingCategory": "device_identity.biometric",
-        "directCall": true
-      },
       {
         "namespace": "",
         "method": "startLivenessDetection",
@@ -5503,14 +4796,14 @@
         "namespace": "RdbStore",
         "method": "setDistributedTables",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "storage.distributed",
         "directCall": false
       },
       {
         "namespace": "RdbStore",
         "method": "obtainDistributedTableName",
         "permission": "ohos.permission.DISTRIBUTED_DATASYNC",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "storage.distributed",
         "directCall": false
       }
     ]
@@ -5523,98 +4816,98 @@
         "method": "deviceName",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "brand",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "manufacturer",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "productModel",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "osFullName",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "osVersionName",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "serial",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "displayVersion",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "incrementalVersion",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "securityPatchTag",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "productSeries",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "softwareModel",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "hardwareModel",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       },
       {
         "namespace": "deviceInfo",
         "method": "hardwareProfileId",
         "permission": null,
         "profilingCategory": "device_identity.device_info",
-        "directCall": true
+        "directCall": null
       }
     ]
   },
@@ -5910,7 +5203,7 @@
         "namespace": "reminderAgent",
         "method": "publishReminder",
         "permission": "ohos.permission.PUBLISH_AGENT_REMINDER",
-        "profilingCategory": "network.bluetooth",
+        "profilingCategory": "user_data.notification",
         "directCall": true
       }
     ]
@@ -6021,88 +5314,9 @@
     "systemPackage": "@kit.BasicServicesKit",
     "privacyApis": [
       {
-        "namespace": "osAccount",
-        "class": "",
-        "method": "getOsAccountLocalId",
-        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
-        "profilingCategory": "user_data.account",
-        "directCall": false
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
-        "namespace": "osAccount",
-        "class": "",
-        "method": "getOsAccountList",
-        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
-        "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
-        "namespace": "osAccount",
-        "class": "",
-        "method": "getOsAccountProfile",
-        "permission": "ohos.permission.MANAGE_LOCAL_ACCOUNTS",
-        "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
         "namespace": "appAccount",
-        "class": "",
         "method": "createAccount",
         "permission": "ohos.permission.CREATE_REMOTE_APP_ACCOUNT",
-        "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
-        "namespace": "appAccount",
-        "class": "",
-        "method": "getAllAccounts",
-        "permission": "ohos.permission.GET_APP_ACCOUNTS",
-        "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
-        "namespace": "appAccount",
-        "class": "",
-        "method": "getAccountsByOwner",
-        "permission": "ohos.permission.GET_APP_ACCOUNTS",
-        "profilingCategory": "user_data.account",
-        "directCall": true
-      }
-    ]
-  },
-  {
-    "systemPackage": "@kit.BasicServicesKit",
-    "privacyApis": [
-      {
-        "namespace": "appAccount",
-        "class": "",
-        "method": "getAccountCredential",
-        "permission": "ohos.permission.USE_APP_ACCOUNT_SERVICE",
         "profilingCategory": "user_data.account",
         "directCall": true
       }

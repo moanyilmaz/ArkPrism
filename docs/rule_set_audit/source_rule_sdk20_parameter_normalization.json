@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-24T15:39:31.295Z",
+  "definition": "IFDS rules must resolve against the SDK loaded by the frozen analysis configuration.",
+  "before": {
+    "rules": 258,
+    "sha256": "30bc8d8dee650881f1abd2f411b9ca004d00b66b7af4f959bb5ca85a86a7cce0"
+  },
+  "after": {
+    "rules": 257,
+    "sha256": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb"
+  },
+  "contextTypesUpdated": 33,
+  "removedOutsideSdk": [
+    {
+      "module": "@hms.health.store",
+      "namespace": "healthStore",
+      "apiName": "readData",
+      "disposition": "detector_only_external_sdk_not_loaded"
+    }
+  ]
+}

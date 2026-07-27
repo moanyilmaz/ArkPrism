@@ -15,7 +15,7 @@ import { Constant } from "../arkanalyzer";
 import { MultiRef } from "./MuiltiRef";
 import { MethodSignature } from "../arkanalyzer";
 import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkThisRef } from "../arkanalyzer";
-import { Source } from "./Source";
+import { Source, SourceRuleMetadata } from "./Source";
 
 // @ts-ignore - ClassCategory may not be in barrel export
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
@@ -23,6 +23,74 @@ import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
 // Cached method name to sources mapping for faster lookup
 // Keyed by sources Map to avoid cross-contamination between analysis runs
 const methodNameCacheMap = new WeakMap<Map<string, Source>, Map<string, Source[]>>();
+const GENERIC_SOURCE_MEMBERS = new Set([
+    'cancel', 'close', 'connect', 'create', 'delete', 'disconnect',
+    'get', 'head', 'off', 'on', 'open', 'post', 'put', 'read',
+    'request', 'set', 'start', 'stop', 'write'
+]);
+
+function normalizeEvidenceToken(value: string): string {
+    return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
+
+function sourceOwnerHints(rule: SourceRuleMetadata): string[] {
+    const rawHints = [
+        rule.namespace || '',
+        rule.className || '',
+        rule.module || '',
+        ...(rule.module || '').split(/[./]/)
+    ];
+    return [...new Set(rawHints
+        .map(normalizeEvidenceToken)
+        .filter(hint => hint.length >= 3 && hint !== 'ohos' && hint !== 'kit'))];
+}
+
+function literalTypeValue(type: string): string | null {
+    const trimmed = type.trim();
+    const match = trimmed.match(/^(["'])(.*)\1$/);
+    return match ? match[2] : null;
+}
+
+function normalizeConstantText(value: string | undefined): string | null {
+    if (value === undefined) return null;
+    const trimmed = value.trim();
+    const quoted = trimmed.match(/^(["'])(.*)\1$/);
+    return (quoted ? quoted[2] : trimmed).toLowerCase();
+}
+
+export interface FuzzySourceEvidence {
+    receiverTexts: string[];
+    firstArgument?: string;
+}
+
+export function acceptFuzzySourceRule(
+    methodName: string,
+    rule: SourceRuleMetadata,
+    evidence: FuzzySourceEvidence
+): boolean {
+    if (!GENERIC_SOURCE_MEMBERS.has(methodName.toLowerCase())) {
+        return true;
+    }
+
+    const owners = sourceOwnerHints(rule);
+    const receiverTokens = evidence.receiverTexts
+        .map(normalizeEvidenceToken)
+        .filter(Boolean);
+    const hasReceiverWitness = owners.some(owner =>
+        receiverTokens.some(receiver => receiver.includes(owner) || owner.includes(receiver))
+    );
+    if (!hasReceiverWitness) {
+        return false;
+    }
+
+    const literalDiscriminator = literalTypeValue(rule.parameterTypes?.[0] || '');
+    if (literalDiscriminator === null) {
+        return true;
+    }
+    const actualDiscriminator = normalizeConstantText(evidence.firstArgument);
+    return actualDiscriminator !== null
+        && actualDiscriminator === literalDiscriminator.toLowerCase();
+}
 
 /**
  * Build a reverse index from method name to sources for faster lookup.
@@ -246,17 +314,24 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         return methodSignatures;
     }
 
-    const expectedParamNames: string[] = (parameters && parameters.length > 0)
-        ? parameters.map(p => p.name)
-        : [];
+    const hasExplicitParameters = Array.isArray(parameters);
+    const expectedParameters = hasExplicitParameters ? parameters : [];
 
-    const namesMatch = (sig: MethodSignature, names: string[]): boolean => {
-        // If no parameter names to match, accept any signature
-        if (!names || names.length === 0) return true;
-        if (sig.getParamLength() !== names.length) return false;
-        for (let i = 0; i < names.length; i++) {
+    const parametersMatch = (
+        sig: MethodSignature,
+        expected: { name: string, type: string }[]
+    ): boolean => {
+        if (!hasExplicitParameters) return true;
+        if (sig.getParamLength() !== expected.length) return false;
+        for (let i = 0; i < expected.length; i++) {
             const param = sig.getMethodSubSignature().getParameters()[i];
-            if (param.getName() !== names[i]) return false;
+            if (param.getName() !== expected[i].name) return false;
+            if (!sourceParameterTypeCompatible(
+                String(expected[i].type || ''),
+                param.getType().toString()
+            )) {
+                return false;
+            }
         }
         return true;
     };
@@ -267,13 +342,13 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         if (ms && ms.length > 0) {
             const matched: MethodSignature[] = [];
             for (const sig of ms) {
-                if (namesMatch(sig, expectedParamNames)) {
+                if (parametersMatch(sig, expectedParameters)) {
                     matched.push(sig);
                 }
             }
             return matched;
         }
-        if (expectedParamNames.length === 0 || namesMatch(mtd.getSignature(), expectedParamNames)) {
+        if (parametersMatch(mtd.getSignature(), expectedParameters)) {
             return [mtd.getSignature()];
         }
         return [];
@@ -281,42 +356,27 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
 
     if (namespace) {
         const ns = file.getNamespaces().find(n => n.getName() == namespace);
-        if (ns) {
-            if (className) {
-                const cls = ns.getClasses().find(c => c.getName() == className);
-                if (cls) {
-                    let mtd = cls.getMethodWithName(methodName);
-                    if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
-                    const ms = collectFromMethod(mtd);
-                    if (ms.length > 0) return ms;
-                }
-            } else {
-                const defCls = ns.getDefaultClass();
-                if (defCls) {
-                    let mtd = defCls.getMethodWithName(methodName);
-                    if (!mtd) mtd = defCls.getStaticMethodWithName(methodName);
-                    const ms = collectFromMethod(mtd);
-                    if (ms.length > 0) return ms;
-                }
-                for (const cls of ns.getClasses()) {
-                    let mtd = cls.getMethodWithName(methodName);
-                    if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
-                    const ms = collectFromMethod(mtd);
-                    if (ms.length > 0) return ms;
-                }
-            }
+        if (!ns) return methodSignatures;
+        if (className) {
+            const cls = ns.getClasses().find(c => c.getName() == className);
+            if (!cls) return methodSignatures;
+            let mtd = cls.getMethodWithName(methodName);
+            if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
+            return collectFromMethod(mtd);
         }
-    } else if (className) {
-        // No namespace, but has className - search for the class directly in file's top-level classes
-        // This handles cases like console.log where console is a top-level class
-        for (const cls of file.getClasses()) {
-            if (cls.getName() == className) {
-                let mtd = cls.getMethodWithName(methodName);
-                if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
-                const ms = collectFromMethod(mtd);
-                if (ms.length > 0) return ms;
-            }
-        }
+        const defCls = ns.getDefaultClass();
+        if (!defCls) return methodSignatures;
+        let mtd = defCls.getMethodWithName(methodName);
+        if (!mtd) mtd = defCls.getStaticMethodWithName(methodName);
+        return collectFromMethod(mtd);
+    }
+
+    if (className) {
+        const cls = file.getClasses().find(candidate => candidate.getName() == className);
+        if (!cls) return methodSignatures;
+        let mtd = cls.getMethodWithName(methodName);
+        if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
+        return collectFromMethod(mtd);
     }
 
     const defFileCls = file.getDefaultClass();
@@ -324,33 +384,56 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         let mtd = defFileCls.getMethodWithName(methodName);
         if (!mtd) mtd = defFileCls.getStaticMethodWithName(methodName);
         const ms = collectFromMethod(mtd);
-        if (ms.length > 0) return ms;
-    }
-
-    for (const cls of file.getClasses()) {
-        let mtd = cls.getMethodWithName(methodName);
-        if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
-        const ms = collectFromMethod(mtd);
-        if (ms.length > 0) return ms;
-    }
-
-    for (const ns of file.getNamespaces()) {
-        const defCls = ns.getDefaultClass();
-        if (defCls) {
-            let mtd = defCls.getMethodWithName(methodName);
-            if (!mtd) mtd = defCls.getStaticMethodWithName(methodName);
-            const ms = collectFromMethod(mtd);
-            if (ms.length > 0) return ms;
-        }
-        for (const cls of ns.getClasses()) {
-            let mtd = cls.getMethodWithName(methodName);
-            if (!mtd) mtd = cls.getStaticMethodWithName(methodName);
-            const ms = collectFromMethod(mtd);
-            if (ms.length > 0) return ms;
+        if (ms.length > 0) {
+            return ms;
         }
     }
 
     return methodSignatures;
+}
+
+function normalizeSourceParameterType(typeName: string): string {
+    let normalized = String(typeName || '')
+        .replace(
+            /import\((["'])(.*?)\1\)\.default(?!\.)/g,
+            (_match, _quote, modulePath) => {
+                const fileName = String(modulePath).split('/').pop() || '';
+                return fileName.startsWith('@')
+                    ? fileName.split('.').pop() || fileName
+                    : fileName;
+            }
+        )
+        .replace(/import\((["']).*?\1\)\.(?:default\.)?/g, '')
+        .replace(/\s+/g, '')
+        .replace(/\breadonly\b/g, '');
+    let previous = '';
+    while (previous !== normalized) {
+        previous = normalized;
+        normalized = normalized.replace(/Array<([^<>]+)>/g, '$1[]');
+    }
+    normalized = normalized
+        .replace(/"([^"]*)"/g, "'$1'")
+        .replace(/\((keyof[^()]+)\)(?=\[\])/g, '$1')
+        .replace(/\b_AsyncCallback\b/g, 'AsyncCallback')
+        .replace(/\b_Callback\b/g, 'Callback')
+        .replace(/AsyncCallback<([^,<>]+(?:<[^<>]+>)?),void>/g, 'AsyncCallback<$1>')
+        .replace(/Callback<([^,<>]+(?:<[^<>]+>)?),void>/g, 'Callback<$1>');
+    return normalized;
+}
+
+export function sourceParameterTypeCompatible(
+    configuredType: string,
+    sdkType: string
+): boolean {
+    const configured = normalizeSourceParameterType(configuredType);
+    const actual = normalizeSourceParameterType(sdkType);
+    if (!configured || !actual) return false;
+    if (configured === actual) return true;
+
+    const configuredUnion = configured.split('|').sort();
+    const actualUnion = actual.split('|').sort();
+    return configuredUnion.length === actualUnion.length &&
+        configuredUnion.every((part, index) => part === actualUnion[index]);
 }
 
 function canBeSplitAndContained(a: string, b: string): boolean {
@@ -426,7 +509,7 @@ export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
 }
 
 export function propagateFact(value: Value, stmt: Stmt, ret: Set<TaintFact>, fromFact?: TaintFact): TaintFact | null {
-    const fact = new TaintFact(value);
+    const fact = new TaintFact(value, undefined, fromFact?.getSourceEvidence());
     let last: TaintFact | undefined | null = fromFact;
     while (last) {
         if (ValueEqual(value, last.getValue()) && stmt == last.getPath()[last.getPath().length - 1]) return null;
@@ -573,7 +656,9 @@ export function getResolvedCallbackParameters(callbackMethod: ArkMethod): Value[
 }
 
 export function ValueEqual(value1: Value, value2: Value): boolean {
-    if (value1 instanceof Constant && value2 instanceof Constant) {
+    if (value1 === value2) {
+        return true;
+    } else if (value1 instanceof Constant && value2 instanceof Constant) {
         return value1 == value2;
     } else if (value1 instanceof Local && value2 instanceof Local) {
         return LocalEqual(value1, value2);
@@ -581,6 +666,39 @@ export function ValueEqual(value1: Value, value2: Value): boolean {
         return RefEqual(value1, value2);
     }
     return false;
+}
+
+export function ValueDependsOn(value: Value, dependency: Value): boolean {
+    const worklist: Value[] = [value];
+    const visited = new Set<Value>();
+
+    while (worklist.length > 0) {
+        const current = worklist.pop()!;
+        if (visited.has(current)) {
+            continue;
+        }
+        visited.add(current);
+        if (ValueEqual(current, dependency)) {
+            return true;
+        }
+        for (const use of current.getUses()) {
+            if (!visited.has(use)) {
+                worklist.push(use);
+            }
+        }
+    }
+
+    return false;
+}
+
+export function TaintOutcomeEqual(first: TaintFact, second: TaintFact): boolean {
+    if (!ValueEqual(first.getValue(), second.getValue()) || !first.hasSameSource(second)) {
+        return false;
+    }
+    const firstPath = first.getPath();
+    const secondPath = second.getPath();
+    return firstPath.length === secondPath.length
+        && firstPath.every((stmt, index) => stmt === secondPath[index]);
 }
 
 export function LocalEqual(local1: Local, local2: Local): boolean {
@@ -789,7 +907,26 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
             const candidates = methodCache.get(methodName) || [];
 
             for (const source of candidates) {
+                const invokeArgs = val.getArgs();
                 if (source.sourceType === 'callback' && source.callbackIndex >= val.getArgs().length) {
+                    continue;
+                }
+                const sourceArity = source.methodSignature.getParamLength();
+                if (sourceArity !== invokeArgs.length) {
+                    continue;
+                }
+                const firstArgument = invokeArgs[0] instanceof Constant
+                    ? invokeArgs[0].toString()
+                    : undefined;
+                if (!acceptFuzzySourceRule(methodName, source.rule, {
+                    receiverTexts: [
+                        baseTypeName || '',
+                        baseTypeString || '',
+                        sigStr,
+                        ...pointerAliases
+                    ],
+                    firstArgument
+                })) {
                     continue;
                 }
                 const key = Array.from(sources.keys()).find(k => sources.get(k) === source) || '';

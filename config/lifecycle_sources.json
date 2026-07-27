@@ -1,0 +1,50 @@
+[
+  {
+    "api_name": "onCreate",
+    "module": "@ohos.app.ability.UIAbility",
+    "class": "UIAbility",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "want",
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.app.ability.Want\").default"
+      },
+      {
+        "name": "launchParam",
+        "type": "AbilityConstant.LaunchParam"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "source",
+    "source_type": "ArgIn",
+    "tainted_param_index": 1,
+    "reason": "The framework-provided Want may carry inter-component data.",
+    "sensitivity": "medium",
+    "source_kind": "framework_input",
+    "rule_origin": "explicit_lifecycle_input_model"
+  },
+  {
+    "api_name": "onNewWant",
+    "module": "@ohos.app.ability.UIAbility",
+    "class": "UIAbility",
+    "namespace": "",
+    "parameters": [
+      {
+        "name": "want",
+        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.app.ability.Want\").default"
+      },
+      {
+        "name": "launchParam",
+        "type": "AbilityConstant.LaunchParam"
+      }
+    ],
+    "returnType": "void",
+    "api_type": "source",
+    "source_type": "ArgIn",
+    "tainted_param_index": 1,
+    "reason": "The framework-provided Want may carry inter-component data.",
+    "sensitivity": "medium",
+    "source_kind": "framework_input",
+    "rule_origin": "explicit_lifecycle_input_model"
+  }
+]

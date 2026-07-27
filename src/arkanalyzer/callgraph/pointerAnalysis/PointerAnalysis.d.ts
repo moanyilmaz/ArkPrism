@@ -23,6 +23,7 @@ export declare class PointerAnalysis extends AbstractAnalysis {
     start(): void;
     private postProcess;
     getPTD(): DiffPTData<NodeID, NodeID, IPtsCollection<NodeID>>;
+    getRejectedContainerFieldEdges(): number;
     getStat(): string;
     protected preProcessMethod(funcID: FuncID): CallSite[];
     setEntries(fIds: FuncID[]): void;

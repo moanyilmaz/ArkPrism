@@ -15,7 +15,7 @@ import { Scene, PointerAnalysis, PointerAnalysisConfig } from './arkanalyzer';
 import { TaintAnalysisChecker } from './hapflow/TaintAnalysis';
 import { TaintAnalysisSolver } from './hapflow/TaintAnalysisSolver';
 import { TaintFact } from './hapflow/TaintFact';
-import { TaintFlowResult } from './prototypes';
+import { TaintAnalysisMetadata, TaintFlowResult } from './prototypes';
 import { buildLifecycleDummyMain } from './lifecycleDummyMain';
 import { LifecycleModeler } from './lifecycleModeler';
 import * as path from 'path';
@@ -37,6 +37,11 @@ export interface HapflowOptions {
     callbackMaxSources?: number;     // Default: 5000
     callbackMaxStates?: number;      // Default: 10000
     callbackMaxPathLen?: number;     // Default: 100
+}
+
+export interface HapflowAnalysisResult {
+    flows: TaintFlowResult[];
+    metadata: TaintAnalysisMetadata;
 }
 
 /**
@@ -70,15 +75,13 @@ function loadSdkIntoScene(scene: Scene, sdkPath: string): number {
 export function runHapflowAnalysis(
     scene: Scene,
     opts: HapflowOptions = {}
-): TaintFlowResult[] {
+): HapflowAnalysisResult {
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
 
     // 1. Load SDK files for source/sink resolution
     const sdkPath = opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
     if (!fs.existsSync(sdkPath)) {
-        console.log(`[HAPFLOW][ERROR] SDK path does not exist: ${sdkPath}`);
-        console.log('[HAPFLOW][ERROR] Cannot resolve API signatures without SDK. Aborting taint analysis.');
-        return [];
+        throw new Error(`SDK path does not exist: ${sdkPath}`);
     }
 
     const existingSdkFiles = scene.getSdkArkFiles().length;
@@ -87,8 +90,7 @@ export function runHapflowAnalysis(
         const sdkCount = loadSdkIntoScene(scene, sdkPath);
         console.log(`[HAPFLOW] SDK files loaded: ${sdkCount}`);
         if (sdkCount === 0) {
-            console.log('[HAPFLOW][WARN] No SDK files loaded! Source/sink resolution will fail.');
-            return [];
+            throw new Error(`No SDK files could be loaded from: ${sdkPath}`);
         }
     } else {
         console.log(`[HAPFLOW] SDK files already loaded: ${existingSdkFiles}`);
@@ -102,14 +104,17 @@ export function runHapflowAnalysis(
 
     // 3. Optional pointer analysis for alias resolution
     let pta: PointerAnalysis | undefined = undefined;
+    let rejectedContainerFieldEdges = 0;
     if (!opts.noPta) {
         try {
             console.log('[HAPFLOW] Running pointer analysis...');
             let ptaConfig = PointerAnalysisConfig.create(2, './out');
             pta = PointerAnalysis.pointerAnalysisForWholeProject(scene, ptaConfig);
-            console.log('[HAPFLOW] Pointer analysis complete.');
-        } catch (e) {
-            console.log(`[HAPFLOW][WARN] Pointer analysis failed, continuing without: ${e}`);
+            rejectedContainerFieldEdges = pta.getRejectedContainerFieldEdges();
+            console.log(`[HAPFLOW] Pointer analysis complete. Rejected invalid container-field edges: ${rejectedContainerFieldEdges}`);
+        } catch (e: any) {
+            const message = e?.message || String(e);
+            throw new Error(`Pointer analysis failed: ${message}`);
         }
     } else {
         console.log('[HAPFLOW] Pointer analysis skipped (--no-pta).');
@@ -118,21 +123,18 @@ export function runHapflowAnalysis(
     // 4. Configure taint analysis problem
     const cfg = entry.getCfg();
     if (!cfg) {
-        console.log('[HAPFLOW][ERROR] DummyMain has no CFG, cannot run taint analysis.');
-        return [];
+        throw new Error('DummyMain has no CFG; IFDS analysis cannot run');
     }
     const blocks = [...cfg.getBlocks()];
     if (blocks.length === 0) {
-        console.log('[HAPFLOW][ERROR] DummyMain CFG has no blocks.');
-        return [];
+        throw new Error('DummyMain CFG has no blocks; IFDS analysis cannot run');
     }
     const stmts = blocks[0].getStmts();
     const paramCount = entry.getParameters().length;
     // Use the first stmt after parameter assignments, or fallback to first stmt
     const entryStmt = paramCount < stmts.length ? stmts[paramCount] : stmts[0];
     if (!entryStmt) {
-        console.log('[HAPFLOW][ERROR] Could not determine entry statement.');
-        return [];
+        throw new Error('DummyMain entry statement could not be determined');
     }
     console.log(`[HAPFLOW] Entry stmt selected (block 0, index ${Math.min(paramCount, stmts.length - 1)}).`);
 
@@ -141,17 +143,17 @@ export function runHapflowAnalysis(
     // Load source/sink definitions
     const configDir = path.resolve(__dirname, '..', 'config');
     const sourcesPath = path.join(configDir, 'hapflow_sources.json');
+    const lifecycleSourcesPath = path.join(configDir, 'lifecycle_sources.json');
     const sinksPath = path.join(configDir, 'hapflow_sinks.json');
 
     console.log('[HAPFLOW] Loading source/sink definitions...');
     problem.addSourcesFromJson(sourcesPath, sdkPath);
+    problem.addSourcesFromJson(lifecycleSourcesPath, sdkPath);
     problem.addSinksFromJson(sinksPath, sdkPath);
     console.log('[HAPFLOW] Loaded ' + problem.getSources().size + ' sources, ' + problem.getSinks().length + ' sinks.');
 
     if (problem.getSources().size === 0 && problem.getSinks().length === 0) {
-        console.log('[HAPFLOW][WARN] No sources or sinks loaded. SDK API signatures could not be resolved.');
-        console.log('[HAPFLOW][WARN] Skipping IFDS analysis as it would produce no results.');
-        return [];
+        throw new Error('No IFDS sources or sinks resolved from the configured SDK');
     }
 
     // 5. Execute IFDS analysis. By default all sources are analyzed in one solver
@@ -170,10 +172,12 @@ export function runHapflowAnalysis(
         console.log(`[HAPFLOW] Batch config: size=${BATCH_SIZE}, batches=${totalBatches}`);
     }
 
-    const allOutcomes: TaintFact[] = [];
+    const ifdsOutcomes: TaintFact[] = [];
     const sourceArray = Array.from(allSources.entries());
     let ifdsBudgetExceeded = false;
     let totalIfdsEdges = 0;
+    let totalMalformedCfgEdges = 0;
+    const ifdsFailures: string[] = [];
 
     for (let batchStart = 0; batchStart < totalSources; batchStart += BATCH_SIZE) {
         const batchEnd = Math.min(batchStart + BATCH_SIZE, totalSources);
@@ -213,7 +217,7 @@ export function runHapflowAnalysis(
 
             // Collect results
             const batchOutcomes = batchProblem.getOutcome();
-            allOutcomes.push(...batchOutcomes);
+            ifdsOutcomes.push(...batchOutcomes);
 
             // Check if budget was exceeded
             const batchStats = batchSolver.getStats();
@@ -221,15 +225,25 @@ export function runHapflowAnalysis(
                 ifdsBudgetExceeded = true;
             }
             totalIfdsEdges += batchStats?.edgesProcessed ?? 0;
+            totalMalformedCfgEdges += batchStats?.malformedCfgEdges ?? 0;
 
             const elapsed = Date.now() - batchStartTime;
             console.log(`[HAPFLOW]   flows=${batchOutcomes.length}, edges=${batchStats?.edgesProcessed ?? 0}, elapsed=${elapsed}ms${batchStats?.budgetExceeded ? ' [BUDGET_EXCEEDED]' : ''}`);
         } catch (e: any) {
-            console.log(`[HAPFLOW]   Solver run failed: ${e.message || e}`);
+            const message = e?.message || String(e);
+            ifdsFailures.push(`solver run ${batchIndex}/${totalBatches}: ${message}`);
+            console.log(`[HAPFLOW]   Solver run failed: ${message}`);
+            if (e?.stack) {
+                console.log(e.stack);
+            }
         }
     }
 
-    console.log(`[HAPFLOW] IFDS complete: flows=${allOutcomes.length}, totalEdges=${totalIfdsEdges}${ifdsBudgetExceeded ? ' [PARTIAL]' : ''}`);
+    if (ifdsFailures.length > 0) {
+        throw new Error(`IFDS analysis failed: ${ifdsFailures.join('; ')}`);
+    }
+
+    console.log(`[HAPFLOW] IFDS complete: flows=${ifdsOutcomes.length}, totalEdges=${totalIfdsEdges}${ifdsBudgetExceeded ? ' [PARTIAL]' : ''}`);
 
     // 5b. Execute direct callback data flow analysis. Enabled by default because
     // ArkTS privacy data often crosses callback and Promise boundaries that IFDS
@@ -237,6 +251,7 @@ export function runHapflowAnalysis(
     const callbackEnabled = opts?.callbackAnalysis ?? true;
     console.log(`[HAPFLOW] Callback analysis: ${callbackEnabled ? 'ENABLED' : 'DISABLED'}`);
 
+    let callbackOutcomes: TaintFact[] = [];
     if (callbackEnabled) {
         problem.setCallbackBudgetOptions({
             maxMethods: opts?.callbackMaxMethods ?? 100000,
@@ -245,40 +260,167 @@ export function runHapflowAnalysis(
             maxPathLen: opts?.callbackMaxPathLen ?? 100
         });
         problem.analyzeCallbackDataFlows();
-        const callbackOutcomes = problem.getOutcome();
-        allOutcomes.push(...callbackOutcomes);
+        callbackOutcomes = problem.getOutcome();
     }
 
-    // 6. Convert and return results
+    // 6. Convert and deduplicate results across the IFDS and callback engines.
     const finalStatus = ifdsBudgetExceeded ? 'PARTIAL_SUCCESS' : (callbackEnabled ? 'SUCCESS' : 'SUCCESS');
-    console.log(`[HAPFLOW] Analysis complete. Found ${allOutcomes.length} taint flows. Status: ${finalStatus}`);
+    const converted = [
+        ...convertOutcome(ifdsOutcomes, 'ifds'),
+        ...convertOutcome(callbackOutcomes, 'async_supplement')
+    ];
+    const uniqueFlows = deduplicateTaintFlows(converted);
+    const duplicateCount = converted.length - uniqueFlows.length;
+    if (duplicateCount > 0) {
+        console.log(`[HAPFLOW] Removed ${duplicateCount} duplicate flow(s) produced by overlapping engines.`);
+    }
+    console.log(`[HAPFLOW] Analysis complete. Found ${uniqueFlows.length} unique taint flows. Status: ${finalStatus}`);
 
-    return convertOutcome(allOutcomes);
+    return {
+        flows: uniqueFlows,
+        metadata: {
+            status: finalStatus,
+            pointerAnalysis: {
+                requested: !opts.noPta,
+                status: opts.noPta ? 'SKIPPED' : 'SUCCESS',
+                rejectedContainerFieldEdges
+            },
+            ifds: {
+                sources: totalSources,
+                sinks: problem.getSinks().length,
+                rawFlows: ifdsOutcomes.length,
+                edgesProcessed: totalIfdsEdges,
+                malformedCfgEdges: totalMalformedCfgEdges,
+                budgetExceeded: ifdsBudgetExceeded,
+                batching: useBatching,
+                batches: totalBatches
+            },
+            callback: {
+                enabled: callbackEnabled,
+                rawFlows: callbackOutcomes.length
+            },
+            flowsBeforeDeduplication: converted.length,
+            uniqueFlows: uniqueFlows.length,
+            duplicatesRemoved: duplicateCount
+        }
+    };
 }
 
 /**
  * Convert HapFlow TaintFact[] output to ArkPrism TaintFlowResult[] format.
  */
-function convertOutcome(facts: TaintFact[]): TaintFlowResult[] {
+export function convertOutcome(
+    facts: TaintFact[],
+    provenance: TaintFlowResult["provenance"]
+): TaintFlowResult[] {
+    const statementFile = (stmt: any): string => {
+        const filePath = stmt
+            ?.getCfg?.()
+            ?.getDeclaringMethod?.()
+            ?.getDeclaringArkFile?.()
+            ?.getFilePath?.();
+        if (typeof filePath === 'string' && filePath.length > 0) return filePath;
+
+        // Synthetic DummyMain statements have no declaring ArkFile. Preserve
+        // the invoked application's project-relative file from its signature.
+        const invokedFile = stmt
+            ?.getInvokeExpr?.()
+            ?.getMethodSignature?.()
+            ?.getDeclaringClassSignature?.()
+            ?.getDeclaringFileSignature?.()
+            ?.getFileName?.();
+        return typeof invokedFile === 'string'
+            && invokedFile.length > 0
+            && invokedFile !== '%unk'
+            ? invokedFile
+            : 'unknown';
+    };
+
     return facts.map(fact => {
-        const pathStmts = fact.getPath();
-        const sourceStmt = pathStmts.length > 0 ? pathStmts[0] : null;
+        const sourceEvidence = fact.getSourceEvidence();
+        if (!sourceEvidence) {
+            const pathPreview = fact.getPath()
+                .map(stmt => `${stmt.getCfg()?.getDeclaringMethod()?.getName() || 'unknown'}:${stmt.toString()}`)
+                .join(' -> ');
+            throw new Error(
+                `Taint outcome lacks source evidence: provenance=${provenance}, `
+                + `value=${fact.getValue()?.toString() || 'unknown'}, path=${pathPreview || '(empty)'}`
+            );
+        }
+
+        const originalPath = fact.getPath();
+        const sourceStmt = sourceEvidence.statement;
+        const sourceIndex = originalPath.indexOf(sourceStmt);
+        const pathStmts = sourceIndex >= 0
+            ? originalPath.slice(sourceIndex)
+            : [sourceStmt, ...originalPath];
         const sinkStmt = pathStmts.length > 0 ? pathStmts[pathStmts.length - 1] : null;
+        const rule = sourceEvidence.rule;
 
         return {
+            provenance,
+            sourceKind: sourceEvidence.sourceKind,
+            sourceIdentity: {
+                module: rule.module || '',
+                namespace: rule.namespace || '',
+                className: rule.className || '',
+                apiName: rule.apiName || '',
+                sourceType: sourceEvidence.sourceType,
+                sourceIndex: sourceEvidence.sourceIndex,
+                callbackIndex: sourceEvidence.callbackIndex,
+                methodSignature: sourceEvidence.methodSignature,
+                ruleOrigin: rule.ruleOrigin || ''
+            },
             sourceApi: sourceStmt?.toString() || 'unknown',
-            sourceFile: sourceStmt?.getOriginPositionInfo()?.toString() || 'unknown',
+            sourceFile: statementFile(sourceStmt),
             sourceLine: sourceStmt?.getOriginPositionInfo()?.getLineNo() || 0,
             sinkApi: sinkStmt?.toString() || 'unknown',
-            sinkFile: sinkStmt?.getOriginPositionInfo()?.toString() || 'unknown',
+            sinkFile: statementFile(sinkStmt),
             sinkLine: sinkStmt?.getOriginPositionInfo()?.getLineNo() || 0,
             taintedValue: fact.getValue()?.toString() || 'unknown',
             path: pathStmts.map(s => ({
                 statement: s.toString(),
-                file: s.getOriginPositionInfo()?.toString() || '',
+                file: statementFile(s),
                 line: s.getOriginPositionInfo()?.getLineNo() || 0,
                 method: s.getCfg()?.getDeclaringMethod()?.getName() || ''
             }))
         };
     });
+}
+
+export function deduplicateTaintFlows(flows: TaintFlowResult[]): TaintFlowResult[] {
+    const seen = new Map<string, number>();
+    const unique: TaintFlowResult[] = [];
+    for (const flow of flows) {
+        const key = JSON.stringify([
+            flow.sourceApi,
+            flow.sourceKind,
+            flow.sourceIdentity,
+            flow.sourceFile,
+            flow.sourceLine,
+            flow.sinkApi,
+            flow.sinkFile,
+            flow.sinkLine,
+            flow.taintedValue,
+            flow.path.map(step => [
+                step.statement,
+                step.file,
+                step.line,
+                step.method
+            ])
+        ]);
+        const existingIndex = seen.get(key);
+        if (existingIndex !== undefined) {
+            const existing = unique[existingIndex];
+            const existingProvenance = existing.provenance;
+            const nextProvenance = flow.provenance;
+            if (existingProvenance !== nextProvenance) {
+                existing.provenance = 'both';
+            }
+            continue;
+        }
+        seen.set(key, unique.length);
+        unique.push(flow);
+    }
+    return unique;
 }

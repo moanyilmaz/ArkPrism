@@ -27,7 +27,7 @@
  */
 
 import {
-    Scene, ArkMethod,
+    Scene, ArkMethod, ArkReturnVoidStmt,
     DummyMainCreater,
 } from './arkanalyzer';
 import {
@@ -63,12 +63,37 @@ export function buildLifecycleDummyMain(
     creater.createDummyMain();
 
     const dummyMain = creater.getDummyMain();
+    if (process.env.ARKPRISM_DISABLE_LIFECYCLE_BOUNDS !== '1') {
+        boundLifecycleExecutionToSingleInstance(dummyMain);
+    }
     console.log(`[DUMMYMAIN] Created lifecycle-aware DummyMain with ${orderedMethods.length} entry methods.`);
     console.log(`[DUMMYMAIN]   Ability: ${lifecycleModel.entryMethodsByLayer.ability.length}`);
     console.log(`[DUMMYMAIN]   Component: ${lifecycleModel.entryMethodsByLayer.component.length}`);
     console.log(`[DUMMYMAIN]   Callback: ${lifecycleModel.entryMethodsByLayer.callback.length}`);
 
     return { dummyMain, modeler: creater };
+}
+
+function boundLifecycleExecutionToSingleInstance(dummyMain: ArkMethod): void {
+    const cfg = dummyMain.getCfg();
+    const startBlock = cfg?.getStartingBlock();
+    if (!cfg || !startBlock) return;
+
+    const loopHeader = startBlock.getSuccessors()[0];
+    const returnBlock = [...cfg.getBlocks()].find(block =>
+        block.getStmts().some(stmt => stmt instanceof ArkReturnVoidStmt)
+    );
+    if (!loopHeader || !returnBlock) return;
+
+    for (const predecessor of [...loopHeader.getPredecessors()]) {
+        if (predecessor === startBlock) continue;
+        predecessor.removeSuccessorBlock(loopHeader);
+        loopHeader.removePredecessorBlock(predecessor);
+        if (!predecessor.getSuccessors().includes(returnBlock)) {
+            predecessor.addSuccessorBlock(returnBlock);
+            returnBlock.addPredecessorBlock(predecessor);
+        }
+    }
 }
 
 /**
@@ -130,6 +155,13 @@ function organizeEntryMethodsByLifecycle(model: LifecycleModel): ArkMethod[] {
             for (const m of ability.methods) {
                 if (String(m.info.phase) === String(phase)) {
                     methods.push(m.method);
+                    if (process.env.ARKPRISM_DISABLE_LIFECYCLE_BOUNDS !== '1'
+                        && m.info.repeatable
+                        && !['onForeground', 'onBackground'].includes(m.info.methodName)) {
+                        // A bounded second firing models state carried between
+                        // repeatable events without introducing a lifecycle loop.
+                        methods.push(m.method);
+                    }
                 }
             }
         }
@@ -164,6 +196,9 @@ function organizeEntryMethodsByLifecycle(model: LifecycleModel): ArkMethod[] {
             for (const m of component.methods) {
                 if (String(m.info.phase) === String(phase)) {
                     methods.push(m.method);
+                    if (process.env.ARKPRISM_DISABLE_LIFECYCLE_BOUNDS !== '1' && m.info.repeatable) {
+                        methods.push(m.method);
+                    }
                 }
             }
         }

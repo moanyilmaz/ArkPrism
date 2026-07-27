@@ -164,6 +164,12 @@ const ABILITY_LIFECYCLE_REGISTRY: LifecycleMethodInfo[] = [
         description: 'Called when the Ability transitions to the background. Triggers Component onPageHide.'
     },
     {
+        methodName: 'onWindowStageWillDestroy', layer: 'ability', phase: AbilityPhase.DESTROYING,
+        nextPhases: [AbilityPhase.DESTROYED],
+        repeatable: false,
+        description: 'Called before the WindowStage is destroyed.'
+    },
+    {
         methodName: 'onWindowStageDestroy', layer: 'ability', phase: AbilityPhase.DESTROYING,
         nextPhases: [AbilityPhase.DESTROYED],
         repeatable: false,
@@ -181,6 +187,12 @@ const ABILITY_LIFECYCLE_REGISTRY: LifecycleMethodInfo[] = [
         nextPhases: [AbilityPhase.BACKGROUNDED, AbilityPhase.DESTROYING],
         repeatable: true,
         description: 'Called when the Ability is launched with a new Want while already running (singleInstance mode).'
+    },
+    {
+        methodName: 'onShare', layer: 'ability', phase: AbilityPhase.FOREGROUNDED,
+        nextPhases: [AbilityPhase.BACKGROUNDED, AbilityPhase.DESTROYING],
+        repeatable: true,
+        description: 'Called while a foreground UIAbility prepares data for sharing.'
     },
     {
         methodName: 'onContinue', layer: 'ability', phase: AbilityPhase.FOREGROUNDED,
