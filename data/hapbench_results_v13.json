@@ -1,0 +1,5340 @@
+{
+  "generatedAt": "2026-07-24T13:37:34.055Z",
+  "oracle": {
+    "path": "E:\\arkprism-fse2027-experiments\\experiments\\hapbench_oracle.json",
+    "cases": 67,
+    "positives": 53,
+    "negatives": 14
+  },
+  "tools": [
+    {
+      "name": "HapFlow artifact reproduction",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 51,
+        "tn": 10,
+        "fp": 4,
+        "fn": 2,
+        "precision": 0.9272727272727272,
+        "recall": 0.9622641509433962,
+        "specificity": 0.7142857142857143,
+        "balancedAccuracy": 0.8382749326145553,
+        "f1": 0.9444444444444444,
+        "accuracy": 0.9104477611940298,
+        "mcc": 0.7173478429572888,
+        "confidence95": {
+          "precision": [
+            0.8274005992784393,
+            0.9713559397669594
+          ],
+          "recall": [
+            0.8724571280258164,
+            0.9895897127241731
+          ],
+          "specificity": [
+            0.4535091567010681,
+            0.8827862135542308
+          ],
+          "accuracy": [
+            0.8180724780033378,
+            0.9583090493620113
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 7,
+          "tn": 2,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0.875,
+          "specificity": 1,
+          "balancedAccuracy": 0.9375,
+          "f1": 0.9333333333333333,
+          "accuracy": 0.9,
+          "mcc": 0.7637626158259734,
+          "confidence95": {
+            "precision": [
+              0.6456695649333126,
+              1
+            ],
+            "recall": [
+              0.5291118177871464,
+              0.9775825085499433
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.5958499732047615,
+              0.9821237869049271
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.8,
+          "recall": 1,
+          "specificity": 0,
+          "balancedAccuracy": 0.5,
+          "f1": 0.888888888888889,
+          "accuracy": 0.8,
+          "mcc": null,
+          "confidence95": {
+            "precision": [
+              0.37553462976252533,
+              0.9637758913675698
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0,
+              0.7934506856227626
+            ],
+            "accuracy": [
+              0.37553462976252533,
+              0.9637758913675698
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 17,
+          "tn": 2,
+          "fp": 2,
+          "fn": 1,
+          "precision": 0.8947368421052632,
+          "recall": 0.9444444444444444,
+          "specificity": 0.5,
+          "balancedAccuracy": 0.7222222222222222,
+          "f1": 0.918918918918919,
+          "accuracy": 0.8636363636363636,
+          "mcc": 0.49951243284357016,
+          "confidence95": {
+            "precision": [
+              0.6860591728889099,
+              0.9706414397011299
+            ],
+            "recall": [
+              0.7424269921812741,
+              0.990124809021697
+            ],
+            "specificity": [
+              0.15003898915214947,
+              0.8499610108478506
+            ],
+            "accuracy": [
+              0.6666501283342828,
+              0.9525099628594474
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 12,
+          "tn": 0,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.9230769230769231,
+          "recall": 1,
+          "specificity": 0,
+          "balancedAccuracy": 0.5,
+          "f1": 0.9600000000000001,
+          "accuracy": 0.9230769230769231,
+          "mcc": null,
+          "confidence95": {
+            "precision": [
+              0.6668604907890041,
+              0.9862895787574435
+            ],
+            "recall": [
+              0.7575059933447592,
+              1
+            ],
+            "specificity": [
+              0,
+              0.7934506856227626
+            ],
+            "accuracy": [
+              0.6668604907890041,
+              0.9862895787574435
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.9573058773058774,
+        "worstCategoryF1": 0.888888888888889
+      },
+      "errors": [
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousClass2 , 0"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\ArrayIndexNoLeak , 1"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\General Language Features\\Exceptions4 , 0"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\VirtualDispatch2 , 1"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\VirtualDispatch3 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\UnreachableFlow , 1"
+        }
+      ],
+      "missing": [],
+      "runtime": null,
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Aliasing\\After , 1"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Aliasing\\Before , 1"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Aliasing\\InstanceAlias , 1"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Aliasing\\Inter , 0"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Aliasing\\Merge , 1"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Aliasing\\ParamAlias , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousClass1 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousClass2 , 0"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod1 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod2 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod3 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod4 , 0"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod5 , 0"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod6 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod7 , 1"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Anonymous Constructs\\AnonymousMethod8 , 1"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\ArrayAccess , 1"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\ArrayCopy , 1"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\ArrayIndexNoLeak , 1"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\Map , 1"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Array-Like Structures\\MultidimentionalArray , 1"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\FieldSensitivity1 , 0"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\FieldSensitivity2 , 0"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\FieldSensitivity3 , 1"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\FieldSensitivity4 , 0"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\InheritedObjects , 1"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\Field And Object Sensitivity\\ObjectSensitivity1 , 0"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Clone1 , 1"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Clone2 , 1"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Closure1 , 1"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Closure2 , 1"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Condition , 1"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Exceptions1 , 1"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Exceptions2 , 1"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Exceptions3 , 1"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\General Language Features\\Exceptions4 , 0"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\LocalFunction , 1"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Loop1 , 1"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\MulFields , 1"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\Param1 , 1"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\General Language Features\\Param2 , 0"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\PrivateDataLeak , 1"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\PublicAPILeak1 , 1"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\StaticFieldInit , 1"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\StringPatternMatching , 1"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\General Language Features\\UnreachableMethod , 0"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "..\\HapBench\\General Language Features\\VirtualDispatch1 , 2"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\VirtualDispatch2 , 1"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\General Language Features\\VirtualDispatch3 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ActivityLifecycle1 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ActivityLifecycle2 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ActivityLifecycle3 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ActivityLifecycle4 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\BackupExtensionAbility , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\Button1 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\Button2 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\Button3 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ComponentLifecycle1 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ComponentLifecycle2 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\ComponentLifecycle3 , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\EventOdering , 1"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\Lifecycle Modeling\\UnreachableFlow , 1"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\OpenHarmony Specific APIs\\CallbackInSource , 1"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\OpenHarmony Specific APIs\\DirectLeak , 1"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\OpenHarmony Specific APIs\\DirectLeak-want , 1"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "..\\HapBench\\OpenHarmony Specific APIs\\FileReadWrite , 1"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "..\\HapBench\\OpenHarmony Specific APIs\\NoLeak , 0"
+        }
+      ]
+    },
+    {
+      "name": "ArkPrism full",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 50,
+        "tn": 14,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.9433962264150944,
+        "specificity": 1,
+        "balancedAccuracy": 0.9716981132075472,
+        "f1": 0.970873786407767,
+        "accuracy": 0.9552238805970149,
+        "mcc": 0.8814275576589751,
+        "confidence95": {
+          "precision": [
+            0.9286524008666414,
+            1
+          ],
+          "recall": [
+            0.8462979168981911,
+            0.9805633385150642
+          ],
+          "specificity": [
+            0.7846891972623643,
+            1
+          ],
+          "accuracy": [
+            0.8764216691090624,
+            0.9846560248779613
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 8,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.6755924351161198,
+              1
+            ],
+            "recall": [
+              0.6755924351161198,
+              1
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.7224672001371107,
+              0.9999999999999999
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 18,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.8241207763533425,
+              1
+            ],
+            "recall": [
+              0.8241207763533425,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.8513451253913791,
+              1
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 9,
+          "tn": 1,
+          "fp": 0,
+          "fn": 3,
+          "precision": 1,
+          "recall": 0.75,
+          "specificity": 1,
+          "balancedAccuracy": 0.875,
+          "f1": 0.8571428571428571,
+          "accuracy": 0.7692307692307693,
+          "mcc": 0.4330127018922193,
+          "confidence95": {
+            "precision": [
+              0.7008549515804559,
+              1
+            ],
+            "recall": [
+              0.46769466506643426,
+              0.9110583316059453
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.49743624053272495,
+              0.9182047128150143
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.9795918367346939,
+        "worstCategoryF1": 0.8571428571428571
+      },
+      "errors": [
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        }
+      ],
+      "missing": [],
+      "runtime": {
+        "cases": 67,
+        "totalMs": 1083799,
+        "medianMs": 15933,
+        "p95Ms": 16860,
+        "maxMs": 21704
+      },
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__After\\Aliasing__After-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Before\\Aliasing__Before-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__InstanceAlias\\Aliasing__InstanceAlias-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Aliasing__Inter\\Aliasing__Inter-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Merge\\Aliasing__Merge-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__ParamAlias\\Aliasing__ParamAlias-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod1\\Anonymous_Constructs__AnonymousMethod1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod2\\Anonymous_Constructs__AnonymousMethod2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod4\\Anonymous_Constructs__AnonymousMethod4-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod5\\Anonymous_Constructs__AnonymousMethod5-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod6\\Anonymous_Constructs__AnonymousMethod6-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod7\\Anonymous_Constructs__AnonymousMethod7-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayAccess\\Array_Like_Structures__ArrayAccess-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayIndexNoLeak\\Array_Like_Structures__ArrayIndexNoLeak-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__Map\\Array_Like_Structures__Map-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__MultidimentionalArray\\Array_Like_Structures__MultidimentionalArray-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity1\\Field_And_Object_Sensitivity__FieldSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity2\\Field_And_Object_Sensitivity__FieldSensitivity2-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity3\\Field_And_Object_Sensitivity__FieldSensitivity3-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity4\\Field_And_Object_Sensitivity__FieldSensitivity4-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__InheritedObjects\\Field_And_Object_Sensitivity__InheritedObjects-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__ObjectSensitivity1\\Field_And_Object_Sensitivity__ObjectSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Condition\\General_Language_Features__Condition-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions1\\General_Language_Features__Exceptions1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions2\\General_Language_Features__Exceptions2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__LocalFunction\\General_Language_Features__LocalFunction-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Loop1\\General_Language_Features__Loop1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Param1\\General_Language_Features__Param1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Param2\\General_Language_Features__Param2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PrivateDataLeak\\General_Language_Features__PrivateDataLeak-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PublicAPILeak1\\General_Language_Features__PublicAPILeak1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StaticFieldInit\\General_Language_Features__StaticFieldInit-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StringPatternMatching\\General_Language_Features__StringPatternMatching-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__UnreachableMethod\\General_Language_Features__UnreachableMethod-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch2\\General_Language_Features__VirtualDispatch2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle1\\Lifecycle_Modeling__ActivityLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle2\\Lifecycle_Modeling__ActivityLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle3\\Lifecycle_Modeling__ActivityLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button2\\Lifecycle_Modeling__Button2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button3\\Lifecycle_Modeling__Button3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle1\\Lifecycle_Modeling__ComponentLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle2\\Lifecycle_Modeling__ComponentLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle3\\Lifecycle_Modeling__ComponentLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__EventOdering\\Lifecycle_Modeling__EventOdering-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__CallbackInSource\\OpenHarmony_Specific_APIs__CallbackInSource-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak\\OpenHarmony_Specific_APIs__DirectLeak-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak-want\\OpenHarmony_Specific_APIs__DirectLeak-want-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__FileReadWrite\\OpenHarmony_Specific_APIs__FileReadWrite-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "OpenHarmony_Specific_APIs__NoLeak\\OpenHarmony_Specific_APIs__NoLeak-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "name": "ArkPrism callback-off",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 50,
+        "tn": 14,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.9433962264150944,
+        "specificity": 1,
+        "balancedAccuracy": 0.9716981132075472,
+        "f1": 0.970873786407767,
+        "accuracy": 0.9552238805970149,
+        "mcc": 0.8814275576589751,
+        "confidence95": {
+          "precision": [
+            0.9286524008666414,
+            1
+          ],
+          "recall": [
+            0.8462979168981911,
+            0.9805633385150642
+          ],
+          "specificity": [
+            0.7846891972623643,
+            1
+          ],
+          "accuracy": [
+            0.8764216691090624,
+            0.9846560248779613
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 8,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.6755924351161198,
+              1
+            ],
+            "recall": [
+              0.6755924351161198,
+              1
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.7224672001371107,
+              0.9999999999999999
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 18,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.8241207763533425,
+              1
+            ],
+            "recall": [
+              0.8241207763533425,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.8513451253913791,
+              1
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 9,
+          "tn": 1,
+          "fp": 0,
+          "fn": 3,
+          "precision": 1,
+          "recall": 0.75,
+          "specificity": 1,
+          "balancedAccuracy": 0.875,
+          "f1": 0.8571428571428571,
+          "accuracy": 0.7692307692307693,
+          "mcc": 0.4330127018922193,
+          "confidence95": {
+            "precision": [
+              0.7008549515804559,
+              1
+            ],
+            "recall": [
+              0.46769466506643426,
+              0.9110583316059453
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.49743624053272495,
+              0.9182047128150143
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.9795918367346939,
+        "worstCategoryF1": 0.8571428571428571
+      },
+      "errors": [
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        }
+      ],
+      "missing": [],
+      "runtime": {
+        "cases": 67,
+        "totalMs": 1072559,
+        "medianMs": 15975,
+        "p95Ms": 16732,
+        "maxMs": 16891
+      },
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__After\\Aliasing__After-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Before\\Aliasing__Before-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__InstanceAlias\\Aliasing__InstanceAlias-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Aliasing__Inter\\Aliasing__Inter-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Merge\\Aliasing__Merge-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__ParamAlias\\Aliasing__ParamAlias-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod1\\Anonymous_Constructs__AnonymousMethod1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod2\\Anonymous_Constructs__AnonymousMethod2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod4\\Anonymous_Constructs__AnonymousMethod4-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod5\\Anonymous_Constructs__AnonymousMethod5-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod6\\Anonymous_Constructs__AnonymousMethod6-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod7\\Anonymous_Constructs__AnonymousMethod7-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayAccess\\Array_Like_Structures__ArrayAccess-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayIndexNoLeak\\Array_Like_Structures__ArrayIndexNoLeak-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__Map\\Array_Like_Structures__Map-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__MultidimentionalArray\\Array_Like_Structures__MultidimentionalArray-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity1\\Field_And_Object_Sensitivity__FieldSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity2\\Field_And_Object_Sensitivity__FieldSensitivity2-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity3\\Field_And_Object_Sensitivity__FieldSensitivity3-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity4\\Field_And_Object_Sensitivity__FieldSensitivity4-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__InheritedObjects\\Field_And_Object_Sensitivity__InheritedObjects-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__ObjectSensitivity1\\Field_And_Object_Sensitivity__ObjectSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Condition\\General_Language_Features__Condition-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions1\\General_Language_Features__Exceptions1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions2\\General_Language_Features__Exceptions2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__LocalFunction\\General_Language_Features__LocalFunction-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Loop1\\General_Language_Features__Loop1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Param1\\General_Language_Features__Param1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Param2\\General_Language_Features__Param2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PrivateDataLeak\\General_Language_Features__PrivateDataLeak-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PublicAPILeak1\\General_Language_Features__PublicAPILeak1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StaticFieldInit\\General_Language_Features__StaticFieldInit-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StringPatternMatching\\General_Language_Features__StringPatternMatching-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__UnreachableMethod\\General_Language_Features__UnreachableMethod-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch2\\General_Language_Features__VirtualDispatch2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle1\\Lifecycle_Modeling__ActivityLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle2\\Lifecycle_Modeling__ActivityLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle3\\Lifecycle_Modeling__ActivityLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button2\\Lifecycle_Modeling__Button2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button3\\Lifecycle_Modeling__Button3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle1\\Lifecycle_Modeling__ComponentLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle2\\Lifecycle_Modeling__ComponentLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle3\\Lifecycle_Modeling__ComponentLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__EventOdering\\Lifecycle_Modeling__EventOdering-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__CallbackInSource\\OpenHarmony_Specific_APIs__CallbackInSource-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak\\OpenHarmony_Specific_APIs__DirectLeak-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak-want\\OpenHarmony_Specific_APIs__DirectLeak-want-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__FileReadWrite\\OpenHarmony_Specific_APIs__FileReadWrite-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "OpenHarmony_Specific_APIs__NoLeak\\OpenHarmony_Specific_APIs__NoLeak-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "name": "ArkPrism no-ir",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 37,
+        "tn": 14,
+        "fp": 0,
+        "fn": 16,
+        "precision": 1,
+        "recall": 0.6981132075471698,
+        "specificity": 1,
+        "balancedAccuracy": 0.8490566037735849,
+        "f1": 0.8222222222222222,
+        "accuracy": 0.7611940298507462,
+        "mcc": 0.570776807098898,
+        "confidence95": {
+          "precision": [
+            0.9059421741627975,
+            1
+          ],
+          "recall": [
+            0.5646316733114988,
+            0.8048169727242108
+          ],
+          "specificity": [
+            0.7846891972623643,
+            1
+          ],
+          "accuracy": [
+            0.646742362444697,
+            0.8473186095150708
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 4,
+          "tn": 2,
+          "fp": 0,
+          "fn": 4,
+          "precision": 1,
+          "recall": 0.5,
+          "specificity": 1,
+          "balancedAccuracy": 0.75,
+          "f1": 0.6666666666666666,
+          "accuracy": 0.6,
+          "mcc": 0.4082482904638631,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.21521606221387757,
+              0.7847839377861224
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.31267376973365824,
+              0.8318196702937638
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 3,
+          "tn": 1,
+          "fp": 0,
+          "fn": 1,
+          "precision": 1,
+          "recall": 0.75,
+          "specificity": 1,
+          "balancedAccuracy": 0.875,
+          "f1": 0.8571428571428571,
+          "accuracy": 0.8,
+          "mcc": 0.6123724356957946,
+          "confidence95": {
+            "precision": [
+              0.4385029682449546,
+              1
+            ],
+            "recall": [
+              0.30064184258240184,
+              0.9544127391902995
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.37553462976252533,
+              0.9637758913675698
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 10,
+          "tn": 4,
+          "fp": 0,
+          "fn": 8,
+          "precision": 1,
+          "recall": 0.5555555555555556,
+          "specificity": 1,
+          "balancedAccuracy": 0.7777777777777778,
+          "f1": 0.7142857142857143,
+          "accuracy": 0.6363636363636364,
+          "mcc": 0.43033148291193524,
+          "confidence95": {
+            "precision": [
+              0.7224672001371107,
+              0.9999999999999999
+            ],
+            "recall": [
+              0.33716415642042774,
+              0.7544048187299437
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.42951708090131013,
+              0.8026679532963387
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 9,
+          "tn": 1,
+          "fp": 0,
+          "fn": 3,
+          "precision": 1,
+          "recall": 0.75,
+          "specificity": 1,
+          "balancedAccuracy": 0.875,
+          "f1": 0.8571428571428571,
+          "accuracy": 0.7692307692307693,
+          "mcc": 0.4330127018922193,
+          "confidence95": {
+            "precision": [
+              0.7008549515804559,
+              1
+            ],
+            "recall": [
+              0.46769466506643426,
+              0.9110583316059453
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.49743624053272495,
+              0.9182047128150143
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.8707482993197279,
+        "worstCategoryF1": 0.6666666666666666
+      },
+      "errors": [
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        }
+      ],
+      "missing": [],
+      "runtime": {
+        "cases": 67,
+        "totalMs": 1072145,
+        "medianMs": 15900,
+        "p95Ms": 16808,
+        "maxMs": 17193
+      },
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__After\\Aliasing__After-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Before\\Aliasing__Before-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__InstanceAlias\\Aliasing__InstanceAlias-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Aliasing__Inter\\Aliasing__Inter-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Merge\\Aliasing__Merge-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__ParamAlias\\Aliasing__ParamAlias-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod1\\Anonymous_Constructs__AnonymousMethod1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod2\\Anonymous_Constructs__AnonymousMethod2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod4\\Anonymous_Constructs__AnonymousMethod4-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod5\\Anonymous_Constructs__AnonymousMethod5-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod6\\Anonymous_Constructs__AnonymousMethod6-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod7\\Anonymous_Constructs__AnonymousMethod7-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayAccess\\Array_Like_Structures__ArrayAccess-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayIndexNoLeak\\Array_Like_Structures__ArrayIndexNoLeak-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__Map\\Array_Like_Structures__Map-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__MultidimentionalArray\\Array_Like_Structures__MultidimentionalArray-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity1\\Field_And_Object_Sensitivity__FieldSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity2\\Field_And_Object_Sensitivity__FieldSensitivity2-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity3\\Field_And_Object_Sensitivity__FieldSensitivity3-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity4\\Field_And_Object_Sensitivity__FieldSensitivity4-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__InheritedObjects\\Field_And_Object_Sensitivity__InheritedObjects-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__ObjectSensitivity1\\Field_And_Object_Sensitivity__ObjectSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Condition\\General_Language_Features__Condition-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions1\\General_Language_Features__Exceptions1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions2\\General_Language_Features__Exceptions2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__LocalFunction\\General_Language_Features__LocalFunction-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Loop1\\General_Language_Features__Loop1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Param1\\General_Language_Features__Param1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Param2\\General_Language_Features__Param2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PrivateDataLeak\\General_Language_Features__PrivateDataLeak-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PublicAPILeak1\\General_Language_Features__PublicAPILeak1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StaticFieldInit\\General_Language_Features__StaticFieldInit-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StringPatternMatching\\General_Language_Features__StringPatternMatching-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__UnreachableMethod\\General_Language_Features__UnreachableMethod-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch2\\General_Language_Features__VirtualDispatch2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle1\\Lifecycle_Modeling__ActivityLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle2\\Lifecycle_Modeling__ActivityLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle3\\Lifecycle_Modeling__ActivityLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button2\\Lifecycle_Modeling__Button2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button3\\Lifecycle_Modeling__Button3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle1\\Lifecycle_Modeling__ComponentLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle2\\Lifecycle_Modeling__ComponentLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle3\\Lifecycle_Modeling__ComponentLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__EventOdering\\Lifecycle_Modeling__EventOdering-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__CallbackInSource\\OpenHarmony_Specific_APIs__CallbackInSource-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak\\OpenHarmony_Specific_APIs__DirectLeak-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak-want\\OpenHarmony_Specific_APIs__DirectLeak-want-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__FileReadWrite\\OpenHarmony_Specific_APIs__FileReadWrite-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "OpenHarmony_Specific_APIs__NoLeak\\OpenHarmony_Specific_APIs__NoLeak-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "name": "ArkPrism no-receiver",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 50,
+        "tn": 13,
+        "fp": 1,
+        "fn": 3,
+        "precision": 0.9803921568627451,
+        "recall": 0.9433962264150944,
+        "specificity": 0.9285714285714286,
+        "balancedAccuracy": 0.9359838274932615,
+        "f1": 0.9615384615384616,
+        "accuracy": 0.9402985074626866,
+        "mcc": 0.8314904176698695,
+        "confidence95": {
+          "precision": [
+            0.8969543127385502,
+            0.9965303073589391
+          ],
+          "recall": [
+            0.8462979168981911,
+            0.9805633385150642
+          ],
+          "specificity": [
+            0.6853129557584889,
+            0.9872777847521093
+          ],
+          "accuracy": [
+            0.8563049895862846,
+            0.9765406488601809
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 8,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.6755924351161198,
+              1
+            ],
+            "recall": [
+              0.6755924351161198,
+              1
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.7224672001371107,
+              0.9999999999999999
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 18,
+          "tn": 3,
+          "fp": 1,
+          "fn": 0,
+          "precision": 0.9473684210526315,
+          "recall": 1,
+          "specificity": 0.75,
+          "balancedAccuracy": 0.875,
+          "f1": 0.972972972972973,
+          "accuracy": 0.9545454545454546,
+          "mcc": 0.8429272304235247,
+          "confidence95": {
+            "precision": [
+              0.753612688331012,
+              0.9906480059376995
+            ],
+            "recall": [
+              0.8241207763533425,
+              1
+            ],
+            "specificity": [
+              0.30064184258240184,
+              0.9544127391902995
+            ],
+            "accuracy": [
+              0.7820195416134267,
+              0.991930572378736
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 9,
+          "tn": 1,
+          "fp": 0,
+          "fn": 3,
+          "precision": 1,
+          "recall": 0.75,
+          "specificity": 1,
+          "balancedAccuracy": 0.875,
+          "f1": 0.8571428571428571,
+          "accuracy": 0.7692307692307693,
+          "mcc": 0.4330127018922193,
+          "confidence95": {
+            "precision": [
+              0.7008549515804559,
+              1
+            ],
+            "recall": [
+              0.46769466506643426,
+              0.9110583316059453
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.49743624053272495,
+              0.9182047128150143
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.9757308328736899,
+        "worstCategoryF1": 0.8571428571428571
+      },
+      "errors": [
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        }
+      ],
+      "missing": [],
+      "runtime": {
+        "cases": 67,
+        "totalMs": 1093898,
+        "medianMs": 16265,
+        "p95Ms": 17067,
+        "maxMs": 18127
+      },
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__After\\Aliasing__After-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Before\\Aliasing__Before-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__InstanceAlias\\Aliasing__InstanceAlias-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Aliasing__Inter\\Aliasing__Inter-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Merge\\Aliasing__Merge-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__ParamAlias\\Aliasing__ParamAlias-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod1\\Anonymous_Constructs__AnonymousMethod1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod2\\Anonymous_Constructs__AnonymousMethod2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod4\\Anonymous_Constructs__AnonymousMethod4-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod5\\Anonymous_Constructs__AnonymousMethod5-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod6\\Anonymous_Constructs__AnonymousMethod6-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod7\\Anonymous_Constructs__AnonymousMethod7-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayAccess\\Array_Like_Structures__ArrayAccess-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayIndexNoLeak\\Array_Like_Structures__ArrayIndexNoLeak-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__Map\\Array_Like_Structures__Map-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__MultidimentionalArray\\Array_Like_Structures__MultidimentionalArray-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity1\\Field_And_Object_Sensitivity__FieldSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity2\\Field_And_Object_Sensitivity__FieldSensitivity2-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity3\\Field_And_Object_Sensitivity__FieldSensitivity3-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity4\\Field_And_Object_Sensitivity__FieldSensitivity4-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__InheritedObjects\\Field_And_Object_Sensitivity__InheritedObjects-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__ObjectSensitivity1\\Field_And_Object_Sensitivity__ObjectSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Condition\\General_Language_Features__Condition-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions1\\General_Language_Features__Exceptions1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions2\\General_Language_Features__Exceptions2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__LocalFunction\\General_Language_Features__LocalFunction-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Loop1\\General_Language_Features__Loop1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Param1\\General_Language_Features__Param1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Param2\\General_Language_Features__Param2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PrivateDataLeak\\General_Language_Features__PrivateDataLeak-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PublicAPILeak1\\General_Language_Features__PublicAPILeak1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StaticFieldInit\\General_Language_Features__StaticFieldInit-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StringPatternMatching\\General_Language_Features__StringPatternMatching-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__UnreachableMethod\\General_Language_Features__UnreachableMethod-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch2\\General_Language_Features__VirtualDispatch2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle1\\Lifecycle_Modeling__ActivityLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle2\\Lifecycle_Modeling__ActivityLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle3\\Lifecycle_Modeling__ActivityLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button2\\Lifecycle_Modeling__Button2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button3\\Lifecycle_Modeling__Button3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle1\\Lifecycle_Modeling__ComponentLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle2\\Lifecycle_Modeling__ComponentLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle3\\Lifecycle_Modeling__ComponentLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__EventOdering\\Lifecycle_Modeling__EventOdering-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__CallbackInSource\\OpenHarmony_Specific_APIs__CallbackInSource-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak\\OpenHarmony_Specific_APIs__DirectLeak-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak-want\\OpenHarmony_Specific_APIs__DirectLeak-want-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__FileReadWrite\\OpenHarmony_Specific_APIs__FileReadWrite-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "OpenHarmony_Specific_APIs__NoLeak\\OpenHarmony_Specific_APIs__NoLeak-arkprism-report.json"
+        }
+      ]
+    },
+    {
+      "name": "ArkPrism unbounded-lifecycle",
+      "overall": {
+        "evaluated": 67,
+        "missing": 0,
+        "tp": 52,
+        "tn": 13,
+        "fp": 1,
+        "fn": 1,
+        "precision": 0.9811320754716981,
+        "recall": 0.9811320754716981,
+        "specificity": 0.9285714285714286,
+        "balancedAccuracy": 0.9548517520215634,
+        "f1": 0.9811320754716981,
+        "accuracy": 0.9701492537313433,
+        "mcc": 0.9097035040431267,
+        "confidence95": {
+          "precision": [
+            0.9005708794749876,
+            0.9966615466117361
+          ],
+          "recall": [
+            0.9005708794749876,
+            0.9966615466117361
+          ],
+          "specificity": [
+            0.6853129557584889,
+            0.9872777847521093
+          ],
+          "accuracy": [
+            0.8975344443664799,
+            0.991775305161102
+          ]
+        }
+      },
+      "categories": {
+        "Aliasing": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 5,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5655175352168251,
+              1
+            ],
+            "recall": [
+              0.5655175352168251,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "Anonymous Constructs": {
+          "evaluated": 10,
+          "missing": 0,
+          "tp": 8,
+          "tn": 2,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.6755924351161198,
+              1
+            ],
+            "recall": [
+              0.6755924351161198,
+              1
+            ],
+            "specificity": [
+              0.34238022750665303,
+              1
+            ],
+            "accuracy": [
+              0.7224672001371107,
+              0.9999999999999999
+            ]
+          }
+        },
+        "Array-Like Structures": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        },
+        "Field and Object Sensitivity": {
+          "evaluated": 6,
+          "missing": 0,
+          "tp": 2,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.34238022750665303,
+              1
+            ],
+            "recall": [
+              0.34238022750665303,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.6096657120978346,
+              1
+            ]
+          }
+        },
+        "General Language Features": {
+          "evaluated": 22,
+          "missing": 0,
+          "tp": 18,
+          "tn": 4,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.8241207763533425,
+              1
+            ],
+            "recall": [
+              0.8241207763533425,
+              1
+            ],
+            "specificity": [
+              0.5101091635454027,
+              1
+            ],
+            "accuracy": [
+              0.8513451253913791,
+              1
+            ]
+          }
+        },
+        "Lifecycle Modeling": {
+          "evaluated": 13,
+          "missing": 0,
+          "tp": 11,
+          "tn": 0,
+          "fp": 1,
+          "fn": 1,
+          "precision": 0.9166666666666666,
+          "recall": 0.9166666666666666,
+          "specificity": 0,
+          "balancedAccuracy": 0.4583333333333333,
+          "f1": 0.9166666666666666,
+          "accuracy": 0.8461538461538461,
+          "mcc": -0.08333333333333333,
+          "confidence95": {
+            "precision": [
+              0.646120088858883,
+              0.9851349055950829
+            ],
+            "recall": [
+              0.646120088858883,
+              0.9851349055950829
+            ],
+            "specificity": [
+              0,
+              0.7934506856227626
+            ],
+            "accuracy": [
+              0.5776536898051745,
+              0.9567418216419186
+            ]
+          }
+        },
+        "OpenHarmony Specific APIs": {
+          "evaluated": 5,
+          "missing": 0,
+          "tp": 4,
+          "tn": 1,
+          "fp": 0,
+          "fn": 0,
+          "precision": 1,
+          "recall": 1,
+          "specificity": 1,
+          "balancedAccuracy": 1,
+          "f1": 1,
+          "accuracy": 1,
+          "mcc": 1,
+          "confidence95": {
+            "precision": [
+              0.5101091635454027,
+              1
+            ],
+            "recall": [
+              0.5101091635454027,
+              1
+            ],
+            "specificity": [
+              0.20654931437723745,
+              1
+            ],
+            "accuracy": [
+              0.5655175352168251,
+              1
+            ]
+          }
+        }
+      },
+      "categoryAggregate": {
+        "macroF1": 0.9880952380952381,
+        "worstCategoryF1": 0.9166666666666666
+      },
+      "errors": [
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        }
+      ],
+      "missing": [],
+      "runtime": {
+        "cases": 67,
+        "totalMs": 1089575,
+        "medianMs": 16184,
+        "p95Ms": 17109,
+        "maxMs": 17502
+      },
+      "cases": [
+        {
+          "id": "Aliasing__After",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__After\\Aliasing__After-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Before",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Before\\Aliasing__Before-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__InstanceAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__InstanceAlias\\Aliasing__InstanceAlias-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Inter",
+          "category": "Aliasing",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Aliasing__Inter\\Aliasing__Inter-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__Merge",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__Merge\\Aliasing__Merge-arkprism-report.json"
+        },
+        {
+          "id": "Aliasing__ParamAlias",
+          "category": "Aliasing",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Aliasing__ParamAlias\\Aliasing__ParamAlias-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass1\\Anonymous_Constructs__AnonymousClass1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousClass2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousClass2\\Anonymous_Constructs__AnonymousClass2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod1",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod1\\Anonymous_Constructs__AnonymousMethod1-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod2",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod2\\Anonymous_Constructs__AnonymousMethod2-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod3",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod3\\Anonymous_Constructs__AnonymousMethod3-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod4",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod4\\Anonymous_Constructs__AnonymousMethod4-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod5",
+          "category": "Anonymous Constructs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Anonymous_Constructs__AnonymousMethod5\\Anonymous_Constructs__AnonymousMethod5-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod6",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod6\\Anonymous_Constructs__AnonymousMethod6-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod7",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod7\\Anonymous_Constructs__AnonymousMethod7-arkprism-report.json"
+        },
+        {
+          "id": "Anonymous_Constructs__AnonymousMethod8",
+          "category": "Anonymous Constructs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Anonymous_Constructs__AnonymousMethod8\\Anonymous_Constructs__AnonymousMethod8-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayAccess",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayAccess\\Array_Like_Structures__ArrayAccess-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayCopy",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__ArrayCopy\\Array_Like_Structures__ArrayCopy-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__ArrayIndexNoLeak",
+          "category": "Array-Like Structures",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Array_Like_Structures__ArrayIndexNoLeak\\Array_Like_Structures__ArrayIndexNoLeak-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__Map",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__Map\\Array_Like_Structures__Map-arkprism-report.json"
+        },
+        {
+          "id": "Array_Like_Structures__MultidimentionalArray",
+          "category": "Array-Like Structures",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Array_Like_Structures__MultidimentionalArray\\Array_Like_Structures__MultidimentionalArray-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity1\\Field_And_Object_Sensitivity__FieldSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity2",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity2\\Field_And_Object_Sensitivity__FieldSensitivity2-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity3",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity3\\Field_And_Object_Sensitivity__FieldSensitivity3-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__FieldSensitivity4",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__FieldSensitivity4\\Field_And_Object_Sensitivity__FieldSensitivity4-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__InheritedObjects",
+          "category": "Field and Object Sensitivity",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Field_And_Object_Sensitivity__InheritedObjects\\Field_And_Object_Sensitivity__InheritedObjects-arkprism-report.json"
+        },
+        {
+          "id": "Field_And_Object_Sensitivity__ObjectSensitivity1",
+          "category": "Field and Object Sensitivity",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Field_And_Object_Sensitivity__ObjectSensitivity1\\Field_And_Object_Sensitivity__ObjectSensitivity1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone1\\General_Language_Features__Clone1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Clone2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Clone2\\General_Language_Features__Clone2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure1\\General_Language_Features__Closure1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Closure2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Closure2\\General_Language_Features__Closure2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Condition",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Condition\\General_Language_Features__Condition-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions1\\General_Language_Features__Exceptions1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions2",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions2\\General_Language_Features__Exceptions2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions3",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Exceptions3\\General_Language_Features__Exceptions3-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Exceptions4",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__Exceptions4\\General_Language_Features__Exceptions4-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__LocalFunction",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__LocalFunction\\General_Language_Features__LocalFunction-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Loop1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Loop1\\General_Language_Features__Loop1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__MulFields",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__MulFields\\General_Language_Features__MulFields-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__Param1\\General_Language_Features__Param1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__Param2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__Param2\\General_Language_Features__Param2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PrivateDataLeak",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PrivateDataLeak\\General_Language_Features__PrivateDataLeak-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__PublicAPILeak1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__PublicAPILeak1\\General_Language_Features__PublicAPILeak1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StaticFieldInit",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StaticFieldInit\\General_Language_Features__StaticFieldInit-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__StringPatternMatching",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "General_Language_Features__StringPatternMatching\\General_Language_Features__StringPatternMatching-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__UnreachableMethod",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__UnreachableMethod\\General_Language_Features__UnreachableMethod-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch1",
+          "category": "General Language Features",
+          "expected": true,
+          "predicted": true,
+          "count": 2,
+          "evidence": "General_Language_Features__VirtualDispatch1\\General_Language_Features__VirtualDispatch1-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch2",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch2\\General_Language_Features__VirtualDispatch2-arkprism-report.json"
+        },
+        {
+          "id": "General_Language_Features__VirtualDispatch3",
+          "category": "General Language Features",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "General_Language_Features__VirtualDispatch3\\General_Language_Features__VirtualDispatch3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle1\\Lifecycle_Modeling__ActivityLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle2\\Lifecycle_Modeling__ActivityLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle3\\Lifecycle_Modeling__ActivityLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ActivityLifecycle4",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": false,
+          "count": 0,
+          "evidence": "Lifecycle_Modeling__ActivityLifecycle4\\Lifecycle_Modeling__ActivityLifecycle4-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__BackupExtensionAbility",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__BackupExtensionAbility\\Lifecycle_Modeling__BackupExtensionAbility-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button1\\Lifecycle_Modeling__Button1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button2\\Lifecycle_Modeling__Button2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__Button3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__Button3\\Lifecycle_Modeling__Button3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle1",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle1\\Lifecycle_Modeling__ComponentLifecycle1-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle2",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle2\\Lifecycle_Modeling__ComponentLifecycle2-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__ComponentLifecycle3",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__ComponentLifecycle3\\Lifecycle_Modeling__ComponentLifecycle3-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__EventOdering",
+          "category": "Lifecycle Modeling",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__EventOdering\\Lifecycle_Modeling__EventOdering-arkprism-report.json"
+        },
+        {
+          "id": "Lifecycle_Modeling__UnreachableFlow",
+          "category": "Lifecycle Modeling",
+          "expected": false,
+          "predicted": true,
+          "count": 1,
+          "evidence": "Lifecycle_Modeling__UnreachableFlow\\Lifecycle_Modeling__UnreachableFlow-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__CallbackInSource",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__CallbackInSource\\OpenHarmony_Specific_APIs__CallbackInSource-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak\\OpenHarmony_Specific_APIs__DirectLeak-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__DirectLeak-want",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__DirectLeak-want\\OpenHarmony_Specific_APIs__DirectLeak-want-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__FileReadWrite",
+          "category": "OpenHarmony Specific APIs",
+          "expected": true,
+          "predicted": true,
+          "count": 1,
+          "evidence": "OpenHarmony_Specific_APIs__FileReadWrite\\OpenHarmony_Specific_APIs__FileReadWrite-arkprism-report.json"
+        },
+        {
+          "id": "OpenHarmony_Specific_APIs__NoLeak",
+          "category": "OpenHarmony Specific APIs",
+          "expected": false,
+          "predicted": false,
+          "count": 0,
+          "evidence": "OpenHarmony_Specific_APIs__NoLeak\\OpenHarmony_Specific_APIs__NoLeak-arkprism-report.json"
+        }
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "left": "HapFlow artifact reproduction",
+      "right": "ArkPrism full",
+      "paired": 67,
+      "leftOnlyCorrect": 3,
+      "rightOnlyCorrect": 6,
+      "discordant": 9,
+      "exactTwoSidedP": 0.5078125
+    },
+    {
+      "left": "HapFlow artifact reproduction",
+      "right": "ArkPrism callback-off",
+      "paired": 67,
+      "leftOnlyCorrect": 3,
+      "rightOnlyCorrect": 6,
+      "discordant": 9,
+      "exactTwoSidedP": 0.5078125
+    },
+    {
+      "left": "HapFlow artifact reproduction",
+      "right": "ArkPrism no-ir",
+      "paired": 67,
+      "leftOnlyCorrect": 14,
+      "rightOnlyCorrect": 4,
+      "discordant": 18,
+      "exactTwoSidedP": 0.0308837890625
+    },
+    {
+      "left": "HapFlow artifact reproduction",
+      "right": "ArkPrism no-receiver",
+      "paired": 67,
+      "leftOnlyCorrect": 3,
+      "rightOnlyCorrect": 5,
+      "discordant": 8,
+      "exactTwoSidedP": 0.7265625
+    },
+    {
+      "left": "HapFlow artifact reproduction",
+      "right": "ArkPrism unbounded-lifecycle",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 5,
+      "discordant": 6,
+      "exactTwoSidedP": 0.21875
+    },
+    {
+      "left": "ArkPrism full",
+      "right": "ArkPrism callback-off",
+      "paired": 67,
+      "leftOnlyCorrect": 0,
+      "rightOnlyCorrect": 0,
+      "discordant": 0,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "ArkPrism full",
+      "right": "ArkPrism no-ir",
+      "paired": 67,
+      "leftOnlyCorrect": 13,
+      "rightOnlyCorrect": 0,
+      "discordant": 13,
+      "exactTwoSidedP": 0.000244140625
+    },
+    {
+      "left": "ArkPrism full",
+      "right": "ArkPrism no-receiver",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 0,
+      "discordant": 1,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "ArkPrism full",
+      "right": "ArkPrism unbounded-lifecycle",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 2,
+      "discordant": 3,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "ArkPrism callback-off",
+      "right": "ArkPrism no-ir",
+      "paired": 67,
+      "leftOnlyCorrect": 13,
+      "rightOnlyCorrect": 0,
+      "discordant": 13,
+      "exactTwoSidedP": 0.000244140625
+    },
+    {
+      "left": "ArkPrism callback-off",
+      "right": "ArkPrism no-receiver",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 0,
+      "discordant": 1,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "ArkPrism callback-off",
+      "right": "ArkPrism unbounded-lifecycle",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 2,
+      "discordant": 3,
+      "exactTwoSidedP": 1
+    },
+    {
+      "left": "ArkPrism no-ir",
+      "right": "ArkPrism no-receiver",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 13,
+      "discordant": 14,
+      "exactTwoSidedP": 0.0018310546875
+    },
+    {
+      "left": "ArkPrism no-ir",
+      "right": "ArkPrism unbounded-lifecycle",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 15,
+      "discordant": 16,
+      "exactTwoSidedP": 0.000518798828125
+    },
+    {
+      "left": "ArkPrism no-receiver",
+      "right": "ArkPrism unbounded-lifecycle",
+      "paired": 67,
+      "leftOnlyCorrect": 1,
+      "rightOnlyCorrect": 3,
+      "discordant": 4,
+      "exactTwoSidedP": 0.625
+    }
+  ]
+}

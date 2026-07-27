@@ -1,0 +1,46 @@
+{
+  "scope": {
+    "selection": "Twenty-five real projects selected from a prior callback-heavy diagnostic run; selection is output-guided and does not define a recall benchmark.",
+    "projects": 25,
+    "positiveControl": "applications_systemui",
+    "sdk": "OpenHarmony API 20",
+    "sourceRuleContract": "Generic source members require receiver/module evidence; string-dispatched overloads additionally require the configured event literal."
+  },
+  "beforeSourceIdentityGate": {
+    "projects": 25,
+    "flowPositiveProjects": 22,
+    "flows": 94,
+    "provenance": {
+      "ifds": 26,
+      "async_supplement": 50,
+      "both": 18
+    }
+  },
+  "afterSourceIdentityGate": {
+    "projects": 25,
+    "flowPositiveProjects": 8,
+    "flows": 30,
+    "provenance": {
+      "ifds": 19,
+      "async_supplement": 10,
+      "both": 1
+    }
+  },
+  "positiveControl": {
+    "callbackSourceCandidatesBefore": 37,
+    "callbackSourceCandidatesAfter": 1,
+    "retainedConfiguredSource": "geolocation.on('locationEnabledChange', callback)",
+    "rejectedUnconfiguredExample": "privacyManager.on('activeStateChange', callback)",
+    "reportedFlowsBefore": 1,
+    "reportedFlowsAfter": 0
+  },
+  "manualAsyncPathAudit": {
+    "audited": 10,
+    "explicitCarrierDependence": 10,
+    "awaitPaths": 9,
+    "promiseThenPaths": 1,
+    "callbackPaths": 0,
+    "wilson95LowerBound": 0.7224672001371107,
+    "claimBoundary": "Output-selected precision diagnostic; no recall or completeness claim."
+  }
+}

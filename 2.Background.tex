@@ -49,6 +49,6 @@ struct Index {
 
 This example illustrates why a single analysis layer is insufficient: recognition must handle the indirect receiver \texttt{pb}, call-chain recovery must include lifecycle and UI callback edges, taint analysis must handle callback-provided source data, and sink analysis must classify \texttt{hilog.info} as log exposure. \mytool combines these layers in one report.
 
-\subsection{Failure Modes Observed in a Large-scale Corpus}
+\subsection{Recurring Failure Modes}
 \label{subsec:failure_modes}
-Before designing \mytool, we repeatedly ran the ArkAnalyzer/HapFlow-based pipeline on the large-scale dataset and inspected failures. The six most common failure modes---layout misses, package migration misses, IR-lowering misses, indirect receiver misses, callback-edge misses, and callback taint loss---are detailed in Appendix~\ref{subsec:app_failure_modes}. These failure modes motivate the design in Section~\ref{sec:design} and provide natural ablation points.
+Inspection of source/IR pairs and failed taint paths exposed six recurring classes: project-layout misses, package-migration mismatches, lost compound namespaces after IR lowering, unresolved manager receivers, missing callback edges, and lost callback-carried taint. We use these classes to define the analysis stages in Section~\ref{sec:design} and the case-level error taxonomy in Section~\ref{sec:evaluation}; we do not infer their corpus prevalence from the manually selected high-output projects.

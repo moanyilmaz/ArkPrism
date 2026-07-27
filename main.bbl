@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{61}
+\begin{thebibliography}{66}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -88,27 +88,13 @@
 \newblock
 
 
-\bibitem[Arzt et~al\mbox{.}(2014a)]%
-        {droidbench}
-\bibfield{author}{\bibinfo{person}{Steven Arzt}, \bibinfo{person}{Siegfried
-  Rasthofer}, \bibinfo{person}{Christian Fritz}, \bibinfo{person}{Eric Bodden},
-  \bibinfo{person}{Alexandre Bartel}, \bibinfo{person}{Jacques Klein},
-  \bibinfo{person}{Yves Le~Traon}, \bibinfo{person}{Damien Octeau}, {and}
-  \bibinfo{person}{Patrick McDaniel}.} \bibinfo{year}{2014}\natexlab{a}.
-\newblock \showarticletitle{A Benchmark Suite for Static Taint Analysis of
-  {Android} Applications}. In \bibinfo{booktitle}{\emph{Proceedings of the ACM
-  SIGPLAN International Workshop on State of the Art in Java Program
-  Analysis}}. \bibinfo{pages}{27--30}.
-\newblock
-
-
-\bibitem[Arzt et~al\mbox{.}(2014b)]%
+\bibitem[Arzt et~al\mbox{.}(2014)]%
         {arzt14}
 \bibfield{author}{\bibinfo{person}{Steven Arzt}, \bibinfo{person}{Siegfried
   Rasthofer}, \bibinfo{person}{Christian Fritz}, \bibinfo{person}{Eric Bodden},
   \bibinfo{person}{Alexandre Bartel}, \bibinfo{person}{Jacques Klein},
   \bibinfo{person}{Yves Le~Traon}, \bibinfo{person}{Damien Octeau}, {and}
-  \bibinfo{person}{Patrick McDaniel}.} \bibinfo{year}{2014}\natexlab{b}.
+  \bibinfo{person}{Patrick McDaniel}.} \bibinfo{year}{2014}\natexlab{}.
 \newblock \showarticletitle{{FlowDroid}: precise context, flow, field,
   object-sensitive and lifecycle-aware taint analysis for Android apps}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 35th ACM SIGPLAN Conference on
@@ -166,6 +152,22 @@
 \newblock
 
 
+\bibitem[Bonett et~al\mbox{.}(2018)]%
+        {muse}
+\bibfield{author}{\bibinfo{person}{Richard Bonett}, \bibinfo{person}{Kaushal
+  Kafle}, \bibinfo{person}{Kevin Moran}, \bibinfo{person}{Adwait Nadkarni},
+  {and} \bibinfo{person}{Denys Poshyvanyk}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Discovering Flaws in Security-Focused Static
+  Analysis Tools for Android Using Systematic Mutation}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 27th USENIX Security
+  Symposium}}. \bibinfo{pages}{1263--1280}.
+\newblock
+\urldef\tempurl%
+\url{https://www.usenix.org/conference/usenixsecurity18/presentation/bonett}
+\showURL{%
+\tempurl}
+
+
 \bibitem[Brucker and Herzberg(2018)]%
         {babelview}
 \bibfield{author}{\bibinfo{person}{Achim~D. Brucker} {and}
@@ -203,19 +205,6 @@
 \newblock
 
 
-\bibitem[Chen et~al\mbox{.}(2026a)]%
-        {arktsPointer}
-\bibfield{author}{\bibinfo{person}{Haonan Chen} {et~al\mbox{.}}}
-  \bibinfo{year}{2026}\natexlab{a}.
-\newblock \bibinfo{title}{Context-Sensitive Pointer Analysis for {ArkTS}}.
-\newblock \bibinfo{howpublished}{arXiv preprint}.
-\newblock
-\urldef\tempurl%
-\url{https://arxiv.org/abs/2602.00457}
-\showURL{%
-\tempurl}
-
-
 \bibitem[Chen et~al\mbox{.}(2025a)]%
         {arkanalyzer}
 \bibfield{author}{\bibinfo{person}{Haonan Chen}, \bibinfo{person}{Daihang
@@ -230,17 +219,30 @@
 \newblock
 
 
-\bibitem[Chen et~al\mbox{.}(2026b)]%
+\bibitem[Chen et~al\mbox{.}(2026)]%
         {hapflow}
 \bibfield{author}{\bibinfo{person}{Haonan Chen}, \bibinfo{person}{Mingyi Zhou},
   \bibinfo{person}{Yanjie Zhao}, {and} \bibinfo{person}{Li Li}.}
-  \bibinfo{year}{2026}\natexlab{b}.
+  \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{{HapFlow}: The Taint Analysis Framework for
   {OpenHarmony} Apps}.
 \newblock \bibinfo{journal}{\emph{ACM Transactions on Software Engineering and
   Methodology}} (\bibinfo{year}{2026}).
 \newblock
 \href{https://doi.org/10.1145/3793863}{doi:\nolinkurl{10.1145/3793863}}
+
+
+\bibitem[Chen et~al\mbox{.}(2025d)]%
+        {pacdroid}
+\bibfield{author}{\bibinfo{person}{Menglong Chen}, \bibinfo{person}{Tian Tan},
+  \bibinfo{person}{Minxue Pan}, {and} \bibinfo{person}{Yue Li}.}
+  \bibinfo{year}{2025}\natexlab{d}.
+\newblock \showarticletitle{{PacDroid}: A Pointer-Analysis-Centric Framework
+  for Security Vulnerabilities in Android Apps}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 47th IEEE/ACM International
+  Conference on Software Engineering}}. \bibinfo{pages}{2803--2815}.
+\newblock
+\href{https://doi.org/10.1109/ICSE55347.2025.00208}{doi:\nolinkurl{10.1109/ICSE55347.2025.00208}}
 
 
 \bibitem[Chen et~al\mbox{.}(2025b)]%
@@ -255,6 +257,18 @@
   \bibinfo{pages}{1006--1021}.
 \newblock
 \href{https://doi.org/10.1007/s11390-025-5142-4}{doi:\nolinkurl{10.1007/s11390-025-5142-4}}
+
+
+\bibitem[Chen et~al\mbox{.}(2025c)]%
+        {harmobridge}
+\bibfield{author}{\bibinfo{person}{Zhen Chen}, \bibinfo{person}{Yi Li},
+  \bibinfo{person}{Teng Wang}, {et~al\mbox{.}}}
+  \bibinfo{year}{2025}\natexlab{c}.
+\newblock \showarticletitle{HarmoBridge: Static Analysis of Cross-Language Data
+  Flows in HarmonyOS Applications}. In \bibinfo{booktitle}{\emph{Proceedings of
+  the 40th IEEE/ACM International Conference on Automated Software Engineering
+  (ASE)}}.
+\newblock
 
 
 \bibitem[Chin et~al\mbox{.}(2011)]%
@@ -356,18 +370,6 @@
 \newblock
 
 
-\bibitem[Hanley and Lippman-Hand(1983)]%
-        {hanley1983if}
-\bibfield{author}{\bibinfo{person}{James~A. Hanley} {and} \bibinfo{person}{Abby
-  Lippman-Hand}.} \bibinfo{year}{1983}\natexlab{}.
-\newblock \showarticletitle{If Nothing Goes Wrong, Is Everything All Right?
-  Interpreting Zero Numerators}.
-\newblock \bibinfo{journal}{\emph{Journal of the American Medical Association}}
-  \bibinfo{volume}{249}, \bibinfo{number}{13} (\bibinfo{year}{1983}),
-  \bibinfo{pages}{1743--1745}.
-\newblock
-
-
 \bibitem[{Huawei}(2021)]%
         {huaweiHarmonyWhitepaper}
 \bibfield{author}{\bibinfo{person}{{Huawei}}.} \bibinfo{year}{2021}\natexlab{}.
@@ -452,6 +454,18 @@
 \href{https://doi.org/10.1145/3720538}{doi:\nolinkurl{10.1145/3720538}}
 
 
+\bibitem[Li et~al\mbox{.}(2023)]%
+        {taintmini}
+\bibfield{author}{\bibinfo{person}{Yi Li}, \bibinfo{person}{Yanyan Chen},
+  \bibinfo{person}{Teng Wang}, {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{TaintMini: Detecting Privacy Data Leaks in
+  Mini-Programs via Universal Data Flow Graph}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 45th International Conference on
+  Software Engineering (ICSE)}}.
+\newblock
+
+
 \bibitem[Lin et~al\mbox{.}(2025)]%
         {haprepair}
 \bibfield{author}{\bibinfo{person}{Zhihao Lin}, \bibinfo{person}{Mingyi Zhou},
@@ -490,6 +504,22 @@
   \bibinfo{booktitle}{\emph{Proceedings of the ACM Conference on Computer and
   Communications Security}}. \bibinfo{pages}{229--240}.
 \newblock
+
+
+\bibitem[Luo et~al\mbox{.}(2022)]%
+        {taintbench}
+\bibfield{author}{\bibinfo{person}{Linghui Luo}, \bibinfo{person}{Felix Pauck},
+  \bibinfo{person}{Goran Piskachev}, \bibinfo{person}{Manuel Benz},
+  \bibinfo{person}{Ivan Pashchenko}, \bibinfo{person}{Martin Mory},
+  \bibinfo{person}{Eric Bodden}, \bibinfo{person}{Ben Hermann}, {and}
+  \bibinfo{person}{Fabio Massacci}.} \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{{TaintBench}: Automatic Real-World Malware
+  Benchmarking of Android Taint Analyses}.
+\newblock \bibinfo{journal}{\emph{Empirical Software Engineering}}
+  \bibinfo{volume}{27}, \bibinfo{number}{1} (\bibinfo{year}{2022}),
+  \bibinfo{pages}{16}.
+\newblock
+\href{https://doi.org/10.1007/s10664-021-10013-5}{doi:\nolinkurl{10.1007/s10664-021-10013-5}}
 
 
 \bibitem[Octeau et~al\mbox{.}(2013)]%
@@ -543,6 +573,18 @@
 \url{https://www.openharmony.cn/}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Pauck et~al\mbox{.}(2018)]%
+        {reprodroid}
+\bibfield{author}{\bibinfo{person}{Felix Pauck}, \bibinfo{person}{Eric Bodden},
+  {and} \bibinfo{person}{Heike Wehrheim}.} \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Do Android Taint Analysis Tools Keep Their
+  Promises?}. In \bibinfo{booktitle}{\emph{Proceedings of the 26th ACM Joint
+  European Software Engineering Conference and Symposium on the Foundations of
+  Software Engineering}}. \bibinfo{pages}{331--341}.
+\newblock
+\href{https://doi.org/10.1145/3236024.3236029}{doi:\nolinkurl{10.1145/3236024.3236029}}
 
 
 \bibitem[Rasthofer et~al\mbox{.}(2014)]%
@@ -642,6 +684,20 @@
 \newblock
 
 
+\bibitem[Wang et~al\mbox{.}(2025)]%
+        {harmonyflow}
+\bibfield{author}{\bibinfo{person}{Yue Wang}, \bibinfo{person}{Sen Chen},
+  \bibinfo{person}{Jiaming Li}, \bibinfo{person}{Wenjing Dang},
+  \bibinfo{person}{Renchao Chai}, \bibinfo{person}{Ziyue Shi}, {and}
+  \bibinfo{person}{Li Li}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{HarmonyFlow}: A Static Analysis Framework for
+  {HarmonyOS} Applications Based on {Ark Panda IR}}.
+\newblock \bibinfo{journal}{\emph{Journal of Software}} (\bibinfo{year}{2025}),
+  \bibinfo{pages}{1--19}.
+\newblock
+\href{https://doi.org/10.13328/j.cnki.jos.007477}{doi:\nolinkurl{10.13328/j.cnki.jos.007477}}
+
+
 \bibitem[Wei et~al\mbox{.}(2018)]%
         {wei2018amandroid}
 \bibfield{author}{\bibinfo{person}{Fengguo Wei}, \bibinfo{person}{Sankardas
@@ -663,6 +719,18 @@
   Dynamic Analysis of {Android} Malware}. In
   \bibinfo{booktitle}{\emph{Proceedings of the Network and Distributed System
   Security Symposium}}.
+\newblock
+
+
+\bibitem[Wu et~al\mbox{.}(2023)]%
+        {wemint}
+\bibfield{author}{\bibinfo{person}{Haoyu Wu}, \bibinfo{person}{Lingxiang Yang},
+  \bibinfo{person}{Mengfei Wang}, {et~al\mbox{.}}}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{WEMINT: Detecting Sensitive Data Flows in
+  Mini-Programs via Explicit Asynchronous Callback Modeling}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 38th IEEE/ACM International
+  Conference on Automated Software Engineering (ASE)}}.
 \newblock
 
 
@@ -726,6 +794,20 @@
 \newblock
 
 
+\bibitem[Yang et~al\mbox{.}(2026)]%
+        {arktsPointer}
+\bibfield{author}{\bibinfo{person}{Yizhuo Yang}, \bibinfo{person}{Lingyun Xu},
+  \bibinfo{person}{Mingyi Zhou}, {and} \bibinfo{person}{Li Li}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \bibinfo{title}{Context-Sensitive Pointer Analysis for {ArkTS}}.
+\newblock \bibinfo{howpublished}{arXiv preprint}.
+\newblock
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2602.00457}
+\showURL{%
+\tempurl}
+
+
 \bibitem[Yang and Yang(2012)]%
         {leakminer}
 \bibfield{author}{\bibinfo{person}{Zhemin Yang} {and} \bibinfo{person}{Min
@@ -761,19 +843,6 @@
 \newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering
   (TSE)}} \bibinfo{volume}{47}, \bibinfo{number}{2} (\bibinfo{year}{2021}),
   \bibinfo{pages}{221--242}.
-\newblock
-
-
-\bibitem[Zhang et~al\mbox{.}(2021)]%
-        {analyzingAnalyzers}
-\bibfield{author}{\bibinfo{person}{Jun Zhang}, \bibinfo{person}{Yang Feng},
-  \bibinfo{person}{Li Li}, \bibinfo{person}{Tegawend{\'e}~F. Bissyand{\'e}},
-  {and} \bibinfo{person}{Jacques Klein}.} \bibinfo{year}{2021}\natexlab{}.
-\newblock \showarticletitle{Analyzing {Android} Taint Analysis Tools:
-  {FlowDroid}, {Amandroid}, and {DroidSafe}}.
-\newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering}}
-  \bibinfo{volume}{47}, \bibinfo{number}{11} (\bibinfo{year}{2021}),
-  \bibinfo{pages}{2395--2414}.
 \newblock
 
 

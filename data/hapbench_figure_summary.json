@@ -1,0 +1,242 @@
+{
+  "source": "E:\\arkprism-fse2027-experiments\\docs\\experiment_hapbench_20260727_v22_final\\hapbench_results.json",
+  "toolOrder": [
+    "HapFlow artifact reproduction",
+    "ArkPrism full",
+    "ArkPrism callback-off",
+    "ArkPrism no-ir",
+    "ArkPrism no-receiver",
+    "ArkPrism unbounded-lifecycle"
+  ],
+  "statisticalUncertainty": {
+    "HapFlow artifact reproduction": {
+      "precision": {
+        "estimate": 92.72727272727272,
+        "wilson95": [
+          82.74005992784393,
+          97.13559397669594
+        ]
+      },
+      "recall": {
+        "estimate": 96.22641509433963,
+        "wilson95": [
+          87.24571280258164,
+          98.9589712724173
+        ]
+      },
+      "specificity": {
+        "estimate": 71.42857142857143,
+        "wilson95": [
+          45.350915670106815,
+          88.27862135542308
+        ]
+      },
+      "accuracy": {
+        "estimate": 91.04477611940298,
+        "wilson95": [
+          81.80724780033378,
+          95.83090493620114
+        ]
+      }
+    },
+    "ArkPrism full": {
+      "precision": {
+        "estimate": 100.0,
+        "wilson95": [
+          92.86524008666413,
+          100.0
+        ]
+      },
+      "recall": {
+        "estimate": 94.33962264150944,
+        "wilson95": [
+          84.62979168981911,
+          98.05633385150642
+        ]
+      },
+      "specificity": {
+        "estimate": 100.0,
+        "wilson95": [
+          78.46891972623644,
+          100.0
+        ]
+      },
+      "accuracy": {
+        "estimate": 95.52238805970148,
+        "wilson95": [
+          87.64216691090624,
+          98.46560248779613
+        ]
+      }
+    }
+  },
+  "categoryConfigurationErrors": {
+    "categories": [
+      "Aliasing",
+      "Anonymous Constructs",
+      "Array-Like Structures",
+      "Field and Object Sensitivity",
+      "General Language Features",
+      "Lifecycle Modeling",
+      "OpenHarmony Specific APIs"
+    ],
+    "toolOrder": [
+      "HapFlow artifact reproduction",
+      "ArkPrism full",
+      "ArkPrism callback-off",
+      "ArkPrism no-ir",
+      "ArkPrism no-receiver",
+      "ArkPrism unbounded-lifecycle"
+    ],
+    "errorCounts": [
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        4,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0,
+        1,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        3,
+        0,
+        0,
+        8,
+        1,
+        0
+      ],
+      [
+        1,
+        3,
+        3,
+        3,
+        3,
+        2
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ],
+    "errorRatesPercent": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        10.0,
+        0.0,
+        0.0,
+        40.0,
+        0.0,
+        0.0
+      ],
+      [
+        20.0,
+        0.0,
+        0.0,
+        20.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        13.636363636363637,
+        0.0,
+        0.0,
+        36.36363636363637,
+        4.545454545454546,
+        0.0
+      ],
+      [
+        7.6923076923076925,
+        23.076923076923077,
+        23.076923076923077,
+        23.076923076923077,
+        23.076923076923077,
+        15.384615384615385
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ]
+  },
+  "pairedAblationEffects": {
+    "metricDeltaPoints": {
+      "ArkPrism callback-off": {
+        "recall": 0.0,
+        "specificity": 0.0,
+        "f1": 0.0,
+        "mcc": 0.0
+      },
+      "ArkPrism no-ir": {
+        "recall": -24.52830188679246,
+        "specificity": 0.0,
+        "f1": -14.86515641855448,
+        "mcc": -31.065075056007707
+      },
+      "ArkPrism no-receiver": {
+        "recall": 0.0,
+        "specificity": -7.14285714285714,
+        "f1": -0.9335324869305439,
+        "mcc": -4.993713998910554
+      },
+      "ArkPrism unbounded-lifecycle": {
+        "recall": 3.7735849056603765,
+        "specificity": -7.14285714285714,
+        "f1": 1.0258289063931114,
+        "mcc": 2.827594638415165
+      }
+    },
+    "exactTwoSidedMcNemarP": {
+      "ArkPrism callback-off": 1.0,
+      "ArkPrism no-ir": 0.000244140625,
+      "ArkPrism no-receiver": 1.0,
+      "ArkPrism unbounded-lifecycle": 1.0
+    }
+  }
+}

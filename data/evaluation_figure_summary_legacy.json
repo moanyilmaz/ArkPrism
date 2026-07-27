@@ -1,0 +1,732 @@
+{
+  "dataset": {
+    "projects": 1015,
+    "projectsWithDetectedApis": 236,
+    "projectsWithBenchmarkSourceApis": 221,
+    "projectsWithBothBenchmarkAndDetectedApis": 221,
+    "totalFilesAnalyzed": 31433,
+    "totalMethodsAnalyzed": 238271,
+    "totalPrivacyApiUsages": 1757,
+    "totalCallChains": 1757,
+    "totalTaintFlows": 1792
+  },
+  "aggregate": {
+    "generatedAt": "2026-07-05T11:17:52.097Z",
+    "outDir": "E:\\arkprism-develop-0702\\out_argus_1015_validated_20260704",
+    "projects": 1015,
+    "reports": 1015,
+    "missing": [],
+    "readErrors": [],
+    "projectsWithApis": 236,
+    "totalApis": 1757,
+    "totalChainEntries": 1757,
+    "withPath": 1757,
+    "withoutPath": 0,
+    "sinks": 1352,
+    "taintFlows": 1792,
+    "noPath": 0,
+    "localFallbackChains": 280,
+    "frameworkEntryChains": 1429,
+    "initializationChains": 324
+  },
+  "sourceBenchmark": {
+    "primaryBenchmark": "presence",
+    "rawMethodHits": 57737,
+    "presenceSourceHits": 1379,
+    "presenceSourceMethods": 745,
+    "presenceMissingInReport": 0,
+    "qualifiedSourceHits": 1087,
+    "qualifiedSourceMethods": 606,
+    "qualifiedMissingInReport": 0,
+    "rawToQualifiedRatio": 0.01882674887853543,
+    "rawToPresenceRatio": 0.023884164400644302
+  },
+  "localization": {
+    "namespaceMethodLevel": {
+      "truePositive": 745,
+      "falsePositiveAgainstQualified": 90,
+      "falseNegative": 0,
+      "predicted": 835,
+      "gold": 745,
+      "exactMatchProjects": 953,
+      "microPrecisionAgainstQualified": 0.8922155688622755,
+      "microRecall": 1,
+      "microF1AgainstQualified": 0.9430379746835443,
+      "macroPrecisionAgainstQualified": 0.9676914124408367,
+      "macroRecall": 1
+    },
+    "strictPackageSignatureLevel": {
+      "truePositive": 483,
+      "falsePositiveAgainstQualified": 371,
+      "falseNegative": 142,
+      "predicted": 854,
+      "gold": 625,
+      "microPrecisionAgainstQualified": 0.5655737704918032,
+      "microRecall": 0.7728,
+      "microF1AgainstQualified": 0.6531440162271805,
+      "macroPrecisionAgainstQualified": 0.8709832362480215,
+      "macroRecall": 0.9568136784923225
+    },
+    "note": "Primary localization metrics use project-level presence evidence: the source file imports a related Harmony package and contains the configured sensitive API method/property token. This intentionally does not require proving that the API is invoked in IR. Qualified invocation-like evidence is reported separately."
+  },
+  "manualTop120": {
+    "generatedAt": "2026-07-05T11:37:44.258Z",
+    "benchmarkType": "manual source-code review benchmark",
+    "scope": "Top 120 ARGUS-1015 samples by ArkPrism privacyApiUsages; top50 prior manual review plus newly reviewed samples 51-120",
+    "projects": 120,
+    "apiUsages": 1533,
+    "callChains": 1533,
+    "dataSinks": 1121,
+    "taintFlows": 1021,
+    "predictedMethods": 666,
+    "manualGoldMethods": 666,
+    "tp": 666,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "verifiedPredictedMethods": 666,
+    "unverifiedPredictedMethods": 0,
+    "annotationOnlyGold": 0,
+    "callChainCoverage": 1,
+    "sinkEvidencePerApiUsage": 0.731245923026745,
+    "taintFlowsPerApiUsage": 0.6660143509458578,
+    "full1015ApiUsages": 1757,
+    "apiUsageCoverageOfFull1015": 0.8725099601593626,
+    "manualCorrectionsApplied": 6
+  },
+  "chain": {
+    "total": 1757,
+    "withPath": 1757,
+    "withoutPath": 0,
+    "coverage": 1,
+    "chainClassCounts": {
+      "framework-entry": 1105,
+      "unknown-entry": 48,
+      "initialization": 324,
+      "local-fallback": 280
+    },
+    "entryTypeCounts": {
+      "component_lifecycle": 979,
+      "unknown": 328,
+      "initialization": 324,
+      "app_lifecycle": 125,
+      "user_interaction": 1
+    },
+    "length": {
+      "min": 1,
+      "p25": 1,
+      "median": 1,
+      "p75": 2,
+      "p90": 3,
+      "p95": 4,
+      "max": 9,
+      "mean": 1.77
+    },
+    "lengthBuckets": {
+      "1": 982,
+      "2-3": 642,
+      "4-5": 103,
+      "6-10": 30
+    },
+    "chainsWithSinks": 839,
+    "chainsWithSinksRatio": 0.47751849743881614,
+    "sinksPerChain": {
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "p75": 1,
+      "p90": 2,
+      "p95": 3,
+      "max": 21,
+      "mean": 0.77
+    }
+  },
+  "sinks": {
+    "total": 1352,
+    "sinkTypeCounts": {
+      "log": 1067,
+      "data_return": 45,
+      "storage": 93,
+      "network": 9,
+      "ui_display": 138
+    },
+    "topSinkApis": [
+      {
+        "name": "Logger.error",
+        "count": 273
+      },
+      {
+        "name": "Logger.info",
+        "count": 212
+      },
+      {
+        "name": "console.error",
+        "count": 170
+      },
+      {
+        "name": "console.log",
+        "count": 147
+      },
+      {
+        "name": "console.info",
+        "count": 83
+      },
+      {
+        "name": "hilog.error",
+        "count": 81
+      },
+      {
+        "name": "hilog.info",
+        "count": 76
+      },
+      {
+        "name": "Text.create",
+        "count": 62
+      },
+      {
+        "name": "pasteboard.SystemPasteboard.setData",
+        "count": 45
+      },
+      {
+        "name": "return",
+        "count": 45
+      },
+      {
+        "name": "Image.create",
+        "count": 35
+      },
+      {
+        "name": "photoAccessHelper.PhotoAccessHelper.createAsset",
+        "count": 30
+      },
+      {
+        "name": "ForEach.create",
+        "count": 15
+      },
+      {
+        "name": "TextInput.create",
+        "count": 12
+      },
+      {
+        "name": "Logger.debug",
+        "count": 11
+      }
+    ]
+  },
+  "taint": {
+    "totalFlows": 1792,
+    "flowsWithPath": 1792,
+    "pathCoverage": 1,
+    "flowsPerApiUsage": 1.0199203187250996,
+    "flowsPerProject": {
+      "min": 0,
+      "p25": 0,
+      "median": 0,
+      "p75": 0,
+      "p90": 4,
+      "p95": 10,
+      "max": 205,
+      "mean": 1.77
+    },
+    "pathLength": {
+      "min": 2,
+      "p25": 3,
+      "median": 3,
+      "p75": 5,
+      "p90": 6,
+      "p95": 7,
+      "max": 16,
+      "mean": 3.77
+    },
+    "pathLengthBuckets": {
+      "2-3": 987,
+      "4-5": 611,
+      "6-10": 184,
+      ">10": 10
+    },
+    "topTaintSinkApis": [
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%1)",
+        "count": 49
+      },
+      {
+        "name": "instanceinvoke Logger.<@%unk/%unk: .info()>(TAG, %2)",
+        "count": 29
+      },
+      {
+        "name": "instanceinvoke logger.<@%unk/%unk: .info()>(%0)",
+        "count": 24
+      },
+      {
+        "name": "%1 = instanceinvoke %0.<@%unk/%unk: .get()>(tag)",
+        "count": 21
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%4)",
+        "count": 21
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%9)",
+        "count": 20
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .log()>(%10)",
+        "count": 20
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .log()>(%2)",
+        "count": 19
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%3)",
+        "count": 16
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%6)",
+        "count": 14
+      },
+      {
+        "name": "instanceinvoke LogUtil.<@%unk/%unk: .info()>(%8)",
+        "count": 13
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%2)",
+        "count": 12
+      },
+      {
+        "name": "instanceinvoke logger.<@%unk/%unk: .info()>(%2)",
+        "count": 12
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .error()>(%6)",
+        "count": 11
+      },
+      {
+        "name": "instanceinvoke console.<@%unk/%unk: .info()>(%0)",
+        "count": 11
+      }
+    ]
+  },
+  "detectorCumulative": {
+    "direct_stmt_only": {
+      "count": 205,
+      "coverage": 0.11667615253272624
+    },
+    "all_direct_invokes": {
+      "count": 882,
+      "coverage": 0.50199203187251
+    },
+    "plus_indirect_invokes": {
+      "count": 1335,
+      "coverage": 0.7598178713716562
+    },
+    "plus_constants": {
+      "count": 1757,
+      "coverage": 1.0
+    }
+  },
+  "topCutoffs": {
+    "10": {
+      "apiUsages": 546,
+      "share": 0.3107569721115538
+    },
+    "20": {
+      "apiUsages": 771,
+      "share": 0.4388161639157655
+    },
+    "50": {
+      "apiUsages": 1127,
+      "share": 0.6414342629482072
+    },
+    "100": {
+      "apiUsages": 1453,
+      "share": 0.8269778030734206
+    },
+    "120": {
+      "apiUsages": 1533,
+      "share": 0.8725099601593626
+    },
+    "236": {
+      "apiUsages": 1757,
+      "share": 1.0
+    }
+  },
+  "projectDistributions": {
+    "apiUsages": {
+      "min": 0.0,
+      "p25": 0.0,
+      "median": 0.0,
+      "p75": 0.0,
+      "p90": 4.0,
+      "p95": 9.0,
+      "max": 128.0,
+      "mean": 1.7310344827586206
+    },
+    "sinks": {
+      "min": 0.0,
+      "p25": 0.0,
+      "median": 0.0,
+      "p75": 0.0,
+      "p90": 3.0,
+      "p95": 6.0,
+      "max": 81.0,
+      "mean": 1.3320197044334976
+    },
+    "taintFlows": {
+      "min": 0.0,
+      "p25": 0.0,
+      "median": 0.0,
+      "p75": 0.0,
+      "p90": 4.0,
+      "p95": 10.0,
+      "max": 205.0,
+      "mean": 1.7655172413793103
+    },
+    "files": {
+      "min": 1.0,
+      "p25": 9.0,
+      "median": 13.0,
+      "p75": 25.0,
+      "p90": 67.0,
+      "p95": 119.59999999999991,
+      "max": 1620.0,
+      "mean": 30.968472906403942
+    },
+    "methods": {
+      "min": 1.0,
+      "p25": 52.0,
+      "median": 86.0,
+      "p75": 177.5,
+      "p90": 474.6,
+      "p95": 972.9999999999991,
+      "max": 10757.0,
+      "mean": 234.74975369458127
+    },
+    "projectsWithApis": 236,
+    "projectsWithSinks": 167,
+    "projectsWithTaintFlows": 218
+  },
+  "correlations": {
+    "logMethodsVsApiUsages": 0.5128183146239307,
+    "logMethodsVsTaintFlows": 0.3593816931819013,
+    "logApiUsagesVsTaintFlows": 0.533672803699005,
+    "logApiUsagesVsSinks": 0.8432989605562804
+  },
+  "topCategories": [
+    [
+      "device_identity.screen",
+      438
+    ],
+    [
+      "device_identity.hardware",
+      357
+    ],
+    [
+      "network.connectivity",
+      148
+    ],
+    [
+      "user_data.clipboard",
+      115
+    ],
+    [
+      "location",
+      102
+    ],
+    [
+      "network.bluetooth",
+      85
+    ],
+    [
+      "device_status.sensor",
+      76
+    ],
+    [
+      "network.wifi",
+      69
+    ],
+    [
+      "device_identity.software",
+      64
+    ],
+    [
+      "user_data.media",
+      55
+    ],
+    [
+      "media.camera",
+      49
+    ],
+    [
+      "device_status.audio",
+      41
+    ]
+  ],
+  "topPackages": [
+    [
+      "@kit.ArkUI",
+      438
+    ],
+    [
+      "@kit.BasicServicesKit",
+      376
+    ],
+    [
+      "@ohos.deviceInfo",
+      175
+    ],
+    [
+      "@kit.NetworkKit",
+      105
+    ],
+    [
+      "@kit.ConnectivityKit",
+      93
+    ],
+    [
+      "@kit.LocationKit",
+      87
+    ],
+    [
+      "@kit.SensorServiceKit",
+      67
+    ],
+    [
+      "@kit.UserAuthenticationKit",
+      43
+    ],
+    [
+      "@kit.CameraKit",
+      38
+    ],
+    [
+      "@ohos.file.photoAccessHelper",
+      36
+    ],
+    [
+      "@ohos.distributedDeviceManager",
+      33
+    ],
+    [
+      "@kit.AudioKit",
+      30
+    ]
+  ],
+  "topMethods": [
+    [
+      "display.Display.getDefaultDisplaySync",
+      422
+    ],
+    [
+      "deviceType",
+      283
+    ],
+    [
+      "getSystemPasteboard",
+      74
+    ],
+    [
+      "getCurrentLocation",
+      54
+    ],
+    [
+      "on",
+      43
+    ],
+    [
+      "off",
+      36
+    ],
+    [
+      "getAudioManager",
+      33
+    ],
+    [
+      "getSupportedCameras",
+      32
+    ],
+    [
+      "createAsset",
+      30
+    ],
+    [
+      "getAssets",
+      25
+    ],
+    [
+      "getUserAuthInstance",
+      24
+    ],
+    [
+      "hasDefaultNetSync",
+      24
+    ],
+    [
+      "productModel",
+      23
+    ],
+    [
+      "getData",
+      22
+    ],
+    [
+      "getAvailableStatus",
+      19
+    ]
+  ],
+  "topPermissions": [
+    [
+      "ohos.permission.INTERNET",
+      332
+    ],
+    [
+      "ohos.permission.APPROXIMATELY_LOCATION",
+      71
+    ],
+    [
+      "ohos.permission.LOCATION",
+      61
+    ],
+    [
+      "ohos.permission.GET_NETWORK_INFO",
+      57
+    ],
+    [
+      "ohos.permission.DISTRIBUTED_DATASYNC",
+      40
+    ],
+    [
+      "ohos.permission.GET_WIFI_INFO",
+      39
+    ],
+    [
+      "ohos.permission.KEEP_BACKGROUND_RUNNING",
+      38
+    ],
+    [
+      "ohos.permission.MICROPHONE",
+      34
+    ],
+    [
+      "ohos.permission.CAMERA",
+      34
+    ],
+    [
+      "ohos.permission.GET_BUNDLE_INFO_PRIVILEGED",
+      31
+    ],
+    [
+      "ohos.permission.MEDIA_LOCATION",
+      28
+    ],
+    [
+      "ohos.permission.READ_MEDIA",
+      27
+    ]
+  ],
+  "sinkRisk": {
+    "local_observable": 1205,
+    "persistent_or_transfer": 138,
+    "external": 9
+  },
+  "categorySinkMatrix": {
+    "categories": [
+      "device_identity.screen",
+      "device_identity.hardware",
+      "network.connectivity",
+      "user_data.clipboard",
+      "location",
+      "network.bluetooth",
+      "device_status.sensor",
+      "network.wifi",
+      "device_identity.software",
+      "user_data.media"
+    ],
+    "sinkTypes": [
+      "log",
+      "ui_display",
+      "storage",
+      "data_return",
+      "network"
+    ],
+    "matrix": [
+      [
+        118,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        139,
+        129,
+        2,
+        5,
+        0
+      ],
+      [
+        130,
+        3,
+        1,
+        0,
+        9
+      ],
+      [
+        33,
+        0,
+        45,
+        1,
+        0
+      ],
+      [
+        89,
+        0,
+        0,
+        5,
+        0
+      ],
+      [
+        79,
+        0,
+        0,
+        6,
+        0
+      ],
+      [
+        93,
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        85,
+        0,
+        0,
+        5,
+        0
+      ],
+      [
+        57,
+        2,
+        0,
+        2,
+        0
+      ],
+      [
+        40,
+        0,
+        45,
+        2,
+        0
+      ]
+    ]
+  },
+  "figures": [
+    "figs/eval_manual_benchmark_landscape.pdf",
+    "figs/eval_detection_effectiveness.pdf",
+    "figs/eval_corpus_landscape.pdf"
+  ]
+}

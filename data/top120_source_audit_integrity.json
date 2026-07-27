@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "E:\\arkprism-fse2027-experiments\\docs\\benchmark\\top120_source_audit_annotations.json",
+  "dataset": "E:\\Projects\\ARGUS\\release_20260617\\ARGUS-successful-1015-samples-20260617",
+  "rules": "E:\\arkprism-fse2027-experiments\\config\\sensitive_apis.json",
+  "checks": {
+    "records": 666,
+    "sourceEvidenceLocations": 666,
+    "projectDirectoriesPresent": 666,
+    "sourceFilesPresent": 666,
+    "positiveLinesPresent": 666,
+    "lineTextSupported": 666,
+    "snippetsPresent": 666,
+    "configuredApiKeys": 666
+  },
+  "failures": [],
+  "passed": true
+}

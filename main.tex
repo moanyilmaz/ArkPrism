@@ -1,14 +1,15 @@
 %%
 %%
 %%
-\documentclass[sigconf,review,anonymous]{acmart}
+\RequirePackage{expl3}
+\documentclass[acmsmall,screen,review,anonymous]{acmart}
 
 \usepackage{amsmath}
-\usepackage[ruled,vlined,linesnumbered]{algorithm2e}
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{soul,color}
 \usepackage{listings}
+\usepackage{xspace}
 \usepackage{xurl}
 \usepackage{multirow}
 \usepackage{booktabs}
@@ -25,6 +26,7 @@
 \usepackage{tcolorbox}
 \usepackage{threeparttable}
 \usepackage{float}
+\usepackage{algpseudocode}
 \usepackage{siunitx}
 % enumitem removed — conflicts with acmart's list handling; paralist provides inparaenum
 % \setlist from enumitem; replaced with manual list parameter adjustments below
@@ -32,10 +34,14 @@
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc,shapes.geometric,backgrounds}
 
+\floatstyle{ruled}
+\newfloat{algorithm}{tbp}{loa}
+\floatname{algorithm}{Algorithm}
+
 \DeclareRobustCommand{\textspecial}[1]{{\sffamily #1}}
 \newcommand{\mytoolname}{\textsc{ArkPrism}}
 \newcommand{\mytool}{\mytoolname\xspace}
-\newcommand{\mytooltitle}{\texorpdfstring{Beyond Method Signatures: Resolving Privacy APIs and Asynchronous Flows in ArkTS}{Beyond Method Signatures: Resolving Privacy APIs and Asynchronous Flows in ArkTS}}
+\newcommand{\mytooltitle}{\texorpdfstring{Beyond Namespace--Method Configuration: Evidence-Preserving Privacy API Resolution for ArkTS}{Beyond Namespace--Method Configuration: Evidence-Preserving Privacy API Resolution for ArkTS}}
 \newcommand{\arkts}{ArkTS\xspace}
 \newcommand{\openharmony}{OpenHarmony\xspace}
 
@@ -60,9 +66,6 @@
 \newcommand{\nsupport}{\textcolor{red}{\ding{55}}}
 \newcommand{\xmark}{\ding{55}}
 
-\SetCommentSty{textnormal}
-\SetKwComment{Comment}{$\triangleright$\ }{}
-\newcommand{\tccdot}[1]{\tcp[r]{\hfill$\triangleright$~\textnormal{\small #1}}}
 \renewcommand\cellalign{cc}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
@@ -142,23 +145,13 @@
     moredelim=**[is][\color{red}]{@@}{@@},
 }
 
-\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
-\setlength{\floatsep}{6pt plus 2pt minus 2pt}
-\setlength{\intextsep}{6pt plus 2pt minus 2pt}
-\setlength{\dbltextfloatsep}{6pt plus 2pt minus 2pt}
-\setlength{\dblfloatsep}{6pt plus 2pt minus 2pt}
-\setlength{\abovecaptionskip}{8pt plus 2pt minus 2pt}
-\setlength{\belowcaptionskip}{4pt plus 2pt minus 2pt}
-\setlength{\abovedisplayskip}{6pt plus 2pt minus 2pt}
-\setlength{\belowdisplayskip}{6pt plus 2pt minus 2pt}
-% \setlist was from enumitem; acmart handles list spacing internally
-
 \setcopyright{none}
 \settopmatter{printacmref=true}
 \renewcommand\footnotetextcopyrightpermission[1]{}
 
-\acmConference[Conference'26]{ACM Conference}{2026}{}
-\acmYear{2026}
+\acmConference[FSE 2027]{The ACM International Conference on the Foundations of Software Engineering}{July 12--16, 2027}{Shenzhen, China}
+\acmYear{2027}
+\copyrightyear{2027}
 
 \begin{document}
 \sloppy
@@ -166,11 +159,11 @@
 \title{\mytooltitle}
 
 \begin{abstract}
-Existing taint analysis frameworks for \openharmony/\arkts assume that privacy-sensitive API sources are already identified. In practice, method-signature-based source configuration misses 31.3\% of real API usages: manager-style indirect calls and privacy-constant field reads are invisible to signature matching. HapFlow, the state-of-the-art \arkts taint analysis, solves \emph{propagation} but not \emph{source identity resolution}---which API calls are privacy-sensitive and how their identities survive package migration, receiver factories, and IR lowering.
+Static taint analysis for \openharmony/\arkts depends on identifying privacy-sensitive sources before propagation begins. A strict namespace--method source loader does not preserve enough evidence for property reads, package migration between \texttt{@ohos.*} and \texttt{@kit.*}, or calls whose sensitive identity is exposed through a manager/helper receiver. A missed identity suppresses the initial taint fact regardless of the downstream solver.
 
-We present \mytool, a static analysis framework addressing this bottleneck. \mytool contributes: (1)~\emph{package- and receiver-aware API identity resolution}, resolving package-family equivalence, import aliases, IR-lowered aliases, and receiver-origin provenance---two access patterns that are structurally invisible to method-signature matching; (2)~\emph{asynchronous source binding}, formalizing how callbacks, field-stored callbacks, builder-option callbacks, and Promise/\texttt{async-await} chains connect sources to downstream consumers, improving taint flow recall from 51.5\% to 97.8\%; and (3)~\emph{provenance-annotated evidence subgraphs}, where each edge records its derivation, enabling auditors to distinguish proven paths from heuristic completions.
+We present \mytool, a static analysis framework that combines evidence-carrying API identity resolution, ArkTS-specific IR recovery, bounded asynchronous path recovery, and provenance-annotated audit subgraphs. Identity resolution records namespace-constrained package migration, receiver origin or type, access kind, and IR-lowered aliases. The IFDS analysis recovers initializers, lexical captures, exceptional flow, and access paths; a separate post-IFDS phase handles selected callback and Promise/\texttt{async-await} gaps and retains their provenance rather than presenting them as native IFDS edges. Lifecycle entries are ordered and explicitly bounded to avoid manufacturing flows through unrestricted event cycles.
 
-On the ArkPrismBench stratified benchmark (164 projects sampled from a 1,015-project corpus), \mytool achieves 100\% precision and 100\% recall for API recognition; a micro-benchmark of 77 test cases across 15 pattern categories confirms 93.2\% positive-case detection. Ablation shows that callback analysis is the dominant component, improving taint flow recall from 51.5\% to 97.8\% ($p<0.001$). The full pipeline analyzes 1,015 projects in $\approx$4.2\,h wall time with 99.8\% completion.
+A source-first audit samples 60 real projects by scale and configured-import presence, reviews every candidate occurrence before consulting detector output, and establishes 90 gold occurrences in 16 projects plus 44 confirmed zero projects. \mytool recovers all 90 at their exact source locations with no additional reports (100\% observed precision and recall; 95\% Wilson lower bound 95.91\%). On a 64-case identity benchmark, the complete resolver is the only evaluated configuration to classify all positive and matched-negative patterns. Across all 67 cases of the author-released HapBench suite, \mytool attains 100.00\% precision, 94.34\% recall, and 97.09\% F1; its strongest comparative advantage over HapFlow is specificity (100.00\% versus 71.43\%). A 48-case asynchronous benchmark further isolates nine Promise-\texttt{then} recoveries ($p=0.00390625$). Finally, a single-build study of 1,014 projects characterizes detector evidence, typed may-paths, robustness, and analysis cost.
 \end{abstract}
 
 \begin{CCSXML}
@@ -205,11 +198,12 @@ On the ArkPrismBench stratified benchmark (164 projects sampled from a 1,015-pro
 \input{8.Conclusion}
 
 \section*{Data Availability}
-Our artifact includes: (1) the ArkPrism tool source code and build scripts, (2) the ARGUS-1015 dataset of 1,015 HarmonyOS applications with per-project analysis reports, (3) the ArkPrismBench stratified benchmark (164 projects) with ground-truth annotations, (4) the ArkPrismBench-Micro (77 test cases across 15 pattern categories), (5) source/sink configuration files, and (6) scripts for reproducing all evaluation tables. We will provide an anonymized artifact package upon acceptance.
+The artifact contains the \mytool source and build scripts, fixed source/sink and package-migration rules, the source-first 60-project occurrence benchmark, the 120-project high-output stress audit, the 64-case identity benchmark, the 67-case HapBench and 48-case ArkAsyncBench oracles and raw outputs, per-project reports for the 1,014 completed corpus analyses, and scripts that regenerate the evaluation tables and figures. Dataset redistribution follows the licenses of the constituent projects; where redistribution is restricted, the artifact provides project identifiers, hashes, and derived reports.
+
+\appendix
+\input{9.Appendix}
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
-
-\input{9.Appendix}
 
 \end{document}

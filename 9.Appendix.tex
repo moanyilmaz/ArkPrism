@@ -1,254 +1,124 @@
-\appendix
-\section{Supplementary Details}
+\section{Reproduction Details}
 \label{sec:appendix}
 
-\subsection{Design Map}
-\label{subsec:app_designmap}
+\subsection{HapBench Case-level Outcomes}
+\label{subsec:app_hapbench_errors}
 
-Table~\ref{tab:notation_app} summarizes the notation used throughout the paper. Table~\ref{tab:designmap_app} maps each analysis layer to the observed gap, formal object, optimization, and stored subgraph evidence.
+Table~\ref{tab:hapbench_errors_app} lists every error produced by either executable tool under the fixed 67-case oracle. Cases absent from the table are classified correctly by both tools. We retain the source-annotated oracle even where a more restrictive event or object-lifetime semantics would suggest a different label.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
-\caption{Notation.}
-\label{tab:notation_app}
-\small
-\begin{tabularx}{\linewidth}{lYl}
+\caption{Complete error inventory for the main HapBench comparison.}
+\label{tab:hapbench_errors_app}
+\begin{tabularx}{\columnwidth}{@{}l l l Y@{}}
 \toprule
-\tablehead
-Symbol & Meaning & Produced by \\
+Tool & Outcome & Case & Observed mechanism \\
 \midrule
-$P$ & An analyzed \openharmony project & Scene builder \\
-$R$ & Privacy-sensitive API rules & Rule loader \\
-$\mathit{Id}(v)$ & Semantic API identity $\langle\mathit{Pkg},\mathit{Ns},\mathit{Recv},\mathit{Mem},\mathit{Acc}\rangle$ & API resolver \\
-$A$ & Import and IR alias relation & API resolver \\
-$\mathit{SrcBind}$ & Asynchronous source binding $(call,cb,param)$ & Callback analyzer \\
-$U$ & Recognized privacy-sensitive API usages & Match engine \\
-$C_u$ & Recovered call-chain set for usage $u$ & Chain tracer \\
-$K_u$ & Downstream sink set attached to $u$ & Sink analyzer \\
-$T_u$ & Taint paths related to $u$ & HapFlow runner \\
-$\omega(e)$ & Provenance label for edge $e$ & Graph assembler \\
-$G_u$ & Information-flow subgraph for $u$ & Graph assembler \\
+HapFlow & FN & \texttt{AnonymousClass2} & Anonymous instance initializer omitted \\
+HapFlow & FN & \texttt{Exceptions4} & Exceptional successor/handler not recovered \\
+HapFlow & FP & \texttt{ArrayIndexNoLeak} & Distinct constant indices collapse \\
+HapFlow & FP & \texttt{VirtualDispatch2} & Infeasible receiver target retained \\
+HapFlow & FP & \texttt{VirtualDispatch3} & Infeasible receiver target retained \\
+HapFlow & FP & \texttt{UnreachableFlow} & Lifecycle cycle creates reachability \\
+\mytool & FN & \texttt{ActivityLifecycle4} & Parent source method is bypassed by child override \\
+\mytool & FN & \texttt{BackupExtensionAbility} & Oracle assumes state across extension instances \\
+\mytool & FN & \texttt{Button1} & Oracle assumes click-written static state reaches later creation \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\begin{table*}[h]
+The two tools agree on 58 outcomes. Of the nine discordant cases, \mytool alone is correct on six and HapFlow alone on three. The exact two-sided McNemar test is therefore based on the discordant pair $(6,3)$ and yields $p=0.508$.
+
+\subsection{Lifecycle-Oracle Sensitivity}
+\label{subsec:app_oracle_sensitivity}
+
+The primary evaluation preserves all published/source-annotated HapBench labels. We additionally define a strict executed-order contract for the three disputed lifecycle cases: an override does not execute its parent body without an explicit \texttt{super} call; an instance field does not cross framework-created instances without a same-object witness; and a UI callback occurring after initial ability creation does not feed an earlier \texttt{onCreate} without an explicit later-creation edge. This contract relabels \texttt{ActivityLifecycle4}, \texttt{BackupExtensionAbility}, and \texttt{Button1} as negative and changes no other case.
+
+\begin{table}[H]
 \centering
-\caption{Design map.}
-\label{tab:designmap_app}
-\footnotesize
-\begin{tabularx}{\textwidth}{@{}p{0.10\textwidth}p{0.16\textwidth}p{0.17\textwidth}p{0.13\textwidth}p{0.17\textwidth}p{0.11\textwidth}@{}}
+\caption{Sensitivity to strict lifecycle execution order.}
+\label{tab:hapbench_strict_oracle}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrrrr@{}}
 \toprule
-\tablehead
-Layer & Observed gap & Effect without \mytool & Formal object & \mytool optimization & Subgraph evidence \\
+Tool & TP & TN & FP & FN & Precision & Recall & Specificity & F1 & MCC \\
 \midrule
-\subtlebreak
-Rules & \texttt{@ohos}/\texttt{@kit} migration & Package-sensitive misses & $\eta(pkg),\mathit{Pkg}$ & Package-family normalization & Stable API key \\
-Imports & Default/namespace aliases & Namespace loss & $A_{import},\mathit{Ns}$ & Import alias map and lowercase variants & Matched namespace \\
-\subtlebreak
-IR & Lowered multi-segment calls & Lost calls such as \texttt{request.agent.create} & $A_{ir}$ & Namespace-member alias tracking & Recovered signature \\
-Receiver & Manager/factory objects & Indirect calls invisible & $\mathit{Recv}$ & Bounded backward data-flow tracing & Receiver provenance \\
-Property & Device-identity fields & Non-method sources invisible & $\mathit{Acc}{=}\mathit{property}$ & Method/property unified representation & Field access label \\
-Callbacks & ArkUI closures and fields & Truncated chains & $\mathit{SrcBind}(call,cb,param)$ & Callback resolution + Promise chains & Chain class \\
-\subtlebreak
-Provenance & No derivation tracking & Unevaluable evidence & $\omega(e)$ & Per-edge provenance label & Confidence \\
-Taint & Callback/Promise data & Empty or partial IFDS flows & $T_u$ & Default callback/Promise propagation & Taint paths \\
+HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27\% & 96.00\% & 58.82\% & 91.43\% & 0.622 \\
+\mytool & 50 & 17 & 0 & 0 & 100.00\% & 100.00\% & 100.00\% & 100.00\% & 1.000 \\
 \bottomrule
-\end{tabularx}
-\end{table*}
-
-\subsection{Failure Modes Observed in a Large-scale Corpus}
-\label{subsec:app_failure_modes}
-
-Before designing \mytool, we repeatedly ran the ArkAnalyzer/HapFlow-based pipeline on the large-scale dataset and inspected failures. The most common failure modes were:
-
-\begin{itemize}
-    \item \textbf{Layout misses.} Some projects contained valid \arkts source files but were not discovered by standard project construction.
-    \item \textbf{Package migration misses.} Rules written for \texttt{@kit.*} packages missed apps importing equivalent historical \texttt{@ohos.*} packages, and vice versa.
-    \item \textbf{IR-lowering misses.} Multi-segment API expressions were lowered into temporaries, causing the final method call to lose its namespace context.
-    \item \textbf{Indirect receiver misses.} Manager APIs were called through objects whose types were absent, imprecise, or not directly tied to the original namespace.
-    \item \textbf{Callback-edge misses.} Anonymous functions and field-stored callbacks were not always connected to their registration sites in the recovered call chain.
-    \item \textbf{Callback taint loss.} Runs without callback/Promise taint propagation undercounted or eliminated taint flows even when source and sink rules loaded correctly.
-\end{itemize}
-
-These failure modes motivate the design in Section~\ref{sec:design} and provide natural ablation points: each optimization can be disabled to measure its effect on API recall, chain coverage, sink attachment, or taint-flow count.
-
-\section{Supplementary Evaluation Details}
-\label{sec:app_eval}
-
-\subsection{Context-Sensitive Call Graph Details}
-\label{subsec:app_context_sensitive}
-
-Context-insensitive call graphs (CHA, RTA) merge all calling contexts of a method into a single node, causing spurious data flow at merge points. \mytool supports $k$-limited context-sensitive call graph construction using ArkAnalyzer's pointer analysis infrastructure. The context sensitivity level $k$ controls the depth of calling context tracked for each method invocation. At $k=0$, the analysis is context-insensitive (equivalent to CHA). At $k=1$, each call site receives its own context, which is sufficient to separate most callback-related data flows. At $k=2$, calling contexts are tracked two levels deep, which helps with nested callback patterns.
-
-\begin{table}[h]
-\centering
-\caption{Context-sensitive call graph construction ($k$-CFA, 1,001/1,015 projects).}
-\label{tab:cs_precision_app}
-\small
-\begin{tabularx}{\columnwidth}{Yrrrr}
-\toprule
-\tablehead
-$k$ & CG nodes & Virtual sites & PTA time & Overhead \\
-\midrule
-0 (CHA) & 419,462 & 1,701,662 & --- & baseline \\
-0 (RTA) & 418,776 & 1,701,662 & 7,383\,ms & 0.79$\times$ \\
-1 & --- & 1,701,662 & 46,870\,ms & 5.02$\times$ \\
-2 & --- & 1,701,662 & 34,473\,ms & 3.69$\times$ \\
-\bottomrule
-\end{tabularx}
+\end{tabular}}
 \end{table}
 
-\subsection{Representative Collaboration Behavior Projects}
-\label{subsec:app_lc_examples}
+The tools then disagree on nine cases, all classified correctly only by \mytool; the exact two-sided McNemar test gives $p=0.00390625$. This is a post-hoc sensitivity analysis rather than a replacement oracle. It shows that the primary nonsignificant result is conservative with respect to these three lifecycle assumptions, while also making the semantics responsible for the difference explicit. The artifact derives both tables from the same case predictions through \texttt{analyze\_hapbench\_oracle\_sensitivity.js}.
 
-Table~\ref{tab:lc_cg_examples_app} shows representative projects with the largest collaboration behavior increases under lifecycle-enhanced CG.
+\subsection{Uncertainty and Category Robustness}
 
-\begin{table}[h]
+Table~\ref{tab:hapbench_ci_app} reports Wilson intervals for the main configurations. The wide specificity intervals are a direct consequence of having only 14 negative cases; balanced accuracy and MCC are included to make this class imbalance visible.
+
+\begin{table}[H]
 \centering
-\caption{Representative projects with collaboration behavior increases.}
-\label{tab:lc_cg_examples_app}
-\small
-\begin{tabularx}{\columnwidth}{lrrrrr}
+\caption{HapBench uncertainty and category robustness.}
+\label{tab:hapbench_ci_app}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
 \toprule
-Project & Flat CG & LC CG & $\Delta$CG & Flat Collab & LC Collab \\
+Tool & Precision 95\% CI & Recall 95\% CI & Specificity 95\% CI & Macro F1 & Worst-category F1 \\
 \midrule
-legado & 43,450 & 81,486 & +87.5\% & 3 & 7 \\
-BikeTravel & 877 & 1,128 & +28.6\% & 1 & 3 \\
-Aigis & 1,575 & 1,863 & +18.3\% & 2 & 3 \\
-Application & 2,105 & 2,922 & +38.8\% & 1 & 2 \\
-Snake\_NEXT & 2,971 & 3,290 & +10.7\% & 3 & 5 \\
+HapFlow~\cite{hapflow} & [82.7, 97.1] & [87.2, 99.0] & [45.4, 88.3] & 95.73\% & 88.89\% \\
+\mytool & [92.9, 100.0] & [84.6, 98.1] & [78.5, 100.0] & 97.96\% & 85.71\% \\
+$-$IR recovery & [90.6, 100.0] & [56.5, 80.5] & [78.5, 100.0] & 87.07\% & 66.67\% \\
+$-$receiver refinement & [89.7, 99.7] & [84.6, 98.1] & [68.5, 98.7] & 97.57\% & 85.71\% \\
+Unbounded lifecycle & [90.1, 99.7] & [90.1, 99.7] & [68.5, 98.7] & 98.81\% & 91.67\% \\
 \bottomrule
-\end{tabularx}
+\end{tabular}}
 \end{table}
 
-\subsection{Detector Contribution and Leave-One-Out Ablation}
-\label{subsec:app_detector}
-
-\subsection{Micro-benchmark Detailed Results}
-\label{subsec:app_micro_details}
-
-Three failure modes are isolated in the ArkPrismBench-Micro: (1)~M08 (Promise .then()) misses 2 positive cases where the callback is defined in a separate method from the \texttt{.then()} call---our current Promise chain analysis only handles inline and variable-chained callbacks; (2)~M06 (same-name negative) produces 2 false positives where user-defined methods sharing names with privacy APIs (\texttt{getCurrentLocation()}) are incorrectly matched---this motivates receiver-type-aware filtering; (3)~M07 (string/comment) correctly rejects all cases, confirming that the recognizer does not match non-executable references.
-
-Aggregating the asynchronous-pattern categories (M08--M13), callback target resolution achieves 18/20 correct targets (90.0\% resolution accuracy), and tainted-parameter binding achieves 17/20 (85.0\%). Promise edge precision is 100.0\% (2/2), while Promise edge recall is 50.0\% (2/4), reflecting the cross-method gap.
-
-Table~\ref{tab:detector_contribution} (Section~\ref{subsec:api_accuracy}) decomposes detections by detector category, reports a cumulative coverage view on the full corpus, and provides a leave-one-out ablation on the ArkPrismBench manual benchmark. The leave-one-out ablation confirms that each family is irreplaceable: removing any single family drops method recall below 86\% and usage recall below 84\%.
-
-\subsection{Call-Chain Class Distribution}
-\label{subsec:app_chains}
-
-Table~\ref{tab:chains_app} reports the distribution of call-chain classes across the 1,015-project corpus.
-
-\begin{table*}[h]
+\begin{table}[H]
 \centering
-\caption{Call-chain classes.}
-\label{tab:chains_app}
-\small
-\begin{tabularx}{\textwidth}{lrrYl}
+\caption{Per-category F1 on all HapBench cases.}
+\label{tab:hapbench_categories_app}
+\begin{tabular}{@{}lrrr@{}}
 \toprule
-\tablehead
-Chain class / metric & Count & Share & Semantics & Confidence \\
+Category & Cases & HapFlow & \mytool \\
 \midrule
-\rowcolor{arkok}
-Total call-chain entries & 1,757 & 100.00\% & One entry for every recognized API usage & complete entry coverage \\
-Framework-entry chains & 1,105 & 62.89\% & Reaches a framework, lifecycle, or UI-style entry & high \\
-Initialization chains & 324 & 18.44\% & Starts from \texttt{\%dflt}, \texttt{\%statInit}, \texttt{\%instInit}, or render initialization & medium \\
-Local fallback chains & 280 & 15.94\% & Declaring-method evidence without trusted predecessor & local evidence \\
-Unknown-entry chains & 48 & 2.73\% & Non-empty chain with unresolved entry semantics & medium-low \\
-\subtlebreak
-Chains with at least one sink & 839 & 47.75\% & API usage has downstream sink evidence & sink-linked \\
-Chain length median / P95 / max & 1 / 4 / 9 & -- & Short paths dominate; long chains remain auditable & descriptive \\
+Aliasing & 6 & 100.00\% & 100.00\% \\
+Anonymous constructs & 10 & 93.33\% & 100.00\% \\
+Array-like structures & 5 & 88.89\% & 100.00\% \\
+Field/object sensitivity & 6 & 100.00\% & 100.00\% \\
+General language features & 22 & 91.89\% & 100.00\% \\
+Lifecycle modeling & 13 & 96.00\% & 85.71\% \\
+OpenHarmony-specific APIs & 5 & 100.00\% & 100.00\% \\
 \bottomrule
-\end{tabularx}
-\end{table*}
+\end{tabular}
+\end{table}
 
-Most chains are short: 982 have length 1, 642 have length 2--3, 103 have length 4--5, and 30 have length 6--10. Entry-type counts further support this: 979 chains are component-lifecycle entries, 324 initialization entries, 125 app-lifecycle entries, 1 user-interaction entry, and 328 unknown entries.
-
-\subsection{Top Privacy Categories and Package Families}
-\label{subsec:app_categories}
-
-Table~\ref{tab:privacy_categories_app} reports the top privacy categories and their dominant package families across the 1,015-project corpus.
-
-\begin{table*}[h]
-\centering
-\caption{Top privacy categories and package families.}
-\label{tab:privacy_categories_app}
-\small
-\begin{tabularx}{\textwidth}{lrrlY}
-\toprule
-\tablehead
-Privacy category & Count & Share & Dominant package family & Typical evidence \\
-\midrule
-\rowcolor{arkwarn}
-Device identity: screen/display & 438 & 24.93\% & \texttt{@kit.ArkUI} & display size, density, orientation, default display. \\
-Device identity: hardware & 357 & 20.32\% & \texttt{@kit.BasicServicesKit}, \texttt{@ohos.deviceInfo} & model, type, brand, hardware identity fields. \\
-Network connectivity & 148 & 8.42\% & \texttt{@kit.NetworkKit} & default network, capabilities, connection properties. \\
-Clipboard & 115 & 6.55\% & \texttt{@kit.BasicServicesKit}, \texttt{@ohos.pasteboard} & system pasteboard access and paste data. \\
-Location & 102 & 5.81\% & \texttt{@kit.LocationKit} & current/last location and reverse geocoding. \\
-Bluetooth & 85 & 4.84\% & Connectivity kits & Bluetooth state, scan, profile, and advertising APIs. \\
-Sensor status & 76 & 4.33\% & \texttt{@kit.SensorServiceKit} & sensor subscription and single-sensor queries. \\
-Wi-Fi & 69 & 3.93\% & \texttt{@kit.ConnectivityKit}, \texttt{@ohos.wifiManager} & Wi-Fi state, scans, and linked information. \\
-Device software identity & 64 & 3.64\% & Basic services & OS name, OS version, API version fields. \\
-Media & 55 & 3.13\% & Media libraries & asset creation, media access, metadata. \\
-Camera & 49 & 2.79\% & \texttt{@kit.CameraKit} & camera manager and camera capability queries. \\
-Audio status & 41 & 2.33\% & \texttt{@kit.AudioKit} & audio manager and volume group APIs. \\
-\bottomrule
-\end{tabularx}
-\end{table*}
-
-The top package families are \texttt{@kit.ArkUI} (438 usages), \texttt{@kit.BasicServicesKit} (376), \texttt{@ohos.deviceInfo} (175), \texttt{@kit.NetworkKit} (105), \texttt{@kit.ConnectivityKit} (93), and \texttt{@kit.LocationKit} (87). The most frequent methods are \texttt{display.Display.getDefaultDisplaySync} (422), \texttt{deviceType} (283), \texttt{getSystemPasteboard} (74), and \texttt{getCurrentLocation} (54).
-
-\subsection{Manual Audit Details}
+\subsection{Source-first Benchmark Protocol}
 \label{subsec:app_manual_audit}
 
-The ArkPrismBench benchmark uses stratified random sampling rather than purposive selection, ensuring that zero-output and low-output projects are represented. However, the sampling strata are defined by \mytool's raw API count, and \mytool's reports serve as navigation aids during annotation; the benchmark is therefore \emph{not fully independent} of the tool. The annotation itself is source-first: annotators label based on code inspection, not tool output, but the tool's reports influence which code regions receive the most attention.
+ArkSourceFirst60 is selected before the evaluated detector run. Projects are partitioned by source-tree size and by whether their imports are compatible with the frozen sensitive-API rules; deterministic hash ordering selects ten projects from each of the six strata. The manifest stores the selection seed, source-tree fingerprint, rule hash, and package-migration hash. Candidate discovery parses executable member accesses and import bindings, but it neither reads a \mytool report nor assigns a gold label.
 
-\paragraph{Recall scope.} Recall is measured against the manually accepted project-level namespace+method gold set for all 164 sampled projects. For the zero-output stratum (40 projects), annotators confirmed that no privacy-sensitive API usage exists in the source code, verifying that \mytool did not miss any APIs in these projects. For the positive strata, annotators identified all privacy API usages in the source, including those \mytool may have missed.
+Manual review accepts an occurrence only when its executable source context establishes the configured package/namespace/member and access kind through an import, SDK receiver type, constructor, manager/factory definition, or executable property read. It rejects comments, strings, declarations, same-name application methods, and unrelated library/controller receivers. The delivered gold file contains 90 accepted occurrences; a companion decision file preserves all 101 accept/reject judgments, including the 11 high-confusion negatives. An integrity test rehashes every source file, validates every exact line and canonical rule key, and rejects duplicate occurrence identities. Evaluation joins detector and gold records on project, normalized file, exact line, canonical API, and access kind.
 
-\paragraph{Zero-output statistical bound.} The 40 zero-output projects represent a sample from 802 zero-output projects in the corpus. While no false negatives were found in the sample, the rule-of-three method~\cite{hanley1983if} gives a 95\% confidence upper bound of $3/40 = 7.5\%$ on the false-negative rate among unsampled zero-output projects. We therefore cannot claim that all 802 zero-output projects are FN-free; we can only claim zero FN within the sampled 40.
+\subsection{High-output Stress-audit Decision Rule}
 
-\paragraph{Negative benchmark coverage.} The zero-output stratum covers 40 projects where \mytool detected nothing. Manual inspection confirmed that none contained a privacy API usage matching any of the 21 categories. This check covers direct-call, property-read, and indirect-invoke patterns (the latter through manual code inspection rather than grep, since indirect-invoke patterns require semantic resolution).
+The 120-project audit labels an item at project--namespace--member level. A report is accepted only when the recorded source context contains an executable access matching the configured API and one of the following identity witnesses:
 
-\paragraph{Annotation quality.} Two annotators independently labeled each project. Inter-annotator agreement on the positive strata was $\kappa = 0.91$ (Cohen's kappa), with disagreements resolved by joint re-inspection. Common disagreement sources were: helper receiver calls where the API is accessed through a factory-returned object, and property constants whose names resemble ordinary UI fields.
+\begin{compactitem}
+  \item an imported namespace or package alias invokes the configured member;
+  \item a manager/helper receiver is connected to its configured factory by a visible definition or field assignment;
+  \item an SDK receiver type identifies the configured namespace; or
+  \item an executable field/property access is declared as a property source in the fixed rule set.
+\end{compactitem}
 
-\subsection{Performance and Scalability}
-\label{subsec:app_performance}
+Comments, string literals, declarations without access, unrelated application methods with the same final token, and ambiguous method-only matches across multiple package namespaces are rejected. For every accepted key, the artifact stores project identifier, normalized package/namespace/member, access kind, source file and line, and a bounded source snippet. Precision is computed over the 666 project--API keys.
 
-We report wall-clock runtime, stability, and resource characteristics on the full 1,015-project corpus. All measurements are from the isolated batch run (Section~\ref{subsec:benchmark}) using two worker processes on a machine with 16\,GB RAM and an 8-core CPU. Each project is analyzed in a separate child process with a 30-minute timeout and a 15-minute IFDS budget per project. We report CPU-seconds (cumulative single-worker time) for per-project statistics, and estimated wall-clock time for the full batch.
+The enriched construction file contained 1,533 report-derived rows, including repeated rows that pointed to the same source evidence. The delivered \texttt{top120\_source\_audit\_annotations.json} canonicalizes them to the 666 audited project--API keys, removes detector-internal fields, and does not contain occurrence-precision, false-negative, or recall counters. Its declared scope is \texttt{output\_selected\_precision\_audit}; both \texttt{occurrencePrecisionDefined} and \texttt{recallDefined} are \texttt{false}. This prevents the source-evidence artifact from being mistaken for an exhaustive occurrence-level or source-first oracle.
 
-\begin{table}[h]
-\centering
-\caption{Runtime and stability on the 1,015-project corpus.}
-\label{tab:performance_app}
-\small
-\begin{tabularx}{\columnwidth}{Yrr}
-\toprule
-Metric & Value & Detail \\
-\midrule
-\textbf{Runtime (CPU-seconds)} & & \\
-\quad Total & 30,142\,s & $\approx$8.4\,h single-worker \\
-\quad Median & 30.7\,s & per project \\
-\quad P90 & 36.2\,s & \\
-\quad P95 & 39.0\,s & \\
-\quad Max & 270.8\,s & \texttt{aloeplayer\_ohos} \\
-\midrule
-\textbf{Stability} & & \\
-\quad Timeouts & 0 & 30-min limit \\
-\quad OOM / budget exceeded & 0 & 15-min IFDS limit \\
-\quad Complete analyses & 1,013/1,015 & 99.8\% \\
-\quad Partial (solver failure) & 2 & \texttt{Aigis}, \texttt{libretro-emulator} \\
-\quad PTA warnings & 11 & non-fatal pointer-analysis issues \\
-\midrule
-\textbf{Call-graph construction} & & \\
-\quad CHA (k=0) total & 9,344\,ms & 1,001 projects \\
-\quad PTA (k=1) total & 46,870\,ms & 5.02$\times$ CHA \\
-\quad PTA (k=2) total & 34,473\,ms & 3.69$\times$ CHA \\
-\bottomrule
-\end{tabularx}
-\end{table}
+The companion integrity audit independently resolves each record against the delivered source tree and final detector rules. It checks project and file existence, positive line bounds, member text on the recorded line, nonempty snippets, and package/namespace/member compatibility under the same migration and normalization contract as the detector. All 666 records pass these structural checks. This check establishes artifact referential integrity; it does not replace the source-review decision or convert the audit into a recall benchmark.
 
-The runtime distribution is right-skewed: 75\% of projects complete within 32.7\,s, and 95\% within 39\,s. The longest project (\texttt{aloeplayer\_ohos}, 270.8\,s) is an outlier with 10 privacy APIs and a large method count that triggers extensive IFDS propagation. The two solver failures are caused by unresolvable ArkTS IR structures in those projects; they do not affect other projects because of process isolation.
+\subsection{Artifact-to-Paper Traceability}
+\label{subsec:app_traceability}
 
-The dominant cost is IFDS taint analysis, which accounts for the majority of per-project time. Scene construction (ArkAnalyzer IR loading) is the second-largest cost, typically consuming 40--60\% of the total. Call-graph construction (CHA) is negligible at a median of 3\,ms per project. Callback analysis adds minimal overhead because it operates on the already-constructed IR. PTA at $k=1$ adds 5.02$\times$ overhead relative to CHA alone, but CHA itself is a small fraction of total runtime; the effective overhead of PTA over the full pipeline is therefore modest. The fact that $k=2$ is faster than $k=1$ (34,473\,ms vs.\ 46,870\,ms) is counter-intuitive; a likely explanation is that the deeper context reduces the number of spurious call targets per site, lowering the total work despite the larger context depth.
+The artifact provides ArkSourceFirst60's selection manifest, review decisions, occurrence gold set, and integrity evaluator; the 64-case ArkIdentityBench progression oracle; machine-readable oracles for all 67 HapBench and 48 ArkAsyncBench cases; and raw output for every evaluated configuration. The evaluators derive confusion matrices, construct/category metrics, paired outcomes, and runtimes. Figure~\ref{fig:eval_hapbench} is generated from evaluator JSON rather than transcribed from the paper. Corpus tables and figures consume one process-isolated run of the final build; change-impact overlays are rejected by the release summarizer. The run manifest and batch summary record the project inventory, analyzer revision and build hash, rule and SDK fingerprints, command line, resource bounds, completion state, and the explicitly excluded partial project.
 
-The estimated two-worker wall time for 1,015 projects is 15,071\,s ($\approx$4.2\,h), suggesting near-linear scaling with worker count. The process-per-project isolation strategy prevents memory accumulation across projects, but imposes a per-project startup cost. For a hypothetical 10,000-project marketplace corpus, the projected wall time with 4 workers is $\approx$8.4\,h, well within overnight-batch feasibility.
+The corpus audit checks three invariants before aggregation: each configured-query path has resolvable source and sink endpoints, each path carries an \texttt{ifds}, \texttt{async\_supplement}, or \texttt{both} provenance tag, and every detector-to-path link references valid records with compatible source evidence. Detector-local sink records and configured-query paths remain separate when this conservative join cannot be established. Figure companion JSON files retain the input manifest and computed values so that figures, tables, and prose cannot silently use different runs.

@@ -1,257 +1,220 @@
 \section{Evaluation}
 \label{sec:evaluation}
 
-We evaluate \mytool on three axes: recognition accuracy, explanatory subgraph quality, and corpus-level privacy behavior. The evaluation is designed to avoid a common pitfall in privacy-API studies: treating raw string search as ground truth. Instead, we report scalable source-evidence benchmarks, a manually reviewed high-output benchmark, and several structural metrics that characterize the confidence and severity of recovered subgraphs.
+We evaluate four questions:
+\textbf{RQ1}~How accurately does \mytool resolve privacy-API identities in real projects, and which evidence forms produce that accuracy?
+\textbf{RQ2}~How accurately do \mytool and the author-released HapFlow artifact classify end-to-end flows?
+\textbf{RQ3}~Which recovery mechanisms account for \mytool's behavior, and what precision--recall trade-offs do they introduce?
+\textbf{RQ4}~What privacy-evidence patterns and scalability characteristics appear in a large OpenHarmony corpus?
+We separate these claims: source-first and controlled identity benchmarks support API recognition, HapBench and ArkAsyncBench support flow classification and mechanism attribution, and the corpus supports prevalence and scalability rather than ground-truth accuracy.
 
-We organize the evaluation around four research questions:
+\subsection{Experimental Design}
+\label{subsec:eval_design}
 
-\begin{itemize}
-    \item \textbf{RQ1:} How accurately does \mytool recognize privacy-sensitive API usages, and how does its multi-pattern recognition compare with method-signature-based source configuration?
-    \item \textbf{RQ2:} How complete and interpretable are the recovered information-flow subgraphs?
-    \item \textbf{RQ3:} Which analysis components are necessary for effective taint flow recovery?
-    \item \textbf{RQ4:} What privacy-sensitive API and information-flow patterns appear in the large-scale corpus?
-\end{itemize}
+\textbf{Implementations and configuration.}
+We evaluate the author-released HapFlow artifact and the released \mytool implementation. Both consume ArkAnalyzer IR and the same HapBench source--sink query. For artifact comparability, HapBench uses the OpenHarmony API-17 SDK (version 5.0.5.165) bundled with the HapFlow release; the corpus experiment uses the independently installed API-20 SDK (version 6.0.0.47). SDK fallback is disabled, and both directory fingerprints are retained. The large-corpus runner launches one analyzer process per project, with two concurrent workers, so that heap state and failures are isolated across projects. HapBench uses the bounded lifecycle policy and unbatched IFDS solver described in Section~\ref{sec:implementation}. The main configuration enables the supplementary callback scan; a paired callback-off run isolates its contribution from the IR/IFDS analysis.
 
-Performance and scalability results are reported in Appendix~\ref{subsec:app_performance}.
+The final corpus artifact is produced by one process-isolated execution of the final build over the 1,014 retained projects; no change-impact overlay enters the reported aggregates. The run manifest records the analyzer revision and build hash, rule hashes, SDK fingerprint, feature flags, resource limits, and excluded partial project. Every retained log identifies the API-20 SDK, completes PTA, and reports a single unbatched IFDS run without budget exhaustion.
 
-\subsection{Experimental Setup}
-\textbf{Dataset.} We use a fixed large-scale corpus of 1,015 \openharmony/\arkts projects (31,433 source files, 238,271 methods). The analysis uses a real OpenHarmony SDK configuration, with SDK fallback disabled. Each sample is analyzed in an isolated process to avoid cross-project memory accumulation, while detector, callback, and IFDS parameters remain fixed across projects. Of the 1,015 projects, 236 contain detected privacy API usages (1,757 total), producing 1,352 downstream sinks and 1,792 taint flows.
+\textbf{Evaluation units.}
+We use six complementary evidence sets. \emph{ArkSourceFirst60} is an output-independent real-project benchmark. Before running the evaluated detector, we deterministically sample 60 projects across small, medium, and large source-tree strata: 30 contain an import compatible with the frozen API rules and 30 do not. A structured AST queue locates executable member accesses but assigns no label. Manual source review then accepts or rejects all 101 candidates using imports, receiver definitions, factory origins, SDK types, and access context, and inspects configured imports in candidate-free projects. The resulting occurrence-level gold set contains 90 accepted accesses in 16 projects, 11 high-confusion rejected candidates, and 44 projects with no configured sensitive access. Every gold record stores project, file hash, exact line and column, canonical API identity, access kind, receiver/source expression, category, permission, and the imports used during review.
 
-\textbf{Artifacts and reproducibility.} All numbers in this section are computed from the same report directory, aggregate summary, source annotation files, and benchmark files. The artifact includes the table-generation scripts, benchmark sampling script, micro-benchmark test cases, and figure inputs used for this section.
+\emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning namespace calls, properties, typed and constructed receivers, factory-returned managers, compound namespaces, aliases, and historical-to-consolidated package migration. Its progression baselines successively add lexical, import, declared-receiver, and factory evidence under the same case oracle. It isolates identity-resolution mechanisms from downstream call-graph and taint behavior.
 
-\subsection{Benchmark Construction}
-\label{subsec:benchmark}
+The \emph{120-project high-output audit} complements source-first coverage with a stress population rich in reported identities. It contains 666 manually confirmed project--API keys backed by executable source locations. Because the ranking begins from \mytool output and canonicalizes repeated occurrences to project--API keys, this secondary artifact supports stress precision rather than occurrence recall.
 
-We construct two benchmarks. \textbf{ArkPrismBench} is a stratified real-project benchmark of 164 projects sampled from the 1,006 projects with analysis reports, using five strata by API output level (zero-output: 802/40 sampled, low: 113/40, medium: 45/40, high: 32/30, very-high: 14/14). The zero-output stratum is critical for recall: these are projects where \mytool detected nothing, and manual inspection must verify that no APIs were missed. Within each stratum we sub-stratify by access kind and privacy category, achieving 100\% coverage of both. Two annotators independently label each project ($\kappa=0.91$); disagreements are resolved by joint re-inspection. \textbf{ArkPrismBench-Micro} is a pattern-level micro-benchmark with 15 categories (Table~\ref{tab:micro_benchmark}), each containing 3--4 positive and 2--4 negative cases targeting specific language or framework patterns. Details on the annotation protocol, scalable automatic benchmarks, and zero-output statistical bounds are in Appendix~\ref{subsec:app_manual_audit}.
+\emph{HapBench} is the complete 67-case suite distributed with HapFlow: 53 expected-flow and 14 expected-no-flow cases in seven categories. We reconstruct the oracle from each case's inline source, sink, and leak/no-leak annotations and cross-check the category totals against the paper. We publish the case-level oracle and preserve disagreements with the executable artifact.
 
-\begin{table}[t]
-\centering
-\caption{ArkPrismBench-Micro categories (44 positive, 33 negative cases).}
-\label{tab:micro_benchmark}
-\small
-\setlength{\tabcolsep}{2.5pt}
-\begin{tabularx}{\columnwidth}{@{}clYrr@{}}
-\toprule
-ID & Category & Pattern tested & + & $-$ \\
-\midrule
-M01 & Direct invoke & \texttt{geoLocMgr.getCurr\-entLocation()} & 4 & 2 \\
-M02 & Assigned invoke & \texttt{let loc = getCurrentLocation()} & 4 & 2 \\
-M03 & Manager receiver & \texttt{cameraMgr.getSup\-portedCameras()} & 3 & 2 \\
-M04 & Property constant & \texttt{deviceInfo.brand} & 4 & 2 \\
-M05 & Package alias & \texttt{@ohos.*} vs \texttt{@kit.*} & 3 & 2 \\
-M06 & Same-name neg. & User-defined \texttt{getCurrentLocation()} & 0 & 4 \\
-M07 & String/comment & API name in string or comment & 0 & 4 \\
-M08 & Promise .then() & \texttt{getOAID().then(...)} & 4 & 2 \\
-M09 & AsyncCallback & \texttt{getData((err,data)=>...)} & 4 & 2 \\
-M10 & async/await & \texttt{let x = await api()} & 3 & 2 \\
-M11 & Lifecycle binding & \texttt{aboutToAppear}$\to$\texttt{build} & 3 & 2 \\
-M12 & ArkUI builder & \texttt{bindPopup(\{builder:...\})} & 3 & 2 \\
-M13 & Field callback & \texttt{this.handler = ()=>...} & 3 & 2 \\
-M14 & Import alias & \texttt{import geo from @ohos.*} & 3 & 2 \\
-M15 & Cross-method field & \texttt{this.field} across lifecycle & 3 & 2 \\
-\bottomrule
-\end{tabularx}
-\end{table}
+\emph{ArkAsyncBench} is a source-first controlled benchmark fixed before executing the evaluated configurations. Its 48 cases use three configured privacy-data APIs---advertising identifier, SIM account information, and reverse geocoding---under callback (T1), Promise \texttt{then} (T4), and \texttt{await} (T5) constructs. The 24 positive cases pass the configured carrier, a carrier property, or a carrier alias to \texttt{console.info}; the 24 matched negatives pass only an error, constant, rejection value, ignored result, or similarly named independent local. The oracle is therefore defined by explicit source-level value dependence rather than by either configuration's output. This benchmark isolates the implemented asynchronous rules; it does not claim completeness over all event-loop or Promise semantics.
 
-The micro-benchmark is complementary to the real-project benchmark: it provides controlled, minimal test cases where the expected result is known \emph{a priori}, enabling precise attribution of failures to specific analysis mechanisms. For example, if \mytool misses a Promise .then() case in M08 but detects the equivalent AsyncCallback in M09, the failure can be isolated to the Promise chain analysis rather than the general callback resolution.
+The \emph{large corpus} begins with 1,015 OpenHarmony/ArkTS project directories. Of these, 1,014 satisfy the complete-analysis criterion and cover 31,205 files and 233,894 methods. One project reaches the unbatched IFDS time bound after successful PTA and is retained as a partial artifact but excluded from aggregate analysis. A token-based redundancy analysis removes comments and trivia but preserves identifiers and literals, then computes SHA-256 file fingerprints, exact project-clone clusters, and near-clone clusters. This evidence supports prevalence, concentration, robustness, and cost analyses rather than ground-truth accuracy.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\columnwidth]{figs/eval_manual_benchmark_landscape.pdf}
-\caption{Manual benchmark coverage and baseline recall.}
-\label{fig:eval_manual_benchmark_landscape}
-\Description{A two-panel figure showing manual benchmark coverage curves and baseline recall distributions on the manual gold set.}
-\end{figure}
+\textbf{Metrics and statistics.}
+At the identity-occurrence level, equality requires project, normalized file, exact line, canonical package/namespace/member, and access kind; a nearby call to the same API cannot mask a missed occurrence. Project-level identity results count both API-positive and confirmed-zero projects. At the HapBench and ArkAsyncBench case levels, a positive prediction means that at least one privacy-data source-to-sink path is reported; framework-input paths cannot satisfy either oracle. We report precision, recall, specificity, balanced accuracy, F1, and MCC, with Wilson intervals for binomial metrics and exact two-sided McNemar tests for paired outcomes. For the high-output audit, we retain project-key and project-level Wilson intervals but do not reinterpret its canonicalized keys as occurrence recall.
 
-\subsection{RQ1: API Recognition Accuracy and Comparison}
+\subsection{RQ1: Privacy-API Identity Resolution}
 \label{subsec:api_accuracy}
 
-\textbf{Motivation.} A taint analysis is only as good as its source identification. We first assess \mytool's recognition accuracy against manually verified benchmarks, then compare with HapFlow's method-signature-based source configuration to quantify the gap that multi-pattern recognition fills.
+\textbf{Source-first real-project accuracy.}
+\mytool reports exactly the 90 gold occurrences in ArkSourceFirst60: TP/FP/FN$=90/0/0$, yielding 100\% observed occurrence precision, recall, and F1 (95\% Wilson CI for precision and recall: 95.91--100\%). At project level it classifies all 16 positive and 44 zero projects correctly. Exact-location matching matters here: IR statement locations are post-resolved to the corresponding executable AST access, preventing one detected access from covering another same-API access elsewhere in the file.
 
-\textbf{Setup.} We use the ArkPrismBench stratified benchmark (164 projects, Section~\ref{subsec:benchmark}) and the ArkPrismBench-Micro (77 cases, Table~\ref{tab:micro_benchmark}) to evaluate recognition accuracy. We compare two tools: \mytool with its four-pattern recognizer vs.\ HapFlow configured with the same 826 privacy rules via \texttt{Json2ArkMethodSignature}. Both tools use the same SDK and are run on the same 1,015-project corpus.
+The gold set spans 44 namespace properties, 26 namespace calls, 11 typed receivers, four constructed receivers, three manager receivers, and two factory receivers. Thus, 20/90 occurrences require receiver evidence unavailable from the accepted line's bare namespace syntax, while nearly half are executable properties rather than calls. The 11 rejected candidates exercise the complementary precision boundary: same-name application wrappers, collection/controller operations, and library calls such as \texttt{create}, \texttt{on}, \texttt{off}, and \texttt{getData} are excluded when their package and receiver origins do not establish a configured identity.
 
-\textbf{Recognition accuracy.} On the ArkPrismBench stratified benchmark (164 projects), \mytool achieves 100\% precision and 100\% recall: all 666 detected usages are manually confirmed with no false positives, and no missed privacy API is found in any reviewed project, including the 40 zero-output projects. We note that strict package-signature matching, which treats \texttt{@ohos.*} and \texttt{@kit.*} as distinct APIs, would yield lower recall for the same conceptual API families; our normalized namespace-method view better reflects ecosystem evolution.
+\textbf{Mechanism progression.}
+Table~\ref{tab:identity_progression} quantifies how evidence changes the decision boundary on ArkIdentityBench. A lexical matcher finds every positive but also every matched collision. Import evidence removes those collisions yet reaches only 17/32 positives; declared receiver types recover nine more, and factory tracing recovers another two. The complete resolver adds constructed receivers, executable properties, compound aliases, and namespace-constrained migration, classifying all 64 cases correctly.
 
-\textbf{Detector contribution.} Table~\ref{tab:detector_contribution} decomposes detections by detector family, reports cumulative corpus coverage, and provides a leave-one-out ablation on ArkPrismBench. Removing any single family drops method recall below 86\% and usage recall below 84\%, confirming that each family is irreplaceable. Return-valued invokes account for 38.53\% of usages, indirect invokes for 25.78\%, privacy constants for 24.02\%, and bare direct statements for only 11.67\%. The indirect-invoke and privacy-constant families are especially critical: a method-signature-based source matcher detects only 4.8\% of indirect-invoke APIs and 0\% of privacy constants in ArkPrismBench (Table~\ref{tab:hapflow_comparison}). Direct and assigned invoke patterns are the most reliably detected (95.6\%, 93.7\% micro-F1), while indirect invoke and property access are harder (90.5\%, 88.9\%).
-
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\caption{Detector contribution: corpus coverage, leave-one-out ablation on ArkPrismBench (129 methods, 666 usages), and per-family micro-F1.}
-\label{tab:detector_contribution}
+\caption{Identity-resolution progression on ArkIdentityBench.}
+\label{tab:identity_progression}
 \small
-\setlength{\tabcolsep}{1.5pt}
-\begin{tabularx}{\columnwidth}{@{}lrrrrrr@{}}
+\setlength{\tabcolsep}{5.2pt}
+\begin{tabular}{lrrrrrrrr}
 \toprule
-\tablehead
-Family & \multicolumn{3}{c}{Corpus} & \multicolumn{2}{c}{Leave-one-out} & Micro \\
-\cmidrule(lr){2-4}\cmidrule(lr){5-6}\cmidrule(lr){7-7}
-& Incr. & Cumul. & Share & Meth.\ recall & Usg.\ recall & F1 \\
+Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 \\
 \midrule
-Direct invoke & 205 & 205 & 11.67\% & 82.2\% & 83.5\% & 95.6\% \\
-Assigned invoke & 677 & 882 & 50.20\% & 62.0\% & 63.8\% & 93.7\% \\
-Indirect invoke & 453 & 1,335 & 75.98\% & 86.0\% & 84.5\% & 90.5\% \\
-Field/property & 422 & 1,757 & 100.00\% & 80.6\% & 77.8\% & 88.9\% \\
-\midrule
-All (none removed) & -- & 1,757 & 100.00\% & 100.0\% & 100.0\% & -- \\
+Lexical token & 32 & 0 & 32 & 0 & 50.00 & 100.00 & 0.00 & 66.67 \\
+Import-aware namespace & 17 & 32 & 0 & 15 & 100.00 & 53.13 & 100.00 & 69.39 \\
+Declared-receiver AST & 26 & 32 & 0 & 6 & 100.00 & 81.25 & 100.00 & 89.66 \\
+Factory-aware AST & 28 & 32 & 0 & 4 & 100.00 & 87.50 & 100.00 & 93.33 \\
+\mytool & 32 & 32 & 0 & 0 & 100.00 & 100.00 & 100.00 & 100.00 \\
 \bottomrule
-\end{tabularx}
+\end{tabular}
 \end{table}
+
+\textbf{High-output stress audit.}
+All 666 reviewed project--API keys in the 120-project stress population have an executable supporting access (100\% observed project-key precision; 95\% Wilson lower bound 99.43\%). All 120 projects contain only confirmed keys (project-level lower bound 96.90\%). Its evidence tags include 558 namespace-qualified accesses, 102 member/receiver accesses, five executable template accesses, and one compound-qualified call. This distinct aggregation unit strengthens precision evidence under dense output without replacing the occurrence-level source-first benchmark.
+
+Figure~\ref{fig:running_design} illustrates the evidence composition on a compact example: \texttt{deviceInfo.brand} is an executable property, whereas \texttt{helper.createAsset()} requires a definition chain to \texttt{photoAccessHelper.getPhotoAccessHelper(...)}. At the schema level, the released HapFlow loader has no field/property source form or detector-style factory witness; the executable, same-SDK end-to-end comparison is reported separately in RQ2.
+
+\noindent\textbf{Answer to RQ1.}
+On the source-first sample, \mytool resolves all 90 manually accepted occurrences at exact locations and rejects all candidate collisions, including 44 zero projects. Controlled progression shows that its gain comes from composing package, receiver, factory, property, and IR identity evidence rather than relaxing member-name matching. The 120-project stress audit supplies consistent high-volume precision evidence over 666 additional project--API keys.
+
+\subsection{RQ2: End-to-End Flow Classification}
+\label{subsec:hapbench}
+
+Table~\ref{tab:hapbench_main} reports the complete artifact reproduction. Both tools finish all 67 cases. \mytool classifies 64 correctly (50 TP, 14 TN), compared with 61 (51 TP, 10 TN) for HapFlow. It eliminates all four false positives while retaining 50 of 53 positives, yielding 97.09\% F1, 97.17\% balanced accuracy, and 0.881 MCC, versus 94.44\%, 83.83\%, and 0.717. Its precision is 100\% (95\% CI: 92.9--100\%), recall is 94.34\% (84.6--98.1\%), and specificity is 100\% (78.5--100\%).
+
+\begin{table}[H]
+\centering
+\caption{Complete HapBench reproduction (53 positive and 14 negative cases).}
+\label{tab:hapbench_main}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lrrrrrrrrrr@{}}
+\toprule
+Tool & TP & TN & FP & FN & Precision & Recall & Specificity & F1 & BAcc. & MCC \\
+\midrule
+HapFlow~\cite{hapflow} & 51 & 10 & 4 & 2 & 92.73\% & \textbf{96.23\%} & 71.43\% & 94.44\% & 83.83\% & 0.717 \\
+\mytool & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00\%} & 94.34\% & \textbf{100.00\%} & \textbf{97.09\%} & \textbf{97.17\%} & \textbf{0.881} \\
+\bottomrule
+\end{tabular}}
+\end{table}
+
+\mytool alone is correct on six cases and HapFlow alone on three; the exact McNemar test gives $p=0.508$. Accordingly, our comparative claim is the observed improvement in precision, specificity, and class balance on this suite. Figure~\ref{fig:eval_hapbench}(a) reports Wilson uncertainty for the principal rates, while panel (b) localizes errors across all seven benchmark categories and six evaluated configurations. Macro-category F1 is 97.96\% for \mytool and 95.73\% for HapFlow. \mytool obtains 100\% F1 in six of seven categories, with 85.71\% in lifecycle cases.
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/eval_detection_effectiveness.pdf}
-\caption{Full-corpus detector characteristics and evidence rates.}
-\label{fig:eval_detection_effectiveness}
-\Description{A four-panel figure showing privacy category by detector family, detector family by chain entry class, detector-level sink and taint evidence rates, and API-volume bucket bars with sink and taint-rate lines.}
+\includegraphics[width=\columnwidth]{figs/eval_hapbench.pdf}
+\caption{Statistical and configuration-level diagnosis on HapBench. (a) Point estimates and 95\% Wilson intervals. (b) Category--configuration error rates, with cells reporting error counts. (c) Metric changes relative to the full configuration and exact paired McNemar tests.}
+\label{fig:eval_hapbench}
+\Description{Three panels show Wilson intervals, errors by category and configuration, and paired metric changes under four mechanism ablations.}
 \end{figure}
 
-\textbf{Comparison with HapFlow source configuration.}
-HapFlow~\cite{hapflow} is the state-of-the-art IFDS taint analysis framework for \openharmony/\arkts. Its source configuration (\texttt{Json2ArkMethodSignature}) matches API entries by namespace and method name against SDK declarations, handling direct and assigned invoke patterns but missing indirect invoke (manager receivers) and privacy constants (field reads). We configure HapFlow with ArkPrism's 826 rules and measure detection on ArkPrismBench. This comparison measures only \emph{source identity resolution}, not end-to-end taint flows.
+\textbf{Error mechanisms.}
+HapFlow's two false negatives expose omitted anonymous-instance initialization and exceptional-flow recovery. Its four false positives arise from collapsing distinct array indices, imprecise virtual dispatch in two cases, and a lifecycle edge that makes \texttt{UnreachableFlow} reachable. \mytool repairs these mechanisms through constructor-to-instance-initializer edges, lexical-environment and exception propagation, constant-index access paths, receiver-refined dispatch, and bounded lifecycle transitions.
 
-\begin{table}[t]
-\centering
-\caption{API identity resolution: HapFlow vs.\ \mytool on ArkPrismBench.}
-\label{tab:hapflow_comparison}
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lrrrrc@{}}
-\toprule
-Breakdown & Gold & HapFlow & Rate & \mytool & $\Delta$ \\
-\midrule
-Direct invoke & 386 & 386 & 100.0\% & 386 & --- \\
-Assigned invoke & 229 & 229 & 100.0\% & 229 & --- \\
-Indirect invoke & 229 & 0 & 0.0\% & 229 & +229 \\
-Privacy constant & 51 & 0 & 0.0\% & 51 & +51 \\
-\midrule
-Total & 895 & 615 & 68.7\% & 895 & +280 \\
-\midrule
-\multicolumn{6}{@{}l}{\textit{SDK families where HapFlow detects 0\%}} \\
-\texttt{@kit.ConnectivityKit} & 93 & 0 & 0.0\% & 93 & +93 \\
-\texttt{@kit.SensorServiceKit} & 76 & 0 & 0.0\% & 76 & +76 \\
-\midrule
-\multicolumn{6}{@{}l}{\textit{Other SDK families (6 families, 1,230 usages)}} \\
-Other families & 726 & 726 & 100.0\% & 726 & --- \\
-\bottomrule
-\end{tabular}
-\end{table}
+\mytool's three false negatives are all lifecycle cases. Source inspection reveals that they also stress the oracle semantics. In \texttt{ActivityLifecycle4}, a child override does not invoke the parent source-bearing \texttt{onCreate}; \texttt{BackupExtensionAbility} requires an instance field to survive into a later restore instance; and \texttt{Button1} requires static state written by a click callback to reach a later ability creation. We retain the published/source-annotated positive labels, report all three as false negatives, and do not add unconstrained edges solely to match them.
 
-Table~\ref{tab:hapflow_comparison} reports the results. HapFlow's source configuration can match direct-call and assigned-invoke patterns (615/895 gold usages, 68.7\%), but cannot detect indirect-invoke or privacy-constant usages at all (0/229 and 0/51). The two architectural blind spots account for 280/895 (31.3\%) of all gold usages. The SDK-family breakdown shows that the undetectable usages are concentrated in \texttt{@kit.ConnectivityKit} (Bluetooth manager, 93 usages) and \texttt{@kit.SensorServiceKit} (sensor manager, 76 usages); all other SDK families are fully covered by HapFlow's direct/assigned matching.
+Because these labels depend on object and event-order assumptions, Appendix~\ref{subsec:app_oracle_sensitivity} repeats the comparison under a strict executed-order contract that relabels only these three cases. Under this secondary, post-hoc sensitivity oracle, \mytool classifies all 67 cases correctly, whereas HapFlow classifies 58 (48 TP, 10 TN, 7 FP, and 2 FN); the exact paired test gives $p=0.00390625$. We retain the published labels as the primary result and use this sensitivity analysis only to expose how lifecycle semantics affect the comparison.
 
-\textbf{Interpretation.} HapFlow's strength is taint flow propagation---tracking data from configured sources through the IR to sinks. \mytool's strength is comprehensive API identification---detecting all four invocation patterns. The tools are complementary: \mytool serves as the upstream API identification layer that HapFlow's source configuration cannot replace.
+\noindent\textbf{Answer to RQ2.}
+On the complete executable suite, \mytool attains 100\% precision, 94.34\% recall, and 97.09\% F1 with no false positives. Its principal empirical advantage over the released HapFlow artifact is negative-case discrimination, reflected in higher specificity, balanced accuracy, and MCC.
 
-\textbf{Micro-benchmark results.} Aggregating the asynchronous-pattern categories (M08--M13), callback target resolution achieves 90.0\% accuracy, and tainted-parameter binding achieves 85.0\%. Promise edge recall is 50.0\% (2/4), reflecting the cross-method gap. End-to-end flow precision/recall is 93.2\%/93.2\%. Detailed per-category results and failure mode analysis are in Appendix~\ref{subsec:app_micro_details}.
-
-\textbf{RQ1 summary.} On the ArkPrismBench stratified benchmark (164 projects), all \mytool-detected API usages are confirmed as true positives and no gold usages are missed within the reviewed scope. For the zero-output stratum (40 sampled projects), manual inspection found no missed privacy APIs; however, the rule-of-three 95\% confidence bound on the unsampled 762 zero-output projects is 7.5\%, so we cannot generalize zero FN to the full corpus. Each of the four recognition patterns is irreplaceable (leave-one-out drops recall below 86\%). HapFlow's method-signature-based source configuration detects at most 68.7\% of gold API usages; the two architectural blind spots (indirect invoke and privacy constants) account for 31.3\% of all gold usages, confirming that method-signature matching is structurally insufficient for comprehensive API identification. The micro-benchmark confirms that \mytool detects 93.2\% of pattern-level positive cases, with gaps isolated to cross-method Promise chains.
-
-\subsection{RQ2: Information-flow Subgraph Quality}
-\label{subsec:subgraphs}
-
-\textbf{Motivation.} A privacy audit needs more than a list of API hits: it needs calling context, downstream exposure, and taint paths. We evaluate the completeness and interpretability of \mytool's information-flow subgraphs.
-
-\textbf{Call-chain coverage.} \mytool attaches a call-chain entry to every detected API usage, but not all chains carry the same evidential weight. We report three distinct coverage metrics: (1)~\emph{evidence attachment rate}: 100\% (every usage receives at least a non-empty record); (2)~\emph{framework-entry recovery rate}: 62.89\% (chains reaching a framework, lifecycle, or UI entry point); (3)~\emph{full path validity}: confirmed by manual review on the ArkPrismBench sample. Local fallback chains (15.94\%) and unknown-entry chains (2.73\%) are preserved but distinguished from framework-entry chains. Figure~\ref{fig:eval_detection_effectiveness} shows which detector families most often lead to lifecycle, initialization, or unknown-entry chains. See Table~\ref{tab:chains_app} in Appendix~\ref{subsec:app_chains} for the full distribution.
-
-\textbf{Sink and taint summary.} Sinks are dominated by logging (1,067/1,352, 78.92\%), followed by UI display (138, 10.21\%), storage (93, 6.88\%), data return (45, 3.33\%), and network (9, 0.67\%). Grouping by audit severity gives 1,205 local-observable sinks (logs and UI), 138 persistent-or-transfer sinks (storage and data return), and 9 external sinks (network). Taint analysis recovers 1,792 flows (1.02 per API, median path length 3, P95 7, max 16) across 218 projects (21.51\% of 1,015).\textsuperscript{$\dagger$} Thus, the appropriate claim is not ``1,792 confirmed leaks'', but rather ``1,792 static reachability paths from privacy-sensitive sources to audit-relevant sinks.''
-
-{\footnotesize $\dagger$\,The lifecycle ablation (Section~\ref{subsec:component_ablation}) reports 302 taint flows on the 1,014 projects with successful CG construction (1,015 minus one CG failure).}
-
-\textbf{Evidence subgraph quality.} To evaluate whether the recovered subgraphs are correct---not merely present---we sample 100 subgraphs from the ArkPrismBench positive strata and annotate each node and edge with ground-truth labels. Table~\ref{tab:subgraph_quality} reports the results.
-
-\begin{table}[t]
-\centering
-\caption{Evidence subgraph quality on 100 annotated subgraphs.}
-\label{tab:subgraph_quality}
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lrrrr@{}}
-\toprule
-Metric & $n/N$ & Value & 95\% CI \\
-\midrule
-\textbf{Node quality} & & & \\
-\quad API node precision & 100/100 & 100.0\% & --- \\
-\quad Chain node precision & 317/337 & 94.1\% & [89.3, 97.2] \\
-\quad Chain node recall & 317/363 & 87.3\% & [81.2, 92.1] \\
-\quad Sink node precision & 152/166 & 91.6\% & [85.8, 95.6] \\
-\quad Sink node recall & 152/182 & 83.5\% & [76.7, 89.2] \\
-\midrule
-\textbf{Edge quality} & & & \\
-\quad Chain edge precision & 254/275 & 92.4\% & [87.1, 96.1] \\
-\quad Chain edge recall & 254/300 & 84.7\% & [78.1, 90.2] \\
-\quad Taint edge precision & 167/187 & 89.3\% & [83.2, 93.9] \\
-\quad Taint edge recall & 168/207 & 81.2\% & [74.1, 87.2] \\
-\midrule
-\textbf{Path quality} & & & \\
-\quad Framework-entry path recall & 112/122 & 91.8\% & [86.5, 95.6] \\
-\quad Sink path recall & 123/155 & 79.4\% & [72.3, 85.5] \\
-\quad Unsupported heuristic edge ratio & 16/280 & 5.7\% & [2.4, 9.8] \\
-\midrule
-\textbf{Provenance} & & & \\
-\quad Provenance label accuracy & 425/454 & 93.6\% & [88.9, 96.8] \\
-\quad Local fallback correctly identified & 48/50 & 96.0\% & [91.5, 98.7] \\
-\quad LC edge correctly attributed & 67/76 & 88.2\% & [82.1, 93.0] \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-\textbf{RQ2 summary.} \mytool attaches a non-empty evidence record to every detected API usage, while 62.89\% are connected to a framework entry point. Sinks are dominated by local-observable categories (78.92\% logs, 10.21\% UI display). On 100 annotated subgraphs, chain/sink node precision is 91--94\% with recall 84--87\%, edge precision is 89--92\%, and provenance label accuracy is 93.6\%.
-
-\subsection{RQ3: Component Ablation}
+\subsection{RQ3: Mechanism Contribution and Trade-offs}
 \label{subsec:component_ablation}
 
-\textbf{Motivation.} \mytool combines several analysis components: callback analysis (CB) and lifecycle modeling (LC). We measure the contribution of each component to taint flow recovery and behavioral analysis.
+We rerun all 67 cases after disabling the supplementary callback scan, disabling IR recovery, disabling receiver refinement, or replacing the bounded lifecycle model with an unrestricted lifecycle cycle. Each ablation changes one mechanism and uses the same oracle and source--sink query. Table~\ref{tab:hapbench_ablation} reports the aggregate classifications; Figure~\ref{fig:eval_hapbench}(b--c) localizes their category-level errors and paired metric effects.
 
-\textbf{Setup.} We compare four configurations on the ArkPrismBench stratified benchmark (164 projects, Section~\ref{subsec:benchmark}). All configurations include pointer analysis (PTA) as a shared substrate; the ablation varies only CB and LC:
-
-\begin{itemize}
-    \item \textbf{A: IFDS+PTA} --- baseline, no CB, no LC
-    \item \textbf{B: IFDS+CB+PTA} --- callback analysis added
-    \item \textbf{C: IFDS+LC+PTA} --- lifecycle modeling added
-    \item \textbf{D: IFDS+CB+LC+PTA} --- all components enabled
-\end{itemize}
-
-This design isolates the effect of each major component: B vs.\ A measures CB contribution, C vs.\ A measures LC contribution, and D vs.\ B measures the LC contribution beyond CB. We validate statistical significance using the Wilcoxon signed-rank test on per-project TP counts at $\alpha=0.05$.
-
-\textbf{Taint flow ablation.} Table~\ref{tab:lifecycle_impact} compares four configurations on the ArkPrismBench stratified benchmark (164 projects). Callback analysis (Variant~B vs.\ Variant~A) is the dominant factor: it adds 63 true positives (+90.0\%), improving recall from 51.5\% to 97.8\% and F1 from 65.4\% to 94.3\%. Lifecycle modeling alone (Variant~C vs.\ Variant~A) produces negligible taint-flow improvement: $-1$ TP and $+1$ FP, with recall dropping slightly from 51.5\% to 50.7\%. The full configuration (Variant~D) achieves 96.3\% recall and 93.9\% F1. Wilcoxon signed-rank tests confirm that CB's recall improvement is significant ($p < 0.001$), while LC's effect is not ($p = 0.87$).
-
-\begin{table}[t]
+\begin{table}[H]
 \centering
-\caption{Component ablation on ArkPrismBench (164 projects).}
-\label{tab:lifecycle_impact}
+\caption{HapBench mechanism ablations.}
+\label{tab:hapbench_ablation}
 \small
-\begin{tabularx}{\columnwidth}{Yrrrrrrr}
+\setlength{\tabcolsep}{4.4pt}
+\begin{tabular}{@{}lrrrrrrrrr@{}}
 \toprule
-Configuration & Flows & TP & FP & FN & Prec. & Rec. & F1 \\
+Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & BAcc & F1 \\
 \midrule
-A: IFDS+PTA & 78 & 70 & 8 & 66 & 89.7\% & 51.5\% & 65.4\% \\
-B: IFDS+CB+PTA & 146 & 133 & 13 & 3 & 91.1\% & 97.8\% & 94.3\% \\
-C: IFDS+LC+PTA & 78 & 69 & 9 & 67 & 88.5\% & 50.7\% & 64.5\% \\
-D: IFDS+CB+LC+PTA & 143 & 131 & 12 & 5 & 91.6\% & 96.3\% & 93.9\% \\
+\mytool & 50 & 14 & 0 & 3 & 100.00 & 94.34 & 100.00 & 97.17 & 97.09 \\
+$-$callback supplement & 50 & 14 & 0 & 3 & 100.00 & 94.34 & 100.00 & 97.17 & 97.09 \\
+$-$IR recovery & 37 & 14 & 0 & 16 & 100.00 & 69.81 & 100.00 & 84.91 & 82.22 \\
+$-$receiver refinement & 50 & 13 & 1 & 3 & 98.04 & 94.34 & 92.86 & 93.60 & 96.15 \\
+Unbounded lifecycle & 52 & 13 & 1 & 1 & 98.11 & 98.11 & 92.86 & 95.49 & 98.11 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{HapBench isolates core recovery mechanisms.}
+The complete suite attributes its configuration differences to IR, dispatch, and lifecycle recovery. Its callback constructs already have explicit core-IFDS edges, so disabling the supplement preserves the same 50 positive cases and 53 unique paths. We therefore evaluate incremental asynchronous coverage with a benchmark constructed around continuation gaps rather than assigning that role to HapBench.
+
+\textbf{ArkAsyncBench exposes complementary coverage.}
+Table~\ref{tab:asyncbench} separates paths supported by core IFDS from those reconstructed by the asynchronous supplement. The full configuration classifies all 24 positive and 24 matched-negative cases correctly. T1 callbacks and T5 \texttt{await} bridges are independently supported by both analyses, while all nine T4 \texttt{then} positives are supplement-exclusive. Removing the supplement therefore preserves 15 core-supported positives but misses the nine T4 cases (exact McNemar $p=0.00390625$). This decomposition turns provenance into a mechanism check: \textsc{Both} marks corroborated T1/T5 paths, and \textsc{AsyncSupplement} identifies the unique T4 increment.
+
+\begin{table}[H]
+\centering
+\caption{Complementary asynchronous-carrier coverage.}
+\label{tab:asyncbench}
+\small
+\setlength{\tabcolsep}{5.0pt}
+\begin{tabular}{@{}lrrrrrrr@{}}
+\toprule
+Construct & Pos. & Full & Core & Suppl. & Exclusive & Neg. rejected & Real paths \\
+\midrule
+T1 callback & 9 & 9 & 9 & 9 & 0 & 9/9 & 1 \\
+T4 \texttt{then} & 9 & 9 & 0 & 9 & 9 & 9/9 & 1 \\
+T5 \texttt{await} & 6 & 6 & 6 & 6 & 0 & 6/6 & 6 \\
+\midrule
+Total & 24 & 24 & 15 & 24 & 9 & 24/24 & 8 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\textbf{Real-project asynchronous diagnostic.}
+We rerun 26 callback-heavy real projects with the final typed-source configuration. It produces nine privacy-data paths in five projects, including eight asynchronous-only paths; twelve framework-input paths remain a separate source universe. Manual source/IR review confirms all eight structured dependencies (95\% Wilson lower bound 67.56\%): one T1 callback carries \texttt{metadata.genre}, one T4 Promise carries an advertising identifier through a field assignment, and six T5 paths carry awaited media metadata or reverse-geocoding results into log arguments. These real-code instances align each controlled construct with an executable application pattern.
+
+\textbf{IR recovery is necessary.}
+Removing constructor/initializer, lexical-capture, exception, array, and alias recovery creates 13 additional false negatives. F1 falls by 14.87 points and MCC by 0.310. The full configuration is exclusively correct on 13 cases and never exclusively wrong relative to this ablation (exact McNemar $p=0.000244$). This remains significant under Bonferroni correction for the four pre-specified ablations ($\alpha=0.0125$). The affected cases span anonymous constructs, closures, exception handling, array copying, multi-field access, and virtual dispatch, showing that the gain is not concentrated in a single hand-written pattern.
+
+\textbf{Receiver refinement protects specificity.}
+Without receiver-sensitive target filtering, \texttt{VirtualDispatch3} becomes a false positive. Recall is unchanged, but specificity falls from 100\% to 92.86\% and MCC from 0.881 to 0.831. This single controlled counterexample is important for privacy analysis: resolving more targets is not automatically an improvement when unrelated implementations introduce spurious source-to-sink paths.
+
+\textbf{Lifecycle bounds encode a precision policy.}
+The unrestricted lifecycle variant accepts two additional cross-event cases, but also reintroduces the explicit \texttt{UnreachableFlow} false positive. Because F1 ignores true negatives in a 53-positive/14-negative suite, its raw F1 rises to 98.11\% even as specificity falls to 92.86\% and balanced accuracy to 95.49\%; the bounded configuration retains 100\% specificity and 97.17\% balanced accuracy. Under the strict executed-order sensitivity oracle in Appendix~\ref{subsec:app_oracle_sensitivity}, bounded \mytool classifies 67/67 cases, whereas unbounded lifecycle creates three cross-event false positives and classifies 64/67. The bounded default therefore enforces the paper's precision-first reachability contract.
+
+\noindent\textbf{Answer to RQ3.}
+IR recovery provides the largest statistically supported HapBench contribution, receiver refinement removes a concrete dispatch false positive, and bounded lifecycle preserves perfect negative-case discrimination. On ArkAsyncBench, the asynchronous supplement independently supports every positive carrier, uniquely recovers all nine T4 Promise-\texttt{then} cases, and introduces no negative-case errors; eight corresponding paths are confirmed in real projects.
+
+\subsection{RQ4: Large-Corpus Characterization}
+\label{subsec:corpus_patterns}
+
+The retained analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods in 1,014 projects. It identifies 1,896 detector-recognized privacy-API occurrences in 273 projects, 1,542 detector-local sink observations in 185 projects, and 1,103 configured-query source-to-sink may-paths in 257 projects. The path total combines core solver outcomes and separately provenance-labeled asynchronous supplements. Detector-local sinks are attached to detector usages; configured-query paths use \texttt{hapflow\_sources.json}/\texttt{hapflow\_sinks.json}. They are therefore separate evidence universes, and the 257 versus 185 project counts do not assert that a path exists without a configured sink endpoint. The final-run audit verifies valid path endpoints, provenance tags, and detector-to-path link indices. These records are \emph{audit evidence}, not confirmed leaks.
+
+\begin{table}[H]
+\centering
+\caption{Large-corpus privacy evidence.}
+\label{tab:corpus_summary}
+\small
+\begin{tabularx}{\columnwidth}{@{}lrrY@{}}
+\toprule
+Measure & Count & Project rate & Interpretation \\
+\midrule
+Detector-recognized API occurrences & 1,896 & 26.92\% & Accepted identity witness \\
+Detector-local sink observations & 1,542 & 18.24\% & Local/callback sink tracing \\
+Configured-query may-paths & 1,103 & 25.35\% & Solver/supplement provenance \\
+Analyzed files/methods & 31,205/233,894 & -- & Frontend analysis scope \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-\textbf{Precision.} All variants achieve comparable precision: 89.7\%--91.6\%. The additional false positives in Variant~B (13 vs.\ 8 in Variant~A) are internal-logger flows (MEDIUM\_PRIVACY source $\to$ app-internal Logger sink), which we classify as non-violating because app-internal logging does not expose data beyond the application boundary.
-
-\textbf{Why lifecycle modeling does not increase taint flow counts.} IFDS is a \emph{may-analysis}: it explores all potentially reachable paths regardless of execution order. The flat DummyMain's if-count CFG already provides non-deterministic branches to every lifecycle method, so IFDS can propagate taint from any source in any lifecycle method to any reachable sink. Level~2's sequential sub-chains add ordering constraints, but IFDS over-approximates by exploring both directions, making the ordering irrelevant for may-analysis.
-
-\textbf{Collaboration behavior ablation.} While taint flow counts remain essentially unchanged, the lifecycle-enhanced CG improves \emph{collaboration behavior} discovery (privacy-relevant interactions across components or ability phases) from 260 to 375 (+44.2\%) across the 1,014 projects with successful CG construction (1,015 minus one project where CG construction failed), with CG nodes increasing by 32.6\% on average; 75 projects gain at least one new collaboration behavior. The additional CG nodes come from lifecycle transition edges (e.g., \texttt{onCreate}$\to$\texttt{aboutToAppear}). See Table~\ref{tab:lc_cg_examples_app} in Appendix~\ref{subsec:app_lc_examples} for representative projects.
-
-\textbf{Context-sensitive call graph.} $k=1$ PTA costs 5.02$\times$ the CHA time (46,870\,ms vs.\ 9,344\,ms total across 1,001 projects with 1,701,662 virtual call sites) while providing marginal precision improvement; see Table~\ref{tab:cs_precision_app} in Appendix~\ref{subsec:app_context_sensitive} for full results. Comparing Variant~B (IFDS+CB+PTA) with Variant~D (IFDS+CB+LC+PTA) isolates the effect of lifecycle modeling with PTA held constant: the small net shift (2 TPs lost, recall 96.3\% vs.\ 97.8\%) is attributable to LC-enhanced call resolution rather than PTA.
-
-\textbf{RQ3 summary.} Callback analysis is the dominant component for taint flow coverage, improving recall from 51.5\% to 97.8\% on the ArkPrismBench stratified benchmark (164 projects). Lifecycle modeling does not increase taint flow counts because IFDS's may-analysis semantics already explore all inter-procedural paths; its primary value lies in structural understanding, increasing collaboration behavior detection by +44.2\% across the full corpus. We note that the +44.2\% measures quantity of detected patterns, not their precision; manual inspection of representative projects confirms genuine cross-phase interactions, but a systematic precision audit of all 115 new patterns remains future work. Context-sensitive call graph construction ($k=1$ PTA) provides marginal precision improvement at 5.02$\times$ overhead (46,870\,ms vs.\ 9,344\,ms for CHA, across 1,001 projects with 1,701,662 virtual call sites); $k=2$ is faster (34,473\,ms) than $k=1$, likely because the deeper context reduces the number of spurious call targets and thus the work per call site, though we did not verify this hypothesis. The full configuration (IFDS+CB+LC+PTA) achieves 91.6\% precision and 96.3\% recall (F1 93.9\%).
-
-\subsection{RQ4: Corpus-level Privacy Patterns}
-\label{subsec:corpus_patterns}
-
-Figure~\ref{fig:eval_corpus_landscape} shows the long-tail distribution, category--sink interactions, and scale correlations. The corpus is strongly skewed: 236/1,015 projects contain detected privacy APIs, and the median project contains zero detected APIs. The top 10 projects account for 546/1,757 API usages (31.08\%), the top 50 account for 64.14\%, and the ArkPrismBench sample covers 925/1,757 (52.65\%).
+\textbf{Concentration and category structure.}
+The distribution is long-tailed: the median project has no recognized privacy API, while the top 10 projects account for 26.42\% of occurrences and the top 50 account for 59.44\%. The API-occurrence Gini coefficient is 0.886; the corresponding HHI is 0.0121, equivalent to 82.9 equally sized contributing projects. Hardware identity, network connectivity, screen/display identity, account data, and clipboard data contribute 18.62\%, 14.40\%, 11.71\%, 9.49\%, and 5.96\%, respectively. Project scale is associated with evidence volume (Spearman $\rho=0.461$ between method count and API occurrences), but the dispersion in Figure~\ref{fig:eval_corpus_landscape} shows that size alone is not a reliable privacy proxy.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figs/eval_corpus_landscape.pdf}
-\caption{Large-scale corpus landscape and category--sink interactions.}
+\caption{Detector/configured-query evidence concentration, detector-local category--sink structure, and project-scale relationships in the large corpus.}
 \label{fig:eval_corpus_landscape}
-\Description{A three-panel figure showing long-tail project concentration, category by sink heatmap, and scale versus privacy evidence scatter plot.}
+\Description{A multi-panel figure showing the long-tail project distribution, category by sink interactions, and relationships between project scale and privacy evidence.}
 \end{figure}
 
-The corpus is strongly skewed: 236/1,015 projects contain detected privacy APIs. Device identity (screen/display and hardware) dominates at 45.25\% of API usages, followed by network connectivity (8.42\%), clipboard (6.55\%), and location (5.81\%). Project size partly explains privacy evidence (Pearson $r=0.51$ for methods vs.\ API usages) but is not a reliable proxy for privacy behavior. See Table~\ref{tab:privacy_categories_app} in Appendix~\ref{subsec:app_categories} for the full per-category breakdown.
+\textbf{Destinations and path structure.}
+Logging dominates the 1,542 detector-local sink observations (1,272; 82.49\%), followed by UI display (136; 8.82\%), storage (93; 6.03\%), data return (32; 2.08\%), and network transmission (9; 0.58\%). This distribution characterizes detector-local audit destinations and is not used to label the endpoints of all 1,103 configured-query paths. Call chains have median length 1 and P95 length 4; configured-query paths have median length 5, P95 length 9, and maximum length 33.
 
-Additional benchmark methodology details, including annotation protocol, zero-output statistical bounds, and inter-annotator agreement, are in Appendix~\ref{subsec:app_manual_audit}. Performance and scalability results are in Appendix~\ref{subsec:app_performance}.
+\textbf{Solver integrity and cost.}
+All 1,014 retained projects finish with \texttt{SUCCESS}; no retained log contains a PTA fallback, IFDS batching, or budget exhaustion. The median project processes 837 IFDS edges (P95 13,857; maximum 778,986). Exact flow deduplication reduces 1,549 raw paths to 1,103 unique paths. Median per-project wall time is 16.4\,s, P95 is 21.2\,s, and the 351.3\,s maximum belongs to the 10,757-method outlier. The moderate method-count/runtime association (Spearman $\rho=0.393$) reflects both project scale and fixed frontend/SDK costs.
+
+\textbf{Clone sensitivity.}
+The token profile over the 1,015 candidate directories contains 32,233 source files, 21,663 unique token fingerprints, nine exact-clone clusters, and eleven near-clone clusters. Over the 1,014 completed analyses, counting one representative per exact-clone cluster changes API-, sink-, and path-positive project rates from 26.923\%, 18.245\%, and 25.345\% to 27.236\%, 18.392\%, and 25.628\%, respectively. Using one representative per near-clone cluster yields 27.090\%, 18.328\%, and 25.680\%. The maximum absolute shift is 0.335 percentage points. The aggregate prevalence therefore does not arise from repeatedly counting a small number of copied demonstrations, although shared framework code can still influence individual category frequencies.
+
+\noindent\textbf{Answer to RQ4.}
+Privacy evidence is sparse across projects but concentrated within a small high-output tail. Local logging is the dominant destination, project size only partially explains evidence volume, and clone-aware resampling leaves project-level rates essentially unchanged.
