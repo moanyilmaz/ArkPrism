@@ -42,23 +42,23 @@ The gold set contains 44 executable namespace properties, 26 namespace calls, 11
 \textbf{Evidence progression.}
 Table~\ref{tab:identity_progression} shows how the decision boundary changes. Lexical matching reaches every positive but accepts every matched collision. Import compatibility removes these collisions; receiver and factory evidence then recover indirect uses. The complete resolver adds constructed receivers, executable properties, compound aliases, and namespace-constrained migration, classifying all 64 cases correctly.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
-\caption{Identity evidence progression.}
+\caption{Identity evidence progression (rates in \%, except MCC).}
 \label{tab:identity_progression}
-\small
-\setlength{\tabcolsep}{5.0pt}
-\begin{tabular}{@{}lrrrrrrrr@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.5pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrrrr@{}}
 \toprule
-Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 \\
+Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & MCC \\
 \midrule
-Lexical token & 32 & 0 & 32 & 0 & 50.00 & 100.00 & 0.00 & 66.67 \\
-Import-aware namespace & 17 & 32 & 0 & 15 & 100.00 & 53.13 & 100.00 & 69.39 \\
-Declared receiver & 26 & 32 & 0 & 6 & 100.00 & 81.25 & 100.00 & 89.66 \\
-Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00 & 87.50 & 100.00 & 93.33 \\
-\mytool & \textbf{32} & \textbf{32} & \textbf{0} & \textbf{0} & \textbf{100.00} & \textbf{100.00} & \textbf{100.00} & \textbf{100.00} \\
+Lexical token & 32 & 0 & 32 & 0 & 50.00 & 100.00 & 0.00 & 66.67 & 50.00 & 0.000 \\
+Import-aware namespace & 17 & 32 & 0 & 15 & 100.00 & 53.13 & 100.00 & 69.39 & 76.56 & 0.601 \\
+Declared receiver & 26 & 32 & 0 & 6 & 100.00 & 81.25 & 100.00 & 89.66 & 90.63 & 0.827 \\
+Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00 & 87.50 & 100.00 & 93.33 & 93.75 & 0.882 \\
+\mytool & \textbf{32} & \textbf{32} & \textbf{0} & \textbf{0} & \textbf{100.00} & \textbf{100.00} & \textbf{100.00} & \textbf{100.00} & \textbf{100.00} & \textbf{1.000} \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \textbf{High-volume reproduction.}
@@ -72,20 +72,20 @@ On an output-independent real-project oracle, \mytool resolves all 90 sensitive 
 
 Table~\ref{tab:hapbench_main} reports the complete HapBench reproduction. \mytool classifies 64/67 cases correctly (50 TP, 14 TN), while HapFlow classifies 61/67 (51 TP, 10 TN). \mytool rejects every negative case and retains 50/53 positives, yielding 100\% precision and specificity, 97.09\% F1, 97.17\% balanced accuracy, and 0.881 MCC.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
-\caption{HapBench case-level classification.}
+\caption{HapBench case-level classification (rates in \%, except MCC).}
 \label{tab:hapbench_main}
-\small
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lrrrrrrrrrr@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.3pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrrrrr@{}}
 \toprule
-Tool & TP & TN & FP & FN & Precision & Recall & Specificity & F1 & BAcc. & MCC \\
+Tool & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & BAcc. & MCC \\
 \midrule
-HapFlow~\cite{hapflow} & 51 & 10 & 4 & 2 & 92.73\% & 96.23\% & 71.43\% & 94.44\% & 83.83\% & 0.717 \\
-\mytool & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00\%} & 94.34\% & \textbf{100.00\%} & \textbf{97.09\%} & \textbf{97.17\%} & \textbf{0.881} \\
+HapFlow~\cite{hapflow} & 51 & 10 & 4 & 2 & 92.73 & 96.23 & 71.43 & 94.44 & 91.04 & 83.83 & 0.717 \\
+\mytool & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00} & 94.34 & \textbf{100.00} & \textbf{97.09} & \textbf{95.52} & \textbf{97.17} & \textbf{0.881} \\
 \bottomrule
-\end{tabular}}
+\end{tabular*}
 \end{table}
 
 The tools disagree on nine cases: \mytool alone is correct on six and HapFlow alone on three (exact paired $p=0.508$). The observed advantage is concentrated in negative-case discrimination. Figure~\ref{fig:eval_hapbench}(a) shows Wilson uncertainty, and panel (b) localizes every error across seven categories and five configurations. \mytool reaches 100\% F1 in six categories and 85.71\% in lifecycle cases.
@@ -112,22 +112,22 @@ ArkTS-specific IR recovery resolves the anonymous initializer and exceptional su
 \textbf{IR, receiver, and lifecycle mechanisms.}
 Table~\ref{tab:hapbench_ablation} reports pre-specified ablations under the same query. Removing IR recovery loses 13 additional positives; the full configuration is exclusively correct on 13 cases and never exclusively wrong ($p=0.000244$, significant after Bonferroni correction for four tests). Receiver refinement removes one infeasible virtual target without reducing recall.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
-\caption{HapBench ablation results.}
+\caption{HapBench ablation results (rates in \%, except MCC).}
 \label{tab:hapbench_ablation}
-\small
-\setlength{\tabcolsep}{6.0pt}
-\begin{tabular}{@{}lrrrrrrr@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrrrrr@{}}
 \toprule
-Configuration & TP & TN & FP & FN & Recall & Specificity & BAcc. \\
+Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & BAcc. & MCC \\
 \midrule
-\mytool & 50 & \textbf{14} & \textbf{0} & 3 & 94.34 & \textbf{100.00} & \textbf{97.17} \\
-$-$IR recovery & 37 & \textbf{14} & \textbf{0} & 16 & 69.81 & \textbf{100.00} & 84.91 \\
-$-$receiver refinement & 50 & 13 & 1 & 3 & 94.34 & 92.86 & 93.60 \\
-Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & \textbf{98.11} & 92.86 & 95.49 \\
+\mytool & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00} & 94.34 & \textbf{100.00} & 97.09 & 95.52 & \textbf{97.17} & 0.881 \\
+$-$IR recovery & 37 & \textbf{14} & \textbf{0} & 16 & \textbf{100.00} & 69.81 & \textbf{100.00} & 82.22 & 76.12 & 84.91 & 0.571 \\
+$-$receiver refinement & 50 & 13 & 1 & 3 & 98.04 & 94.34 & 92.86 & 96.15 & 94.03 & 93.60 & 0.831 \\
+Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & 98.11 & \textbf{98.11} & 92.86 & \textbf{98.11} & \textbf{97.01} & 95.49 & \textbf{0.910} \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 The bounded default preserves all 14 negatives and attains 97.17\% balanced accuracy, compared with 95.49\% under unbounded lifecycle cycling. Removing the bound accepts two additional published positives but also recreates the benchmark's explicit unreachable-flow negative. Because F1 omits true negatives, it ranks the unbounded setting higher on that narrower objective; balanced accuracy measures the positive and negative obligations together. Under the strict executed-order contract in Appendix~\ref{subsec:app_oracle_sensitivity}, bounded \mytool classifies 67/67 cases, whereas unbounded cycling creates three cross-event false positives. The default therefore targets the audit objective: preserve negative-case discrimination unless an executable transition witness exists.
@@ -135,23 +135,43 @@ The bounded default preserves all 14 negatives and attains 97.17\% balanced accu
 \textbf{Asynchronous provenance.}
 HapBench exercises callbacks with explicit IFDS edges; ArkAsyncBench targets complementary continuation gaps. Table~\ref{tab:asyncbench} shows that T1 callback and T5 \texttt{await} paths receive corroborating evidence from both analyses, while all nine T4 Promise-\texttt{then} positives are supplement-exclusive. Removing supplementation therefore preserves 15 core-supported positives but misses the nine T4 cases ($p=0.00390625$), with no change among the 24 negatives.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
-\caption{Asynchronous carrier provenance on ArkAsyncBench.}
+\caption{ArkAsyncBench classification and evidence attribution.}
 \label{tab:asyncbench}
-\small
-\setlength{\tabcolsep}{6.0pt}
-\begin{tabular}{@{}lrrrrrr@{}}
+\papertablestyle
+\begin{minipage}[t]{0.47\columnwidth}
+\centering
+\textbf{(a) Classification under supplementation}\\[-2pt]
+\setlength{\tabcolsep}{1.4pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
-Construct & Pos./Neg. & IFDS & Supplement & Dual & Supp.-only & Real audit \\
+Construct & Pos. & Neg. & Full TP & $-$Supp. TP & $-$Supp. FN & TN \\
 \midrule
-T1 callback & 9/9 & 9 & 9 & 9 & 0 & 1/1 \\
-T4 \texttt{then} & 9/9 & 0 & 9 & 0 & \textbf{9} & 1/1 \\
-T5 \texttt{await} & 6/6 & 6 & 6 & 6 & 0 & 6/6 \\
+T1 callback & 9 & 9 & 9 & 9 & 0 & 9 \\
+T4 \texttt{then} & 9 & 9 & 9 & 0 & \textbf{9} & 9 \\
+T5 \texttt{await} & 6 & 6 & 6 & 6 & 0 & 6 \\
 \midrule
-Total & 24/24 & 15 & 24 & 15 & \textbf{9} & 8/8 \\
+Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
+\end{minipage}\hfill
+\begin{minipage}[t]{0.50\columnwidth}
+\centering
+\textbf{(b) Evidence attribution and real-code audit}\\[-2pt]
+\setlength{\tabcolsep}{2.0pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}
+\toprule
+Construct & IFDS & Supp. & Both & Supp.-only & Real audit \\
+\midrule
+T1 callback & 9 & 9 & 9 & 0 & 1/1 \\
+T4 \texttt{then} & 0 & 9 & 0 & \textbf{9} & 1/1 \\
+T5 \texttt{await} & 6 & 6 & 6 & 0 & 6/6 \\
+\midrule
+Total & 15 & 24 & 15 & \textbf{9} & 8/8 \\
+\bottomrule
+\end{tabular*}
+\end{minipage}
 \end{table}
 
 A separate diagnostic over 26 callback-heavy projects confirms all eight selected real-code asynchronous paths: a callback metadata property, a Promise-carried advertising identifier, and six awaited media-metadata or reverse-geocoding values. This links every implemented benchmark construct to executable project code.
@@ -159,25 +179,25 @@ A separate diagnostic over 26 callback-heavy projects confirms all eight selecte
 \textbf{Stratified semantic audit.}
 Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every path. All 90 sampled privacy-data paths are fully correct, including all 30 supplement-only and 26 dual-provenance paths in the full sample. Overall path precision is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{Manual semantic audit of 120 real-project paths.}
 \label{tab:semantic_path_audit}
-\small
-\setlength{\tabcolsep}{7.0pt}
-\begin{tabular}{@{}lrrrr@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrc@{}}
 \toprule
-Audited dimension & All & Privacy data & Framework input & Overall rate \\
+Audited dimension & All & Privacy & Framework & IFDS & Supp. & Both & Rate & 95\% CI \\
 \midrule
-Source identity & 120/120 & 90/90 & 30/30 & 100.00\% \\
-Sink identity & 120/120 & 90/90 & 30/30 & 100.00\% \\
-Explicit value dependence & 114/120 & 90/90 & 24/30 & 95.00\% \\
-Reachability & 114/120 & 90/90 & 24/30 & 95.00\% \\
-Provenance label & 120/120 & 90/90 & 30/30 & 100.00\% \\
+Source identity & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90, 100] \\
+Sink identity & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90, 100] \\
+Explicit value dependence & 114/120 & 90/90 & 24/30 & 58/64 & 30/30 & 26/26 & 95.00\% & [89.52, 97.69] \\
+Reachability & 114/120 & 90/90 & 24/30 & 58/64 & 30/30 & 26/26 & 95.00\% & [89.52, 97.69] \\
+Provenance label & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90, 100] \\
 \midrule
-Complete path & 114/120 & \textbf{90/90} & 24/30 & 95.00\% \\
+Complete path & 114/120 & \textbf{90/90} & 24/30 & 58/64 & \textbf{30/30} & \textbf{26/26} & 95.00\% & [89.52, 97.69] \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 The six rejected paths all belong to the optional framework-input model. Four join a lifecycle-written static URI field to unrelated component fields or constants; two connect a lifecycle argument to a permission Toast or a hard-coded event value. This localization matters operationally: the core privacy-data analysis attains 90/90 in the audit, while the framework-input layer remains separately identifiable by source kind and provenance instead of silently entering the privacy-path claim.
@@ -190,23 +210,23 @@ IR recovery supplies the largest statistically supported coverage gain, receiver
 
 The final analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods. Table~\ref{tab:corpus_summary} separates detector evidence, privacy-data paths, and framework-input paths. All 449 configured-query paths retain source and sink endpoints; source scope further distinguishes production, test, and generated code.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{Privacy evidence across 1,014 projects.}
 \label{tab:corpus_summary}
-\small
-\setlength{\tabcolsep}{6.0pt}
-\begin{tabular}{@{}lrrrc@{}}
+\papertablestyle
+\setlength{\tabcolsep}{3.2pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrr@{}}
 \toprule
-Evidence & Records & Projects & Project rate & Prod./test/gen. paths \\
+Evidence & Records & Projects & Project rate & Rec./positive proj. & Prod. & Test & Gen. \\
 \midrule
-Privacy-API usages & 2,336 & 353 & 34.81\% & -- \\
-Detector-local sinks & 1,754 & 224 & 22.09\% & -- \\
-Privacy-data paths & 243 & 29 & 2.86\% & 231/2/10 \\
-Framework-input paths & 206 & 159 & 15.68\% & 49/157/0 \\
-All configured paths & 449 & 181 & 17.85\% & 280/159/10 \\
+Privacy-API usages & 2,336 & 353 & 34.81\% & 6.62 & -- & -- & -- \\
+Detector-local sinks & 1,754 & 224 & 22.09\% & 7.83 & -- & -- & -- \\
+Privacy-data paths & 243 & 29 & 2.86\% & 8.38 & 231 & 2 & 10 \\
+Framework-input paths & 206 & 159 & 15.68\% & 1.30 & 49 & 157 & 0 \\
+All configured paths & 449 & 181 & 17.85\% & 2.48 & 280 & 159 & 10 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 The scope split exposes two distinct corpus phenomena. Privacy-data paths overwhelmingly occur in production source (231/243), while framework-input paths are dominated by generated test abilities (157/206). We therefore use the former for privacy-flow claims and retain the latter as a separately labeled analysis of framework-provided values.

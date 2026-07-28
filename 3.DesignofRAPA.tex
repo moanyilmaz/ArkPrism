@@ -240,19 +240,20 @@ Each recognized usage receives an $\mathit{Acc}$ label:
 
 Table~\ref{tab:identity_examples} illustrates how $\mathit{Id}$ resolves each access kind.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{API identity resolution examples.}
 \label{tab:identity_examples}
-\small
-\begin{tabularx}{\columnwidth}{@{}lYl@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.6pt}
+\begin{tabularx}{\columnwidth}{@{}YlllllY@{}}
 \toprule
-Source pattern & $\mathit{Id}(s)$ & $\mathit{Acc}$ \\
+Source pattern & Pkg. family & Ns./recv. & Origin & Member & Acc. & Acceptance witness \\
 \midrule
-\texttt{id.getOAID(cb)} & $\langle$BasicSvc, id, $\bot$, getOAID, $\mathit{direct}\rangle$ & direct \\
-\texttt{net=getDefaultNet()} & $\langle$NetworkKit, net, $\bot$, getDefaultNet, $\mathit{assign}\rangle$ & assign \\
-\texttt{mgr.getData(cb)} & $\langle$BasicSvc, mgr, getMgr, getData, $\mathit{indirect}\rangle$ & indirect \\
-\texttt{deviceInfo.brand} & $\langle$BasicSvc, devInfo, $\bot$, brand, $\mathit{property}\rangle$ & property \\
+\texttt{id.getOAID(cb)} & BasicSvc & \texttt{id} & $\bot$ & \texttt{getOAID} & direct & Import + namespace \\
+\texttt{net=getDefaultNet()} & NetworkKit & \texttt{net} & $\bot$ & \texttt{getDefaultNet} & assign & Import + assignment \\
+\texttt{mgr.getData(cb)} & BasicSvc & \texttt{mgr} & \texttt{getMgr} & \texttt{getData} & indirect & Factory return \\
+\texttt{deviceInfo.brand} & BasicSvc & \texttt{devInfo} & $\bot$ & \texttt{brand} & property & Executable read \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -281,20 +282,21 @@ Lifecycle information is consumed in two distinct ways. For call-chain recovery,
 
 \mytool formalizes carrier binding as $\mathit{SrcBind}(call, cb, param)$ (Section~\ref{subsec:problem_def}). The five recovery rules do not all modify the same analysis. T1, T4, and T5 add bounded source-to-sink outcomes after the core IFDS run when ArkIR lacks an explicit continuation edge; T2 and T3 add callback edges to the report call graph and therefore improve context recovery rather than seeding IFDS facts. Table~\ref{tab:transfer_rules} makes this execution domain explicit.
 
-\begin{table}[t]
+\begin{table}[tbp]
 \centering
 \caption{Asynchronous carrier and context recovery rules.}
 \label{tab:transfer_rules}
-\small
-\begin{tabularx}{\columnwidth}{@{}lYYll@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabularx}{\columnwidth}{@{}llYYll@{}}
 \toprule
-Rule & Construct & Recovery relation & Output & Domain \\
+Rule & Construct & Recovery relation & Required witness & Output & Domain \\
 \midrule
-T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & May-path & Post-IFDS \\
-T2 & Field callback & $Read(this.f)\!\to\!cb$ & Call edge & Report CG \\
-T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Call edge & Report CG \\
-T4 & Promise \texttt{then} & $ret(src)\!\to\!then_j.param$ & May-path & Post-IFDS \\
-T5 & \texttt{async/await} & $resolve_{arg}\!\to\!await_{res}$ & May-path & Post-IFDS \\
+T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & Typed or definition-backed callback & May-path & Post-IFDS \\
+T2 & Field callback & $Read(this.f)\!\to\!cb$ & Traced field assignment & Call edge & Report CG \\
+T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Named option field & Call edge & Report CG \\
+T4 & Promise \texttt{then} & $ret(src)\!\to\!then_j.param$ & Source-owned \texttt{then} chain & May-path & Post-IFDS \\
+T5 & \texttt{async/await} & $resolve_{arg}\!\to\!await_{res}$ & Definition-backed Promise & May-path & Post-IFDS \\
 \bottomrule
 \end{tabularx}
 \end{table}

@@ -6,23 +6,25 @@
 
 Table~\ref{tab:hapbench_errors_app} lists every error produced by either executable tool under the fixed 67-case oracle. Cases absent from the table are classified correctly by both tools. We retain the source-annotated oracle even where a more restrictive event or object-lifetime semantics would suggest a different label.
 
-\begin{table}[H]
+\begin{table}[tbp]
 \centering
 \caption{Case-level error inventory for the main HapBench comparison.}
 \label{tab:hapbench_errors_app}
-\begin{tabularx}{\columnwidth}{@{}l l l Y@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.8pt}
+\begin{tabularx}{\columnwidth}{@{}lll lY@{}}
 \toprule
-Tool & Outcome & Case & Observed mechanism \\
+Tool & Out. & Category & Case & Observed mechanism \\
 \midrule
-HapFlow & FN & \texttt{AnonymousClass2} & Anonymous instance initializer omitted \\
-HapFlow & FN & \texttt{Exceptions4} & Exceptional successor/handler not recovered \\
-HapFlow & FP & \texttt{ArrayIndexNoLeak} & Distinct constant indices collapse \\
-HapFlow & FP & \texttt{VirtualDispatch2} & Infeasible receiver target retained \\
-HapFlow & FP & \texttt{VirtualDispatch3} & Infeasible receiver target retained \\
-HapFlow & FP & \texttt{UnreachableFlow} & Lifecycle cycle creates reachability \\
-\mytool & FN & \texttt{ActivityLifecycle4} & Parent source method is bypassed by child override \\
-\mytool & FN & \texttt{BackupExtensionAbility} & Oracle assumes state across extension instances \\
-\mytool & FN & \texttt{Button1} & Oracle assumes click-written static state reaches later creation \\
+HapFlow & FN & Anonymous & \texttt{AnonymousClass2} & Anonymous instance initializer omitted \\
+HapFlow & FN & Language & \texttt{Exceptions4} & Exceptional successor/handler not recovered \\
+HapFlow & FP & Array & \texttt{ArrayIndexNoLeak} & Distinct constant indices collapse \\
+HapFlow & FP & Language & \texttt{VirtualDispatch2} & Infeasible receiver target retained \\
+HapFlow & FP & Language & \texttt{VirtualDispatch3} & Infeasible receiver target retained \\
+HapFlow & FP & Lifecycle & \texttt{UnreachableFlow} & Lifecycle cycle creates reachability \\
+\mytool & FN & Lifecycle & \texttt{ActivityLifecycle4} & Parent source method is bypassed by child override \\
+\mytool & FN & Lifecycle & \texttt{BackupExtensionAbility} & Oracle assumes state across extension instances \\
+\mytool & FN & Lifecycle & \texttt{Button1} & Oracle assumes click-written static state reaches later creation \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -36,19 +38,20 @@ At the finer endpoint-pair unit, \mytool's 52 raw paths canonicalize to 51 sourc
 
 The primary evaluation preserves all published/source-annotated HapBench labels. We additionally define a strict executed-order contract for the three disputed lifecycle cases: an override does not execute its parent body without an explicit \texttt{super} call; an instance field does not cross framework-created instances without a same-object witness; and a UI callback occurring after initial ability creation does not feed an earlier \texttt{onCreate} without an explicit later-creation edge. This contract relabels \texttt{ActivityLifecycle4}, \texttt{BackupExtensionAbility}, and \texttt{Button1} as negative and changes no other case.
 
-\begin{table}[H]
+\begin{table}[tbp]
 \centering
-\caption{Sensitivity to strict lifecycle execution order.}
+\caption{Sensitivity to strict lifecycle execution order (rates in \%, except MCC).}
 \label{tab:hapbench_strict_oracle}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lrrrrrrrrr@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.3pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrrrrr@{}}
 \toprule
-Tool & TP & TN & FP & FN & Precision & Recall & Specificity & F1 & MCC \\
+Tool & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & BAcc. & MCC \\
 \midrule
-HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27\% & 96.00\% & 58.82\% & 91.43\% & 0.622 \\
-\mytool & 50 & 17 & 0 & 0 & 100.00\% & 100.00\% & 100.00\% & 100.00\% & 1.000 \\
+HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27 & 96.00 & 58.82 & 91.43 & 86.57 & 77.41 & 0.622 \\
+\mytool & 50 & 17 & 0 & 0 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 1.000 \\
 \bottomrule
-\end{tabular}}
+\end{tabular*}
 \end{table}
 
 The tools then disagree on nine cases, all classified correctly only by \mytool; the exact two-sided McNemar test gives $p=0.00390625$. This secondary sensitivity contract does not replace the published oracle; it makes the object and event-order semantics responsible for the difference explicit. The artifact derives both tables from the same case predictions through \texttt{analyze\_hapbench\_oracle\_sensitivity.js}.
@@ -57,41 +60,45 @@ The tools then disagree on nine cases, all classified correctly only by \mytool;
 
 Table~\ref{tab:hapbench_ci_app} reports Wilson intervals for the main configurations. The wide specificity intervals are a direct consequence of having only 14 negative cases; balanced accuracy and MCC are included to make this class imbalance visible.
 
-\begin{table}[H]
+\begin{table}[tbp]
 \centering
 \caption{HapBench uncertainty and category robustness.}
 \label{tab:hapbench_ci_app}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{@{}lccccc@{}}
+\papertablestyle
+\setlength{\tabcolsep}{2.2pt}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lccccrrrr@{}}
 \toprule
-Tool & Precision 95\% CI & Recall 95\% CI & Specificity 95\% CI & Macro F1 & Worst-category F1 \\
+Tool & \makecell{Prec.\\95\% CI} & \makecell{Rec.\\95\% CI} & \makecell{Spec.\\95\% CI} & \makecell{Acc.\\95\% CI} & BAcc. & MCC & Macro F1 & Worst F1 \\
 \midrule
-HapFlow~\cite{hapflow} & [82.7, 97.1] & [87.2, 99.0] & [45.4, 88.3] & 95.73\% & 88.89\% \\
-\mytool & [92.9, 100.0] & [84.6, 98.1] & [78.5, 100.0] & 97.96\% & 85.71\% \\
-$-$IR recovery & [90.6, 100.0] & [56.5, 80.5] & [78.5, 100.0] & 87.07\% & 66.67\% \\
-$-$receiver refinement & [89.7, 99.7] & [84.6, 98.1] & [68.5, 98.7] & 97.57\% & 85.71\% \\
-Unbounded lifecycle & [90.1, 99.7] & [90.1, 99.7] & [68.5, 98.7] & 98.81\% & 91.67\% \\
+HapFlow~\cite{hapflow} & [82.7, 97.1] & [87.2, 99.0] & [45.4, 88.3] & [81.8, 95.8] & 83.83 & 0.717 & 95.73 & 88.89 \\
+\mytool & [92.9, 100.0] & [84.6, 98.1] & [78.5, 100.0] & [87.6, 98.5] & 97.17 & 0.881 & 97.96 & 85.71 \\
+$-$IR recovery & [90.6, 100.0] & [56.5, 80.5] & [78.5, 100.0] & [64.7, 84.7] & 84.91 & 0.571 & 87.07 & 66.67 \\
+$-$receiver refinement & [89.7, 99.7] & [84.6, 98.1] & [68.5, 98.7] & [85.6, 97.7] & 93.60 & 0.831 & 97.57 & 85.71 \\
+Unbounded lifecycle & [90.1, 99.7] & [90.1, 99.7] & [68.5, 98.7] & [89.8, 99.2] & 95.49 & 0.910 & 98.81 & 91.67 \\
 \bottomrule
-\end{tabular}}
+\end{tabular*}
 \end{table}
 
-\begin{table}[H]
+\begin{table}[tbp]
 \centering
-\caption{Per-category F1 on all HapBench cases.}
+\caption{Per-category HapBench errors and F1.}
 \label{tab:hapbench_categories_app}
-\begin{tabular}{@{}lrrr@{}}
+\papertablestyle
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
-Category & Cases & HapFlow & \mytool \\
+Category & Cases & HapFlow err. & HapFlow F1 & \mytool err. & \mytool F1 & $\Delta$F1 \\
 \midrule
-Aliasing & 6 & 100.00\% & 100.00\% \\
-Anonymous constructs & 10 & 93.33\% & 100.00\% \\
-Array-like structures & 5 & 88.89\% & 100.00\% \\
-Field/object sensitivity & 6 & 100.00\% & 100.00\% \\
-General language features & 22 & 91.89\% & 100.00\% \\
-Lifecycle modeling & 13 & 96.00\% & 85.71\% \\
-OpenHarmony-specific APIs & 5 & 100.00\% & 100.00\% \\
+Aliasing & 6 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
+Anonymous constructs & 10 & 1 & 93.33 & 0 & 100.00 & +6.67 \\
+Array-like structures & 5 & 1 & 88.89 & 0 & 100.00 & +11.11 \\
+Field/object sensitivity & 6 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
+General language features & 22 & 3 & 91.89 & 0 & 100.00 & +8.11 \\
+Lifecycle modeling & 13 & 1 & 96.00 & 3 & 85.71 & $-$10.29 \\
+OpenHarmony-specific APIs & 5 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
+\midrule
+Total / macro & 67 & 6 & 95.73 & 3 & 97.96 & +2.23 \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table}
 
 \subsection{Source-first Benchmark Protocol}

@@ -38,6 +38,17 @@
 \newfloat{algorithm}{tbp}{loa}
 \floatname{algorithm}{Algorithm}
 
+\setcounter{topnumber}{3}
+\setcounter{bottomnumber}{2}
+\setcounter{totalnumber}{5}
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.85}
+\renewcommand{\textfraction}{0.08}
+\renewcommand{\floatpagefraction}{0.80}
+\setlength{\textfloatsep}{8pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{8pt plus 2pt minus 2pt}
+
 \DeclareRobustCommand{\textspecial}[1]{{\sffamily #1}}
 \newcommand{\mytoolname}{\textsc{ArkPrism}}
 \newcommand{\mytool}{\mytoolname\xspace}
@@ -69,6 +80,11 @@
 \renewcommand\cellalign{cc}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}m{#1}}
 \newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+\newcommand{\papertablestyle}{%
+  \footnotesize
+  \setlength{\tabcolsep}{3.4pt}%
+  \renewcommand{\arraystretch}{1.06}%
+}
 \newcommand{\tablehead}{}
 \newcommand{\subtlebreak}{}
 \newcommand{\gain}[1]{\textsubscript{\textcolor{arkgreen!65!black}{+#1pp}}}

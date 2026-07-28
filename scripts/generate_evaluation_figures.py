@@ -1226,15 +1226,17 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     apis = np.array([row["apis"] for row in project_rows])
     taints = np.array([row["taints"] for row in project_rows])
 
-    fig, axes = plt.subplots(
+    fig = plt.figure(figsize=(7.15, 2.05))
+    grid = fig.add_gridspec(
         1,
-        4,
-        figsize=(7.15, 2.05),
-        gridspec_kw={
-            "width_ratios": [0.82, 1.45, 1.08, 1.13],
-            "wspace": 0.52,
-        },
+        7,
+        width_ratios=[0.70, 0.48, 1.03, 0.34, 1.42, 0.36, 1.22],
+        wspace=0,
     )
+    axes = [
+        fig.add_subplot(grid[0, index])
+        for index in [0, 2, 4, 6]
+    ]
 
     ax = axes[0]
     ax.plot(ranks, cumulative, color=COLORS["green"], linewidth=1.8)
@@ -1251,27 +1253,27 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     )
     ax.set_xscale("log")
     ax.set_ylim(0, 105)
-    ax.set_xlabel("Project rank by API usages (log)")
+    ax.set_xlabel("Project rank (log scale)")
     ax.set_ylabel("Cumulative API usage share (%)")
-    ax.set_title("(a) Long-tail concentration")
+    ax.set_title("(a) Long-tail concentration", fontsize=6.2)
 
     ax = axes[1]
     ax.imshow(matrix, aspect="auto", cmap="Blues")
     ax.set_yticks(np.arange(len(categories)))
     ax.set_yticklabels(
         [compact_category(name) for name in categories],
-        rotation=28,
+        rotation=34,
         ha="right",
         rotation_mode="anchor",
     )
-    ax.tick_params(axis="y", pad=0)
+    ax.tick_params(axis="y", pad=0, labelsize=5.6)
     ax.set_xticks(np.arange(len(SINK_ORDER)))
     ax.set_xticklabels(
         [name.replace("_", " ") for name in SINK_ORDER],
         rotation=28,
         ha="right",
     )
-    ax.set_title("(b) Category x detector-local sinks")
+    ax.set_title("(b) Category x detector-local sinks", fontsize=6.2)
     heatmap_text(ax, matrix)
 
     ax = axes[2]
@@ -1295,8 +1297,16 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     )
     ax.set_xlabel("log(1 + methods)")
     ax.set_ylabel("log(1 + evidence count)")
-    ax.set_title("(c) Scale vs. evidence volume")
-    ax.legend(loc="upper left")
+    ax.set_title("(c) Scale vs. evidence volume", fontsize=6.2)
+    ax.legend(
+        loc="upper left",
+        bbox_to_anchor=(0.02, 0.98),
+        frameon=True,
+        facecolor="white",
+        edgecolor="none",
+        framealpha=0.92,
+        borderpad=0.25,
+    )
 
     ax = axes[3]
     source_styles = {
@@ -1304,13 +1314,13 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
         "framework_input": (COLORS["orange"], "Framework input"),
     }
     provenance_styles = {
-        "ifds": ("-", "IFDS"),
-        "async_supplement": ("--", "Async supplement"),
-        "both": (":", "Both"),
+        "ifds": ("o", "IFDS"),
+        "async_supplement": ("s", "Async supplement"),
+        "both": ("D", "Both"),
     }
     path_groups: dict[str, list[int]] = {}
     for source_kind, (color, _) in source_styles.items():
-        for provenance, (line_style, _) in provenance_styles.items():
+        for provenance, (marker, _) in provenance_styles.items():
             lengths = sorted(
                 row["pathStatements"]
                 for row in flow_rows
@@ -1327,8 +1337,13 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
                 ecdf,
                 where="post",
                 color=color,
-                linestyle=line_style,
+                linestyle="-",
                 linewidth=1.25,
+                marker=marker,
+                markersize=2.2,
+                markerfacecolor="white",
+                markeredgewidth=0.6,
+                markevery=max(1, len(values) // 7),
                 alpha=0.95,
             )
             path_groups[f"{source_kind}|{provenance}"] = lengths
@@ -1347,7 +1362,7 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     ax.set_ylim(0, 1.03)
     ax.set_xlabel("Statements per path (log2)")
     ax.set_ylabel("Empirical CDF")
-    ax.set_title("(d) Path-length ECDF by provenance")
+    ax.set_title("(d) Path-length ECDF by provenance", fontsize=6.2)
     source_legend = [
         Line2D([0], [0], color=color, linewidth=1.4, label=label)
         for color, label in source_styles.values()
@@ -1357,24 +1372,40 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
             [0],
             [0],
             color=COLORS["dark_gray"],
-            linestyle=line_style,
+            linestyle="-",
+            marker=marker,
+            markersize=3.0,
+            markerfacecolor="white",
+            markeredgewidth=0.7,
             linewidth=1.2,
             label=label,
         )
-        for line_style, label in provenance_styles.values()
+        for marker, label in provenance_styles.values()
     ]
     first_legend = ax.legend(
         handles=source_legend,
         loc="lower right",
+        bbox_to_anchor=(0.98, 0.03),
         fontsize=4.7,
         handlelength=1.5,
+        frameon=True,
+        facecolor="white",
+        edgecolor="none",
+        framealpha=0.92,
+        borderpad=0.20,
     )
     ax.add_artist(first_legend)
     ax.legend(
         handles=provenance_legend,
         loc="upper left",
+        bbox_to_anchor=(0.02, 0.98),
         fontsize=4.7,
         handlelength=1.5,
+        frameon=True,
+        facecolor="white",
+        edgecolor="none",
+        framealpha=0.92,
+        borderpad=0.20,
     )
 
     fig.subplots_adjust(left=0.068, right=0.995, bottom=0.29, top=0.88)
