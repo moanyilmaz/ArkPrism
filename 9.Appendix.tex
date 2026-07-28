@@ -40,7 +40,7 @@ The primary evaluation preserves all published/source-annotated HapBench labels.
 
 \begin{table}[tbp]
 \centering
-\caption{Sensitivity to strict lifecycle execution order (rates in \%, except MCC).}
+\caption{Sensitivity to strict lifecycle execution order.}
 \label{tab:hapbench_strict_oracle}
 \papertablestyle
 \setlength{\tabcolsep}{2.3pt}
@@ -48,8 +48,8 @@ The primary evaluation preserves all published/source-annotated HapBench labels.
 \toprule
 Tool & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & BAcc. & MCC \\
 \midrule
-HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27 & 96.00 & 58.82 & 91.43 & 86.57 & 77.41 & 0.622 \\
-\mytool & 50 & 17 & 0 & 0 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 100.00 & 1.000 \\
+HapFlow~\cite{hapflow} & 48 & 10 & 7 & 2 & 87.27\% & 96.00\% & 58.82\% & 91.43\% & 86.57\% & 77.41\% & 0.622 \\
+\mytool & 50 & 17 & 0 & 0 & 100.00\% & 100.00\% & 100.00\% & 100.00\% & 100.00\% & 100.00\% & 1.000 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -70,11 +70,11 @@ Table~\ref{tab:hapbench_ci_app} reports Wilson intervals for the main configurat
 \toprule
 Tool & \makecell{Prec.\\95\% CI} & \makecell{Rec.\\95\% CI} & \makecell{Spec.\\95\% CI} & \makecell{Acc.\\95\% CI} & BAcc. & MCC & Macro F1 & Worst F1 \\
 \midrule
-HapFlow~\cite{hapflow} & [82.7, 97.1] & [87.2, 99.0] & [45.4, 88.3] & [81.8, 95.8] & 83.83 & 0.717 & 95.73 & 88.89 \\
-\mytool & [92.9, 100.0] & [84.6, 98.1] & [78.5, 100.0] & [87.6, 98.5] & 97.17 & 0.881 & 97.96 & 85.71 \\
-$-$IR recovery & [90.6, 100.0] & [56.5, 80.5] & [78.5, 100.0] & [64.7, 84.7] & 84.91 & 0.571 & 87.07 & 66.67 \\
-$-$receiver refinement & [89.7, 99.7] & [84.6, 98.1] & [68.5, 98.7] & [85.6, 97.7] & 93.60 & 0.831 & 97.57 & 85.71 \\
-Unbounded lifecycle & [90.1, 99.7] & [90.1, 99.7] & [68.5, 98.7] & [89.8, 99.2] & 95.49 & 0.910 & 98.81 & 91.67 \\
+HapFlow~\cite{hapflow} & [82.7\%, 97.1\%] & [87.2\%, 99.0\%] & [45.4\%, 88.3\%] & [81.8\%, 95.8\%] & 83.83\% & 0.717 & 95.73\% & 88.89\% \\
+\mytool & [92.9\%, 100.0\%] & [84.6\%, 98.1\%] & [78.5\%, 100.0\%] & [87.6\%, 98.5\%] & 97.17\% & 0.881 & 97.96\% & 85.71\% \\
+$-$IR recovery & [90.6\%, 100.0\%] & [56.5\%, 80.5\%] & [78.5\%, 100.0\%] & [64.7\%, 84.7\%] & 84.91\% & 0.571 & 87.07\% & 66.67\% \\
+$-$receiver refinement & [89.7\%, 99.7\%] & [84.6\%, 98.1\%] & [68.5\%, 98.7\%] & [85.6\%, 97.7\%] & 93.60\% & 0.831 & 97.57\% & 85.71\% \\
+Unbounded lifecycle & [90.1\%, 99.7\%] & [90.1\%, 99.7\%] & [68.5\%, 98.7\%] & [89.8\%, 99.2\%] & 95.49\% & 0.910 & 98.81\% & 91.67\% \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -88,15 +88,15 @@ Unbounded lifecycle & [90.1, 99.7] & [90.1, 99.7] & [68.5, 98.7] & [89.8, 99.2] 
 \toprule
 Category & Cases & HapFlow err. & HapFlow F1 & \mytool err. & \mytool F1 & $\Delta$F1 \\
 \midrule
-Aliasing & 6 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
-Anonymous constructs & 10 & 1 & 93.33 & 0 & 100.00 & +6.67 \\
-Array-like structures & 5 & 1 & 88.89 & 0 & 100.00 & +11.11 \\
-Field/object sensitivity & 6 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
-General language features & 22 & 3 & 91.89 & 0 & 100.00 & +8.11 \\
-Lifecycle modeling & 13 & 1 & 96.00 & 3 & 85.71 & $-$10.29 \\
-OpenHarmony-specific APIs & 5 & 0 & 100.00 & 0 & 100.00 & 0.00 \\
+Aliasing & 6 & 0 & 100.00\% & 0 & 100.00\% & 0.00\% \\
+Anonymous constructs & 10 & 1 & 93.33\% & 0 & 100.00\% & +6.67\% \\
+Array-like structures & 5 & 1 & 88.89\% & 0 & 100.00\% & +11.11\% \\
+Field/object sensitivity & 6 & 0 & 100.00\% & 0 & 100.00\% & 0.00\% \\
+General language features & 22 & 3 & 91.89\% & 0 & 100.00\% & +8.11\% \\
+Lifecycle modeling & 13 & 1 & 96.00\% & 3 & 85.71\% & $-$10.29\% \\
+OpenHarmony-specific APIs & 5 & 0 & 100.00\% & 0 & 100.00\% & 0.00\% \\
 \midrule
-Total / macro & 67 & 6 & 95.73 & 3 & 97.96 & +2.23 \\
+Total / macro & 67 & 6 & 95.73\% & 3 & 97.96\% & +2.23\% \\
 \bottomrule
 \end{tabular*}
 \end{table}
