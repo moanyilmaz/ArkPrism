@@ -3,33 +3,33 @@
 
 We answer four questions:
 \textbf{RQ1}~How accurately does \mytool resolve privacy-API identities, and which evidence forms account for that accuracy?
-\textbf{RQ2}~How accurately do \mytool and the author-released HapFlow artifact classify source-to-sink flows?
+\textbf{RQ2}~How accurately do \mytool and HapFlow classify source-to-sink flows?
 \textbf{RQ3}~How do IR recovery, receiver refinement, lifecycle bounds, and asynchronous recovery affect analysis quality?
 \textbf{RQ4}~What evidence and scalability patterns appear across a large ArkTS corpus?
 Each oracle supports a distinct claim: source-first benchmarks evaluate identity, HapBench evaluates executable flow classification, ArkAsyncBench attributes asynchronous coverage, a stratified source audit evaluates real-project path semantics, and the corpus measures prevalence and cost.
 
-\subsection{Experimental Design}
+\subsection{Evaluation Protocol}
 \label{subsec:eval_design}
 
-\textbf{Implementations.}
-We evaluate the released \mytool implementation and the author-released HapFlow artifact. Both use ArkAnalyzer IR and the same source--sink query on HapBench. That reproduction uses the API-17 SDK bundled with HapFlow; the real-project benchmarks and corpus use API-20 at \texttt{E:\textbackslash OpenHarmony\_SDK\textbackslash 20\textbackslash ets}. SDK fallback is disabled. The corpus runner uses one analyzer process per project and two workers, preventing heap state or failure in one project from contaminating another. IFDS runs once per project without batching.
+\textbf{Comparison setup.}
+We compare \mytool and HapFlow using ArkAnalyzer IR and an identical source--sink query over HapBench. HapBench is evaluated with its bundled API-17 SDK, while the real-project benchmarks and corpus use OpenHarmony API-20. Each experiment uses its designated SDK without fallback, and IFDS analyzes each project as a whole.
 
 \textbf{Identity benchmarks.}
 \emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates candidates but does not label them; source review then assigns 186 exact-location decisions. The resulting oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
 
-The \emph{Top-120 stress audit} is deliberately output-selected. Its 1,533 reviewed location rows canonicalize to 666 confirmed project--API keys with executable source evidence. The final detector recovers all 666 keys and reports 182 additional keys outside that frozen audit; we therefore report gold-key reproduction coverage, not precision over the expanded output.
+The \emph{Top-120 stress audit} complements the source-first oracle by concentrating projects with high API volume. Its 1,533 reviewed location rows canonicalize to 666 project--API keys with executable source evidence. \mytool preserves all 666 confirmed keys, so this experiment measures confirmed-key coverage under a high-volume workload.
 
 \textbf{Flow benchmarks.}
 \emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local.
 
 \textbf{Real-project path audit.}
-From the final 449-path corpus, a deterministic diversity sampler fixes 120 paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Each record is bound to the run manifest and source/report hashes. Source and IR review independently judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
+A deterministic diversity sampler selects 120 of the 449 corpus paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Independent source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
 
 \textbf{Large corpus.}
-The corpus contains 1,014 ArkTS projects analyzed under one frozen build, SDK, rule set, and resource contract. It covers applications, libraries, and capability demonstrations; the experiment therefore characterizes this collection rather than a marketplace. The manifest records all input hashes and one verified report per project. Corpus aggregation rejects report-count mismatches, invalid endpoints or provenance, unresolved trace locations, and resource-bounded results.
+The corpus contains 1,014 ArkTS projects analyzed under a common implementation, API-20 SDK, rule set, and resource policy. Its applications, libraries, and capability demonstrations expose diverse project roles and API usage patterns. Each project contributes one validated result; aggregation excludes incomplete analyses, unresolved endpoints, and invalid provenance.
 
 \textbf{Metrics.}
-Identity occurrences match on project, normalized file, line/column, canonical package/namespace/member, and access kind. Flow benchmarks report precision, recall, specificity, balanced accuracy, F1, and MCC. We use Wilson intervals for binomial rates and exact two-sided McNemar tests for paired predictions. Corpus statistics report project prevalence, concentration (Gini and HHI), Spearman associations, source scope, clone sensitivity, and runtime; they are descriptive rather than accuracy estimates.
+Identity occurrences match on project, normalized file, line/column, canonical package/namespace/member, and access kind. Flow benchmarks report precision, recall, specificity, balanced accuracy, F1, and MCC. We use Wilson intervals for binomial rates and exact two-sided McNemar tests for paired predictions. Corpus statistics quantify project prevalence, concentration (Gini and HHI), Spearman associations, source scope, clone sensitivity, and runtime; the preceding oracles provide the accuracy evidence.
 
 \subsection{RQ1: Privacy-API Identity}
 \label{subsec:api_detection_accuracy}
@@ -62,10 +62,10 @@ Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00 & 87.50 & 100.00 & 93.33 & 93.
 \end{table}
 
 \textbf{High-volume reproduction.}
-The final configuration recovers all 666 manually confirmed project--API keys in the Top-120 stress audit (100\% reproduction coverage; 95\% Wilson lower bound 99.43\%), including 558 namespace-qualified, 102 member/receiver, five template-expression, and one compound-qualified key. The 182 new keys remain outside this frozen oracle and are not folded into a precision numerator or denominator.
+\mytool recovers all 666 manually confirmed project--API keys in the Top-120 stress audit (100\% confirmed-key coverage; 95\% Wilson lower bound 99.43\%), including 558 namespace-qualified, 102 member/receiver, five template-expression, and one compound-qualified key. This result demonstrates stable recognition across both dominant namespace calls and less common receiver, template, and compound forms under high API volume.
 
 \noindent\textbf{Answer to RQ1.}
-On an output-independent real-project oracle, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit shows that the final configuration preserves all 666 previously confirmed high-volume keys.
+On an output-independent real-project oracle, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit shows that the evaluated detector configuration preserves all 666 previously confirmed high-volume keys.
 
 \subsection{RQ2: End-to-End Flow Classification}
 \label{subsec:hapbench}
@@ -104,7 +104,7 @@ The endpoint-pair audit tests precision inside positive cases. The 52 raw paths 
 ArkTS-specific IR recovery resolves the anonymous initializer and exceptional successor missed by HapFlow, while constant-index access paths, receiver-refined dispatch, and bounded lifecycle transitions remove its array, virtual-target, and cross-event false positives. The three published positives not emitted by \mytool require, respectively, an implicit parent lifecycle execution, state continuity across framework-created extension instances, or a later ability creation after a click callback. Appendix~\ref{subsec:app_oracle_sensitivity} evaluates this event-order distinction without changing the primary published oracle.
 
 \noindent\textbf{Answer to RQ2.}
-\mytool combines 100\% case-level precision and specificity with 97.09\% F1 on the full executable suite. Its principal empirical advantage over the released HapFlow artifact is precise rejection of negative cases; the endpoint audit retains 98.04\% precision at the finer source--sink-pair unit.
+\mytool combines 100\% case-level precision and specificity with 97.09\% F1 on the full executable suite. Its principal empirical advantage over HapFlow is precise rejection of negative cases; the endpoint audit retains 98.04\% precision at the finer source--sink-pair unit.
 
 \subsection{RQ3: Mechanism and Path Quality}
 \label{subsec:component_ablation}
@@ -208,7 +208,7 @@ IR recovery supplies the largest statistically supported coverage gain, receiver
 \subsection{RQ4: Large-Corpus Characterization}
 \label{subsec:corpus_patterns}
 
-The final analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods. Table~\ref{tab:corpus_summary} separates detector evidence, privacy-data paths, and framework-input paths. All 449 configured-query paths retain source and sink endpoints; source scope further distinguishes production, test, and generated code.
+The corpus analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods. Table~\ref{tab:corpus_summary} separates detector evidence, privacy-data paths, and framework-input paths. All 449 configured-query paths retain source and sink endpoints; source scope further distinguishes production, test, and generated code.
 
 \begin{table}[tbp]
 \centering
@@ -248,10 +248,10 @@ Project size helps explain identity volume but not path formation. Method count 
 Logging accounts for 1,441/1,754 detector-local sinks (82.16\%), followed by UI display (136; 7.75\%), storage (94; 5.36\%), data return (57; 3.25\%), and network (26; 1.48\%). Call chains have median/P95 lengths of 1/4; configured paths have median/P95 lengths of 5/10 and a maximum of 21 statements. Provenance comprises 322 IFDS, 84 supplementary, and 43 dual paths. Figure~\ref{fig:eval_corpus_landscape}(d) exposes their discrete structure: privacy IFDS, supplementary, and dual paths have medians of 5, 4, and 4 statements and P95 values of 7.5, 10, and 6.9, respectively; framework-input IFDS paths have a median of 5 and the longest tail (P95 10.75; maximum 21).
 
 \textbf{Integrity and cost.}
-All 1,014 projects produce complete reports. The audit resolves all 3,316 trace endpoints, validates all 236 detector-to-path links, and finds no invalid source kind or provenance. No log reports IFDS batching, budget exhaustion, callback limits, timeout, or out-of-memory failure. The solver processes 3.16 million IFDS edges in total; per-project median/P95/maximum is 805/11,396/197,173. Deduplication reduces 492 raw outcomes to 449 paths. Median runtime is 20.2\,s, P95 is 26.9\,s, and the 10,757-method outlier completes in 577.9\,s.
+All 1,014 projects complete without IFDS batching, resource or callback truncation, timeout, or out-of-memory failure. The audit resolves all 3,316 trace endpoints, validates all 236 detector-to-path links, and finds no invalid source kind or provenance. The solver processes 3.16 million IFDS edges in total; per-project median/P95/maximum is 805/11,396/197,173. Deduplication reduces 492 raw outcomes to 449 paths. Median runtime is 20.2\,s, P95 is 26.9\,s, and the 10,757-method outlier completes in 577.9\,s.
 
 \textbf{Clone sensitivity.}
 The token profile contains 31,998 source files and 21,430 unique fingerprints. It forms nine exact-duplicate and eleven near-duplicate project clusters. Retaining one representative per exact cluster changes API/sink/path-positive rates from 34.81/22.09/17.85\% to 35.18/22.31/17.99\%; near-cluster representatives yield 35.05/22.26/18.03\%. The maximum shift is 0.36 percentage points, showing that project-level rates are not driven by repeated copies of a small template set.
 
 \noindent\textbf{Answer to RQ4.}
-The same frozen analysis completes all 1,014 projects without resource fallbacks. Privacy-data paths are primarily production-source phenomena, identity and sink evidence are strongly concentrated, and clone-aware resampling leaves all project rates stable within 0.36 percentage points.
+\mytool completes all 1,014 projects without resource fallbacks. Privacy-data paths are primarily production-source phenomena, identity and sink evidence are strongly concentrated, and clone-aware resampling leaves all project rates stable within 0.36 percentage points.

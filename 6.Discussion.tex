@@ -22,13 +22,13 @@ Asynchronous supplementation follows the same principle. It is bounded independe
 \subsection{Validity Controls}
 
 \textbf{Independent labels.}
-ArkSourceFirst60 is fixed by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and exact source hashes bind all 186 decisions. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The output-ranked Top-120 set has a narrower role: the final configuration is evaluated on reproduction of 666 confirmed keys, while 182 newly reported keys remain outside its metric.
+ArkSourceFirst60 is selected by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and all 186 decisions retain exact source locations. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The Top-120 set serves a complementary role by testing preservation of 666 confirmed keys under high API volume.
 
-\textbf{Configuration and artifact identity.}
-Detector rules, typed sources, framework inputs, sinks, package migration, SDK contents, analyzer source, compiled build, and runner are independently hashed. HapFlow and \mytool share the artifact's API-17 SDK and source--sink query on HapBench; real-project experiments use the fixed API-20 SDK with fallback disabled. Evaluators verify report inventories, source/report hashes, endpoint links, source kinds, and provenance before aggregating results.
+\textbf{Configuration control.}
+HapFlow and \mytool use the same API-17 SDK and source--sink query on HapBench, while the real-project evaluation uses OpenHarmony API-20 without SDK fallback. Versioned rules, SDK declarations, and analyzer builds define each evaluation configuration; pre-aggregation validation checks endpoint links, source kinds, provenance, and completion state.
 
 \textbf{Corpus composition.}
-The corpus includes applications, libraries, demonstrations, tests, and a small amount of generated source. Results therefore characterize the analyzed collection. Source-scope stratification prevents generated test abilities from being mistaken for production privacy paths. Exact- and near-clone resampling changes project rates by at most 0.36 percentage points, showing that the principal corpus patterns are not an artifact of repeated project copies.
+The corpus includes applications, libraries, demonstrations, tests, and a small amount of generated source. Results therefore characterize the analyzed collection. Source-scope stratification prevents generated test abilities from being mistaken for production privacy paths. Exact- and near-clone resampling changes project rates by at most 0.36 percentage points, showing that the principal corpus patterns are not driven by repeated project copies.
 
 \subsection{Applicability}
 

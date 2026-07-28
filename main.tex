@@ -179,7 +179,7 @@ Static privacy analysis for \openharmony/\arkts depends on a step that conventio
 
 We present \mytool, an evidence-preserving static analysis that resolves API identity from package, namespace, receiver, access-kind, and IR witnesses and binds the result to a typed carrier. ArkTS-specific IFDS recovery propagates these carriers through initializers, closures, exceptions, and access paths; a bounded supplementary analysis covers selected callback, Promise-\texttt{then}, and \texttt{await} continuations. Provenance-annotated evidence graphs retain the identity witness, call context, sink, path producer, and source location while keeping privacy-data and framework-input paths distinct.
 
-On an output-independent source-first benchmark, \mytool recovers all 90 gold occurrences at exact locations and rejects all 96 candidate collisions. It classifies all 64 matched identity cases correctly. On the complete 67-case HapBench suite, \mytool achieves 100\% case-level precision and specificity, 97.09\% F1, and 98.04\% endpoint-pair precision. A balanced asynchronous benchmark attributes nine Promise-\texttt{then} cases uniquely to supplementation. Manual source/IR review confirms all 90 sampled real-project privacy-data paths and 114/120 paths overall. Across 1,014 projects, the same frozen analysis identifies 2,336 privacy-API usages and 243 privacy-data paths without resource fallback.
+On an output-independent source-first benchmark, \mytool recovers all 90 gold occurrences at exact locations and rejects all 96 candidate collisions. It classifies all 64 matched identity cases correctly. On the complete 67-case HapBench suite, \mytool achieves 100\% case-level precision and specificity, 97.09\% F1, and 98.04\% endpoint-pair precision. A balanced asynchronous benchmark attributes nine Promise-\texttt{then} cases uniquely to supplementation. Manual source/IR review confirms all 90 sampled real-project privacy-data paths and 114/120 paths overall. Across 1,014 projects, \mytool identifies 2,336 privacy-API usages and 243 privacy-data paths without resource fallback.
 \end{abstract}
 
 \begin{CCSXML}
@@ -214,7 +214,7 @@ On an output-independent source-first benchmark, \mytool recovers all 90 gold oc
 \input{8.Conclusion}
 
 \section*{Data Availability}
-The artifact contains the \mytool source and build scripts; fixed API, source, sink, and package-migration rules; ArkSourceFirst60 and ArkIdentityBench; the Top-120 stress audit; all HapBench and ArkAsyncBench oracles and raw outputs; the 120-path semantic review queue and decisions; and per-project reports for the 1,014-project corpus. Evaluators regenerate every table and figure from retained manifests and machine-readable results. Dataset redistribution follows each constituent project's license; project identifiers, hashes, and derived reports are supplied where source redistribution is restricted.
+The replication package contains the \mytool source and build scripts; API, source, sink, and package-migration rules; ArkSourceFirst60 and ArkIdentityBench; the Top-120 stress audit; HapBench and ArkAsyncBench oracles and outputs; the 120-path semantic review; and per-project results for the 1,014-project corpus. Machine-readable results regenerate every table and figure. Dataset redistribution follows each constituent project's license; project identifiers and derived reports are supplied where source redistribution is restricted.
 
 \appendix
 \input{9.Appendix}

@@ -94,7 +94,7 @@ where call types distinguish direct, callback, and lifecycle-implicit context; $
 \centering
 \includegraphics[width=0.85\columnwidth]{figs/fig1.png}
 \caption{\mytool analysis pipeline and evidence assembly.}
-\Description{A two-row pipeline showing ArkTS project and analysis-specification inputs, the ArkAnalyzer frontend, evidence-carrying API identity resolution, carrier and context recovery, query-aware flow analysis, provenance-preserving evidence assembly, and JSON, DOT, and manifest audit artifacts.}
+\Description{A two-row pipeline showing ArkTS project and analysis-specification inputs, the ArkAnalyzer frontend, evidence-carrying API identity resolution, carrier and context recovery, query-aware flow analysis, provenance-preserving evidence assembly, and JSON and DOT audit outputs.}
 \label{fig:architecture}
 \end{figure}
 
@@ -138,7 +138,7 @@ where $\mu$ applies the migration/export map and import-alias normalization to a
 \subsection{Package- and Receiver-aware API Identity Resolution}
 \label{subsec:identity_resolution}
 
-HapFlow's released namespace--method loader resolves configured entries to SDK declarations, but its schema does not encode executable property reads or retain factory-origin evidence for manager/helper receivers. \mytool represents these access forms by computing a semantic identity and an acceptance witness for each candidate usage.
+HapFlow's namespace--method loader resolves configured entries to SDK declarations, but its schema does not encode executable property reads or retain factory-origin evidence for manager/helper receivers. \mytool represents these access forms by computing a semantic identity and an acceptance witness for each candidate usage.
 
 \subsubsection{Identity Function}
 
@@ -214,7 +214,7 @@ Consequently, an unresolved call such as \texttt{avPlayer.on('error',...)} canno
 
 \subsubsection{Receiver-Origin Tracing}
 
-The key addition beyond the released namespace--method loader is $\mathit{Recv}(s)$. For a statement $s: x.m(\ldots)$ where $x$ is a local or field variable, \mytool traces $x$ backward through assignments and instance-invoke bases to find its origin, subject to a tracing bound of $k_{recv}$ steps (default 8) to avoid unbounded backward exploration:
+The key addition beyond namespace--method loading is $\mathit{Recv}(s)$. For a statement $s: x.m(\ldots)$ where $x$ is a local or field variable, \mytool traces $x$ backward through assignments and instance-invoke bases to find its origin, subject to a tracing bound of $k_{recv}$ steps (default 8) to avoid unbounded backward exploration:
 
 \begin{equation}
 \mathit{Recv}(s) \!=\!
@@ -476,11 +476,11 @@ The report stores provenance at the level where it is produced. A call-chain rel
 
 \mytool's recognition claim is parameterized by three explicit inputs: ArkAnalyzer IR for the source construct, the fixed API rule set, and the namespace, receiver, origin, or target-signature evidence required by $\mathit{Accept}$. The analysis targets statically represented \arkts code; native code, dynamic loading, reflection-like runtime dispatch, and APIs absent from the rule set are outside the query domain. A recognized API establishes an executable use under this contract, while policy-level violation assessment remains a downstream audit decision.
 
-IFDS and asynchronous-supplement results are may-flows under their respective source/sink and reachability models. The report preserves their producer and does not convert a detector occurrence into an IFDS source without a source-endpoint link. Every run records one of three solver states: complete, resource-bounded, or failed. Resource-bounded and failed cases are never reclassified as zero-flow applications. Edge deduplication is scoped by IR statement, value identity, access path, and source witness; textual equality alone is insufficient because same-named locals in different methods and facts from different seeds are distinct. These requirements are regression-tested on HapBench positive and negative cases and are also enforced by the isolated-process corpus runner.
+IFDS and asynchronous-supplement results are may-flows under their respective source/sink and reachability models. The evidence model preserves their producer and admits a detector occurrence as an IFDS source only through a source-endpoint link. The solver distinguishes complete, resource-bounded, and failed analyses; only complete analyses contribute negative evidence. Edge deduplication is scoped by IR statement, value identity, access path, and source witness because same-named locals in different methods and facts from different seeds remain distinct. HapBench positive and negative cases exercise these invariants, and project isolation enforces them at corpus scale.
 
 \subsection{Scalable Execution}
 
-SDK files are loaded lazily into the Scene when taint analysis starts, keeping frontend construction independent of the query-specific SDK augmentation. Source and sink rules expand SDK-path placeholders at runtime, and IFDS resource bounds are explicit. Each project runs in a fresh process, while per-project logs and status files preserve timeout and failure states. If pointer analysis fails, the runner retains only evidence from completed producing phases. This execution model prevents incomplete states from entering the aggregate as negative results.
+SDK declarations are loaded lazily into the Scene when taint analysis starts, keeping frontend construction independent of query-specific augmentation. Source and sink rules resolve against the designated SDK, and IFDS resource bounds remain explicit. Project isolation prevents cross-project frontend state, while phase-aware evidence retention excludes incomplete analyses from negative results.
 
 Let $C$ be the number of executable call/property candidates, $d$ the maximum number of package/namespace-compatible rules returned by the rule index, and $k_{recv}$ the receiver-definition bound. Identity resolution costs $O(Cdk_{recv})$ time and $O(C)$ output space; in practice $d$ is small because package and namespace indexing precede member matching. The evidence carried by a source fact is immutable and constant-sized, so it refines fact identity without changing the underlying IFDS formulation. The post-IFDS phase is independently capped by the number of source candidates, visited methods and values, emitted outcomes, and path length. It therefore cannot expand into an unbounded event-loop search; paths beyond these bounds are not emitted, and every retained outcome remains labeled as supplementary rather than as an IFDS proof. These bounds make the extra analyses predictable while preserving the provenance needed to distinguish the two producers.
 
