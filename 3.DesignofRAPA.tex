@@ -107,9 +107,9 @@ Figure~\ref{fig:running_design} shows an anonymized pattern distilled from manua
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/2.jpg}
-\caption{Source patterns and their recognition evidence.}
-\Description{A two-panel example showing ArkTS source patterns and ArkPrism recognition steps for import normalization, manager receiver recovery, IR alias recovery, and sink evidence.}
+\includegraphics[width=0.90\columnwidth]{figs/fig2.png}
+\caption{Evidence-carrying resolution for manager receivers and compound namespaces.}
+\Description{Two ArkTS source patterns are connected to three analysis stages: package and import witnesses, receiver-origin and alias recovery, and carrier and sink evidence.}
 \label{fig:running_design}
 \end{figure}
 
@@ -188,7 +188,7 @@ The IFDS query uses SDK method signatures whenever ArkAnalyzer resolves a call t
 \mathit{Exact}_T(s,r_T) \triangleq{}&
   \mathit{TargetSig}(s)=\mathit{Sig}(r_T),\\
 \mathit{Fuzzy}_T(s,r_T) \triangleq{}&
-  \mathit{UnknownSig}(s)\land
+  \mathit{UnkSig}(s)\land
   \mathit{Mem}(s)=r_T.mem \nonumber\\
   &{}\land \mathit{ArityCompat}(s,r_T)
   \land \mathit{ParamCompat}(s,r_T).
@@ -408,7 +408,7 @@ Here $E_c$ is the ArkAnalyzer call graph, $E_{invoke}$ contains IR-level call ed
 
 \begin{align}
 C_u = \{\, &\pi=(m_0,\ldots,m_u) \mid
-m_0\in Entry \cup Init \cup Unknown, \nonumber\\
+m_0\in Entry \cup Init \cup \mathsf{Unk}, \nonumber\\
 & (m_i,m_{i+1})\in E_r^{-1}\,\}.
 \end{align}
 
@@ -420,7 +420,7 @@ Each chain receives an entry-evidence class:
 framework, & m_0\in Entry\\
 initialization, & m_0\in Init\\
 local, & \pi=(m_u) \text{ and no predecessor is found}\\
-unknown, & \text{otherwise.}
+\mathsf{unk}, & \text{otherwise.}
 \end{cases}
 \end{equation}
 
