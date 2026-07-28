@@ -3,7 +3,7 @@
 
 \subsection{Evidence as the Analysis Contract}
 
-\mytool treats source resolution as an evidence-producing analysis rather than a configuration side effect. Every accepted API identity carries a package/receiver/access witness; every source fact carries a typed value; and every path records its producing analysis. This contract separates three questions that privacy tools often collapse: whether a configured API occurs, whether a modeled value may reach a configured sink, and whether that behavior violates a policy. \mytool answers the first two and supplies the source, sink class, permission, call context, and provenance needed to review the third.
+\mytool treats source resolution as an evidence-producing analysis rather than a configuration side effect. Every accepted API identity carries a package/receiver/access witness; every query source carries a typed value; and every path records its producing analysis. The preserved unit $\langle identity,witness,carrier\rangle$ uses $carrier=\bot$ for detector-only operations. This contract separates three questions that privacy tools often collapse: whether a configured API occurs, whether a modeled value may reach a configured sink, and whether that behavior violates a policy. \mytool answers the first two and supplies the source, sink class, permission, call context, and provenance needed to review the third.
 
 The empirical results follow the same structure. ArkSourceFirst60 and ArkIdentityBench evaluate exact-location identity decisions. HapBench evaluates case and endpoint-pair flow classification. ArkAsyncBench isolates continuation recovery, while the 120-path source audit tests real-project path semantics. The Top-120 set stresses recovery of dense, previously confirmed identity evidence. The corpus then measures prevalence, concentration, traceability, and cost without treating tool output as a corpus-wide oracle.
 
@@ -21,11 +21,14 @@ Asynchronous supplementation follows the same principle. It is bounded independe
 
 \subsection{Validity Controls}
 
-\textbf{Independent labels.}
-ArkSourceFirst60 is selected by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and all 186 decisions retain exact source locations. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The Top-120 set serves a complementary role by testing preservation of 666 confirmed keys under high API volume.
+\textbf{Oracle separation.}
+ArkSourceFirst60 is selected by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and the final decision record retains exact source locations for all 186 candidates. The resulting recall claim is explicitly scoped to the fixed rule and statically enumerable candidate universe. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The Top-120 set serves a complementary role by testing preservation of 666 confirmed keys under high API volume, including 102 member/receiver keys.
 
 \textbf{Configuration control.}
 HapFlow and \mytool use the same API-17 SDK and source--sink query on HapBench, while the real-project evaluation uses OpenHarmony API-20 without SDK fallback. Versioned rules, SDK declarations, and analyzer builds define each evaluation configuration; pre-aggregation validation checks endpoint links, source kinds, provenance, and completion state.
+
+\textbf{Query scope.}
+The detector and taint query are fixed, versioned inputs. ArkSourceFirst60 evaluates configured identities expressible by its static candidate enumerator; APIs absent from the policy, computed members outside that enumerator, and dynamically loaded code are outside this metric. The taint query additionally requires a concrete return, callback, or explicit framework-input carrier, so detector-only properties do not enter the privacy-path denominator. This scope keeps identity, seeding, and path claims aligned with the implemented contract.
 
 \textbf{Corpus composition.}
 The corpus includes applications, libraries, demonstrations, tests, and a small amount of generated source. Results therefore characterize the analyzed collection. Source-scope stratification prevents generated test abilities from being mistaken for production privacy paths. Exact- and near-clone resampling changes project rates by at most 0.36 percentage points, showing that the principal corpus patterns are not driven by repeated project copies.

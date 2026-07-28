@@ -15,7 +15,7 @@ Each oracle supports a distinct claim: source-first benchmarks evaluate identity
 We compare \mytool and HapFlow using ArkAnalyzer IR and an identical source--sink query over HapBench. HapBench is evaluated with its bundled API-17 SDK, while the real-project benchmarks and corpus use OpenHarmony API-20. Each experiment uses its designated SDK without fallback, and IFDS analyzes each project as a whole.
 
 \textbf{Identity benchmarks.}
-\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates candidates but does not label them; source review then assigns 186 exact-location decisions. The resulting oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
+\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates statically named candidates compatible with the fixed rule/import universe but does not label them; source review then assigns 186 exact-location decisions. The resulting oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
 
 The \emph{Top-120 stress audit} complements the source-first oracle by concentrating projects with high API volume. Its 1,533 reviewed location rows canonicalize to 666 project--API keys with executable source evidence. \mytool preserves all 666 confirmed keys, so this experiment measures confirmed-key coverage under a high-volume workload.
 
@@ -23,7 +23,7 @@ The \emph{Top-120 stress audit} complements the source-first oracle by concentra
 \emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local.
 
 \textbf{Real-project path audit.}
-A deterministic diversity sampler selects 120 of the 449 corpus paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Independent source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
+A deterministic diversity sampler selects 120 of the 449 corpus paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Structured source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
 
 \textbf{Large corpus.}
 The corpus contains 1,014 ArkTS projects analyzed under a common implementation, API-20 SDK, rule set, and resource policy. Its applications, libraries, and capability demonstrations expose diverse project roles and API usage patterns. Each project contributes one validated result; aggregation excludes incomplete analyses, unresolved endpoints, and invalid provenance.
@@ -35,7 +35,7 @@ Identity occurrences match on project, normalized file, line/column, canonical p
 \label{subsec:api_detection_accuracy}
 
 \textbf{Source-first accuracy.}
-\mytool reports exactly the 90 gold occurrences in ArkSourceFirst60: TP/FP/FN$=90/0/0$, for 100\% observed precision, recall, and F1 (95\% Wilson interval: 95.91--100\%). It also classifies all 16 positive and 44 zero projects correctly. Exact-location matching prevents one call from masking a missed occurrence elsewhere in the same file.
+Within the fixed rule set and statically enumerable candidate universe, \mytool reports exactly the 90 gold occurrences in ArkSourceFirst60: TP/FP/FN$=90/0/0$, for 100\% observed precision, recall, and F1 (95\% Wilson interval: 95.91--100\%). It also classifies all 16 positive and 44 zero projects correctly. Exact-location matching prevents one call from masking a missed occurrence elsewhere in the same file.
 
 The gold set contains 44 executable namespace properties, 26 namespace calls, 11 typed receivers, four constructed receivers, three manager receivers, and two factory receivers. Thus, 20/90 occurrences require receiver evidence beyond the accepted line's namespace syntax, and nearly half are property reads rather than calls. The 96 negatives stress the complementary boundary: application wrappers, UI controllers, collections, test drivers, and third-party methods reuse generic members such as \texttt{create}, \texttt{on}, \texttt{request}, and \texttt{getData}.
 
@@ -65,7 +65,7 @@ Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00 & 87.50 & 100.00 & 93.33 & 93.
 \mytool recovers all 666 manually confirmed project--API keys in the Top-120 stress audit (100\% confirmed-key coverage; 95\% Wilson lower bound 99.43\%), including 558 namespace-qualified, 102 member/receiver, five template-expression, and one compound-qualified key. This result demonstrates stable recognition across both dominant namespace calls and less common receiver, template, and compound forms under high API volume.
 
 \noindent\textbf{Answer to RQ1.}
-On an output-independent real-project oracle, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit shows that the evaluated detector configuration preserves all 666 previously confirmed high-volume keys.
+On a source-first real-project oracle defined over the fixed rule and static-candidate universe, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit adds 102 confirmed member/receiver keys and shows that the evaluated detector configuration preserves all 666 previously confirmed high-volume keys.
 
 \subsection{RQ2: End-to-End Flow Classification}
 \label{subsec:hapbench}
@@ -137,16 +137,16 @@ HapBench exercises callbacks with explicit IFDS edges; ArkAsyncBench targets com
 
 \begin{table}[tbp]
 \centering
-\caption{ArkAsyncBench classification and evidence attribution.}
+\caption{ArkAsyncBench classification and provenance attribution.}
 \label{tab:asyncbench}
 \papertablestyle
-\begin{minipage}[t]{0.47\columnwidth}
+\begin{minipage}[t]{0.52\columnwidth}
 \centering
-\textbf{(a) Classification under supplementation}\\[-2pt]
-\setlength{\tabcolsep}{1.4pt}
+\textbf{(a) Classification}\\[-2pt]
+\setlength{\tabcolsep}{1.0pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
-Construct & Pos. & Neg. & Full TP & $-$Supp. TP & $-$Supp. FN & TN \\
+Construct & Pos. & Neg. & \makecell{Full\\TP} & \makecell{Core-only\\TP} & \makecell{Unique supp.\\TP} & TN \\
 \midrule
 T1 callback & 9 & 9 & 9 & 9 & 0 & 9 \\
 T4 \texttt{then} & 9 & 9 & 9 & 0 & \textbf{9} & 9 \\
@@ -156,25 +156,25 @@ Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.50\columnwidth}
+\begin{minipage}[t]{0.46\columnwidth}
 \centering
-\textbf{(b) Evidence attribution and real-code audit}\\[-2pt]
-\setlength{\tabcolsep}{2.0pt}
+\textbf{(b) Provenance and real-code audit}\\[-2pt]
+\setlength{\tabcolsep}{1.2pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}
 \toprule
-Construct & IFDS & Supp. & Both & Supp.-only & Real audit \\
+Construct & IFDS & Supp. & Both & Supp.-only & Audit \\
 \midrule
-T1 callback & 9 & 9 & 9 & 0 & 1/1 \\
+T1 callback & 9 & 9 & 9 & 0 & -- \\
 T4 \texttt{then} & 0 & 9 & 0 & \textbf{9} & 1/1 \\
-T5 \texttt{await} & 6 & 6 & 6 & 0 & 6/6 \\
+T5 \texttt{await} & 6 & 6 & 6 & 0 & 9/9 \\
 \midrule
-Total & 15 & 24 & 15 & \textbf{9} & 8/8 \\
+Total & 15 & 24 & 15 & \textbf{9} & 10/10 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}
 \end{table}
 
-A separate diagnostic over 26 callback-heavy projects confirms all eight selected real-code asynchronous paths: a callback metadata property, a Promise-carried advertising identifier, and six awaited media-metadata or reverse-geocoding values. This links every implemented benchmark construct to executable project code.
+A separate output-guided diagnostic over 25 callback-heavy projects confirms all ten selected real-code asynchronous paths: one Promise-\texttt{then} path carrying an advertising identifier and nine \texttt{await} paths carrying media metadata or reverse-geocoding values. This diagnostic tests explicit carrier dependence in executable project code; ArkAsyncBench supplies the controlled evidence for T1 callback binding.
 
 \textbf{Stratified semantic audit.}
 Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every path. All 90 sampled privacy-data paths are fully correct, including all 30 supplement-only and 26 dual-provenance paths in the full sample. Overall path precision is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
