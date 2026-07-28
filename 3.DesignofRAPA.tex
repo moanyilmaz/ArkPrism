@@ -92,13 +92,13 @@ where call types distinguish direct, callback, and lifecycle-implicit context; $
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=\columnwidth]{figs/arkprism_architecture_generated.jpg}
+\includegraphics[width=0.85\columnwidth]{figs/fig1.png}
 \caption{\mytool analysis pipeline and evidence assembly.}
-\Description{A pipeline diagram showing ArkTS projects and privacy rules flowing through ArkAnalyzer, API recognition, context recovery, sink and taint analysis, evidence assembly, and final audit artifacts.}
+\Description{A two-row pipeline showing ArkTS project and analysis-specification inputs, the ArkAnalyzer frontend, evidence-carrying API identity resolution, carrier and context recovery, query-aware flow analysis, provenance-preserving evidence assembly, and JSON, DOT, and manifest audit artifacts.}
 \label{fig:architecture}
 \end{figure}
 
-Figure~\ref{fig:architecture} gives the end-to-end architecture. Project and rule inputs enter ArkAnalyzer for Scene, IR, and call-graph construction. \mytool then performs three connected analyses: (1)~API identity resolution computing $\mathit{Id}(v)$ and its witness, (2)~carrier propagation across IR and selected asynchronous continuations, and (3)~subgraph assembly that preserves the derivation label $\omega(e)$ on every evidence edge. Lifecycle ordering and call-graph context supply reachability evidence to this pipeline.
+Figure~\ref{fig:architecture} gives the end-to-end architecture. ArkAnalyzer transforms each project into a Scene, ArkIR, and call graph; the analysis specification configures source identity, carrier, package-alias, and sink rules. \mytool then performs three connected analyses: (1)~API identity resolution computing $\mathit{Id}(v)$ and its witness, (2)~carrier propagation across IR and selected asynchronous continuations, and (3)~subgraph assembly that preserves the derivation label $\omega(e)$ on every evidence edge. Lifecycle ordering and call-graph context supply reachability evidence to this pipeline.
 
 \subsection{Running Example: Why Direct Calls Are Insufficient}
 \label{subsec:running_example}

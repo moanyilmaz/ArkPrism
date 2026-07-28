@@ -143,6 +143,318 @@
         "share": 0.9362157534246576
       }
     },
+    "methodSizeDeciles": [
+      {
+        "decile": 1,
+        "projects": 102,
+        "medianMethods": 22.0,
+        "minMethods": 1,
+        "maxMethods": 34,
+        "api": {
+          "positiveProjects": 8,
+          "rate": 0.0784313725490196,
+          "wilson95": [
+            0.040276685867459944,
+            0.14718727241289134
+          ]
+        },
+        "sink": {
+          "positiveProjects": 1,
+          "rate": 0.00980392156862745,
+          "wilson95": [
+            0.0017327343974216647,
+            0.053457914765777534
+          ]
+        },
+        "path": {
+          "positiveProjects": 1,
+          "rate": 0.00980392156862745,
+          "wilson95": [
+            0.0017327343974216647,
+            0.053457914765777534
+          ]
+        }
+      },
+      {
+        "decile": 2,
+        "projects": 102,
+        "medianMethods": 42.5,
+        "minMethods": 34,
+        "maxMethods": 48,
+        "api": {
+          "positiveProjects": 16,
+          "rate": 0.1568627450980392,
+          "wilson95": [
+            0.09892289243814952,
+            0.23971056197608992
+          ]
+        },
+        "sink": {
+          "positiveProjects": 8,
+          "rate": 0.0784313725490196,
+          "wilson95": [
+            0.040276685867459944,
+            0.14718727241289134
+          ]
+        },
+        "path": {
+          "positiveProjects": 8,
+          "rate": 0.0784313725490196,
+          "wilson95": [
+            0.040276685867459944,
+            0.14718727241289134
+          ]
+        }
+      },
+      {
+        "decile": 3,
+        "projects": 102,
+        "medianMethods": 52.0,
+        "minMethods": 48,
+        "maxMethods": 57,
+        "api": {
+          "positiveProjects": 26,
+          "rate": 0.2549019607843137,
+          "wilson95": [
+            0.18029658418266675,
+            0.34729874039893277
+          ]
+        },
+        "sink": {
+          "positiveProjects": 6,
+          "rate": 0.058823529411764705,
+          "wilson95": [
+            0.027235639345374534,
+            0.12243594490150472
+          ]
+        },
+        "path": {
+          "positiveProjects": 21,
+          "rate": 0.20588235294117646,
+          "wilson95": [
+            0.13878889510825387,
+            0.2943254943896656
+          ]
+        }
+      },
+      {
+        "decile": 4,
+        "projects": 102,
+        "medianMethods": 63.5,
+        "minMethods": 57,
+        "maxMethods": 69,
+        "api": {
+          "positiveProjects": 23,
+          "rate": 0.22549019607843138,
+          "wilson95": [
+            0.15521692835323753,
+            0.31568983517815397
+          ]
+        },
+        "sink": {
+          "positiveProjects": 11,
+          "rate": 0.10784313725490197,
+          "wilson95": [
+            0.061293197233020486,
+            0.18285932209753886
+          ]
+        },
+        "path": {
+          "positiveProjects": 21,
+          "rate": 0.20588235294117646,
+          "wilson95": [
+            0.13878889510825387,
+            0.2943254943896656
+          ]
+        }
+      },
+      {
+        "decile": 5,
+        "projects": 101,
+        "medianMethods": 76.0,
+        "minMethods": 69,
+        "maxMethods": 86,
+        "api": {
+          "positiveProjects": 26,
+          "rate": 0.25742574257425743,
+          "wilson95": [
+            0.1821524234251967,
+            0.3504752169074069
+          ]
+        },
+        "sink": {
+          "positiveProjects": 10,
+          "rate": 0.09900990099009901,
+          "wilson95": [
+            0.05467303296704735,
+            0.1727318418684808
+          ]
+        },
+        "path": {
+          "positiveProjects": 16,
+          "rate": 0.15841584158415842,
+          "wilson95": [
+            0.09992756899137685,
+            0.2419358429055546
+          ]
+        }
+      },
+      {
+        "decile": 6,
+        "projects": 101,
+        "medianMethods": 99.0,
+        "minMethods": 87,
+        "maxMethods": 109,
+        "api": {
+          "positiveProjects": 26,
+          "rate": 0.25742574257425743,
+          "wilson95": [
+            0.1821524234251967,
+            0.3504752169074069
+          ]
+        },
+        "sink": {
+          "positiveProjects": 16,
+          "rate": 0.15841584158415842,
+          "wilson95": [
+            0.09992756899137685,
+            0.2419358429055546
+          ]
+        },
+        "path": {
+          "positiveProjects": 23,
+          "rate": 0.22772277227722773,
+          "wilson95": [
+            0.1568082705601503,
+            0.31859010124175163
+          ]
+        }
+      },
+      {
+        "decile": 7,
+        "projects": 101,
+        "medianMethods": 125.0,
+        "minMethods": 109,
+        "maxMethods": 145,
+        "api": {
+          "positiveProjects": 27,
+          "rate": 0.26732673267326734,
+          "wilson95": [
+            0.19070960286947725,
+            0.36099446030669347
+          ]
+        },
+        "sink": {
+          "positiveProjects": 25,
+          "rate": 0.24752475247524752,
+          "wilson95": [
+            0.17364843078641157,
+            0.33990278670262475
+          ]
+        },
+        "path": {
+          "positiveProjects": 22,
+          "rate": 0.21782178217821782,
+          "wilson95": [
+            0.14847681268900093,
+            0.30784513626933374
+          ]
+        }
+      },
+      {
+        "decile": 8,
+        "projects": 101,
+        "medianMethods": 178.0,
+        "minMethods": 147,
+        "maxMethods": 225,
+        "api": {
+          "positiveProjects": 43,
+          "rate": 0.42574257425742573,
+          "wilson95": [
+            0.33377697396334577,
+            0.5231498547099002
+          ]
+        },
+        "sink": {
+          "positiveProjects": 31,
+          "rate": 0.3069306930693069,
+          "wilson95": [
+            0.2254362719999442,
+            0.4025734825504953
+          ]
+        },
+        "path": {
+          "positiveProjects": 19,
+          "rate": 0.18811881188118812,
+          "wilson95": [
+            0.12387125256857148,
+            0.27522142785906156
+          ]
+        }
+      },
+      {
+        "decile": 9,
+        "projects": 101,
+        "medianMethods": 308.0,
+        "minMethods": 227,
+        "maxMethods": 474,
+        "api": {
+          "positiveProjects": 65,
+          "rate": 0.6435643564356436,
+          "wilson95": [
+            0.5464746477081652,
+            0.7301334835235593
+          ]
+        },
+        "sink": {
+          "positiveProjects": 46,
+          "rate": 0.45544554455445546,
+          "wilson95": [
+            0.36173607809276237,
+            0.5524200191111854
+          ]
+        },
+        "path": {
+          "positiveProjects": 26,
+          "rate": 0.25742574257425743,
+          "wilson95": [
+            0.1821524234251967,
+            0.3504752169074069
+          ]
+        }
+      },
+      {
+        "decile": 10,
+        "projects": 101,
+        "medianMethods": 967.0,
+        "minMethods": 475,
+        "maxMethods": 10757,
+        "api": {
+          "positiveProjects": 93,
+          "rate": 0.9207920792079208,
+          "wilson95": [
+            0.8514289441723368,
+            0.9593190266792695
+          ]
+        },
+        "sink": {
+          "positiveProjects": 70,
+          "rate": 0.693069306930693,
+          "wilson95": [
+            0.5974265174495047,
+            0.7745637280000558
+          ]
+        },
+        "path": {
+          "positiveProjects": 24,
+          "rate": 0.2376237623762376,
+          "wilson95": [
+            0.1651996364458167,
+            0.32927515819965236
+          ]
+        }
+      }
+    ],
     "pathScope": {
       "privacy_data": {
         "production": {
@@ -176,27 +488,79 @@
     "pathComplexity": {
       "privacy_data|ifds": {
         "count": 116,
+        "q1Statements": 5.0,
         "medianStatements": 5.0,
+        "q3Statements": 5.0,
         "p95Statements": 7.5,
-        "maxStatements": 10
+        "maxStatements": 10,
+        "lengthFrequencies": {
+          "3": 11,
+          "4": 17,
+          "5": 69,
+          "6": 3,
+          "7": 10,
+          "9": 3,
+          "10": 3
+        }
       },
       "privacy_data|async_supplement": {
         "count": 84,
+        "q1Statements": 4.0,
         "medianStatements": 4.0,
+        "q3Statements": 6.0,
         "p95Statements": 10.0,
-        "maxStatements": 14
+        "maxStatements": 14,
+        "lengthFrequencies": {
+          "3": 3,
+          "4": 47,
+          "5": 9,
+          "6": 14,
+          "7": 2,
+          "8": 1,
+          "10": 7,
+          "14": 1
+        }
       },
       "privacy_data|both": {
         "count": 43,
+        "q1Statements": 4.0,
         "medianStatements": 4.0,
+        "q3Statements": 5.0,
         "p95Statements": 6.899999999999999,
-        "maxStatements": 8
+        "maxStatements": 8,
+        "lengthFrequencies": {
+          "2": 1,
+          "3": 6,
+          "4": 24,
+          "5": 8,
+          "6": 1,
+          "7": 2,
+          "8": 1
+        }
       },
       "framework_input|ifds": {
         "count": 206,
+        "q1Statements": 5.0,
         "medianStatements": 5.0,
+        "q3Statements": 5.0,
         "p95Statements": 10.75,
-        "maxStatements": 21
+        "maxStatements": 21,
+        "lengthFrequencies": {
+          "3": 2,
+          "4": 1,
+          "5": 161,
+          "6": 10,
+          "7": 7,
+          "8": 8,
+          "9": 3,
+          "10": 3,
+          "11": 1,
+          "12": 4,
+          "13": 1,
+          "16": 2,
+          "20": 1,
+          "21": 2
+        }
       }
     }
   },

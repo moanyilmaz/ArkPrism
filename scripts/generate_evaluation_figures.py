@@ -18,7 +18,6 @@ from typing import Any
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib.lines import Line2D
 from matplotlib.patches import PathPatch, Rectangle
 from matplotlib.path import Path as MplPath
 
@@ -78,6 +77,30 @@ def configure_style() -> None:
             "ps.fonttype": 42,
             "savefig.transparent": False,
         }
+    )
+
+
+def wilson_interval(
+    successes: int,
+    total: int,
+    z: float = 1.959963984540054,
+) -> tuple[float, float]:
+    if total <= 0:
+        return (0.0, 0.0)
+    proportion = successes / total
+    denominator = 1.0 + z**2 / total
+    center = (proportion + z**2 / (2.0 * total)) / denominator
+    radius = (
+        z
+        * np.sqrt(
+            proportion * (1.0 - proportion) / total
+            + z**2 / (4.0 * total**2)
+        )
+        / denominator
+    )
+    return (
+        float(max(0.0, center - radius)),
+        float(min(1.0, center + radius)),
     )
 
 
@@ -1224,13 +1247,68 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     )
     methods = np.array([row["methods"] for row in project_rows])
     apis = np.array([row["apis"] for row in project_rows])
+    sinks = np.array([row["sinks"] for row in project_rows])
     taints = np.array([row["taints"] for row in project_rows])
+
+    method_order = np.argsort(methods, kind="stable")
+    method_deciles = np.array_split(method_order, 10)
+    evidence_arrays = {
+        "api": apis,
+        "sink": sinks,
+        "path": taints,
+    }
+    size_strata = []
+    for decile, indices in enumerate(method_deciles, start=1):
+        stratum: dict[str, Any] = {
+            "decile": decile,
+            "projects": len(indices),
+            "medianMethods": float(np.median(methods[indices])),
+            "minMethods": int(np.min(methods[indices])),
+            "maxMethods": int(np.max(methods[indices])),
+        }
+        for evidence_name, values in evidence_arrays.items():
+            positives = int(np.count_nonzero(values[indices] > 0))
+            lower, upper = wilson_interval(positives, len(indices))
+            stratum[evidence_name] = {
+                "positiveProjects": positives,
+                "rate": positives / len(indices),
+                "wilson95": [lower, upper],
+            }
+        size_strata.append(stratum)
+
+    path_group_specs = [
+        ("privacy_data", "ifds", "Privacy | IFDS", COLORS["blue"]),
+        (
+            "privacy_data",
+            "async_supplement",
+            "Privacy | Async",
+            COLORS["purple"],
+        ),
+        ("privacy_data", "both", "Privacy | Dual", COLORS["green"]),
+        (
+            "framework_input",
+            "ifds",
+            "Framework | IFDS",
+            COLORS["orange"],
+        ),
+    ]
+    path_groups: dict[str, list[int]] = {}
+    for source_kind, provenance, _, _ in path_group_specs:
+        lengths = sorted(
+            row["pathStatements"]
+            for row in flow_rows
+            if row["sourceKind"] == source_kind
+            and row["provenance"] == provenance
+            and row["pathStatements"] > 0
+        )
+        if lengths:
+            path_groups[f"{source_kind}|{provenance}"] = lengths
 
     fig = plt.figure(figsize=(7.15, 2.05))
     grid = fig.add_gridspec(
         1,
         7,
-        width_ratios=[0.70, 0.48, 1.03, 0.34, 1.42, 0.36, 1.22],
+        width_ratios=[0.62, 0.50, 0.92, 0.52, 1.48, 0.46, 1.29],
         wspace=0,
     )
     axes = [
@@ -1277,135 +1355,188 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
     heatmap_text(ax, matrix)
 
     ax = axes[2]
-    ax.scatter(
-        np.log1p(methods),
-        np.log1p(apis),
-        s=8,
-        alpha=0.42,
-        color=COLORS["blue"],
-        label="API usages",
-        linewidths=0,
+    decile_x = np.arange(1, len(size_strata) + 1)
+    scale_series = [
+        ("api", "API-positive", COLORS["blue"], "o", -0.08),
+        ("sink", "Local-sink-positive", COLORS["green"], "s", 0.0),
+        ("path", "Path-positive", COLORS["red"], "D", 0.08),
+    ]
+    for evidence_name, label, color, marker, offset in scale_series:
+        rates = np.array(
+            [row[evidence_name]["rate"] * 100 for row in size_strata]
+        )
+        lower = np.array(
+            [row[evidence_name]["wilson95"][0] * 100 for row in size_strata]
+        )
+        upper = np.array(
+            [row[evidence_name]["wilson95"][1] * 100 for row in size_strata]
+        )
+        ax.errorbar(
+            decile_x + offset,
+            rates,
+            yerr=np.vstack([rates - lower, upper - rates]),
+            color=color,
+            marker=marker,
+            markersize=2.6,
+            markerfacecolor="white",
+            markeredgewidth=0.7,
+            linewidth=1.0,
+            elinewidth=0.55,
+            capsize=1.2,
+            capthick=0.55,
+            label=label,
+        )
+    ax.set_ylim(-2, 105)
+    ax.set_xticks(decile_x)
+    ax.set_xticklabels(
+        [
+            f"D{row['decile']}\n{row['medianMethods']:.0f}"
+            for row in size_strata
+        ],
+        fontsize=5.0,
     )
-    ax.scatter(
-        np.log1p(methods),
-        np.log1p(taints),
-        s=8,
-        alpha=0.30,
-        color=COLORS["red"],
-        label="Configured-query paths",
-        linewidths=0,
+    ax.set_xlabel("Method decile / median methods")
+    ax.set_ylabel("Positive projects (%)")
+    ax.set_title("(c) Scale-stratified prevalence", fontsize=6.2)
+    ax.grid(
+        axis="y",
+        color=COLORS["gray"],
+        linewidth=0.35,
+        alpha=0.55,
     )
-    ax.set_xlabel("log(1 + methods)")
-    ax.set_ylabel("log(1 + evidence count)")
-    ax.set_title("(c) Scale vs. evidence volume", fontsize=6.2)
     ax.legend(
         loc="upper left",
         bbox_to_anchor=(0.02, 0.98),
+        fontsize=4.7,
         frameon=True,
         facecolor="white",
         edgecolor="none",
         framealpha=0.92,
-        borderpad=0.25,
+        borderpad=0.20,
+        handlelength=1.4,
     )
 
     ax = axes[3]
-    source_styles = {
-        "privacy_data": (COLORS["blue"], "Privacy source"),
-        "framework_input": (COLORS["orange"], "Framework input"),
-    }
-    provenance_styles = {
-        "ifds": ("o", "IFDS"),
-        "async_supplement": ("s", "Async supplement"),
-        "both": ("D", "Both"),
-    }
-    path_groups: dict[str, list[int]] = {}
-    for source_kind, (color, _) in source_styles.items():
-        for provenance, (marker, _) in provenance_styles.items():
-            lengths = sorted(
-                row["pathStatements"]
-                for row in flow_rows
-                if row["sourceKind"] == source_kind
-                and row["provenance"] == provenance
-                and row["pathStatements"] > 0
-            )
-            if not lengths:
-                continue
-            values = np.asarray(lengths, dtype=float)
-            ecdf = np.arange(1, len(values) + 1) / len(values)
-            ax.step(
-                values,
-                ecdf,
-                where="post",
-                color=color,
-                linestyle="-",
-                linewidth=1.25,
-                marker=marker,
-                markersize=2.2,
-                markerfacecolor="white",
-                markeredgewidth=0.6,
-                markevery=max(1, len(values) // 7),
-                alpha=0.95,
-            )
-            path_groups[f"{source_kind}|{provenance}"] = lengths
-
+    y_positions = np.arange(len(path_group_specs) - 1, -1, -1)
+    compact_path_labels = [
+        "Privacy\nIFDS",
+        "Privacy\nAsync",
+        "Privacy\nDual",
+        "Framework\nIFDS",
+    ]
     max_path = max(
-        (row["pathStatements"] for row in flow_rows),
+        (max(lengths) for lengths in path_groups.values()),
         default=2,
     )
-    ax.set_xscale("log", base=2)
-    ticks = [value for value in [1, 2, 4, 8, 16, 32, 64, 128] if value <= max_path]
-    if max_path > 128:
-        ticks.append(256)
-    ax.set_xticks(ticks)
-    ax.get_xaxis().set_major_formatter(mpl.ticker.ScalarFormatter())
-    ax.set_xlim(1, max(2, max_path))
-    ax.set_ylim(0, 1.03)
-    ax.set_xlabel("Statements per path (log2)")
-    ax.set_ylabel("Empirical CDF")
-    ax.set_title("(d) Path-length ECDF by provenance", fontsize=6.2)
-    source_legend = [
-        Line2D([0], [0], color=color, linewidth=1.4, label=label)
-        for color, label in source_styles.values()
-    ]
-    provenance_legend = [
-        Line2D(
-            [0],
-            [0],
-            color=COLORS["dark_gray"],
-            linestyle="-",
-            marker=marker,
+    for y_position, (
+        source_kind,
+        provenance,
+        _,
+        color,
+    ) in zip(y_positions, path_group_specs):
+        key = f"{source_kind}|{provenance}"
+        lengths = path_groups.get(key, [])
+        if not lengths:
+            continue
+        frequencies = Counter(lengths)
+        statement_counts = np.array(sorted(frequencies))
+        frequency_counts = np.array(
+            [frequencies[value] for value in statement_counts]
+        )
+        values = np.asarray(lengths, dtype=float)
+        q1, median, q3, p95 = np.percentile(values, [25, 50, 75, 95])
+        ax.scatter(
+            statement_counts,
+            np.full(len(statement_counts), y_position),
+            s=5.0 + frequency_counts * 0.32,
+            color=color,
+            alpha=0.38,
+            edgecolors=color,
+            linewidths=0.55,
+            zorder=2,
+        )
+        summary_y = y_position + 0.24
+        ax.hlines(
+            summary_y,
+            q1,
+            q3,
+            color=color,
+            linewidth=2.5,
+            zorder=3,
+        )
+        ax.plot(
+            median,
+            summary_y,
+            marker="D",
             markersize=3.0,
+            color=color,
+            markeredgecolor="white",
+            markeredgewidth=0.45,
+            zorder=4,
+        )
+        ax.plot(
+            p95,
+            summary_y,
+            marker="^",
+            markersize=3.2,
+            color=color,
             markerfacecolor="white",
             markeredgewidth=0.7,
-            linewidth=1.2,
-            label=label,
+            zorder=4,
         )
-        for marker, label in provenance_styles.values()
-    ]
-    first_legend = ax.legend(
-        handles=source_legend,
-        loc="lower right",
-        bbox_to_anchor=(0.98, 0.03),
-        fontsize=4.7,
-        handlelength=1.5,
-        frameon=True,
-        facecolor="white",
-        edgecolor="none",
-        framealpha=0.92,
-        borderpad=0.20,
+        ax.text(
+            max_path + 1.0,
+            y_position,
+            f"n={len(lengths)}",
+            va="center",
+            ha="left",
+            fontsize=4.8,
+            color=COLORS["dark_gray"],
+        )
+    ax.set_yticks(y_positions)
+    ax.set_yticklabels(compact_path_labels, fontsize=5.2)
+    ax.set_xlim(1.5, max_path + 4.0)
+    ax.set_xticks([2, 4, 6, 8, 10, 14, 18, 22])
+    ax.set_ylim(-0.55, len(path_group_specs) - 0.35)
+    ax.set_xlabel("Statements per path (area = count)")
+    ax.set_title("(d) Path length by source/provenance", fontsize=6.2)
+    ax.grid(
+        axis="x",
+        color=COLORS["gray"],
+        linewidth=0.35,
+        alpha=0.55,
     )
-    ax.add_artist(first_legend)
+    median_handle = ax.scatter(
+        [],
+        [],
+        marker="D",
+        s=11,
+        color=COLORS["dark_gray"],
+        label="median",
+    )
+    p95_handle = ax.scatter(
+        [],
+        [],
+        marker="^",
+        s=12,
+        facecolor="white",
+        edgecolor=COLORS["dark_gray"],
+        linewidth=0.7,
+        label="P95",
+    )
     ax.legend(
-        handles=provenance_legend,
-        loc="upper left",
-        bbox_to_anchor=(0.02, 0.98),
+        handles=[median_handle, p95_handle],
+        loc="upper right",
+        bbox_to_anchor=(0.99, 0.99),
         fontsize=4.7,
-        handlelength=1.5,
+        ncol=2,
+        handletextpad=0.25,
+        columnspacing=0.65,
         frameon=True,
         facecolor="white",
         edgecolor="none",
         framealpha=0.92,
-        borderpad=0.20,
+        borderpad=0.18,
     )
 
     fig.subplots_adjust(left=0.068, right=0.995, bottom=0.29, top=0.88)
@@ -1437,6 +1568,7 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
         "sinkTypes": SINK_ORDER,
         "categorySinkMatrix": matrix.tolist(),
         "topCutoffs": top_cutoffs,
+        "methodSizeDeciles": size_strata,
         "pathScope": {
             source_kind: {
                 scope: {
@@ -1450,9 +1582,17 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
         "pathComplexity": {
             key: {
                 "count": len(lengths),
+                "q1Statements": float(np.percentile(lengths, 25)),
                 "medianStatements": float(np.median(lengths)),
+                "q3Statements": float(np.percentile(lengths, 75)),
                 "p95Statements": float(np.percentile(lengths, 95)),
                 "maxStatements": int(max(lengths)),
+                "lengthFrequencies": {
+                    str(statement_count): frequency
+                    for statement_count, frequency in sorted(
+                        Counter(lengths).items()
+                    )
+                },
             }
             for key, lengths in path_groups.items()
         },

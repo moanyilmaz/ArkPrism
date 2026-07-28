@@ -234,18 +234,18 @@ The scope split exposes two distinct corpus phenomena. Privacy-data paths overwh
 \textbf{Concentration and structure.}
 API evidence is long-tailed: 65.19\% of projects have no recognized API, while the top 10, 50, and 120 projects contain 24.49\%, 54.92\%, and 77.83\% of all occurrences. The API Gini coefficient is 0.857; HHI is 0.0104, equivalent to 95.8 equally sized contributing projects. Network connectivity (18.28\%), screen identity (17.25\%), hardware identity (15.11\%), account data (8.05\%), and clipboard data (5.09\%) form the five largest categories.
 
-Project size helps explain identity volume but not path volume. Method count correlates moderately with API occurrences ($\rho=0.485$), whereas API occurrences correlate strongly with detector-local sinks ($\rho=0.789$) and only weakly with configured paths ($\rho=0.175$). From the smallest to largest method quintile, API-positive rates rise from 11.82\% to 78.22\% and sink-positive rates from 4.43\% to 57.43\%, while path-positive rates rise to 24.75\%. Figure~\ref{fig:eval_corpus_landscape} visualizes these concentration, category, scale, and path-complexity relationships.
+Project size helps explain identity volume but not path formation. Method count correlates moderately with API occurrences ($\rho=0.485$) and weakly with configured paths ($\rho=0.164$); API occurrences correlate strongly with detector-local sinks ($\rho=0.789$) and weakly with configured paths ($\rho=0.175$). Figure~\ref{fig:eval_corpus_landscape}(c) partitions projects into ten equally sized method-count strata and reports Wilson intervals. From the smallest to largest stratum, API-positive rates rise from 7.84\% to 92.08\% and detector-local-sink-positive rates from 0.98\% to 69.31\%. Path-positive rates instead remain between 18.81\% and 25.74\% across the four largest strata, separating codebase scale from configured-path formation.
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=\columnwidth]{figs/eval_corpus_landscape.pdf}
-\caption{Corpus evidence concentration, category--sink structure, scale, and path complexity.}
+\caption{Corpus evidence concentration, category--sink structure, scale-stratified prevalence, and provenance-conditioned path complexity.}
 \label{fig:eval_corpus_landscape}
-\Description{Four panels show cumulative API concentration, a category by sink heatmap, project-scale scatter distributions, and path-length ECDFs by source kind and provenance.}
+\Description{Four panels show cumulative API concentration, a category by sink heatmap, evidence-positive project rates with Wilson intervals across method-count deciles, and discrete path-length frequencies with median, interquartile range, and P95 markers for four source and provenance groups.}
 \end{figure}
 
 \textbf{Destinations and paths.}
-Logging accounts for 1,441/1,754 detector-local sinks (82.16\%), followed by UI display (136; 7.75\%), storage (94; 5.36\%), data return (57; 3.25\%), and network (26; 1.48\%). Call chains have median/P95 lengths of 1/4; configured paths have median/P95 lengths of 5/10 and a maximum of 21 statements. Provenance comprises 322 IFDS, 84 supplementary, and 43 dual paths.
+Logging accounts for 1,441/1,754 detector-local sinks (82.16\%), followed by UI display (136; 7.75\%), storage (94; 5.36\%), data return (57; 3.25\%), and network (26; 1.48\%). Call chains have median/P95 lengths of 1/4; configured paths have median/P95 lengths of 5/10 and a maximum of 21 statements. Provenance comprises 322 IFDS, 84 supplementary, and 43 dual paths. Figure~\ref{fig:eval_corpus_landscape}(d) exposes their discrete structure: privacy IFDS, supplementary, and dual paths have medians of 5, 4, and 4 statements and P95 values of 7.5, 10, and 6.9, respectively; framework-input IFDS paths have a median of 5 and the longest tail (P95 10.75; maximum 21).
 
 \textbf{Integrity and cost.}
 All 1,014 projects produce complete reports. The audit resolves all 3,316 trace endpoints, validates all 236 detector-to-path links, and finds no invalid source kind or provenance. No log reports IFDS batching, budget exhaustion, callback limits, timeout, or out-of-memory failure. The solver processes 3.16 million IFDS edges in total; per-project median/P95/maximum is 805/11,396/197,173. Deduplication reduces 492 raw outcomes to 449 paths. Median runtime is 20.2\,s, P95 is 26.9\,s, and the 10,757-method outlier completes in 577.9\,s.
