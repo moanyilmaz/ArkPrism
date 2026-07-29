@@ -322,18 +322,13 @@ export function Json2ArkMethodSignature(module: string, namespace: string, class
         expected: { name: string, type: string }[]
     ): boolean => {
         if (!hasExplicitParameters) return true;
-        if (sig.getParamLength() !== expected.length) return false;
-        for (let i = 0; i < expected.length; i++) {
-            const param = sig.getMethodSubSignature().getParameters()[i];
-            if (param.getName() !== expected[i].name) return false;
-            if (!sourceParameterTypeCompatible(
-                String(expected[i].type || ''),
-                param.getType().toString()
-            )) {
-                return false;
-            }
-        }
-        return true;
+        return sourceParameterListCompatible(
+            expected,
+            sig.getMethodSubSignature().getParameters().map(param => ({
+                name: param.getName(),
+                type: param.getType().toString()
+            }))
+        );
     };
 
     const collectFromMethod = (mtd: ArkMethod | null): MethodSignature[] => {
@@ -434,6 +429,19 @@ export function sourceParameterTypeCompatible(
     const actualUnion = actual.split('|').sort();
     return configuredUnion.length === actualUnion.length &&
         configuredUnion.every((part, index) => part === actualUnion[index]);
+}
+
+export function sourceParameterListCompatible(
+    configured: Array<{ name?: string, type: string }>,
+    sdk: Array<{ name?: string, type: string }>
+): boolean {
+    if (configured.length !== sdk.length) return false;
+    return configured.every((parameter, index) =>
+        sourceParameterTypeCompatible(
+            String(parameter.type || ''),
+            String(sdk[index]?.type || '')
+        )
+    );
 }
 
 function canBeSplitAndContained(a: string, b: string): boolean {

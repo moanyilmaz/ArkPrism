@@ -131,6 +131,19 @@ The original 48-case ArkAsyncBench remains unchanged after this repair:
 24 TP/24 TN for the full configuration and 15 TP/24 TN for `-T4`. All 27
 API-20 delivery checks pass.
 
+## SDK signature compatibility
+
+Source-rule resolution now treats owner, arity, normalized parameter type, and
+string-literal event discriminator as hard constraints. Parameter names remain
+diagnostic metadata because they are not part of call semantics and may change
+between SDK declarations. A regression test confirms that renaming an SDK
+parameter preserves a match while changing its type rejects the match.
+
+The API-20 audit remains 257/257 uniquely resolved rules. The API-17
+compatibility audit remains 249/257, with the same eight version-incompatible
+rules. Both audits report zero ambiguity, signature collision, or carrier
+mismatch.
+
 ## Next method-level priorities
 
 1. Replace receiver depth limits with a memoized, demand-driven provenance

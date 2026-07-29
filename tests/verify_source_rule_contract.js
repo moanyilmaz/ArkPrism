@@ -5,6 +5,7 @@ const {
   validateSourceRuleObject,
 } = require('../dist/hapflow/Source');
 const {
+  sourceParameterListCompatible,
   sourceParameterTypeCompatible,
 } = require('../dist/hapflow/Util');
 
@@ -78,6 +79,20 @@ assert.strictEqual(
     'Callback<Location>',
   ),
   true,
+);
+assert.strictEqual(
+  sourceParameterListCompatible(
+    [{ name: 'configuredName', type: 'Callback<Location>' }],
+    [{ name: 'renamedBySdk', type: 'Callback<Location>' }],
+  ),
+  true,
+);
+assert.strictEqual(
+  sourceParameterListCompatible(
+    [{ name: 'configuredName', type: 'Callback<Location>' }],
+    [{ name: 'configuredName', type: 'Callback<WifiInfo>' }],
+  ),
+  false,
 );
 assert.strictEqual(
   sourceParameterTypeCompatible('"locationChange"', "'locationChange'"),

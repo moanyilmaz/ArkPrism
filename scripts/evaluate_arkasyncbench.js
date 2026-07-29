@@ -217,7 +217,6 @@ function main() {
     `Full-only correct cases: ${result.paired.fullOnlyCorrect.length}.`,
     `Ablation-only correct cases: ${result.paired.ablationOnlyCorrect.length}.`,
     `Exact McNemar p: ${result.paired.exactMcNemarP}.`,
-    '',
   ].join('\n');
   fs.writeFileSync(
     path.join(path.resolve(args.outputDir), 'arkasyncbench_results.md'),
