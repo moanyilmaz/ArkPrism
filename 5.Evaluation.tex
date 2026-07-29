@@ -132,12 +132,12 @@ Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & 98.11\% & \textbf{98.1
 
 The bounded default preserves all 14 negatives and attains 97.17\% balanced accuracy, compared with 95.49\% under unbounded lifecycle cycling. Removing the bound accepts two additional published positives but also recreates the benchmark's explicit unreachable-flow negative. Because F1 omits true negatives, it ranks the unbounded setting higher on that narrower objective; balanced accuracy measures the positive and negative obligations together. Under the strict executed-order contract in Appendix~\ref{subsec:app_oracle_sensitivity}, bounded \mytool classifies 67/67 cases, whereas unbounded cycling creates three cross-event false positives. The default therefore targets the audit objective: preserve negative-case discrimination unless an executable transition witness exists.
 
-\textbf{Asynchronous provenance.}
-HapBench exercises callbacks with explicit IFDS edges; ArkAsyncBench targets complementary continuation gaps. Table~\ref{tab:asyncbench} shows that T1 callback and T5 \texttt{await} paths receive corroborating evidence from both analyses, while all nine T4 Promise-\texttt{then} positives are supplement-exclusive. Removing supplementation therefore preserves 15 core-supported positives but misses the nine T4 cases ($p=0.00390625$), with no change among the 24 negatives.
+\textbf{Continuation transfer.}
+ArkAsyncBench isolates asynchronous carrier semantics with matched positive and negative cases. Both configurations in Table~\ref{tab:asyncbench} disable the optional unresolved-IR fallback, so the comparison measures the IFDS transfer itself. Full IFDS classifies all 48 cases correctly. Removing only T4 preserves every T1 callback and T5 \texttt{await} result but misses all nine Promise-\texttt{then} positives, reducing recall from 100\% to 62.50\% and F1 from 100\% to 76.92\% ($p=0.00390625$). All 24 negatives remain negative.
 
 \begin{table}[tbp]
 \centering
-\caption{ArkAsyncBench classification and provenance attribution.}
+\caption{ArkAsyncBench continuation-transfer results.}
 \label{tab:asyncbench}
 \papertablestyle
 \begin{minipage}[t]{0.52\columnwidth}
@@ -146,7 +146,7 @@ HapBench exercises callbacks with explicit IFDS edges; ArkAsyncBench targets com
 \setlength{\tabcolsep}{1.0pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
-Construct & Pos. & Neg. & \makecell{Full\\TP} & \makecell{Core-only\\TP} & \makecell{Unique supp.\\TP} & TN \\
+Construct & Pos. & Neg. & \makecell{Full\\TP} & \makecell{$-$T4\\TP} & \makecell{T4-only\\TP} & TN \\
 \midrule
 T1 callback & 9 & 9 & 9 & 9 & 0 & 9 \\
 T4 \texttt{then} & 9 & 9 & 9 & 0 & \textbf{9} & 9 \\
@@ -158,17 +158,17 @@ Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \end{minipage}\hfill
 \begin{minipage}[t]{0.46\columnwidth}
 \centering
-\textbf{(b) Provenance and real-code audit}\\[-2pt]
+\textbf{(b) Mechanism attribution and real-code audit}\\[-2pt]
 \setlength{\tabcolsep}{1.2pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}
 \toprule
-Construct & IFDS & Supp. & Both & Supp.-only & Audit \\
+Construct & \makecell{Full\\IFDS} & \makecell{Promise-then\\facts} & \makecell{$-$T4\\FN} & \makecell{Neg.\\correct} & Audit \\
 \midrule
-T1 callback & 9 & 9 & 9 & 0 & -- \\
-T4 \texttt{then} & 0 & 9 & 0 & \textbf{9} & 1/1 \\
-T5 \texttt{await} & 6 & 6 & 6 & 0 & 9/9 \\
+T1 callback & 9 & 0 & 0 & 9/9 & -- \\
+T4 \texttt{then} & 9 & \textbf{9} & \textbf{9} & 9/9 & 1/1 \\
+T5 \texttt{await} & 6 & 0 & 0 & 6/6 & 9/9 \\
 \midrule
-Total & 15 & 24 & 15 & \textbf{9} & 10/10 \\
+Total & 24 & \textbf{9} & \textbf{9} & 24/24 & 10/10 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}
@@ -177,7 +177,7 @@ Total & 15 & 24 & 15 & \textbf{9} & 10/10 \\
 A separate output-guided diagnostic over 25 callback-heavy projects confirms all ten selected real-code asynchronous paths: one Promise-\texttt{then} path carrying an advertising identifier and nine \texttt{await} paths carrying media metadata or reverse-geocoding values. This diagnostic tests explicit carrier dependence in executable project code; ArkAsyncBench supplies the controlled evidence for T1 callback binding.
 
 \textbf{Stratified semantic audit.}
-Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every path. All 90 sampled privacy-data paths are fully correct, including all 30 supplement-only and 26 dual-provenance paths in the full sample. Overall path precision is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
+Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Overall path precision is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
 
 \begin{table}[tbp]
 \centering
@@ -203,7 +203,7 @@ Complete path & 114/120 & \textbf{90/90} & 24/30 & 58/64 & \textbf{30/30} & \tex
 The six rejected paths all belong to the optional framework-input model. Four join a lifecycle-written static URI field to unrelated component fields or constants; two connect a lifecycle argument to a permission Toast or a hard-coded event value. This localization matters operationally: the core privacy-data analysis attains 90/90 in the audit, while the framework-input layer remains separately identifiable by source kind and provenance instead of silently entering the privacy-path claim.
 
 \noindent\textbf{Answer to RQ3.}
-IR recovery supplies the largest statistically supported coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and asynchronous supplementation uniquely recovers nine Promise-\texttt{then} cases. The real-project audit confirms every sampled privacy-data path and measures 95.00\% precision across the broader path universe.
+IR recovery supplies the largest HapBench coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and the continuation-aware IFDS transfer uniquely recovers nine Promise-\texttt{then} cases. The real-project audit confirms every sampled privacy-data path and measures 95.00\% precision across the broader path universe.
 
 \subsection{RQ4: Large-Corpus Characterization}
 \label{subsec:corpus_patterns}

@@ -1,7 +1,7 @@
 \section{Design of \mytool}
 \label{sec:design}
 
-\mytool resolves the \emph{source identity} bottleneck in \arkts privacy analysis and produces provenance-preserving evidence graphs. ArkAnalyzer provides the \arkts IR, project Scene, and call-graph substrate~\cite{arkanalyzer}; HapFlow provides IFDS-based taint propagation over \openharmony programs~\cite{hapflow}. On this substrate, \mytool adds an evidence-carrying domain layer: package- and receiver-aware API identity resolution, bounded asynchronous carrier/context recovery, and provenance-preserving graph assembly.
+\mytool resolves the \emph{source identity} bottleneck in \arkts privacy analysis and produces provenance-preserving evidence graphs. ArkAnalyzer provides the \arkts IR, project Scene, and call-graph substrate~\cite{arkanalyzer}; HapFlow provides IFDS-based taint propagation over \openharmony programs~\cite{hapflow}. On this substrate, \mytool adds an evidence-carrying domain layer: package- and receiver-aware API identity resolution, continuation-aware IFDS transfer, callback-context recovery, and provenance-preserving graph assembly.
 
 \subsection{Problem Definition and Notation}
 \label{subsec:problem_def}
@@ -72,7 +72,7 @@ where $c=\mathit{Seed}(s,r_T)$ for an accepted, well-formed query rule and $c=\b
 \mathit{SrcBind}(call, cb, param),
 \end{equation}
 
-where $call$ is the source API invoke statement, $cb$ is the resolved callback method or Promise handler, and $param$ is the specific parameter through which sensitive data flows. The implementation distinguishes native IFDS propagation from bounded post-IFDS carrier recovery and from callback edges used only for call-chain context; provenance records that distinction.
+where $call$ is the source API invoke statement, $cb$ is the resolved callback method or Promise handler, and $param$ is the specific parameter through which sensitive data flows. Carrier bindings participate in IFDS call flow when ArkIR exposes a typed callback target; callback edges used only for report context and optional recovery for unresolved IR remain separately identifiable.
 
 \textbf{Provenance-preserving evidence graph.} The third task is to construct, for each $u\in U_D$, an evidence graph:
 
@@ -286,7 +286,7 @@ Lifecycle information is consumed in two distinct ways. For call-chain recovery,
 
 \openharmony privacy APIs often deliver sensitive data through asynchronous callbacks and Promise chains rather than direct return values. For example, \texttt{geoLocationManager.getCurrentLocation(callback)} passes location data to a callback parameter, while \texttt{wifiManager.getLinkedInfo().then(callback)} delivers Wi-Fi state through a Promise resolution. Standard call-to-return propagation does not by itself establish the connection between a source invocation and a callback parameter or Promise resolution, so these constructs require explicit transfer rules.
 
-\mytool formalizes carrier binding as $\mathit{SrcBind}(call, cb, param)$ (Section~\ref{subsec:problem_def}). The five recovery rules do not all modify the same analysis. T1, T4, and T5 add bounded source-to-sink outcomes after the core IFDS run when ArkIR lacks an explicit continuation edge; T2 and T3 add callback edges to the report call graph and therefore improve context recovery rather than seeding IFDS facts. Table~\ref{tab:transfer_rules} makes this execution domain explicit.
+\mytool formalizes carrier binding as $\mathit{SrcBind}(call, cb, param)$ (Section~\ref{subsec:problem_def}). The five rules occupy two analysis domains. T1, T4, and T5 transfer source carriers inside IFDS; T2 and T3 recover callback context for the report graph without manufacturing taint facts. Table~\ref{tab:transfer_rules} makes this distinction explicit.
 
 \begin{table}[tbp]
 \centering
@@ -298,18 +298,18 @@ Lifecycle information is consumed in two distinct ways. For call-chain recovery,
 \toprule
 Rule & Construct & Recovery relation & Required witness & Output & Domain \\
 \midrule
-T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & Typed or definition-backed callback & May-path & Post-IFDS \\
+T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & Typed callback and carrier index & May-path & IFDS call flow \\
 T2 & Field callback & $Read(this.f)\!\to\!cb$ & Traced field assignment & Call edge & Report CG \\
 T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Named option field & Call edge & Report CG \\
-T4 & Promise \texttt{then} & $ret(src)\!\to\!then_j.param$ & Source-owned \texttt{then} chain & May-path & Post-IFDS \\
-T5 & \texttt{async/await} & $resolve_{arg}\!\to\!await_{res}$ & Definition-backed Promise & May-path & Post-IFDS \\
+T4 & Promise \texttt{then} & $fact(base)\!\to\!cb.param_0$ & Success handler and carrier dependence & May-path & IFDS call flow \\
+T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt{await} expression & May-path & IFDS normal flow \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsubsection{T1: Callback Parameter Binding}
 
-When an $R_T$ source accepts a callback as a direct argument at position $i$, the binding is $\mathit{SrcBind}(s, cb, param_j)$ where $cb = Resolve(a_i)$ and $param_j$ is the callback parameter selected by the rule's carrier metadata. The post-IFDS phase accepts only typed or definition-backed callbacks. Resolution applies three strategies in order:
+When an $R_T$ source accepts a callback as a direct argument at position $i$, the binding is $\mathit{SrcBind}(s, cb, param_j)$ where $cb = Resolve(a_i)$ and $param_j$ is the callback parameter selected by the rule's carrier metadata. The IFDS call-flow function accepts only typed or definition-backed callbacks. Resolution applies three strategies in order:
 
 \begin{equation}
 Resolve(a_i) =
@@ -334,75 +334,59 @@ ArkUI builder APIs accept configuration objects whose fields are callback functi
 
 \subsubsection{T4: Promise-then Chain Binding}
 
-Promise \texttt{.then()} chains can carry a source return value through Promise resolution to a callback parameter. When the core IFDS result lacks that continuation, the bounded supplement recognizes three sub-patterns:
-
-\textbf{Direct chaining:} $sourceApi(args).then(cb)$ creates $\mathit{SrcBind}(sourceStmt, cb, param)$ with $Edge(sourceStmt, cb_{param})$.
-
-\textbf{Variable chaining:} $x = sourceApi(args);\; x.then(cb)$ creates $Edge(sourceStmt, x_{assign}) \cup Edge(x_{assign}, cb_{param})$.
-
-\textbf{Sequential chaining:} $x.then(cb_1).then(cb_2)$ creates $\bigcup_{i} Edge(cb_{i-1}, cb_{i})$, propagating taint through the chain.
+Promise \texttt{.then()} carries the receiver's resolved value into the success handler's first data parameter. For call site $s:b.\texttt{then}(a_0)$, resolved callback $cb=Resolve(a_0)$, and incoming fact $d$, \mytool extends the IFDS call-flow function with
+\begin{equation}
+\mathcal{F}_{call}^{then}(s,cb,d)=
+\begin{cases}
+\{\mathit{Copy}(d,cb.param_0)\}, &
+\mathit{Depends}(b,\mathit{val}(d)),\\
+\emptyset, & \text{otherwise}.
+\end{cases}
+\end{equation}
+The copied fact preserves $\epsilon(d)$ and records the \textsc{PromiseThen} derivation. ArkAnalyzer lowers both direct chaining and variable chaining to this relation: the configured source first taints the Promise temporary, after which the \texttt{then} call maps that fact into the resolved success handler. Rejection handlers and unrelated callback arguments receive no fact.
 
 \subsubsection{T5: Async/Await Bridge Binding}
 
-An asynchronous function that awaits a Promise-wrapped source API creates an implicit binding between the resolved value and the local variable:
+An asynchronous function that awaits a Promise-wrapped source API creates an explicit ArkIR use from the Promise value to the assignment target:
 
 \begin{multline}
 data = await\; promiseMethod() \;\Rightarrow\;\\
 Edge(resolve_{arg}, await_{res}) \cup Edge(await_{res}, data_{uses})
 \end{multline}
 
-where $resolve_{arg}$ traces from the \texttt{resolve()} call inside the Promise executor to the awaited result. The supplement requires a definition-backed Promise owner and separately labels the resulting path; it does not claim that the core IFDS supergraph contains the implicit executor-to-\texttt{await} edge.
+The normal-flow function therefore maps a fact on $promiseMethod()$ to $data$ and its subsequent uses. A bounded fallback remains available for definition-backed wrapper Promises whose executor-to-\texttt{await} relation is absent from ArkIR; such outcomes retain separate supplementary provenance and do not alter the IFDS fact relation.
 
 \subsubsection{Algorithm}
 
-Algorithm~\ref{alg:callback} summarizes the post-IFDS portion (T1, T4, and T5). It does not modify IFDS flow functions or the exploded supergraph. Instead, it scans configured sources whose continuation edge is absent, resolves only typed callbacks or definition-backed Promise owners, performs bounded local/interprocedural tracing, and appends separately provenance-labeled outcomes. T2 and T3 are constructed by the callback-augmented report call graph in Section~\ref{subsec:async_binding}; they are intentionally absent from Algorithm~\ref{alg:callback}.
+Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It executes at the \texttt{then} call edge, not after solver termination. The transfer is monotone: it only adds a source-preserving fact for the success parameter when receiver dependence and callback-position evidence hold.
 
 \begin{algorithm}[H]
-\caption{Post-IFDS Asynchronous Carrier Recovery}
+\caption{Continuation-aware IFDS call flow}
 \label{alg:callback}
 \footnotesize
 \begin{algorithmic}[1]
-\Require Program Scene $P$, IFDS source rules $R_T$, existing outcomes $O$, bounds $B$
-\Ensure Augmented outcomes $O'$; each new outcome preserves $\epsilon(src)$ and has provenance \textsc{AsyncSupplement}
-\State $A \gets \emptyset$
-\ForAll{application methods $m\in P$}
-\ForAll{invoke statements $s \in m$}
-  \State $src \gets \Call{CallSource}{s,R_T}$
-  \If{$src \neq \emptyset \land src.carrier = \mathit{callback}$} \Comment{T1}
-    \State $cb \gets \Call{Resolve}{s.args[src.cbIdx]}$
-    \If{$cb\neq\emptyset \land src.srcIdx<|cb.params|$}
-      \State $p \gets cb.params[src.srcIdx]$
-      \State $A \gets A \cup \Call{TraceToSink}{cb,p,\mathit{Path}(s),\epsilon(src),B}$
-    \EndIf
-  \EndIf
-  \If{$s$ is a \texttt{then} invocation on base $b$} \Comment{T4}
-    \If{$b$ is a configured source invocation}
-      \State $si \gets b$
-    \Else
-      \State $si \gets \Call{FindSrcDef}{m,b}$
-    \EndIf
-    \If{$si \neq \emptyset$}
-      \State $cb \gets \Call{Resolve}{s.args[0]}$
-      \If{$cb\neq\emptyset$}
-        \State $A \gets A \cup \Call{TraceThenToSink}{m,si,cb,\epsilon(si),B}$
-      \EndIf
-    \EndIf
-  \EndIf
-\EndFor
-\ForAll{await sites $a \in m$ with promise $p$} \Comment{T5}
-  \State $ow \gets \Call{FindPromiseOwner}{p,R_T}$
-  \If{$ow\neq\emptyset$}
-    \State $rf \gets \Call{CollectResolveFacts}{ow}$
-    \If{$rf\neq\emptyset$}
-      \State $A \gets A \cup \Call{TraceToSink}{m,a.res,\mathit{Path}(rf)\cup\mathit{Path}(a),\epsilon(ow),B}$
-    \EndIf
-  \EndIf
-\EndFor
-\EndFor
-\State $O' \gets \Call{Deduplicate}{O\cup A}$
-\State \Return $O'$
+\Require Call site $s$, resolved callee $m$, incoming fact $d$
+\Ensure Call-flow facts $D'$
+\State $D' \gets \Call{StandardCallFlow}{s,m,d}$
+\If{$s.member \neq \texttt{then}$}
+  \State \Return $D'$
+\EndIf
+\State $cb \gets \Call{ResolveCallback}{s.args[0]}$
+\If{$cb=\emptyset \lor cb\neq m \lor cb.param_0=\emptyset$}
+  \State \Return $D'$
+\EndIf
+\If{$d\neq\mathbf{0} \land
+     (\Call{Depends}{s.base,\mathit{val}(d)} \lor
+      \Call{MayAlias}{s.base,\mathit{val}(d)})$}
+  \State $d' \gets \Call{CopyFact}{d,cb.param_0}$
+  \State $d'.derivation \gets d'.derivation\cup\{\textsc{PromiseThen}\}$
+  \State $D' \gets D'\cup\{d'\}$
+\EndIf
+\State \Return $D'$
 \end{algorithmic}
 \end{algorithm}
+
+Relative to the resolved ArkIR call edge and available alias relation, this transfer follows Promise success semantics: every accepted fact denotes a value that may be supplied as the first success-handler argument. The guard excludes \texttt{catch}, rejection callbacks, nonzero callback positions, and same-named \texttt{then} calls whose receiver is unrelated to the incoming fact. The source witness is copied rather than reconstructed, so source-distinct IFDS facts remain distinct across the continuation.
 
 \subsection{Callback-augmented Call-chain Recovery}
 
@@ -448,7 +432,7 @@ where $S_T=S_P\uplus S_F$ is the disjoint typed-source universe resolved from $R
 \begin{equation}
 \epsilon(s)=\langle kind,pkg,ns,cls,mem,carrier,sig,rule,loc\rangle,
 \end{equation}
-where $kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}$ and the remaining fields identify the resolved API, carrier position, SDK signature, rule provenance, and normalized source location. Normal, call, return, and exceptional transfers copy $\epsilon(s)$ unchanged; fact and edge identities include it. Consequently, values reaching the same statement from different configured sources remain distinct, and the report obtains its source endpoint from $\epsilon(s)$ rather than inferring it from the first statement in $\rho$. The bounded asynchronous rules preserve the same witness and produce a separate set
+where $kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}$ and the remaining fields identify the resolved API, carrier position, SDK signature, rule provenance, and normalized source location. Normal, call, continuation, return, and exceptional transfers copy $\epsilon(s)$ unchanged; fact and edge identities include it. Consequently, values reaching the same statement from different configured sources remain distinct, and the report obtains its source endpoint from $\epsilon(s)$ rather than inferring it from the first statement in $\rho$. Optional bounded recovery for unresolved IR preserves the same witness and produces a separate set
 
 \begin{equation}
 T_A \subseteq S_T \times K_T \times Path,
@@ -480,7 +464,7 @@ q\in T_Q \Rightarrow
 \exists r_T,\epsilon:\mathit{WellFormed}(r_T)\land
 \mathit{SeededBy}(q,r_T,\epsilon),
 \end{equation}
-so every emitted path has one valid carrier and source kind. Second, \emph{witness preservation} requires $\epsilon_{out}=\epsilon_{in}$ across every normal, call, return, exceptional, and supplementary transfer; facts from different sources therefore remain distinct even when they reach the same statement. Third, \emph{link safety} requires
+so every emitted path has one valid carrier and source kind. Second, \emph{witness preservation} requires $\epsilon_{out}=\epsilon_{in}$ across every normal, call, continuation, return, exceptional, and supplementary transfer; facts from different sources therefore remain distinct even when they reach the same statement. Third, \emph{link safety} requires
 \begin{multline}
 (u,q)\in L \Rightarrow kind(q)=\mathit{privacy\_data}\land\\
 \mathit{ProjectMatch}(u,q)\land\mathit{LocationMatch}(u,q)\land
@@ -497,12 +481,12 @@ The report stores provenance at the level where it is produced. A call-chain rel
 
 \mytool's recognition claim is parameterized by three explicit inputs: ArkAnalyzer IR for the source construct, the fixed API rule set, and the namespace, receiver, origin, or target-signature evidence required by $\mathit{Accept}$. The analysis targets statically represented \arkts code; native code, dynamic loading, reflection-like runtime dispatch, and APIs absent from the rule set are outside the query domain. A recognized API establishes an executable use under this contract, while policy-level violation assessment remains a downstream audit decision.
 
-IFDS and asynchronous-supplement results are may-flows under their respective source/sink and reachability models. The evidence model preserves their producer and admits a detector occurrence as an IFDS source only through a source-endpoint link. The solver distinguishes complete, resource-bounded, and failed analyses; only complete analyses contribute negative evidence. Edge deduplication is scoped by IR statement, value identity, access path, and source witness because same-named locals in different methods and facts from different seeds remain distinct. HapBench positive and negative cases exercise these invariants, and project isolation enforces them at corpus scale.
+Configured-query results are may-flows under their source/sink and reachability models. The evidence model preserves the producing transfer and admits a detector occurrence as an IFDS source only through a source-endpoint link. The solver distinguishes complete, resource-bounded, and failed analyses; only complete analyses contribute negative evidence. Edge deduplication is scoped by IR statement, value identity, access path, and source witness because same-named locals in different methods and facts from different seeds remain distinct. HapBench positive and negative cases exercise these invariants, and project isolation enforces them at corpus scale.
 
 \subsection{Scalable Execution}
 
 SDK declarations are loaded lazily into the Scene when taint analysis starts, keeping frontend construction independent of query-specific augmentation. Source and sink rules resolve against the designated SDK, and IFDS resource bounds remain explicit. Project isolation prevents cross-project frontend state, while phase-aware evidence retention excludes incomplete analyses from negative results.
 
-Let $C$ be the number of executable call/property candidates, $d$ the maximum number of package/namespace-compatible rules returned by the rule index, and $k_{recv}$ the receiver-definition bound. Identity resolution costs $O(Cdk_{recv})$ time and $O(C)$ output space; in practice $d$ is small because package and namespace indexing precede member matching. The evidence carried by a source fact is immutable and constant-sized, so it refines fact identity without changing the underlying IFDS formulation. The post-IFDS phase is independently capped by the number of source candidates, visited methods and values, emitted outcomes, and path length. The evaluated defaults scan at most 100,000 methods and 5,000 sources, retain at most 10,000 states per source, and bound paths at 100 statements. It therefore cannot expand into an unbounded event-loop search; paths beyond these bounds are not emitted, and every retained outcome remains labeled as supplementary rather than as an IFDS proof. These bounds make the extra analyses predictable while preserving the provenance needed to distinguish the two producers.
+Let $C$ be the number of executable call/property candidates, $d$ the maximum number of package/namespace-compatible rules returned by the rule index, and $k_{recv}$ the receiver-definition bound. Identity resolution costs $O(Cdk_{recv})$ time and $O(C)$ output space; in practice $d$ is small because package and namespace indexing precede member matching. The evidence carried by a source fact is immutable and constant-sized. T4 is evaluated only on resolved callback call edges and adds at most one fact per incoming source fact; its additional work is constant apart from the already available alias query. The optional unresolved-IR fallback is independently capped by source candidates, visited methods and values, emitted outcomes, and path length, and every retained fallback outcome remains labeled as supplementary.
 
-The complete pipeline follows a fixed order: Scene construction, lifecycle modeling, report call-graph construction, import/alias extraction, API identity resolution via $\mathit{Accept}$, callback-augmented chain recovery, detector-local sink tracing, IFDS taint analysis from the lifecycle-aware \texttt{DummyMain}, bounded asynchronous supplementation, endpoint linkage, and evidence-graph assembly. A key property is that \mytool never treats a missing layer as proof of absence: if a call-chain predecessor is absent, the usage still becomes a local evidence chain; if a taint path has no compatible detector endpoint, both records remain visible but unlinked.
+The complete pipeline follows a fixed order: Scene construction, lifecycle modeling, report call-graph construction, import/alias extraction, API identity resolution via $\mathit{Accept}$, callback-augmented chain recovery, detector-local sink tracing, continuation-aware IFDS analysis from the lifecycle-aware \texttt{DummyMain}, optional unresolved-IR recovery, endpoint linkage, and evidence-graph assembly. A key property is that \mytool never treats a missing layer as proof of absence: if a call-chain predecessor is absent, the usage still becomes a local evidence chain; if a taint path has no compatible detector endpoint, both records remain visible but unlinked.
