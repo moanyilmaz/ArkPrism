@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "startedAt": "2026-07-29T04:05:19.326Z",
+  "updatedAt": "2026-07-29T04:08:52.826Z",
+  "completedAt": "2026-07-29T04:08:52.825Z",
+  "command": [
+    "D:\\nodejs\\node.exe",
+    "E:\\arkprism-fse2027-experiments\\scripts\\run_argus_batch_isolated.js",
+    "--dataset",
+    "benchmarks\\ArkPromiseBench",
+    "--output-dir",
+    "experiments\\arkpromisebench_full_bb96826",
+    "--log-dir",
+    "experiments\\arkpromisebench_full_bb96826\\logs",
+    "--sdkPath",
+    "E:\\OpenHarmony_SDK\\20\\ets",
+    "--engine",
+    "compiled",
+    "--concurrency",
+    "2",
+    "--timeout-ms",
+    "600000",
+    "--max-attempts",
+    "1",
+    "--",
+    "--no-dot",
+    "--no-pta",
+    "--callback-analysis",
+    "false",
+    "--ifds-timeout-ms",
+    "300000"
+  ],
+  "environment": {
+    "node": "v20.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "git": {
+      "revision": "bb96826a3766037676894d5f37647ac5d57082c7",
+      "trackedFilesDirty": false
+    },
+    "analysisFeatureFlags": {
+      "disableIrRecovery": false,
+      "disableReceiverRefinement": false,
+      "disableLifecycleBounds": false
+    }
+  },
+  "inputs": {
+    "dataset": "E:\\arkprism-fse2027-experiments\\benchmarks\\ArkPromiseBench",
+    "datasetProjectCount": 16,
+    "projectCount": 16,
+    "includedProjects": [],
+    "excludedProjects": [],
+    "sdk": {
+      "root": "E:\\OpenHarmony_SDK\\20\\ets",
+      "sha256": "70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6",
+      "files": 13721,
+      "bytes": 311592147,
+      "cache": "E:\\arkprism-fse2027-experiments\\experiments\\.cache\\sdk-4659e75aab4d7579.json",
+      "cacheHit": true
+    },
+    "configHashes": {
+      "sensitive_apis.json": "66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc",
+      "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+      "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+      "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+      "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+      "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e"
+    },
+    "implementation": {
+      "runnerPath": "E:\\arkprism-fse2027-experiments\\scripts\\run_argus_batch_isolated.js",
+      "runnerSha256": "084f078d2eb44a76fc751fc3b1d008f33a1c7aa8ec1c0e21f532c8cb80e897d8",
+      "source": {
+        "path": "E:\\arkprism-fse2027-experiments\\src",
+        "sha256": "f8c87a142b709b7fe4a6f2aad653af66f9dbe038f6eab0c060ecd5e30fd2e538",
+        "files": 436,
+        "bytes": 3483209
+      },
+      "packageJsonSha256": "09305967665e74394b07f9a08403ba6d16a83a60b5627f8692b211247686b2ad",
+      "packageLockSha256": "a4ed0623fe2361a98e231d8a2f6c52f18cc13d9cb0383e4988845be590449190",
+      "tsconfigSha256": "196e2e89c429479466c72c4ec7a0b04fb89f3c0179f9c88cba203b2abd8bb325"
+    },
+    "build": {
+      "path": "E:\\arkprism-fse2027-experiments\\dist",
+      "entrySha256": "c45809597196232983661584cba583180b9adc4fffdb8f00a31fda248cbada26",
+      "sha256": "770bd74c8e6573b9a16c588c338aa25b68b4fe379a575d44f01b62c9c2dcb365",
+      "files": 327,
+      "bytes": 4046783
+    }
+  },
+  "execution": {
+    "outputDir": "E:\\arkprism-fse2027-experiments\\experiments\\arkpromisebench_full_bb96826",
+    "logDir": "E:\\arkprism-fse2027-experiments\\experiments\\arkpromisebench_full_bb96826\\logs",
+    "engine": "compiled",
+    "concurrency": 2,
+    "timeoutMs": 600000,
+    "nodeOptions": "--max-old-space-size=12288",
+    "resume": false,
+    "arkArgs": [
+      "--no-dot",
+      "--no-pta",
+      "--callback-analysis",
+      "false",
+      "--ifds-timeout-ms",
+      "300000"
+    ],
+    "maxAttempts": 1,
+    "retryDelayMs": 2000
+  },
+  "progress": {
+    "finished": 16,
+    "completed": 16,
+    "errors": 0
+  }
+}

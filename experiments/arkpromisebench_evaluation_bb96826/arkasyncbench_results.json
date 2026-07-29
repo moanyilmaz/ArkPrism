@@ -1,0 +1,980 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-29T04:09:24.829Z",
+  "oracle": "E:\\arkprism-fse2027-experiments\\benchmarks\\ArkPromiseBench\\oracle.json",
+  "definition": "A positive case requires explicit dependence from a configured Promise payload to console.info. Rejection values, constants, independent Promise payloads, and constant-returning transforms are negative.",
+  "full": {
+    "name": "full",
+    "overall": {
+      "cases": 16,
+      "tp": 6,
+      "tn": 10,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "specificity": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "byConstruct": {
+      "Promise": {
+        "cases": 16,
+        "tp": 6,
+        "tn": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byApi": {
+      "undefined": {
+        "cases": 16,
+        "tp": 6,
+        "tn": 10,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byCategory": {
+      "alias-identity": {
+        "cases": 3,
+        "tp": 1,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "handler-position": {
+        "cases": 2,
+        "tp": 1,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "promise-flattening": {
+        "cases": 1,
+        "tp": 1,
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": null,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "promise-owner": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "rejection-operator": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sanitizer-return": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sequential-chain": {
+        "cases": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "success-handler": {
+        "cases": 1,
+        "tp": 1,
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": null,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "value-dependence": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      }
+    },
+    "records": [
+      {
+        "id": "direct_success",
+        "construct": "Promise",
+        "category": "success-handler",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "same_promise_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "success_with_rejection_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "sequential_value",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "sequential_property",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "promise_flattening",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "custom_then_constant",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "rejection_argument",
+        "construct": "Promise",
+        "category": "handler-position",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "catch_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "finally_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "ignored_success_value",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_in_success",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "independent_promise",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "reassigned_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_sanitizer",
+        "construct": "Promise",
+        "category": "sanitizer-return",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_constant",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "ablation": {
+    "name": "continuation_off",
+    "overall": {
+      "cases": 16,
+      "tp": 0,
+      "tn": 10,
+      "fp": 0,
+      "fn": 6,
+      "precision": null,
+      "recall": 0,
+      "specificity": 1,
+      "f1": null,
+      "accuracy": 0.625
+    },
+    "byConstruct": {
+      "Promise": {
+        "cases": 16,
+        "tp": 0,
+        "tn": 10,
+        "fp": 0,
+        "fn": 6,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.625
+      }
+    },
+    "byApi": {
+      "undefined": {
+        "cases": 16,
+        "tp": 0,
+        "tn": 10,
+        "fp": 0,
+        "fn": 6,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.625
+      }
+    },
+    "byCategory": {
+      "alias-identity": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.6666666666666666
+      },
+      "handler-position": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.5
+      },
+      "promise-flattening": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": null,
+        "f1": null,
+        "accuracy": 0
+      },
+      "promise-owner": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "rejection-operator": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sanitizer-return": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sequential-chain": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 2,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.3333333333333333
+      },
+      "success-handler": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": null,
+        "f1": null,
+        "accuracy": 0
+      },
+      "value-dependence": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      }
+    },
+    "records": [
+      {
+        "id": "direct_success",
+        "construct": "Promise",
+        "category": "success-handler",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "same_promise_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "success_with_rejection_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_value",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_property",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "promise_flattening",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "expected": true,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "custom_then_constant",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "rejection_argument",
+        "construct": "Promise",
+        "category": "handler-position",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "catch_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "finally_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "ignored_success_value",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_in_success",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "independent_promise",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "reassigned_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_sanitizer",
+        "construct": "Promise",
+        "category": "sanitizer-return",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_constant",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "expected": false,
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "paired": {
+    "fullOnlyCorrect": [
+      "direct_success",
+      "same_promise_alias",
+      "success_with_rejection_handler",
+      "sequential_value",
+      "sequential_property",
+      "promise_flattening"
+    ],
+    "ablationOnlyCorrect": [],
+    "exactMcNemarP": 0.03125
+  }
+}
