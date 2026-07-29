@@ -90,14 +90,14 @@ nine carry the `promise_then` derivation, and none requires
 ## Adversarial Promise semantics
 
 The balanced benchmark establishes that T4 is necessary, but nine targeted
-positives alone do not establish its semantic boundary. ArkPromiseBench adds
-16 cases whose oracle is defined by explicit dependence from a configured
-Promise payload to the sink:
+positives alone do not establish its semantic boundary. ArkPromiseBench now
+contains 17 cases whose oracle is defined by explicit dependence from a
+configured Promise payload to the sink:
 
 - six positives cover direct success binding, same-Promise aliases,
   `then(success, rejection)`, sequential payload and property transforms, and
   Promise flattening;
-- ten negatives cover a custom/non-Promise `then`, rejection position,
+- eleven negatives cover two custom/non-Promise `then` variants, rejection position,
   `catch`, `finally`, ignored and constant values, independent and reassigned
   Promise aliases, a constant-returning sanitizer, and a constant-returning
   sequential transform.
@@ -117,7 +117,7 @@ every invoke-containing statement. It then:
 5. records `promise_then` and `promise_return` as transfer derivations while
    keeping carrier state in IFDS fact identity.
 
-The corrected full configuration classifies all 16 cases:
+The frozen 16-case controlled run produced:
 
 | Configuration | TP | TN | FP | FN | Precision | Recall | Specificity | F1 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
@@ -127,6 +127,13 @@ The corrected full configuration classifies all 16 cases:
 All six changed predictions favor the full configuration (exact paired
 McNemar `p=0.03125`). The three multi-hop positives carry both
 `promise_then` and `promise_return`; no result uses the supplementary scan.
+
+The seventeenth case invokes a source-capturing callback through an
+application-defined `then`, discards the callback return, and returns an
+independent constant Promise. Its isolated full-configuration probe reports
+one recognized source and one sink but no taint path, as required by the
+oracle. The final 17-case aggregate is intentionally deferred until the same
+controlled configurations are rerun together.
 
 The original 48-case ArkAsyncBench remains unchanged after this repair:
 24 TP/24 TN for the full configuration and 15 TP/24 TN for `-T4`. All 27
