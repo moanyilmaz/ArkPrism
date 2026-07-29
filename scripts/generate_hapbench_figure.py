@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 from pathlib import Path
 from typing import Any
@@ -14,10 +15,6 @@ from matplotlib.patches import Patch
 
 
 PAPER_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_RESULTS = Path(
-    r"E:\arkprism-fse2027-experiments"
-    r"\docs\experiment_hapbench_20260727_v22_final\hapbench_results.json"
-)
 DEFAULT_FIGURE = PAPER_ROOT / "figs" / "eval_hapbench.pdf"
 DEFAULT_SUMMARY = PAPER_ROOT / "data" / "hapbench_figure_summary.json"
 
@@ -62,7 +59,7 @@ ABLATION_LABELS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--results", type=Path, default=DEFAULT_RESULTS)
+    parser.add_argument("--results", type=Path, required=True)
     parser.add_argument("--output", type=Path, default=DEFAULT_FIGURE)
     parser.add_argument("--summary", type=Path, default=DEFAULT_SUMMARY)
     return parser.parse_args()
@@ -71,6 +68,14 @@ def parse_args() -> argparse.Namespace:
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
+
+
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def configure_style() -> None:
@@ -435,7 +440,10 @@ def main() -> None:
     plt.close(figure)
 
     summary = {
-        "source": str(args.results),
+        "source": {
+            "file": args.results.name,
+            "sha256": sha256_file(args.results),
+        },
         "toolOrder": ordered_names,
         "statisticalUncertainty": uncertainty,
         "categoryConfigurationErrors": category_errors,
