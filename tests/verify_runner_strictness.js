@@ -13,10 +13,12 @@ const args = parseArgs([
   '--sdkPath', 'sdk',
   '--include-project', 'selected',
   '--exclude-project', 'first',
-  '--exclude-project', 'second'
+  '--exclude-project', 'second',
+  '--disable-continuation-flow'
 ]);
 assert.deepStrictEqual(args.includeProjects, ['selected']);
 assert.deepStrictEqual(args.excludeProjects, ['first', 'second']);
+assert.strictEqual(args.disableContinuationFlow, true);
 
 const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'arkprism-runner-'));
 const reportPath = path.join(tempDir, 'report.json');

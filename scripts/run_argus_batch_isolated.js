@@ -23,6 +23,7 @@ function usage() {
     '  --exclude-project <name>  Exclude one project directory (repeatable)',
     '  --sdk-fingerprint-cache <file>  Reuse a content fingerprint for this SDK root',
     '  --refresh-sdk-fingerprint      Recompute the SDK content fingerprint',
+    '  --disable-continuation-flow    Disable Promise continuation IFDS flow',
     '  --resume             Skip samples whose report JSON already exists',
     '  --prior-log <file>    Recover duration for skipped samples from a previous batch log',
     '  --help               Show this help message',
@@ -45,6 +46,7 @@ function parseArgs(argv) {
     excludeProjects: [],
     sdkFingerprintCache: '',
     refreshSdkFingerprint: false,
+    disableContinuationFlow: false,
     resume: false,
     priorLog: '',
     arkArgs: [],
@@ -78,6 +80,7 @@ function parseArgs(argv) {
     }
     else if (arg === '--sdk-fingerprint-cache') args.sdkFingerprintCache = ownArgs[++i] || '';
     else if (arg === '--refresh-sdk-fingerprint') args.refreshSdkFingerprint = true;
+    else if (arg === '--disable-continuation-flow') args.disableContinuationFlow = true;
     else if (arg === '--resume') args.resume = true;
     else if (arg === '--prior-log') args.priorLog = ownArgs[++i] || '';
     else if (arg === '--help' || arg === '-h') {
@@ -286,7 +289,13 @@ function runProjectOnce(projectName, projectDir, args, index, total, attempt) {
       ...args.arkArgs,
     ];
 
-    const env = { ...process.env, NODE_OPTIONS: args.nodeOptions };
+    const env = {
+      ...process.env,
+      NODE_OPTIONS: args.nodeOptions,
+      ARKPRISM_DISABLE_CONTINUATION_FLOW: args.disableContinuationFlow
+        ? '1'
+        : (process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW || '0'),
+    };
     const startedAt = Date.now();
     logStream.write(`[RUNNER] [${index + 1}/${total}] ${projectName} attempt=${attempt}/${args.maxAttempts}\n`);
     logStream.write(`[RUNNER] Command: ${executable} ${childArgs.map(arg => JSON.stringify(arg)).join(' ')}\n\n`);
@@ -460,6 +469,9 @@ async function main() {
           process.env.ARKPRISM_DISABLE_RECEIVER_REFINEMENT === '1',
         disableLifecycleBounds:
           process.env.ARKPRISM_DISABLE_LIFECYCLE_BOUNDS === '1',
+        disableContinuationFlow:
+          args.disableContinuationFlow
+          || process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW === '1',
       },
     },
     inputs: {
@@ -511,6 +523,7 @@ async function main() {
       arkArgs: args.arkArgs,
       maxAttempts: args.maxAttempts,
       retryDelayMs: args.retryDelayMs,
+      disableContinuationFlow: args.disableContinuationFlow,
     },
     progress: {
       finished: 0,
