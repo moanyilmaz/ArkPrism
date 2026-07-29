@@ -121,6 +121,22 @@ function sortedObject(object) {
   );
 }
 
+function normalizedHashMap(value) {
+  return Object.fromEntries(
+    Object.entries(value || {})
+      .map(([name, hash]) => [String(name), String(hash || '')])
+      .sort(([left], [right]) => left.localeCompare(right)),
+  );
+}
+
+function normalizedProjectNames(values) {
+  return [...new Set(values.map(normalizeText).filter(Boolean))].sort();
+}
+
+function sameJson(left, right) {
+  return JSON.stringify(left) === JSON.stringify(right);
+}
+
 function loadRun(root) {
   const resolvedRoot = path.resolve(root);
   const manifest = readJson(path.join(resolvedRoot, 'run_manifest.json'));
@@ -140,12 +156,14 @@ function loadRun(root) {
   const provenance = {};
   const derivations = {};
   const carrierStates = {};
+  const projectNames = [];
   let flows = 0;
   let ifdsEdges = 0;
 
   for (const reportPath of paths) {
     const report = readJson(reportPath);
     const projectName = report.projectName || path.basename(path.dirname(reportPath));
+    projectNames.push(projectName);
     ifdsEdges += Number(report.taintAnalysis?.ifds?.edgesProcessed || 0);
     for (const flow of report.taintFlows || []) {
       flows++;
@@ -167,6 +185,28 @@ function loadRun(root) {
     }
   }
 
+  if (!Array.isArray(batch) || batch.length !== expectedProjects) {
+    throw new Error(
+      `${resolvedRoot}: batch entries=${Array.isArray(batch) ? batch.length : 'invalid'}`
+        + `/${expectedProjects}`,
+    );
+  }
+  const batchErrors = batch.filter(item => item.error);
+  if (batchErrors.length > 0) {
+    throw new Error(`${resolvedRoot}: batch errors=${batchErrors.length}`);
+  }
+  const normalizedProjects = normalizedProjectNames(projectNames);
+  const normalizedBatchProjects = normalizedProjectNames(
+    batch.map(item => item.projectName),
+  );
+  if (normalizedProjects.length !== expectedProjects) {
+    throw new Error(
+      `${resolvedRoot}: unique report projects=${normalizedProjects.length}/${expectedProjects}`,
+    );
+  }
+  if (!sameJson(normalizedProjects, normalizedBatchProjects)) {
+    throw new Error(`${resolvedRoot}: report and batch project sets differ`);
+  }
   const durations = batch
     .map(item => Number(item.durationMs || 0))
     .filter(value => value > 0);
@@ -179,7 +219,9 @@ function loadRun(root) {
       projects: expectedProjects,
       sdkSha256: manifest.inputs?.sdk?.sha256 || null,
       buildSha256: manifest.inputs?.build?.sha256 || null,
+      configHashes: normalizedHashMap(manifest.inputs?.configHashes),
     },
+    projectNames: normalizedProjects,
     totals: {
       flows,
       endpoints: endpointRecords.size,
@@ -195,6 +237,21 @@ function loadRun(root) {
   };
 }
 
+function assertCompatibleRuns(baseline, candidate) {
+  if (!sameJson(baseline.projectNames, candidate.projectNames)) {
+    throw new Error('Corpus runs contain different project sets');
+  }
+  if (baseline.manifest.sdkSha256 !== candidate.manifest.sdkSha256) {
+    throw new Error(
+      `Corpus runs use different SDK fingerprints: `
+        + `${baseline.manifest.sdkSha256}/${candidate.manifest.sdkSha256}`,
+    );
+  }
+  if (!sameJson(baseline.manifest.configHashes, candidate.manifest.configHashes)) {
+    throw new Error('Corpus runs use different configuration hashes');
+  }
+}
+
 function setDifference(left, right) {
   return [...left].filter(value => !right.has(value)).sort();
 }
@@ -202,6 +259,7 @@ function setDifference(left, right) {
 function compareRuns(baselineRoot, candidateRoot) {
   const baseline = loadRun(baselineRoot);
   const candidate = loadRun(candidateRoot);
+  assertCompatibleRuns(baseline, candidate);
   const baselineEndpoints = new Set(baseline.endpointRecords.keys());
   const candidateEndpoints = new Set(candidate.endpointRecords.keys());
   const matchedEndpoints = [...baselineEndpoints]
@@ -335,6 +393,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  assertCompatibleRuns,
   compareRuns,
   flowEndpointKey,
   flowPathKey,

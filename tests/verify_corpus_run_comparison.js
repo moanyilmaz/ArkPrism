@@ -64,6 +64,10 @@ for (const directory of [baseline, candidate]) {
         projectCount: 1,
         sdk: { sha256: 'sdk' },
         build: { sha256: 'build' },
+        configHashes: {
+          'sensitive_apis.json': 'rules',
+          'hapflow_sources.json': 'sources',
+        },
       },
     }, null, 2)}\n`,
   );
@@ -104,6 +108,39 @@ assert.deepStrictEqual(
 assert.deepStrictEqual(
   comparison.candidate.derivations,
   { promise_then: 1 },
+);
+
+const candidateManifestPath = path.join(candidate, 'run_manifest.json');
+const candidateManifest = JSON.parse(fs.readFileSync(candidateManifestPath, 'utf8'));
+candidateManifest.inputs.configHashes['sensitive_apis.json'] = 'changed-rules';
+fs.writeFileSync(
+  candidateManifestPath,
+  `${JSON.stringify(candidateManifest, null, 2)}\n`,
+);
+assert.throws(
+  () => compareRuns(baseline, candidate),
+  /different configuration hashes/,
+);
+candidateManifest.inputs.configHashes['sensitive_apis.json'] = 'rules';
+fs.writeFileSync(
+  candidateManifestPath,
+  `${JSON.stringify(candidateManifest, null, 2)}\n`,
+);
+
+const candidateReportPath = path.join(
+  candidate,
+  'Sample',
+  'Sample-arkprism-report.json',
+);
+const candidateReport = JSON.parse(fs.readFileSync(candidateReportPath, 'utf8'));
+candidateReport.projectName = 'DifferentSample';
+fs.writeFileSync(
+  candidateReportPath,
+  `${JSON.stringify(candidateReport, null, 2)}\n`,
+);
+assert.throws(
+  () => compareRuns(baseline, candidate),
+  /report and batch project sets differ/,
 );
 
 fs.rmSync(root, { recursive: true, force: true });
