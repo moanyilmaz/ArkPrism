@@ -59,6 +59,14 @@
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
+      "id": "custom_then_ignored_return",
+      "construct": "Promise",
+      "category": "custom-return-semantics",
+      "expected": false,
+      "oracleReason": "The user-defined then invokes a source-capturing callback but discards its return and produces an independent constant Promise.",
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
       "id": "rejection_argument",
       "construct": "Promise",
       "category": "handler-position",

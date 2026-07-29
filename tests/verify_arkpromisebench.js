@@ -7,9 +7,9 @@ const benchmark = path.join(root, 'benchmarks', 'ArkPromiseBench');
 const oracle = JSON.parse(fs.readFileSync(path.join(benchmark, 'oracle.json'), 'utf8'));
 
 assert.strictEqual(oracle.schemaVersion, 2);
-assert.strictEqual(oracle.cases.length, 16);
+assert.strictEqual(oracle.cases.length, 17);
 assert.strictEqual(oracle.cases.filter(item => item.expected).length, 6);
-assert.strictEqual(oracle.cases.filter(item => !item.expected).length, 10);
+assert.strictEqual(oracle.cases.filter(item => !item.expected).length, 11);
 assert.strictEqual(new Set(oracle.cases.map(item => item.id)).size, oracle.cases.length);
 
 const requiredCategories = [
@@ -19,6 +19,7 @@ const requiredCategories = [
   'sequential-chain',
   'promise-flattening',
   'promise-owner',
+  'custom-return-semantics',
   'rejection-operator',
   'value-dependence',
   'sanitizer-return',

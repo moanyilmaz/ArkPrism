@@ -99,6 +99,26 @@ const CASES = [
     });`,
   },
   {
+    id: 'custom_then_ignored_return',
+    category: 'custom-return-semantics',
+    expected: false,
+    oracleReason:
+      'The user-defined then invokes a source-capturing callback but discards its return and produces an independent constant Promise.',
+    helpers: `class IgnoringTaskQueue {
+  then(callback: () => Promise<string>): Promise<string> {
+    callback();
+    return Promise.resolve('constant');
+  }
+}
+`,
+    body: `const sensitive = identifier.getOAID();
+    const queue = new IgnoringTaskQueue();
+    const output = queue.then(() => sensitive);
+    output.then((value) => {
+      console.info('diagnostic', String(value));
+    });`,
+  },
+  {
     id: 'rejection_argument',
     category: 'handler-position',
     expected: false,

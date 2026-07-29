@@ -6,12 +6,13 @@ explicitly data-dependent on the argument passed to `console.info`.
 The oracle records this decision as a case-specific `oracleReason`, allowing
 each label to be checked directly against its retained ArkTS source.
 
-The 16 cases contain six positives and ten adversarial negatives across:
+The 17 cases contain six positives and eleven adversarial negatives across:
 
 - Promise success-handler binding;
 - Promise and alias identity;
 - success versus rejection handler position;
 - custom/non-Promise `then` ownership;
+- custom `then` implementations that discard a callback return;
 - `catch` and `finally`;
 - ignored, constant, and sanitized values;
 - sequential continuation return dependence; and
