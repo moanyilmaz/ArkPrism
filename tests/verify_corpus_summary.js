@@ -4,6 +4,7 @@ const os = require('os');
 const path = require('path');
 
 const {
+  addToSetMap,
   concentrationStats,
   evidenceState,
   gini,
@@ -15,8 +16,18 @@ const {
   sha256File,
   spearman,
   strictnessFailuresForReport,
+  sortedProjectSets,
   validateSingleRun,
 } = require('../scripts/summarize_corpus_reports');
+
+const derivationProjects = new Map();
+addToSetMap(derivationProjects, 'promise_then', 'ProjectB');
+addToSetMap(derivationProjects, 'promise_then', 'ProjectA');
+addToSetMap(derivationProjects, 'promise_then', 'ProjectA');
+assert.deepStrictEqual(
+  sortedProjectSets(derivationProjects),
+  { promise_then: ['ProjectA', 'ProjectB'] },
+);
 
 assert.strictEqual(gini([0, 0, 0]), 0);
 assert(Math.abs(gini([0, 0, 10]) - (2 / 3)) < 1e-9);

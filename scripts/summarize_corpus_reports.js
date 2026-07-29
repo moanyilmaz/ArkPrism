@@ -503,6 +503,15 @@ function increment(map, key, amount = 1) {
   map.set(normalized, (map.get(normalized) || 0) + amount);
 }
 
+function addToSetMap(map, key, value) {
+  const normalizedKey = String(key || '(unknown)');
+  const normalizedValue = String(value || '').trim();
+  if (!normalizedValue) return;
+  const values = map.get(normalizedKey) || new Set();
+  values.add(normalizedValue);
+  map.set(normalizedKey, values);
+}
+
 function normalizedFlowDerivations(flow) {
   if (!Array.isArray(flow?.analysisDerivations)) return [];
   return [...new Set(
@@ -516,6 +525,17 @@ function sortedEntries(map) {
   return [...map.entries()]
     .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
     .map(([name, count]) => ({ name, count }));
+}
+
+function sortedProjectSets(map) {
+  return Object.fromEntries(
+    [...map.entries()]
+      .sort(([left], [right]) => left.localeCompare(right))
+      .map(([name, projects]) => [
+        name,
+        [...projects].sort((left, right) => left.localeCompare(right)),
+      ]),
+  );
 }
 
 function quantiles(values) {
@@ -815,6 +835,7 @@ function summarize(args) {
   const flowProvenance = new Map();
   const flowSourceKinds = new Map();
   const flowAnalysisDerivations = new Map();
+  const flowAnalysisDerivationProjects = new Map();
   const flowCarrierStates = new Map();
   const linkEvidence = new Map();
   const evidenceStates = new Map();
@@ -907,6 +928,7 @@ function summarize(args) {
       } else {
         for (const derivation of derivations) {
           increment(flowAnalysisDerivations, derivation);
+          addToSetMap(flowAnalysisDerivationProjects, derivation, projectName);
         }
       }
       taintPathLengths.push((flow.path || []).length);
@@ -1219,6 +1241,9 @@ function summarize(args) {
       flowProvenance: sortedEntries(flowProvenance),
       flowSourceKinds: sortedEntries(flowSourceKinds),
       flowAnalysisDerivations: sortedEntries(flowAnalysisDerivations),
+      flowAnalysisDerivationProjects: sortedProjectSets(
+        flowAnalysisDerivationProjects,
+      ),
       flowCarrierStates: sortedEntries(flowCarrierStates),
       linkEvidence: sortedEntries(linkEvidence),
       apiPackages: sortedEntries(apiPackages),
@@ -1433,6 +1458,7 @@ function main() {
 if (require.main === module) main();
 
 module.exports = {
+  addToSetMap,
   averageRanks,
   concentrationStats,
   evidenceState,
@@ -1447,5 +1473,6 @@ module.exports = {
   sha256File,
   spearman,
   strictnessFailuresForReport,
+  sortedProjectSets,
   validateSingleRun,
 };
