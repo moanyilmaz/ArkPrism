@@ -19,7 +19,6 @@ const requiredCategories = [
   'sequential-chain',
   'promise-flattening',
   'promise-owner',
-  'custom-return-semantics',
   'rejection-operator',
   'value-dependence',
   'sanitizer-return',
@@ -35,5 +34,9 @@ for (const item of oracle.cases) {
   assert(fs.existsSync(source), source);
   assert(fs.readFileSync(source, 'utf8').includes('identifier.getOAID()'));
 }
+
+const ignoredCustomReturn = oracle.cases.find(item => item.id === 'custom_then_ignored_return');
+assert(ignoredCustomReturn, 'custom_then_ignored_return');
+assert.strictEqual(ignoredCustomReturn.category, 'promise-owner');
 
 console.log('ArkPromiseBench oracle and source layout verified.');

@@ -100,7 +100,7 @@ const CASES = [
   },
   {
     id: 'custom_then_ignored_return',
-    category: 'custom-return-semantics',
+    category: 'promise-owner',
     expected: false,
     oracleReason:
       'The user-defined then invokes a source-capturing callback but discards its return and produces an independent constant Promise.',
