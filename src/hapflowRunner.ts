@@ -359,6 +359,7 @@ export function convertOutcome(
 
         return {
             provenance,
+            analysisDerivations: fact.getDerivations(),
             sourceKind: sourceEvidence.sourceKind,
             sourceIdentity: {
                 module: rule.module || '',
@@ -417,6 +418,10 @@ export function deduplicateTaintFlows(flows: TaintFlowResult[]): TaintFlowResult
             if (existingProvenance !== nextProvenance) {
                 existing.provenance = 'both';
             }
+            existing.analysisDerivations = [...new Set([
+                ...(existing.analysisDerivations || []),
+                ...(flow.analysisDerivations || [])
+            ])];
             continue;
         }
         seen.set(key, unique.length);

@@ -42,16 +42,18 @@ const sourceStmt = statement('%0 = privacy.getValue()', 'src/Page.ets', 10);
 const errorStmt = statement('instanceinvoke error.<Error.constructor>(%0)', 'src/Page.ets', 15);
 const sinkStmt = statement('console.info(error)', 'src/Page.ets', 20);
 const privacyFact = new TaintFact(
-  value,
-  [errorStmt, sinkStmt],
-  evidence(sourceStmt, 'privacy_data', 'getValue'),
+    value,
+    [errorStmt, sinkStmt],
+    evidence(sourceStmt, 'privacy_data', 'getValue'),
 );
+privacyFact.addDerivation('promise_then');
 
 const [privacyFlow] = convertOutcome([privacyFact], 'ifds');
 assert.strictEqual(privacyFlow.sourceApi, sourceStmt.toString());
 assert.strictEqual(privacyFlow.sourceLine, 10);
 assert.strictEqual(privacyFlow.sourceKind, 'privacy_data');
 assert.strictEqual(privacyFlow.sourceIdentity.apiName, 'getValue');
+assert.deepStrictEqual(privacyFlow.analysisDerivations, ['promise_then']);
 assert.strictEqual(privacyFlow.path[0].statement, sourceStmt.toString());
 assert.strictEqual(privacyFlow.path[1].statement, errorStmt.toString());
 

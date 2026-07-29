@@ -2,17 +2,32 @@ const fs = require('fs');
 const path = require('path');
 
 function parseArgs(argv) {
-  const args = { oracle: '', full: '', callbackOff: '', outputDir: '' };
+  const args = {
+    oracle: '',
+    full: '',
+    callbackOff: '',
+    continuationOff: '',
+    outputDir: '',
+  };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
     if (arg === '--oracle') args.oracle = argv[++index] || '';
     else if (arg === '--full') args.full = argv[++index] || '';
     else if (arg === '--callback-off') args.callbackOff = argv[++index] || '';
+    else if (arg === '--continuation-off') args.continuationOff = argv[++index] || '';
     else if (arg === '--output-dir') args.outputDir = argv[++index] || '';
     else throw new Error(`Unknown argument: ${arg}`);
   }
-  for (const [key, value] of Object.entries(args)) {
-    if (!value) throw new Error(`--${key.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)} is required`);
+  for (const key of ['oracle', 'full', 'outputDir']) {
+    if (!args[key]) {
+      throw new Error(`--${key.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)} is required`);
+    }
+  }
+  if (!args.continuationOff && !args.callbackOff) {
+    throw new Error('--continuation-off is required');
+  }
+  if (args.continuationOff && args.callbackOff) {
+    throw new Error('Use either --continuation-off or --callback-off, not both');
   }
   return args;
 }
@@ -132,30 +147,31 @@ function main() {
     reportIndex(args.full),
     oracle.cases,
   );
-  const callbackOff = evaluateConfiguration(
-    'callback_off',
-    reportIndex(args.callbackOff),
+  const ablationName = args.continuationOff ? 'continuation_off' : 'callback_off';
+  const ablation = evaluateConfiguration(
+    ablationName,
+    reportIndex(args.continuationOff || args.callbackOff),
     oracle.cases,
   );
   const fullOnlyCorrect = oracle.cases.filter((item, index) =>
     full.records[index].predicted === item.expected
-    && callbackOff.records[index].predicted !== item.expected).map(item => item.id);
-  const callbackOffOnlyCorrect = oracle.cases.filter((item, index) =>
-    callbackOff.records[index].predicted === item.expected
+    && ablation.records[index].predicted !== item.expected).map(item => item.id);
+  const ablationOnlyCorrect = oracle.cases.filter((item, index) =>
+    ablation.records[index].predicted === item.expected
     && full.records[index].predicted !== item.expected).map(item => item.id);
   const result = {
-    schemaVersion: 1,
+    schemaVersion: 2,
     generatedAt: new Date().toISOString(),
     oracle: path.resolve(args.oracle),
     definition: oracle.definition,
     full,
-    callbackOff,
+    ablation,
     paired: {
       fullOnlyCorrect,
-      callbackOffOnlyCorrect,
+      ablationOnlyCorrect,
       exactMcNemarP: exactMcNemar(
         fullOnlyCorrect.length,
-        callbackOffOnlyCorrect.length,
+        ablationOnlyCorrect.length,
       ),
     },
   };
@@ -166,7 +182,7 @@ function main() {
     'utf8',
   );
   const percent = value => value == null ? 'N/A' : `${(value * 100).toFixed(2)}%`;
-  const rows = [full, callbackOff].map(configuration => {
+  const rows = [full, ablation].map(configuration => {
     const metric = configuration.overall;
     return `| ${configuration.name} | ${metric.tp} | ${metric.tn} | ${metric.fp} | ${metric.fn} | ${percent(metric.precision)} | ${percent(metric.recall)} | ${percent(metric.specificity)} | ${percent(metric.f1)} |`;
   });
@@ -180,7 +196,7 @@ function main() {
     ...rows,
     '',
     `Full-only correct cases: ${result.paired.fullOnlyCorrect.length}.`,
-    `Callback-off-only correct cases: ${result.paired.callbackOffOnlyCorrect.length}.`,
+    `Ablation-only correct cases: ${result.paired.ablationOnlyCorrect.length}.`,
     `Exact McNemar p: ${result.paired.exactMcNemarP}.`,
     '',
   ].join('\n');

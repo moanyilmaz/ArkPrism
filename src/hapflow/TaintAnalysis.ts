@@ -33,6 +33,10 @@ function irRecoveryEnabled(): boolean {
     return process.env.ARKPRISM_DISABLE_IR_RECOVERY !== '1';
 }
 
+function continuationFlowEnabled(): boolean {
+    return process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW !== '1';
+}
+
 function normalizeSdkPathForTypeImports(sdkPath?: string): string {
     return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
 }
@@ -1423,6 +1427,52 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
     }
 
+    private getCallbackArgumentIndex(callStmt: ArkInvokeStmt, callbackMethod: ArkMethod): number {
+        const callerClass = callStmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass();
+        return callStmt.getInvokeExpr().getArgs().findIndex(argument => {
+            const argumentType = argument.getType();
+            if (!(argumentType instanceof FunctionType) || !callerClass) return false;
+            return callerClass.getMethod(argumentType.getMethodSignature()) === callbackMethod;
+        });
+    }
+
+    private addPromiseContinuationFact(
+        callStmt: ArkInvokeStmt,
+        callbackMethod: ArkMethod,
+        dataFact: TaintFact,
+        ret: Set<TaintFact>
+    ): void {
+        if (!continuationFlowEnabled()) return;
+
+        const invokeExpr = callStmt.getInvokeExpr();
+        if (!(invokeExpr instanceof ArkInstanceInvokeExpr)
+            || invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() !== 'then'
+            || this.getCallbackArgumentIndex(callStmt, callbackMethod) !== 0) {
+            return;
+        }
+
+        const callbackValue = getParameterInstanceForArgument(callbackMethod, 0);
+        if (!callbackValue) return;
+
+        if (dataFact === this.getZeroValue()) return;
+
+        const base = invokeExpr.getBase();
+        const dataValue = dataFact.getValue();
+        let carrierMatches = ValueDependsOn(base, dataValue);
+        if (!carrierMatches && this.pointerAnalysis) {
+            for (const candidate of getPossibleRelatedNodes(base, this.pointerAnalysis)) {
+                if (ValueEqual(candidate, dataValue)) {
+                    carrierMatches = true;
+                    break;
+                }
+            }
+        }
+        if (!carrierMatches) return;
+
+        const continuationFact = propagateFact(callbackValue, callStmt, ret, dataFact);
+        continuationFact?.addDerivation('promise_then');
+    }
+
     getNormalFlowFunction(srcStmt: Stmt, tgtStmt: Stmt): FlowFunction<TaintFact> {
         let checkerInstance: TaintAnalysisChecker = this;
         return new class implements FlowFunction<TaintFact> {
@@ -1790,6 +1840,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 }
                 const callStmt = srcStmt as ArkInvokeStmt;
                 if (getRecallMethodInParam(callStmt).includes(method)) {
+                    checkerInstance.addPromiseContinuationFact(callStmt, method, dataFact, ret);
                     return ret;
                 }
                 const args = callStmt.getInvokeExpr().getArgs();

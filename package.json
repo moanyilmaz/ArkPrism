@@ -20,6 +20,7 @@
     "test:runner-strictness": "node tests/verify_runner_strictness.js",
     "test:taint-flow-dedup": "npm run build && node tests/verify_taint_flow_dedup.js",
     "test:taint-source-evidence": "npm run build && node tests/verify_taint_source_evidence.js",
+    "test:promise-continuation": "npm run build && node tests/verify_promise_continuation_provenance.js",
     "test:evidence-linker": "npm run build && node tests/verify_evidence_linker.js",
     "test:evidence-universes": "node tests/verify_evidence_universe_audit.js",
     "test:source-audit-export": "node tests/verify_source_audit_export.js",

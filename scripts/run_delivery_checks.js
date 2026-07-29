@@ -22,6 +22,7 @@ const checks = [
   'verify_ifds_parameter_mapping.js',
   'verify_manager_receiver.js',
   'verify_package_aliases.js',
+  'verify_promise_continuation_provenance.js',
   'verify_pta_container_edges.js',
   'verify_rule_deduplication.js',
   'verify_runner_strictness.js',

@@ -509,7 +509,12 @@ export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
 }
 
 export function propagateFact(value: Value, stmt: Stmt, ret: Set<TaintFact>, fromFact?: TaintFact): TaintFact | null {
-    const fact = new TaintFact(value, undefined, fromFact?.getSourceEvidence());
+    const fact = new TaintFact(
+        value,
+        undefined,
+        fromFact?.getSourceEvidence(),
+        fromFact?.getDerivations()
+    );
     let last: TaintFact | undefined | null = fromFact;
     while (last) {
         if (ValueEqual(value, last.getValue()) && stmt == last.getPath()[last.getPath().length - 1]) return null;

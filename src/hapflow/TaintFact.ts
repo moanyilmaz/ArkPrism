@@ -13,6 +13,8 @@ export interface TaintSourceEvidence {
     rule: SourceRuleMetadata;
 }
 
+export type TaintDerivationKind = "promise_then";
+
 export class TaintFact {
     private static statementIds: WeakMap<object, number> = new WeakMap();
     private static nextStatementId: number = 1;
@@ -20,13 +22,20 @@ export class TaintFact {
     private path: Stmt[] = [];
     private last: TaintFact | null = null;
     private sourceEvidence?: TaintSourceEvidence;
+    private derivations: Set<TaintDerivationKind>;
 
-    constructor(value: Value, stmts?: Stmt[], sourceEvidence?: TaintSourceEvidence) {
+    constructor(
+        value: Value,
+        stmts?: Stmt[],
+        sourceEvidence?: TaintSourceEvidence,
+        derivations: Iterable<TaintDerivationKind> = []
+    ) {
         this.value = value;
         if (stmts) {
             this.path = [...stmts];
         }
         this.sourceEvidence = sourceEvidence;
+        this.derivations = new Set(derivations);
     }
 
     public static createSourceEvidence(
@@ -91,8 +100,16 @@ export class TaintFact {
         return this.getSourceIdentityKey() === other.getSourceIdentityKey();
     }
 
+    public addDerivation(kind: TaintDerivationKind): void {
+        this.derivations.add(kind);
+    }
+
+    public getDerivations(): TaintDerivationKind[] {
+        return [...this.derivations];
+    }
+
     public copyForValue(value: Value, nextStmt?: Stmt): TaintFact {
-        const copy = new TaintFact(value, this.path, this.sourceEvidence);
+        const copy = new TaintFact(value, this.path, this.sourceEvidence, this.derivations);
         if (nextStmt) copy.addPath(nextStmt);
         return copy;
     }
