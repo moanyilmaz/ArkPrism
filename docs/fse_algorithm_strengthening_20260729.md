@@ -62,10 +62,11 @@ The transfer is accepted only when:
 - the callback has a resolvable first data parameter.
 
 The new fact preserves the immutable source witness and records the
-`promise_then` derivation. `ARKPRISM_DISABLE_CONTINUATION_FLOW=1` disables only
-this transfer for mechanism-level ablation. The existing bounded supplement is
-retained as an optional fallback for IR patterns not represented by a typed
-continuation edge.
+`promise_then` derivation. The batch runner's recorded
+`--disable-continuation-flow` switch disables only this transfer for
+mechanism-level ablation. The existing bounded supplement is retained as an
+optional fallback for IR patterns not represented by a typed continuation
+edge.
 
 ## Controlled validation
 
@@ -77,10 +78,10 @@ the new IFDS transfer.
 | Continuation IFDS | 24 | 24 | 0 | 0 | 100.00% | 100.00% | 100.00% | 100.00% |
 | Without T4 transfer | 15 | 24 | 0 | 9 | 100.00% | 62.50% | 100.00% | 76.92% |
 
-All nine changed cases are T4 Promise-`then` positives. T1 callback and T5
-`await` cases are unchanged because their carriers already have explicit IFDS
-transfers. The exact paired McNemar test gives `p=0.00390625`. All 24 matched
-negative cases remain negative.
+All nine changed cases are T4 Promise-`then` positives. T1 callback cases keep
+their source-generating call flow, while T5 `await` cases retain native IFDS
+normal flow over explicit ArkIR. The exact paired McNemar test gives
+`p=0.00390625`. All 24 matched negative cases remain negative.
 
 The full run produces 24 privacy-data paths, all with IFDS provenance. Exactly
 nine carry the `promise_then` derivation, and none requires

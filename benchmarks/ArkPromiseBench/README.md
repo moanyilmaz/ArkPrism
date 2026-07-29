@@ -25,19 +25,28 @@ Run the full configuration and the T4 ablation with the API-20 SDK:
 
 ```powershell
 $env:OPENHARMONY_SDK_PATH='E:\OpenHarmony_SDK\20\ets'
-node scripts/run_full_dataset.js `
+node scripts/run_argus_batch_isolated.js `
   --dataset benchmarks\ArkPromiseBench `
-  --output experiments\arkpromisebench_full `
-  --sdk $env:OPENHARMONY_SDK_PATH `
-  --no-pta --callback-analysis false
+  --output-dir experiments\arkpromisebench_full `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
+  --engine compiled --concurrency 1 --timeout-ms 600000 --max-attempts 1 `
+  -- --no-dot --no-pta --callback-analysis false --ifds-timeout-ms 300000
 
-$env:ARKPRISM_DISABLE_CONTINUATION_FLOW='1'
-node scripts/run_full_dataset.js `
+node scripts/run_argus_batch_isolated.js `
   --dataset benchmarks\ArkPromiseBench `
-  --output experiments\arkpromisebench_no_t4 `
-  --sdk $env:OPENHARMONY_SDK_PATH `
-  --no-pta --callback-analysis false
-Remove-Item Env:ARKPRISM_DISABLE_CONTINUATION_FLOW
+  --output-dir experiments\arkpromisebench_no_t4 `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
+  --engine compiled --concurrency 1 --timeout-ms 600000 --max-attempts 1 `
+  --disable-continuation-flow `
+  -- --no-dot --no-pta --callback-analysis false --ifds-timeout-ms 300000
+
+node scripts/run_argus_batch_isolated.js `
+  --dataset benchmarks\ArkPromiseBench `
+  --output-dir experiments\arkpromisebench_post_ifds `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
+  --engine compiled --concurrency 1 --timeout-ms 600000 --max-attempts 1 `
+  --disable-continuation-flow `
+  -- --no-dot --no-pta --callback-analysis true --ifds-timeout-ms 300000
 
 node scripts/evaluate_arkasyncbench.js `
   --oracle benchmarks\ArkPromiseBench\oracle.json `
@@ -46,5 +55,7 @@ node scripts/evaluate_arkasyncbench.js `
   --output-dir experiments\arkpromisebench_evaluation
 ```
 
-The optional callback supplement is disabled so that the comparison isolates
-IFDS continuation semantics.
+The full versus no-T4 comparison disables the optional callback supplement so
+that it isolates IFDS continuation semantics. The third run reproduces the
+bounded post-IFDS recovery baseline. Every run manifest records the
+continuation-flow switch explicitly.
