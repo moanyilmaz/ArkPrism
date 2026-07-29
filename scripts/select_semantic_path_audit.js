@@ -241,6 +241,11 @@ function candidateFromFlow({
     flowIndex,
     sourceKind: flow.sourceKind,
     provenance: flow.provenance,
+    analysisDerivations: [...new Set(
+      (Array.isArray(flow.analysisDerivations) ? flow.analysisDerivations : [])
+        .map(value => String(value)),
+    )].sort(),
+    carrierState: typeof flow.carrierState === 'string' ? flow.carrierState : null,
     sourceIdentity,
     sinkFamily: family,
     pathLength: length,
@@ -434,4 +439,15 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { diversitySelect, normalizeSourceIdentity, pathLengthBin, sinkFamily };
+module.exports = {
+  candidateFromFlow,
+  countBy,
+  createSourceCache,
+  diversitySelect,
+  normalizeSourceIdentity,
+  pathLengthBin,
+  reportPaths,
+  sha256,
+  sha256File,
+  sinkFamily,
+};
