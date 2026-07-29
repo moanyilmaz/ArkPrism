@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "definition": "A positive case requires explicit dependence from a configured Promise payload to console.info. Rejection values, constants, independent Promise payloads, and constant-returning transforms are negative.",
   "cases": [
     {
@@ -7,6 +7,7 @@
       "construct": "Promise",
       "category": "success-handler",
       "expected": true,
+      "oracleReason": "The configured Promise resolved payload is bound to the first then-handler parameter and that parameter reaches console.info.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -14,6 +15,7 @@
       "construct": "Promise",
       "category": "alias-identity",
       "expected": true,
+      "oracleReason": "The alias denotes the same configured Promise, so its resolved payload is bound to the success-handler parameter and reaches console.info.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -21,6 +23,7 @@
       "construct": "Promise",
       "category": "handler-position",
       "expected": true,
+      "oracleReason": "The sensitive resolved payload reaches the first then argument; the presence of a separate rejection handler does not change that dependence.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -28,6 +31,7 @@
       "construct": "Promise",
       "category": "sequential-chain",
       "expected": true,
+      "oracleReason": "The first success handler returns its input unchanged, making the next Promise payload data-dependent on the configured source.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -35,6 +39,7 @@
       "construct": "Promise",
       "category": "sequential-chain",
       "expected": true,
+      "oracleReason": "The first success handler returns a property derived from its input, so the next Promise payload remains data-dependent on the configured source.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -42,6 +47,7 @@
       "construct": "Promise",
       "category": "promise-flattening",
       "expected": true,
+      "oracleReason": "Promise.resolve wraps the sensitive handler input and Promise flattening carries that resolved value to the next success handler.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -49,6 +55,7 @@
       "construct": "Promise",
       "category": "promise-owner",
       "expected": false,
+      "oracleReason": "The then receiver is a user-defined TaskQueue whose callback argument is a constant, not the configured Promise resolved payload.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -56,6 +63,7 @@
       "construct": "Promise",
       "category": "handler-position",
       "expected": false,
+      "oracleReason": "Only the rejection-handler parameter reaches console.info; it is not the configured Promise resolved payload.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -63,6 +71,7 @@
       "construct": "Promise",
       "category": "rejection-operator",
       "expected": false,
+      "oracleReason": "The catch callback receives a rejection reason, whereas the configured source is the Promise resolved payload.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -70,6 +79,7 @@
       "construct": "Promise",
       "category": "rejection-operator",
       "expected": false,
+      "oracleReason": "The finally callback receives no resolved payload and the sink argument is a constant.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -77,6 +87,7 @@
       "construct": "Promise",
       "category": "value-dependence",
       "expected": false,
+      "oracleReason": "The success-handler parameter is never used and the sink argument is a constant independent of the resolved payload.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -84,6 +95,7 @@
       "construct": "Promise",
       "category": "value-dependence",
       "expected": false,
+      "oracleReason": "The success handler receives the resolved payload but console.info consumes a separately created constant.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -91,6 +103,7 @@
       "construct": "Promise",
       "category": "alias-identity",
       "expected": false,
+      "oracleReason": "The observed handler belongs to an independent constant Promise; the configured Promise is never attached to that continuation.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -98,6 +111,7 @@
       "construct": "Promise",
       "category": "alias-identity",
       "expected": false,
+      "oracleReason": "The alias is overwritten with an independent constant Promise before then is invoked, killing identity with the configured Promise.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -105,6 +119,7 @@
       "construct": "Promise",
       "category": "sanitizer-return",
       "expected": false,
+      "oracleReason": "The helper consumes its input but returns the same constant for every input, so the sink value is not data-dependent on the resolved payload.",
       "sourceFile": "entryability/EntryAbility.ets"
     },
     {
@@ -112,6 +127,7 @@
       "construct": "Promise",
       "category": "sequential-chain",
       "expected": false,
+      "oracleReason": "The first success handler replaces the resolved payload with a constant, so the following Promise payload has no source dependence.",
       "sourceFile": "entryability/EntryAbility.ets"
     }
   ]

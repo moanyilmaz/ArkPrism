@@ -3,6 +3,8 @@
 ArkPromiseBench is a source-level semantic boundary suite for Promise
 continuations. A case is positive only when a configured Promise payload is
 explicitly data-dependent on the argument passed to `console.info`.
+The oracle records this decision as a case-specific `oracleReason`, allowing
+each label to be checked directly against its retained ArkTS source.
 
 The 16 cases contain six positives and ten adversarial negatives across:
 
