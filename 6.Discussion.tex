@@ -5,7 +5,7 @@
 
 \mytool treats source resolution as an evidence-producing analysis rather than a configuration side effect. Every accepted API identity carries a package/receiver/access witness; every query source carries a typed value; and every path records its producing analysis. The preserved unit $\langle identity,witness,carrier\rangle$ uses $carrier=\bot$ for detector-only operations. This contract separates three questions that privacy tools often collapse: whether a configured API occurs, whether a modeled value may reach a configured sink, and whether that behavior violates a policy. \mytool answers the first two and supplies the source, sink class, permission, call context, and provenance needed to review the third.
 
-The empirical results follow the same structure. ArkSourceFirst60 and ArkIdentityBench evaluate exact-location identity decisions. HapBench evaluates case and endpoint-pair flow classification. ArkAsyncBench isolates continuation recovery, while the 120-path source audit tests real-project path semantics. The Top-120 set stresses recovery of dense, previously confirmed identity evidence. The corpus then measures prevalence, concentration, traceability, and cost without treating tool output as a corpus-wide oracle.
+This contract aligns claims with evidence units. Identity oracles operate on exact source locations, flow oracles operate on source--sink endpoints, mechanism ablations operate on paired predictions, and the corpus characterizes prevalence and cost. No aggregate is required to serve simultaneously as a detector oracle, a path oracle, and an ecosystem estimate.
 
 \subsection{Core Privacy Paths and Framework Context}
 
@@ -17,22 +17,25 @@ This boundary also clarifies corpus interpretation. Of 243 privacy-data paths, 2
 
 Lifecycle modeling illustrates why the evaluation emphasizes specificity and balanced accuracy in addition to recall and F1. Unbounded cycling accepts more cross-event positives under the published HapBench labels, but also creates the suite's explicit unreachable-flow false positive. F1 ignores the lost true negative; balanced accuracy accounts for both classes and favors the bounded policy. Under the executed-order sensitivity contract, the bounded policy classifies all 67 cases, whereas unbounded cycling creates three false positives. The default therefore requires an explicit parent, same-instance, or later-creation witness before connecting lifecycle phases.
 
-Continuation transfer follows the same principle. T1 callbacks and Promise-\texttt{then} use construct-specific IFDS call flow, while explicit \texttt{await} is handled by native normal flow over ArkIR; each propagated fact retains its source witness and carrier state. T4 contributes exactly the nine Promise-success cases constructed to require that relation while leaving every matched negative unchanged. ArkPromiseBench further separates Promise ownership from method naming, success from rejection positions, and payload-dependent returns from constant or unrelated values. The optional unresolved-IR fallback remains separately labeled, so it cannot be mistaken for a solver-derived edge.
+Continuation transfer follows the same principle. T1 callbacks and Promise-\texttt{then} use construct-specific IFDS call flow, while explicit \texttt{await} is handled by native normal flow over ArkIR; each propagated fact retains its source witness and carrier state. The balanced design isolates T4: only Promise-success cases change under ablation, while callback, \texttt{await}, and every matched negative remain stable. ArkPromiseBench then separates Promise ownership from method naming, success from rejection positions, and payload-dependent returns from constant or unrelated values. The optional unresolved-IR fallback remains separately labeled, so it cannot be mistaken for a solver-derived edge.
 
 \subsection{Validity Controls}
 
 \textbf{Oracle separation.}
 ArkSourceFirst60 is selected by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and the final decision record retains exact source locations for all 186 candidates. The resulting recall claim is explicitly scoped to the fixed rule and statically enumerable candidate universe. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The Top-120 set serves a complementary role by testing preservation of 666 confirmed keys under high API volume, including 102 member/receiver keys.
 
-\textbf{Configuration control.}
-HapFlow and \mytool use the same API-17 SDK and source--sink query on HapBench, while the real-project evaluation uses OpenHarmony API-20 without SDK fallback. Versioned rules, SDK declarations, and analyzer builds define each evaluation configuration; pre-aggregation validation checks endpoint links, source kinds, provenance, and completion state.
-
-\textbf{Query scope.}
-The detector and taint query are fixed, versioned inputs. ArkSourceFirst60 evaluates configured identities expressible by its static candidate enumerator; APIs absent from the policy, computed members outside that enumerator, and dynamically loaded code are outside this metric. The taint query additionally requires a concrete return, callback, or explicit framework-input carrier, so detector-only properties do not enter the privacy-path denominator. This scope keeps identity, seeding, and path claims aligned with the implemented contract.
+\textbf{Configuration and query control.}
+HapFlow and \mytool use the same API-17 SDK and source--sink query on HapBench; the real-project evaluation uses OpenHarmony API-20 without SDK fallback. Versioned rules, SDK declarations, and analyzer builds define each configuration, and pre-aggregation validation checks endpoint links, source kinds, provenance, and completion state. Identity accuracy is measured over configured, statically enumerable candidates, while flow evaluation additionally requires a concrete return, callback, or explicit framework-input carrier. These two denominators match the detector and propagation contracts, respectively.
 
 \textbf{Corpus composition.}
 The corpus includes applications, libraries, demonstrations, tests, and a small amount of generated source. Results therefore characterize the analyzed collection. Source-scope stratification prevents generated test abilities from being mistaken for production privacy paths. Exact- and near-clone resampling changes project rates by at most 0.36 percentage points, showing that the principal corpus patterns are not driven by repeated project copies.
 
 \subsection{Applicability}
 
-\mytool is a source-based static analysis for ArkTS projects. Native C/C++ bridges, runtime-loaded code, server-side behavior, and consent state require complementary evidence such as HarmoBridge~\cite{harmobridge} or runtime monitoring. Within its stated contract, \mytool produces reviewable API identities and may-paths rather than automatic legal conclusions.
+The reusable unit in \mytool is not an OpenHarmony package table but the contract
+\[
+\mathit{ResolveUsage}(s)\rightarrow\langle identity,witness,carrier\rangle,
+\]
+followed by witness-preserving continuation transfer. A port to another typed, event-driven platform needs three frontend adapters: an export/migration map, receiver-origin and target evidence, and continuation edges for the platform's callback or future abstraction. The identity domain, carrier-state discipline, IFDS re-rooting rule, and two-level provenance model form the reusable core. This decomposition provides a porting blueprint for ecosystems in which API ownership is obscured by re-exports, factory-returned managers, or asynchronous lowering, without assuming that every platform shares ArkTS syntax.
+
+Native C/C++ bridges, runtime-loaded code, server-side behavior, and consent state require complementary evidence such as HarmoBridge~\cite{harmobridge} or runtime monitoring. \mytool supplies reviewable API identities and may-paths for the statically represented portion; policy adjudication remains an audit task.

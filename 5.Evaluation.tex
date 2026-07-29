@@ -162,6 +162,8 @@ Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \setlength{\tabcolsep}{0.7pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
+& & & & \multicolumn{3}{c}{Correct classifications} \\
+\cmidrule(lr){5-7}
 Boundary & Cases & Pos. & Neg. & Full & Post & $-$T4 \\
 \midrule
 Alias identity & 3 & 1 & 2 & 3/3 & 2/3 & 2/3 \\
@@ -180,7 +182,7 @@ Total & 16 & 6 & 10 & \textbf{16/16} & 11/16 & 10/16 \\
 \end{minipage}
 \end{table}
 
-The Promise suite exercises both ownership and payload dependence. A user-defined \texttt{then}, a non-Promise receiver, rejection callbacks, \texttt{catch}/\texttt{finally}, an unrelated Promise, a reassigned alias, and handlers that ignore or replace the payload remain negative. Payload-dependent sequential chains and Promise flattening remain positive; these multi-hop paths carry both \texttt{promise\_then} and \texttt{promise\_return} derivations. The post-IFDS configuration recovers two of six positives and accepts the constant-returning sanitizer; it misses the same-Promise alias, both sequential transforms, and Promise flattening. Integrating the relation into call and return flow therefore supplies ordinary alias and multi-hop composition while preserving all ten negative boundaries. A separate output-guided diagnostic over 25 callback-heavy projects confirms all ten selected real-code asynchronous paths: one Promise-\texttt{then} path carrying an advertising identifier and nine native-\texttt{await} IFDS paths carrying media metadata or reverse-geocoding values.
+The Promise suite instantiates the ownership and payload-dependence boundaries in Figure~\ref{fig:promise_semantic_boundaries}. A user-defined \texttt{then}, a non-Promise receiver, rejection callbacks, \texttt{catch}/\texttt{finally}, an unrelated Promise, a reassigned alias, and handlers that ignore or replace the payload remain negative. Payload-dependent sequential chains and Promise flattening remain positive; these multi-hop paths carry both \texttt{promise\_then} and \texttt{promise\_return} derivations. The post-IFDS configuration recovers two of six positives and accepts the constant-returning sanitizer; it misses the same-Promise alias, both sequential transforms, and Promise flattening. Integrating the relation into call and return flow therefore supplies ordinary alias and multi-hop composition while preserving all ten negative boundaries.
 
 \textbf{Stratified semantic audit.}
 Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every sampled path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Complete-path correctness in this stratified sample is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).

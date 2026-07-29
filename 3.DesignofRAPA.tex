@@ -437,6 +437,16 @@ Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It execut
 
 Relative to the resolved callback edge and available alias relation, this transfer follows Promise success semantics: every accepted fact denotes a modeled Promise payload that may be supplied as the first success-handler argument. The guard excludes \texttt{catch}, rejection callbacks, nonzero callback positions, custom resolved \texttt{then} owners, and receiver facts without Promise-payload state. The source witness is copied rather than reconstructed, so source-distinct IFDS facts remain distinct across the continuation.
 
+Figure~\ref{fig:promise_semantic_boundaries} makes the transfer boundary concrete. Green dependence reaches a success parameter, a same-Promise alias, or a payload-dependent continuation return; red dependence is rejected at handler position, Promise ownership, rejection operators, or a payload-independent return. These cases distinguish continuation semantics from matching a member named \texttt{then}.
+
+\begin{figure}[tbp]
+\centering
+\includegraphics[width=\textwidth]{figs/promise_semantic_boundaries.png}
+\caption{Promise ownership and payload-dependence boundaries.}
+\Description{Nine ArkTS code panels illustrate accepted Promise success-handler, alias, sequential-chain, and flattening flows, together with rejected handler-position, custom-owner, value-independent, sanitizer-return, and rejection-operator flows.}
+\label{fig:promise_semantic_boundaries}
+\end{figure}
+
 \subsection{Callback-augmented Call-chain Recovery}
 
 Given a recognized usage $u$ inside method $m_u$, call-chain recovery searches a reverse graph:
