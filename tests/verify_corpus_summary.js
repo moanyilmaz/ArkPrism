@@ -9,6 +9,7 @@ const {
   gini,
   hashDirectory,
   logLogRegression,
+  normalizedFlowDerivations,
   quantiles,
   scaleQuintiles,
   sha256File,
@@ -43,6 +44,14 @@ assert.strictEqual(evidenceState({
   sinks: 0,
   taintFlows: 2,
 }), 'A1-C1-S0-T1');
+
+assert.deepStrictEqual(
+  normalizedFlowDerivations({
+    analysisDerivations: ['promise_return', 'promise_then', 'promise_then', ''],
+  }),
+  ['promise_return', 'promise_then'],
+);
+assert.deepStrictEqual(normalizedFlowDerivations({}), []);
 
 const quintiles = scaleQuintiles(
   Array.from({ length: 10 }, (_, index) => ({

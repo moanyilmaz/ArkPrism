@@ -503,6 +503,15 @@ function increment(map, key, amount = 1) {
   map.set(normalized, (map.get(normalized) || 0) + amount);
 }
 
+function normalizedFlowDerivations(flow) {
+  if (!Array.isArray(flow?.analysisDerivations)) return [];
+  return [...new Set(
+    flow.analysisDerivations
+      .map(value => String(value || '').trim())
+      .filter(Boolean),
+  )].sort((left, right) => left.localeCompare(right));
+}
+
 function sortedEntries(map) {
   return [...map.entries()]
     .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
@@ -805,6 +814,8 @@ function summarize(args) {
   const detectorEvidence = new Map();
   const flowProvenance = new Map();
   const flowSourceKinds = new Map();
+  const flowAnalysisDerivations = new Map();
+  const flowCarrierStates = new Map();
   const linkEvidence = new Map();
   const evidenceStates = new Map();
   const chainLengths = [];
@@ -885,9 +896,19 @@ function summarize(args) {
         increment(sinkApis, sink.sinkApi);
       }
     }
-    for (const flow of taintReport.taintFlows || []) {
+    const retainedFlows = taintReport.taintFlows || [];
+    for (const flow of retainedFlows) {
       increment(flowProvenance, flow.provenance || '(legacy-unlabeled)');
       increment(flowSourceKinds, flow.sourceKind || '(legacy-unlabeled)');
+      increment(flowCarrierStates, flow.carrierState || '(legacy-untyped)');
+      const derivations = normalizedFlowDerivations(flow);
+      if (derivations.length === 0) {
+        increment(flowAnalysisDerivations, '(none)');
+      } else {
+        for (const derivation of derivations) {
+          increment(flowAnalysisDerivations, derivation);
+        }
+      }
       taintPathLengths.push((flow.path || []).length);
       for (const endpoint of [flow.sourceFile, flow.sinkFile]) {
         traceEndpoints++;
@@ -947,6 +968,12 @@ function summarize(args) {
       ).length,
       frameworkInputFlows: (taintReport.taintFlows || []).filter(
         flow => flow.sourceKind === 'framework_input',
+      ).length,
+      promiseThenFlows: retainedFlows.filter(
+        flow => normalizedFlowDerivations(flow).includes('promise_then'),
+      ).length,
+      promiseReturnFlows: retainedFlows.filter(
+        flow => normalizedFlowDerivations(flow).includes('promise_return'),
       ).length,
       rawTaintFlows,
       ifdsRawFlows,
@@ -1064,6 +1091,8 @@ function summarize(args) {
       configuredSinkEndpoints: sum('configuredSinkEndpoints'),
       privacyDataFlows: sum('privacyDataFlows'),
       frameworkInputFlows: sum('frameworkInputFlows'),
+      promiseThenFlows: sum('promiseThenFlows'),
+      promiseReturnFlows: sum('promiseReturnFlows'),
       rawTaintFlows: sum('rawTaintFlows'),
       ifdsRawFlows: sum('ifdsRawFlows'),
       callbackRawFlows: sum('callbackRawFlows'),
@@ -1095,6 +1124,14 @@ function summarize(args) {
       frameworkInputTaintPositive: {
         count: positive('frameworkInputFlows'),
         rate: ratio(positive('frameworkInputFlows'), projects.length),
+      },
+      promiseThenPositive: {
+        count: positive('promiseThenFlows'),
+        rate: ratio(positive('promiseThenFlows'), projects.length),
+      },
+      promiseReturnPositive: {
+        count: positive('promiseReturnFlows'),
+        rate: ratio(positive('promiseReturnFlows'), projects.length),
       },
     },
     distributions: {
@@ -1181,6 +1218,8 @@ function summarize(args) {
       detectorEvidence: sortedEntries(detectorEvidence),
       flowProvenance: sortedEntries(flowProvenance),
       flowSourceKinds: sortedEntries(flowSourceKinds),
+      flowAnalysisDerivations: sortedEntries(flowAnalysisDerivations),
+      flowCarrierStates: sortedEntries(flowCarrierStates),
       linkEvidence: sortedEntries(linkEvidence),
       apiPackages: sortedEntries(apiPackages),
       apiMembers: sortedEntries(apiMembers),
@@ -1242,6 +1281,10 @@ function markdown(summary) {
   const provenanceRows = summary.evidence.flowProvenance
     .map(item => `| ${item.name} | ${item.count} |`);
   const sourceKindRows = summary.evidence.flowSourceKinds
+    .map(item => `| ${item.name} | ${item.count} |`);
+  const derivationRows = summary.evidence.flowAnalysisDerivations
+    .map(item => `| ${item.name} | ${item.count} |`);
+  const carrierStateRows = summary.evidence.flowCarrierStates
     .map(item => `| ${item.name} | ${item.count} |`);
   const quintileRows = summary.scalability.methodQuintiles.map(item => [
     item.bin,
@@ -1322,6 +1365,8 @@ function markdown(summary) {
     `- Raw asynchronous-supplement paths: ${total.callbackRawFlows}`,
     `- Paths before exact deduplication: ${total.rawTaintFlows}`,
     `- Unique configured-query paths: ${total.taintFlows}`,
+    `- Paths using Promise-success call flow: ${total.promiseThenFlows}`,
+    `- Paths using Promise-return flow: ${total.promiseReturnFlows}`,
     `- Exact duplicates removed: ${total.duplicateTaintFlowsRemoved}`,
     `- Malformed CFG edges skipped: ${total.malformedCfgEdges}`,
     `- Strict per-report checks: ${summary.traceability.strictReportChecks.checked}; failures: ${summary.traceability.strictReportChecks.failures.length}`,
@@ -1333,6 +1378,14 @@ function markdown(summary) {
     '| Source kind | Unique paths |',
     '|---|---:|',
     ...sourceKindRows,
+    '',
+    '| Transfer derivation | Unique paths |',
+    '|---|---:|',
+    ...derivationRows,
+    '',
+    '| Final carrier state | Unique paths |',
+    '|---|---:|',
+    ...carrierStateRows,
     '',
     '## Evidence traceability',
     '',
@@ -1386,6 +1439,7 @@ module.exports = {
   gini,
   hashDirectory,
   logLogRegression,
+  normalizedFlowDerivations,
   packageDependencyContract,
   pearson,
   quantiles,
