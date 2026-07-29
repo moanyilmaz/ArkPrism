@@ -13,7 +13,12 @@ export interface TaintSourceEvidence {
     rule: SourceRuleMetadata;
 }
 
-export type TaintDerivationKind = "promise_then";
+export type TaintDerivationKind = "promise_then" | "promise_return";
+export type TaintCarrierState =
+    | "direct_value"
+    | "promise_payload"
+    | "callback_payload"
+    | "framework_argument";
 
 export class TaintFact {
     private static statementIds: WeakMap<object, number> = new WeakMap();
@@ -23,12 +28,14 @@ export class TaintFact {
     private last: TaintFact | null = null;
     private sourceEvidence?: TaintSourceEvidence;
     private derivations: Set<TaintDerivationKind>;
+    private carrierState: TaintCarrierState;
 
     constructor(
         value: Value,
         stmts?: Stmt[],
         sourceEvidence?: TaintSourceEvidence,
-        derivations: Iterable<TaintDerivationKind> = []
+        derivations: Iterable<TaintDerivationKind> = [],
+        carrierState: TaintCarrierState = "direct_value"
     ) {
         this.value = value;
         if (stmts) {
@@ -36,6 +43,7 @@ export class TaintFact {
         }
         this.sourceEvidence = sourceEvidence;
         this.derivations = new Set(derivations);
+        this.carrierState = carrierState;
     }
 
     public static createSourceEvidence(
@@ -108,8 +116,22 @@ export class TaintFact {
         return [...this.derivations];
     }
 
-    public copyForValue(value: Value, nextStmt?: Stmt): TaintFact {
-        const copy = new TaintFact(value, this.path, this.sourceEvidence, this.derivations);
+    public getCarrierState(): TaintCarrierState {
+        return this.carrierState;
+    }
+
+    public copyForValue(
+        value: Value,
+        nextStmt?: Stmt,
+        carrierState: TaintCarrierState = this.carrierState
+    ): TaintFact {
+        const copy = new TaintFact(
+            value,
+            this.path,
+            this.sourceEvidence,
+            this.derivations,
+            carrierState
+        );
         if (nextStmt) copy.addPath(nextStmt);
         return copy;
     }

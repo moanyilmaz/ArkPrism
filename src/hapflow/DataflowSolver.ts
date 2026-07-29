@@ -15,7 +15,7 @@
 
 import { Scene } from '../arkanalyzer';
 import { AbstractInvokeExpr, ArkInstanceInvokeExpr, ArkNewExpr, ArkPtrInvokeExpr, ArkStaticInvokeExpr } from '../arkanalyzer';
-import { ArkAssignStmt, ArkInvokeStmt, ArkReturnStmt, ArkReturnVoidStmt, ArkThrowStmt, Stmt } from '../arkanalyzer';
+import { ArkAssignStmt, ArkReturnStmt, ArkReturnVoidStmt, ArkThrowStmt, Stmt } from '../arkanalyzer';
 import { ArkMethod } from '../arkanalyzer';
 import { DataflowProblem, FlowFunction } from '../arkanalyzer';
 import { PathEdge, PathEdgePoint } from '../arkanalyzer';
@@ -267,9 +267,10 @@ export abstract class DataflowSolver<D extends object> {
         }
     }
 
-    protected getCallees(invokeStmt: ArkInvokeStmt): Set<ArkMethod> {
+    protected getCallees(invokeStmt: Stmt): Set<ArkMethod> {
         let callees: Set<ArkMethod> = new Set();
         const invokeExpr = invokeStmt.getInvokeExpr();
+        if (!invokeExpr) return callees;
 
         if (irRecoveryEnabled()
             && invokeExpr instanceof ArkStaticInvokeExpr
@@ -331,7 +332,7 @@ export abstract class DataflowSolver<D extends object> {
         return callees;
     }
 
-    private addInstanceInitializerCallees(callNode: ArkInvokeStmt, callees: Set<ArkMethod>): void {
+    private addInstanceInitializerCallees(callNode: Stmt, callees: Set<ArkMethod>): void {
         if (!irRecoveryEnabled()) return;
         const invokeExpr = callNode.getInvokeExpr();
         if (!(invokeExpr instanceof ArkInstanceInvokeExpr)
@@ -349,7 +350,7 @@ export abstract class DataflowSolver<D extends object> {
         }
     }
 
-    protected getAllCalleeMethodsFromCG(callNode: ArkInvokeStmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
+    protected getAllCalleeMethodsFromCG(callNode: Stmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
         const pointerResolved = this.getPointerResolvedCallees(callNode, paramFuncs);
         if (pointerResolved.size > 0) {
             const refined = this.refineByReceiverDefinitions(callNode, pointerResolved);
@@ -374,7 +375,7 @@ export abstract class DataflowSolver<D extends object> {
         return methods;
     }
 
-    private getPointerResolvedCallees(callNode: ArkInvokeStmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
+    private getPointerResolvedCallees(callNode: Stmt, paramFuncs: ArkMethod[]): Set<ArkMethod> {
         const methods = new Set<ArkMethod>();
         if (!this.pointerAnalysis) return methods;
 
@@ -404,7 +405,7 @@ export abstract class DataflowSolver<D extends object> {
         return methods;
     }
 
-    private refineByReceiverDefinitions(callNode: ArkInvokeStmt, methods: Set<ArkMethod>): Set<ArkMethod> {
+    private refineByReceiverDefinitions(callNode: Stmt, methods: Set<ArkMethod>): Set<ArkMethod> {
         if (process.env.ARKPRISM_DISABLE_RECEIVER_REFINEMENT === '1') return methods;
         const invokeExpr = callNode.getInvokeExpr();
         if (!(invokeExpr instanceof ArkInstanceInvokeExpr)) return methods;
@@ -469,7 +470,7 @@ export abstract class DataflowSolver<D extends object> {
         return names;
     }
 
-    protected getActualCalleesFromParams(callNode: ArkInvokeStmt, methods: Set<ArkMethod>): Set<ArkMethod> {
+    protected getActualCalleesFromParams(callNode: Stmt, methods: Set<ArkMethod>): Set<ArkMethod> {
 
         const actualCalledArgIndex: Set<number> = new Set();
         for (const method of methods) {
@@ -493,9 +494,13 @@ export abstract class DataflowSolver<D extends object> {
                 }
             }
         }
+        const callExpr = callNode.getInvokeExpr();
+        if (!callExpr) return methods;
         for (const index of actualCalledArgIndex) {
-            if (index >= callNode.getInvokeExpr().getArgs().length) break;
-            const actuallCallee = this.scene.getMethod((callNode.getInvokeExpr().getArg(index).getType() as FunctionType).getMethodSignature());
+            if (index >= callExpr.getArgs().length) break;
+            const actuallCallee = this.scene.getMethod(
+                (callExpr.getArg(index).getType() as FunctionType).getMethodSignature()
+            );
             if (!actuallCallee) break;
             methods.add(actuallCallee)
         }
@@ -537,11 +542,14 @@ export abstract class DataflowSolver<D extends object> {
         const endValue = (edge.edgeEnd.fact as any)?.getValue?.() ?? edge.edgeEnd.fact;
         const startSource = (edge.edgeStart.fact as any)?.getSourceIdentityKey?.() ?? 'unseeded';
         const endSource = (edge.edgeEnd.fact as any)?.getSourceIdentityKey?.() ?? 'unseeded';
+        const startCarrier = (edge.edgeStart.fact as any)?.getCarrierState?.() ?? 'untyped';
+        const endCarrier = (edge.edgeEnd.fact as any)?.getCarrierState?.() ?? 'untyped';
         const startNode = this.objectKey(edge.edgeStart.node);
         const endNode = this.objectKey(edge.edgeEnd.node);
         const startFact = this.objectKey(startValue);
         const endFact = this.objectKey(endValue);
-        return `${startNode}|${startFact}|${startSource}|${endNode}|${endFact}|${endSource}`;
+        return `${startNode}|${startFact}|${startSource}|${startCarrier}|`
+            + `${endNode}|${endFact}|${endSource}|${endCarrier}`;
     }
 
     protected edgePointEqual(left: PathEdgePoint<D>, right: PathEdgePoint<D>): boolean {
@@ -715,7 +723,7 @@ export abstract class DataflowSolver<D extends object> {
     protected processCallNode(edge: PathEdge<D>) {
         let start: PathEdgePoint<D> = edge.edgeStart;
         let callEdgePoint: PathEdgePoint<D> = edge.edgeEnd;
-        const invokeStmt = callEdgePoint.node as ArkInvokeStmt;
+        const invokeStmt = callEdgePoint.node;
         let callees = this.getCallees(invokeStmt);
         let returnSite: Stmt = this.getReturnSiteOfCall(callEdgePoint.node);
         for (let cacheEdge of this.summaryEdge) {
@@ -808,7 +816,7 @@ export abstract class DataflowSolver<D extends object> {
                 if (file && this.scene.getFiles().includes(file)) {
                     return true;
                 }
-                if (stmt instanceof ArkInvokeStmt && getRecallMethodInParam(stmt).length > 0) {
+                if (getRecallMethodInParam(stmt).length > 0) {
                     return true;
                 }
             }

@@ -5,7 +5,7 @@ import { ArkClass } from "../arkanalyzer";
 import { ArkMethod } from "../arkanalyzer";
 import { ArkNamespace } from "../arkanalyzer";
 import { Scene } from "../arkanalyzer";
-import { TaintFact } from "./TaintFact";
+import { TaintCarrierState, TaintFact } from "./TaintFact";
 import { Local } from "../arkanalyzer";
 import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { Cfg } from "../arkanalyzer";
@@ -490,9 +490,10 @@ function paramEqual(methodSignature: MethodSignature, paramInfos: string[]): boo
     return result;
 }
 
-export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
+export function getRecallMethodInParam(stmt: Stmt): ArkMethod[] {
     const ret: ArkMethod[] = [];
     const invokeExpr = stmt.getInvokeExpr();
+    if (!invokeExpr) return ret;
     const args = invokeExpr.getArgs ? invokeExpr.getArgs() : [];
     for (let i = 0; i < args.length; i++) {
         const param = args[i];
@@ -508,12 +509,19 @@ export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
     return ret;
 }
 
-export function propagateFact(value: Value, stmt: Stmt, ret: Set<TaintFact>, fromFact?: TaintFact): TaintFact | null {
+export function propagateFact(
+    value: Value,
+    stmt: Stmt,
+    ret: Set<TaintFact>,
+    fromFact?: TaintFact,
+    carrierState?: TaintCarrierState
+): TaintFact | null {
     const fact = new TaintFact(
         value,
         undefined,
         fromFact?.getSourceEvidence(),
-        fromFact?.getDerivations()
+        fromFact?.getDerivations(),
+        carrierState || fromFact?.getCarrierState()
     );
     let last: TaintFact | undefined | null = fromFact;
     while (last) {

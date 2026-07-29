@@ -11,6 +11,7 @@ if (!sdkPath || !fs.existsSync(sdkPath)) {
 
 const checks = [
   'verify_api_usage_dedup.js',
+  'verify_arkpromisebench.js',
   'verify_call_chain_dominators.js',
   'verify_corpus_summary.js',
   'verify_detector_domain_migration.js',

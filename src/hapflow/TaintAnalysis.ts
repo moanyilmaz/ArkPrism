@@ -15,7 +15,7 @@ import { PointerAnalysis } from "../arkanalyzer";
 import * as fs from 'fs';
 import { Source, validateSourceRuleObject } from "./Source";
 import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, TaintOutcomeEqual, ValueDependsOn, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
-import { TaintFact } from "./TaintFact";
+import { TaintCarrierState, TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
 import { ArkThisRef } from "../arkanalyzer";
@@ -136,6 +136,14 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         if (!sourceKind) {
             throw new Error(`Source rule lacks source_kind: ${source.methodSignature.toString()}`);
         }
+        const returnType = source.rule.returnType || '';
+        const carrierState: TaintCarrierState = source.sourceType === 'callback'
+            ? 'callback_payload'
+            : source.sourceType === 'ArgIn'
+                ? 'framework_argument'
+                : /^\s*Promise\s*</.test(returnType)
+                    ? 'promise_payload'
+                    : 'direct_value';
         return new TaintFact(value, [statement], TaintFact.createSourceEvidence(
             statement,
             sourceKind,
@@ -144,7 +152,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             source.rule,
             source.sourceIndex,
             source.callbackIndex
-        ));
+        ), [], carrierState);
     }
 
     /**
@@ -1427,17 +1435,34 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
     }
 
-    private getCallbackArgumentIndex(callStmt: ArkInvokeStmt, callbackMethod: ArkMethod): number {
+    private getCallbackArgumentIndex(callStmt: Stmt, callbackMethod: ArkMethod): number {
         const callerClass = callStmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass();
-        return callStmt.getInvokeExpr().getArgs().findIndex(argument => {
+        const invokeExpr = callStmt.getInvokeExpr();
+        if (!invokeExpr) return -1;
+        return invokeExpr.getArgs().findIndex(argument => {
             const argumentType = argument.getType();
             if (!(argumentType instanceof FunctionType) || !callerClass) return false;
             return callerClass.getMethod(argumentType.getMethodSignature()) === callbackMethod;
         });
     }
 
+    private hasPromiseOwnerWitness(invokeExpr: ArkInstanceInvokeExpr, dataFact: TaintFact): boolean {
+        if (dataFact.getCarrierState() !== 'promise_payload') return false;
+
+        const sourceReturn = dataFact.getSourceEvidence()?.rule.returnType || '';
+        if (!/^\s*Promise\s*</.test(sourceReturn)) return false;
+
+        const baseType = invokeExpr.getBase().getType().toString();
+        const target = invokeExpr.getMethodSignature().toString();
+        if (/(^|[<:.\s])Promise(?:<|[.:\s])/i.test(baseType)
+            || /(^|[<:./\s])Promise(?:<|[.:\s])/i.test(target)) {
+            return true;
+        }
+        return target.includes('@%unk/%unk');
+    }
+
     private addPromiseContinuationFact(
-        callStmt: ArkInvokeStmt,
+        callStmt: Stmt,
         callbackMethod: ArkMethod,
         dataFact: TaintFact,
         ret: Set<TaintFact>
@@ -1445,9 +1470,21 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         if (!continuationFlowEnabled()) return;
 
         const invokeExpr = callStmt.getInvokeExpr();
+        if (process.env.ARKPRISM_DEBUG_IFDS === '1'
+            && invokeExpr instanceof ArkInstanceInvokeExpr
+            && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() === 'then') {
+            console.log(
+                `[HAPFLOW][PROMISE-THEN] base=${invokeExpr.getBase().toString()} `
+                + `baseType=${invokeExpr.getBase().getType().constructor.name}:`
+                + `${invokeExpr.getBase().getType().toString()} `
+                + `target=${invokeExpr.getMethodSignature().toString()} `
+                + `sourceReturn=${dataFact.getSourceEvidence()?.rule.returnType || '<none>'}`
+            );
+        }
         if (!(invokeExpr instanceof ArkInstanceInvokeExpr)
             || invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() !== 'then'
-            || this.getCallbackArgumentIndex(callStmt, callbackMethod) !== 0) {
+            || this.getCallbackArgumentIndex(callStmt, callbackMethod) !== 0
+            || !this.hasPromiseOwnerWitness(invokeExpr, dataFact)) {
             return;
         }
 
@@ -1458,7 +1495,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         const base = invokeExpr.getBase();
         const dataValue = dataFact.getValue();
-        let carrierMatches = ValueDependsOn(base, dataValue);
+        let carrierMatches = ValueEqual(base, dataValue);
         if (!carrierMatches && this.pointerAnalysis) {
             for (const candidate of getPossibleRelatedNodes(base, this.pointerAnalysis)) {
                 if (ValueEqual(candidate, dataValue)) {
@@ -1469,7 +1506,13 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
         if (!carrierMatches) return;
 
-        const continuationFact = propagateFact(callbackValue, callStmt, ret, dataFact);
+        const continuationFact = propagateFact(
+            callbackValue,
+            callStmt,
+            ret,
+            dataFact,
+            'callback_payload'
+        );
         continuationFact?.addDerivation('promise_then');
     }
 
@@ -1838,12 +1881,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         }
                     }
                 }
-                const callStmt = srcStmt as ArkInvokeStmt;
+                const callStmt = srcStmt;
                 if (getRecallMethodInParam(callStmt).includes(method)) {
                     checkerInstance.addPromiseContinuationFact(callStmt, method, dataFact, ret);
                     return ret;
                 }
-                const args = callStmt.getInvokeExpr().getArgs();
+                const args = callStmt.getInvokeExpr()?.getArgs() || [];
                 for (let i = 0; i < args.length; i++) {
                     const realParameter = getParameterInstanceForArgument(method, i);
                     const argType = args[i].getType();
@@ -2102,8 +2145,23 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     let retVal: Value = (srcStmt as ArkReturnStmt).getOp();
                     if (dataFact == checkerInstance.getZeroValue()) {
                         ret.add(checkerInstance.getZeroValue());
-                    } else if (retVal == dataValue) {
-                        propagateFact(leftOp, srcStmt, ret, dataFact);
+                    } else if (ValueEqual(retVal, dataValue)) {
+                        const callInvoke = callStmt.getInvokeExpr();
+                        const callbackMethod = srcStmt.getCfg().getDeclaringMethod();
+                        const promiseReturn = callInvoke instanceof ArkInstanceInvokeExpr
+                            && callInvoke.getMethodSignature().getMethodSubSignature().getMethodName() === 'then'
+                            && checkerInstance.getCallbackArgumentIndex(
+                                callStmt,
+                                callbackMethod
+                            ) === 0;
+                        const returnedFact = propagateFact(
+                            leftOp,
+                            srcStmt,
+                            ret,
+                            dataFact,
+                            promiseReturn ? 'promise_payload' : dataFact.getCarrierState()
+                        );
+                        if (promiseReturn) returnedFact?.addDerivation('promise_return');
                     }
                 }
                 return ret;
@@ -2159,7 +2217,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     factEqual(d1: TaintFact, d2: TaintFact): boolean {
         let value1 = d1.getValue(), value2 = d2.getValue();
-        return ValueEqual(value1, value2) && d1.hasSameSource(d2);
+        return ValueEqual(value1, value2)
+            && d1.hasSameSource(d2)
+            && d1.getCarrierState() === d2.getCarrierState();
     }
 
     public addSinksFromJson(filePath: string, sdkPath?: string) {
@@ -2230,6 +2290,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     parameterTypes: Array.isArray(object.parameters)
                         ? object.parameters.map((parameter: any) => String(parameter?.type || ''))
                         : [],
+                    returnType: String(object.returnType || ''),
                     sourceKind,
                     ruleOrigin: String(object.rule_origin || '')
                 }));

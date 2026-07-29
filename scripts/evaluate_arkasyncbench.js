@@ -107,6 +107,22 @@ function evaluateConfiguration(name, reports, oracleCases) {
           privacyFlows.filter(flow => flow.provenance === tag).length,
         ]),
       ),
+      derivations: Object.fromEntries(
+        ['promise_then', 'promise_return'].map(tag => [
+          tag,
+          privacyFlows.filter(
+            flow => (flow.analysisDerivations || []).includes(tag),
+          ).length,
+        ]),
+      ),
+      carrierStates: Object.fromEntries(
+        [...new Set(privacyFlows.map(flow => flow.carrierState || 'untyped'))]
+          .sort()
+          .map(tag => [
+            tag,
+            privacyFlows.filter(flow => (flow.carrierState || 'untyped') === tag).length,
+          ]),
+      ),
     };
   });
   const groups = key => Object.fromEntries(
@@ -120,6 +136,9 @@ function evaluateConfiguration(name, reports, oracleCases) {
     overall: metrics(records),
     byConstruct: groups('construct'),
     byApi: groups('api'),
+    byCategory: records.some(item => item.category)
+      ? groups('category')
+      : {},
     records,
   };
 }

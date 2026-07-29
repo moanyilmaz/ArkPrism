@@ -8,6 +8,7 @@ export interface SourceRuleMetadata {
     className?: string;
     apiName?: string;
     parameterTypes?: string[];
+    returnType?: string;
     sourceKind?: SourceKind;
     ruleOrigin?: string;
 }

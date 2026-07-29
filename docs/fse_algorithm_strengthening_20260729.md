@@ -86,6 +86,51 @@ The full run produces 24 privacy-data paths, all with IFDS provenance. Exactly
 nine carry the `promise_then` derivation, and none requires
 `async_supplement`.
 
+## Adversarial Promise semantics
+
+The balanced benchmark establishes that T4 is necessary, but nine targeted
+positives alone do not establish its semantic boundary. ArkPromiseBench adds
+16 cases whose oracle is defined by explicit dependence from a configured
+Promise payload to the sink:
+
+- six positives cover direct success binding, same-Promise aliases,
+  `then(success, rejection)`, sequential payload and property transforms, and
+  Promise flattening;
+- ten negatives cover a custom/non-Promise `then`, rejection position,
+  `catch`, `finally`, ignored and constant values, independent and reassigned
+  Promise aliases, a constant-returning sanitizer, and a constant-returning
+  sequential transform.
+
+The first implementation exposed one false positive on the sequential
+constant case. ArkIR represents `q = p.then(cb)` as an assignment statement.
+Callback ICFG recovery previously inspected only standalone invoke
+statements, so the callback return was bypassed and the receiver fact could
+reach `q`. The repaired construction discovers typed callback arguments on
+every invoke-containing statement. It then:
+
+1. requires a Promise owner witness and `promise_payload` carrier state;
+2. requires exact receiver-root identity or available pointer alias evidence;
+3. re-roots the success payload to callback parameter zero;
+4. re-roots an assigned `then` result only from an explicitly tainted callback
+   return; and
+5. records `promise_then` and `promise_return` as transfer derivations while
+   keeping carrier state in IFDS fact identity.
+
+The corrected full configuration classifies all 16 cases:
+
+| Configuration | TP | TN | FP | FN | Precision | Recall | Specificity | F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Continuation IFDS | 6 | 10 | 0 | 0 | 100.00% | 100.00% | 100.00% | 100.00% |
+| Without T4 transfer | 0 | 10 | 0 | 6 | -- | 0.00% | 100.00% | -- |
+
+All six changed predictions favor the full configuration (exact paired
+McNemar `p=0.03125`). The three multi-hop positives carry both
+`promise_then` and `promise_return`; no result uses the supplementary scan.
+
+The original 48-case ArkAsyncBench remains unchanged after this repair:
+24 TP/24 TN for the full configuration and 15 TP/24 TN for `-T4`. All 27
+API-20 delivery checks pass.
+
 ## Next method-level priorities
 
 1. Replace receiver depth limits with a memoized, demand-driven provenance

@@ -360,6 +360,7 @@ export function convertOutcome(
         return {
             provenance,
             analysisDerivations: fact.getDerivations(),
+            carrierState: fact.getCarrierState(),
             sourceKind: sourceEvidence.sourceKind,
             sourceIdentity: {
                 module: rule.module || '',

@@ -194,7 +194,8 @@ export interface TaintPathStep {
 /** A detected taint flow from source to sink */
 export interface TaintFlowResult {
     provenance: "ifds" | "async_supplement" | "both";
-    analysisDerivations?: Array<"promise_then">;
+    analysisDerivations?: Array<"promise_then" | "promise_return">;
+    carrierState?: "direct_value" | "promise_payload" | "callback_payload" | "framework_argument";
     sourceKind: "privacy_data" | "framework_input";
     sourceIdentity: {
         module: string;

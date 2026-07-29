@@ -1,0 +1,33 @@
+const assert = require('assert');
+const fs = require('fs');
+const path = require('path');
+
+const root = path.resolve(__dirname, '..');
+const benchmark = path.join(root, 'benchmarks', 'ArkPromiseBench');
+const oracle = JSON.parse(fs.readFileSync(path.join(benchmark, 'oracle.json'), 'utf8'));
+
+assert.strictEqual(oracle.cases.length, 16);
+assert.strictEqual(oracle.cases.filter(item => item.expected).length, 6);
+assert.strictEqual(oracle.cases.filter(item => !item.expected).length, 10);
+
+const requiredCategories = [
+  'success-handler',
+  'alias-identity',
+  'handler-position',
+  'sequential-chain',
+  'promise-flattening',
+  'promise-owner',
+  'rejection-operator',
+  'value-dependence',
+  'sanitizer-return',
+];
+for (const category of requiredCategories) {
+  assert(oracle.cases.some(item => item.category === category), category);
+}
+for (const item of oracle.cases) {
+  const source = path.join(benchmark, item.id, item.sourceFile);
+  assert(fs.existsSync(source), source);
+  assert(fs.readFileSync(source, 'utf8').includes('identifier.getOAID()'));
+}
+
+console.log('ArkPromiseBench oracle and source layout verified.');

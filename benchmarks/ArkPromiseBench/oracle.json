@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "definition": "A positive case requires explicit dependence from a configured Promise payload to console.info. Rejection values, constants, independent Promise payloads, and constant-returning transforms are negative.",
+  "cases": [
+    {
+      "id": "direct_success",
+      "construct": "Promise",
+      "category": "success-handler",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "same_promise_alias",
+      "construct": "Promise",
+      "category": "alias-identity",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "success_with_rejection_handler",
+      "construct": "Promise",
+      "category": "handler-position",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "sequential_value",
+      "construct": "Promise",
+      "category": "sequential-chain",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "sequential_property",
+      "construct": "Promise",
+      "category": "sequential-chain",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "promise_flattening",
+      "construct": "Promise",
+      "category": "promise-flattening",
+      "expected": true,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "custom_then_constant",
+      "construct": "Promise",
+      "category": "promise-owner",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "rejection_argument",
+      "construct": "Promise",
+      "category": "handler-position",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "catch_handler",
+      "construct": "Promise",
+      "category": "rejection-operator",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "finally_handler",
+      "construct": "Promise",
+      "category": "rejection-operator",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "ignored_success_value",
+      "construct": "Promise",
+      "category": "value-dependence",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "constant_in_success",
+      "construct": "Promise",
+      "category": "value-dependence",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "independent_promise",
+      "construct": "Promise",
+      "category": "alias-identity",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "reassigned_alias",
+      "construct": "Promise",
+      "category": "alias-identity",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "constant_sanitizer",
+      "construct": "Promise",
+      "category": "sanitizer-return",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    },
+    {
+      "id": "sequential_constant",
+      "construct": "Promise",
+      "category": "sequential-chain",
+      "expected": false,
+      "sourceFile": "entryability/EntryAbility.ets"
+    }
+  ]
+}

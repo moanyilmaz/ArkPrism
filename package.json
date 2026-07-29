@@ -46,6 +46,7 @@
     "verify:top120-sources": "node scripts/verify_top120_source_package.js",
     "analyze:hapbench-oracle-sensitivity": "node scripts/analyze_hapbench_oracle_sensitivity.js",
     "generate:arkasyncbench": "node scripts/generate_arkasyncbench.js",
+    "generate:arkpromisebench": "node scripts/generate_arkpromisebench.js",
     "generate:arkidentitybench": "node scripts/generate_arkidentitybench.js",
     "select:source-first-audit": "node scripts/select_source_first_audit.js",
     "generate:source-first-review": "node scripts/generate_source_first_review_queue.js",
