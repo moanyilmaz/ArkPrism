@@ -6,7 +6,7 @@ We answer four questions:
 \textbf{RQ2}~How accurately do \mytool and HapFlow classify source-to-sink flows?
 \textbf{RQ3}~How do IR recovery, receiver refinement, lifecycle bounds, and asynchronous recovery affect analysis quality?
 \textbf{RQ4}~What evidence and scalability patterns appear across a large ArkTS corpus?
-Each oracle supports a distinct claim: source-first benchmarks evaluate identity, HapBench evaluates executable flow classification, ArkAsyncBench attributes asynchronous coverage, a stratified source audit evaluates real-project path semantics, and the corpus measures prevalence and cost.
+Each oracle supports a distinct claim: source-first benchmarks evaluate identity, HapBench evaluates executable flow classification, ArkAsyncBench attributes asynchronous coverage, ArkPromiseBench stresses Promise semantic boundaries, a stratified source audit evaluates real-project path semantics, and the corpus measures prevalence and cost.
 
 \subsection{Evaluation Protocol}
 \label{subsec:eval_design}
@@ -20,7 +20,7 @@ We compare \mytool and HapFlow using ArkAnalyzer IR and an identical source--sin
 The \emph{Top-120 stress audit} complements the source-first oracle by concentrating projects with high API volume. Its 1,533 reviewed location rows canonicalize to 666 project--API keys with executable source evidence. \mytool preserves all 666 confirmed keys, so this experiment measures confirmed-key coverage under a high-volume workload.
 
 \textbf{Flow benchmarks.}
-\emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local.
+\emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local. \emph{ArkPromiseBench} adds 16 adversarial cases (six positive and ten negative) over custom and non-Promise \texttt{then} owners, success/rejection handler positions, \texttt{catch}/\texttt{finally}, ignored and constant-returning handlers, independent and reassigned aliases, sequential continuations, and Promise flattening.
 
 \textbf{Real-project path audit.}
 A deterministic diversity sampler selects 120 of the 449 corpus paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Structured source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
@@ -133,17 +133,17 @@ Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & 98.11\% & \textbf{98.1
 The bounded default preserves all 14 negatives and attains 97.17\% balanced accuracy, compared with 95.49\% under unbounded lifecycle cycling. Removing the bound accepts two additional published positives but also recreates the benchmark's explicit unreachable-flow negative. Because F1 omits true negatives, it ranks the unbounded setting higher on that narrower objective; balanced accuracy measures the positive and negative obligations together. Under the strict executed-order contract in Appendix~\ref{subsec:app_oracle_sensitivity}, bounded \mytool classifies 67/67 cases, whereas unbounded cycling creates three cross-event false positives. The default therefore targets the audit objective: preserve negative-case discrimination unless an executable transition witness exists.
 
 \textbf{Continuation transfer.}
-ArkAsyncBench isolates asynchronous carrier semantics with matched positive and negative cases. Both configurations in Table~\ref{tab:asyncbench} disable the optional unresolved-IR fallback, so the comparison measures the IFDS transfer itself. Full IFDS classifies all 48 cases correctly. Removing only T4 preserves every T1 callback and T5 \texttt{await} result but misses all nine Promise-\texttt{then} positives, reducing recall from 100\% to 62.50\% and F1 from 100\% to 76.92\% ($p=0.00390625$). All 24 negatives remain negative.
+ArkAsyncBench isolates asynchronous carrier semantics with matched positive and negative cases. Both configurations in Table~\ref{tab:asyncbench} disable the optional unresolved-IR fallback, so the comparison measures the IFDS transfer itself. Full IFDS classifies all 48 cases correctly. Removing only T4 preserves every T1 callback and T5 \texttt{await} result but misses all nine Promise-\texttt{then} positives, reducing recall from 100\% to 62.50\% and F1 from 100\% to 76.92\% ($p=0.00390625$). All 24 negatives remain negative. ArkPromiseBench then tests whether this gain survives substantially sharper Promise boundaries: the full analysis classifies all 16 cases correctly, whereas $-$T4 retains all ten negatives but misses all six positives ($p=0.03125$). We also run a bounded post-IFDS recovery baseline with T4 disabled to distinguish semantic integration from enabling another recovery pass.
 
 \begin{table}[tbp]
 \centering
-\caption{ArkAsyncBench continuation-transfer results.}
+\caption{Continuation isolation and adversarial Promise semantics.}
 \label{tab:asyncbench}
 \papertablestyle
-\begin{minipage}[t]{0.52\columnwidth}
+\begin{minipage}[t]{0.40\columnwidth}
 \centering
-\textbf{(a) Classification}\\[-2pt]
-\setlength{\tabcolsep}{1.0pt}
+\textbf{(a) Balanced construct isolation}\\[-2pt]
+\setlength{\tabcolsep}{0.7pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
 Construct & Pos. & Neg. & \makecell{Full\\TP} & \makecell{$-$T4\\TP} & \makecell{T4-only\\TP} & TN \\
@@ -156,28 +156,34 @@ Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}\hfill
-\begin{minipage}[t]{0.46\columnwidth}
+\begin{minipage}[t]{0.58\columnwidth}
 \centering
-\textbf{(b) Mechanism attribution and real-code audit}\\[-2pt]
-\setlength{\tabcolsep}{1.2pt}
-\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrr@{}}
+\textbf{(b) Adversarial Promise semantics}\\[-2pt]
+\setlength{\tabcolsep}{0.7pt}
+\begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
-Construct & \makecell{Full\\IFDS} & \makecell{Promise-then\\facts} & \makecell{$-$T4\\FN} & \makecell{Neg.\\correct} & Audit \\
+Boundary & Cases & Pos. & Neg. & Full & Post & $-$T4 \\
 \midrule
-T1 callback & 9 & 0 & 0 & 9/9 & -- \\
-T4 \texttt{then} & 9 & \textbf{9} & \textbf{9} & 9/9 & 1/1 \\
-T5 \texttt{await} & 6 & 0 & 0 & 6/6 & 9/9 \\
+Alias identity & 3 & 1 & 2 & 3/3 & 2/3 & 2/3 \\
+Handler position & 2 & 1 & 1 & 2/2 & 2/2 & 1/2 \\
+Promise flattening & 1 & 1 & 0 & 1/1 & 0/1 & 0/1 \\
+Promise owner & 1 & 0 & 1 & 1/1 & 1/1 & 1/1 \\
+Rejection operator & 2 & 0 & 2 & 2/2 & 2/2 & 2/2 \\
+Sanitizer return & 1 & 0 & 1 & 1/1 & 0/1 & 1/1 \\
+Sequential chain & 3 & 2 & 1 & 3/3 & 1/3 & 1/3 \\
+Success handler & 1 & 1 & 0 & 1/1 & 1/1 & 0/1 \\
+Value dependence & 2 & 0 & 2 & 2/2 & 2/2 & 2/2 \\
 \midrule
-Total & 24 & \textbf{9} & \textbf{9} & 24/24 & 10/10 \\
+Total & 16 & 6 & 10 & \textbf{16/16} & 11/16 & 10/16 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}
 \end{table}
 
-A separate output-guided diagnostic over 25 callback-heavy projects confirms all ten selected real-code asynchronous paths: one Promise-\texttt{then} path carrying an advertising identifier and nine \texttt{await} paths carrying media metadata or reverse-geocoding values. This diagnostic tests explicit carrier dependence in executable project code; ArkAsyncBench supplies the controlled evidence for T1 callback binding.
+The Promise suite exercises both ownership and payload dependence. A user-defined \texttt{then}, a non-Promise receiver, rejection callbacks, \texttt{catch}/\texttt{finally}, an unrelated Promise, a reassigned alias, and handlers that ignore or replace the payload remain negative. Payload-dependent sequential chains and Promise flattening remain positive; these multi-hop paths carry both \texttt{promise\_then} and \texttt{promise\_return} derivations. The post-IFDS configuration recovers two of six positives and accepts the constant-returning sanitizer; it misses the same-Promise alias, both sequential transforms, and Promise flattening. Integrating the relation into call and return flow therefore supplies ordinary alias and multi-hop composition while preserving all ten negative boundaries. A separate output-guided diagnostic over 25 callback-heavy projects confirms all ten selected real-code asynchronous paths: one Promise-\texttt{then} path carrying an advertising identifier and nine native-\texttt{await} IFDS paths carrying media metadata or reverse-geocoding values.
 
 \textbf{Stratified semantic audit.}
-Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Overall path precision is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
+Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every sampled path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Complete-path correctness in this stratified sample is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
 
 \begin{table}[tbp]
 \centering
@@ -203,7 +209,7 @@ Complete path & 114/120 & \textbf{90/90} & 24/30 & 58/64 & \textbf{30/30} & \tex
 The six rejected paths all belong to the optional framework-input model. Four join a lifecycle-written static URI field to unrelated component fields or constants; two connect a lifecycle argument to a permission Toast or a hard-coded event value. This localization matters operationally: the core privacy-data analysis attains 90/90 in the audit, while the framework-input layer remains separately identifiable by source kind and provenance instead of silently entering the privacy-path claim.
 
 \noindent\textbf{Answer to RQ3.}
-IR recovery supplies the largest HapBench coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and the continuation-aware IFDS transfer uniquely recovers nine Promise-\texttt{then} cases. The real-project audit confirms every sampled privacy-data path and measures 95.00\% precision across the broader path universe.
+IR recovery supplies the largest HapBench coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and the continuation-aware IFDS transfer uniquely recovers nine Promise-\texttt{then} cases. Its Promise-owner, handler-position, alias, and return-dependence guards classify all 16 adversarial Promise cases correctly. The stratified real-project audit confirms every sampled privacy-data path and 114/120 complete paths overall.
 
 \subsection{RQ4: Large-Corpus Characterization}
 \label{subsec:corpus_patterns}

@@ -46,10 +46,10 @@ A usage $u$ is recognized when:
 
 where $A$ is the alias relation recovered from imports, assignments, and IR-lowered namespace-member expressions. The recognized usage set is $U_D=\{u \mid \exists s,r_D,w:\mathit{Accept}(s,r_D,I,A,w)\}$.
 
-\textbf{Source carriers and seeds.} For a statement $s$ matching $r_T$, the initial taint fact is determined by the carrier rather than by the API name alone:
+\textbf{Source carriers and seeds.} For a statement $s$ matching $r_T$, the rule first identifies a logical carrier rather than immediately materializing an IFDS fact:
 
 \begin{equation}
-\mathit{Seed}(s,r_T)=
+\mathit{Carrier}(s,r_T)=
 \begin{cases}
 \mathit{lhs}(s), & carrier=\mathit{return},\\
 \mathit{arg}_{i_{src}}(s), & carrier=\mathit{arg},\\
@@ -58,13 +58,21 @@ where $A$ is the alias relation recovered from imports, assignments, and IR-lowe
 \end{cases}
 \end{equation}
 
+Return and argument carriers are materialized from the zero fact at the corresponding normal or call edge. Callback carriers are source-generating call-flow facts:
+\begin{equation}
+\mathcal{F}_{call}^{src}(s,cb,\mathbf{0})=
+\{\langle \mathit{Carrier}(s,r_T),\mathit{CallbackPayload},
+\epsilon(s),\emptyset\rangle\},
+\end{equation}
+only when $cb=\mathit{ResolveCb}(\mathit{arg}_{i_{cb}}(s))$ is the resolved call-edge target. Thus, $\mathit{Carrier}$ denotes the source-bearing program value, while the flow function determines where the initial supergraph fact is created.
+
 Property occurrences in $U_D$ provide right-hand-side values to detector-local tracing. The evaluated $R_T$ inventory contains no property carrier, so these occurrences do not seed IFDS. Framework-provided \texttt{Want} values are query sources of kind \textit{framework\_input}, not privacy-API detector occurrences. These distinctions prevent detector coverage, privacy-data seeding, and framework-input analysis from being silently equated.
 
 The resolution unit preserved downstream is
 \begin{equation}
 \mathit{ResolveUsage}(s)=\langle \mathit{Id}(s),w,c\rangle,
 \end{equation}
-where $c=\mathit{Seed}(s,r_T)$ for an accepted, well-formed query rule and $c=\bot$ for detector-only evidence. This optional-carrier triple makes API recognition explicit without manufacturing a taint seed for operations whose sensitive value is not modeled.
+where $c=\mathit{Carrier}(s,r_T)$ for an accepted, well-formed query rule and $c=\bot$ for detector-only evidence. This optional-carrier triple makes API recognition explicit without manufacturing a taint seed for operations whose sensitive value is not modeled.
 
 \textbf{Asynchronous carrier recovery.} The second task is to bind a configured asynchronous source to its consumer. We define:
 
@@ -87,12 +95,19 @@ where $V_u$ contains API, caller, sink, and taint-fact nodes; $E_u$ contains cal
 \begin{cases}
 \mathit{callType}(e), & e\in E_{call},\\
 \mathit{detector\_local}, & e\in E_{sink},\\
-\tau(q), & e\in E_{path}(q),\\
+\langle \mathit{producer}(q),\mathit{deriv}(q)\rangle, & e\in E_{path}(q),\\
 \mathit{linkEvidence}(e), & e\in E_{link},
 \end{cases}
 \end{equation}
 
-where call types distinguish direct, callback, and lifecycle-implicit context; $\tau(q)$ distinguishes IFDS, asynchronous-supplement, and corroborated paths; and link evidence distinguishes exact-statement from normalized-source-location joins. This representation preserves how each subgraph relation was produced without treating derivation type as a probability of correctness.
+where call types distinguish direct, callback, and lifecycle-implicit context;
+\begin{equation}
+\mathit{producer}(q)\in\{\mathit{IFDS},\mathit{Supplement},\mathit{Both}\},
+\quad
+\mathit{deriv}(q)\subseteq
+\{\mathit{PromiseThen},\mathit{PromiseReturn}\},
+\end{equation}
+and link evidence distinguishes exact-statement from normalized-source-location joins. Producer provenance is not a confidence score, while transfer derivations record which continuation relations contributed to an IFDS path.
 
 \subsection{Architecture Overview}
 
@@ -216,7 +231,7 @@ The source call is accepted iff
 \mathit{IdentityGuard}(s,r_T)\land
 \mathit{LiteralGuard}(s,r_T)\bigr).
 \end{equation}
-Here $\mathit{ArityCompat}$ requires exact arity whenever the rule declares a parameter array, including an empty one. $\mathit{ParamCompat}$ requires parameter names and types to match after normalizing imported type qualifiers, whitespace, array notation, callback aliases, and union order; rules with non-concrete return carriers are rejected before matching. Consequently, an unresolved call such as \texttt{avPlayer.on('error',...)} cannot match a configured geolocation or sensor event merely because both use \texttt{on} with the same arity. This predicate governs IFDS source seeding and is separate from the detector acceptance predicate above.
+Here $\mathit{ArityCompat}$ requires exact arity whenever the rule declares a parameter array, including an empty one. $\mathit{ParamCompat}$ requires parameter types and string-literal discriminators to match after normalizing imported type qualifiers, whitespace, array notation, callback aliases, and union order. Parameter names remain diagnostic metadata because they are not part of call semantics; rules with non-concrete return carriers are rejected before matching. Consequently, an unresolved call such as \texttt{avPlayer.on('error',...)} cannot match a configured geolocation or sensor event merely because both use \texttt{on} with the same arity. This predicate governs IFDS source seeding and is separate from the detector acceptance predicate above.
 
 \subsubsection{Receiver-Origin Tracing}
 
@@ -286,7 +301,7 @@ Lifecycle information is consumed in two distinct ways. For call-chain recovery,
 
 \openharmony privacy APIs often deliver sensitive data through asynchronous callbacks and Promise chains rather than direct return values. For example, \texttt{geoLocationManager.getCurrentLocation(callback)} passes location data to a callback parameter, while \texttt{wifiManager.getLinkedInfo().then(callback)} delivers Wi-Fi state through a Promise resolution. Standard call-to-return propagation does not by itself establish the connection between a source invocation and a callback parameter or Promise resolution, so these constructs require explicit transfer rules.
 
-\mytool formalizes carrier binding as $\mathit{SrcBind}(call, cb, param)$ (Section~\ref{subsec:problem_def}). The five rules occupy two analysis domains. T1, T4, and T5 transfer source carriers inside IFDS; T2 and T3 recover callback context for the report graph without manufacturing taint facts. Table~\ref{tab:transfer_rules} makes this distinction explicit.
+\mytool formalizes carrier binding as $\mathit{SrcBind}(call, cb, param)$ (Section~\ref{subsec:problem_def}). The five rules occupy two analysis domains. T1 and T4 add construct-specific IFDS call flow, T5 follows native normal flow over the explicit ArkIR \texttt{await} use, and T2--T3 recover callback context for the report graph without manufacturing taint facts. Table~\ref{tab:transfer_rules} makes this distinction explicit.
 
 \begin{table}[tbp]
 \centering
@@ -302,10 +317,31 @@ T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & Typed callback and carr
 T2 & Field callback & $Read(this.f)\!\to\!cb$ & Traced field assignment & Call edge & Report CG \\
 T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Named option field & Call edge & Report CG \\
 T4 & Promise \texttt{then} & $fact(base)\!\to\!cb.param_0$ & Success handler and carrier dependence & May-path & IFDS call flow \\
-T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt{await} expression & May-path & IFDS normal flow \\
+T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt{await} expression & May-path & Native IFDS normal flow \\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+\subsubsection{Callback ICFG Edges and Fact Domain}
+
+ArkAnalyzer represents an arrow function argument with a \texttt{FunctionType} carrying its generated method signature. \mytool applies this resolver to every statement containing an invoke expression, including assignments such as \texttt{q = p.then(cb)}. Let
+\begin{equation}
+E_{cb}=\{(s,m)\mid
+a_i\in args(s),\;a_i\in\mathit{FunctionType},\;
+m=\mathit{Lkp}(a_i.sig),\;\mathit{CFG}(m)\neq\emptyset\}.
+\end{equation}
+The IFDS ICFG is $E'_{ICFG}=E_{ICFG}\cup E_{cb}$. For SDK calls, resolved callback methods are the executable callees; for application calls, they supplement receiver-resolved callees. This construction is shared by T1 and T4 and occurs before their call-flow functions execute.
+
+An evidence-carrying fact is
+\begin{equation}
+d=\langle v,\kappa,\epsilon,\delta\rangle,
+\end{equation}
+where $v$ is the current ArkIR value, $\epsilon$ is immutable source evidence, $\delta$ is transfer metadata, and
+\begin{equation}
+\kappa\in\{\mathit{DirectValue},\mathit{PromisePayload},
+\mathit{CallbackPayload},\mathit{FrameworkArgument}\}.
+\end{equation}
+Fact identity includes $\langle v,\epsilon,\kappa\rangle$; $\delta$ is joined as path metadata and does not create a new semantic fact. Re-rooting replaces $v$ and $\kappa$ while preserving $\epsilon$ and the accumulated derivations.
 
 \subsubsection{T1: Callback Parameter Binding}
 
@@ -332,20 +368,31 @@ ArkUI components frequently store callback functions in class fields (e.g., \tex
 
 ArkUI builder APIs accept configuration objects whose fields are callback functions (e.g., \texttt{bindPopup(\{builder: popupBuilder\})}). T3 extracts the callback from a named option field, $Arg(bld,f)\to cb$, and adds the recovered owner--builder edge to the report call graph. The pattern is structurally distinct from T1 because the callback is nested inside a lowered object initializer rather than passed as a positional source callback. As with T2, the edge provides call context and is not an IFDS seed.
 
-\subsubsection{T4: Promise-then Chain Binding}
+\subsubsection{T4: Promise Success-Continuation Binding}
 
 Promise \texttt{.then()} carries the receiver's resolved value into the success handler's first data parameter. For call site $s:b.\texttt{then}(a_0)$, resolved callback $cb=Resolve(a_0)$, and incoming fact $d$, \mytool extends the IFDS call-flow function with
 \begin{equation}
 \mathcal{F}_{call}^{then}(s,cb,d)=
 \begin{cases}
-\{\mathit{Copy}(d,cb.param_0)\}, &
-\mathit{Depends}(b,\mathit{val}(d)),\\
+\{\mathit{ReRoot}(d,cb.param_0,\mathit{CallbackPayload})\}, &
+\mathit{PromiseGuard}(s,d)\land\mathit{Root}(b,d),\\
 \emptyset, & \text{otherwise}.
 \end{cases}
 \end{equation}
-The copied fact preserves $\epsilon(d)$ and records the \textsc{PromiseThen} derivation. ArkAnalyzer lowers both direct chaining and variable chaining to this relation: the configured source first taints the Promise temporary, after which the \texttt{then} call maps that fact into the resolved success handler. Rejection handlers and unrelated callback arguments receive no fact.
+Here $\mathit{Root}(b,d)$ requires exact value identity or an available pointer alias between $b$ and the root of $d$; a nonempty field access path is not copied onto the callback parameter. $\mathit{PromiseGuard}$ requires $\kappa(d)=\mathit{PromisePayload}$ and either a Promise receiver/target type or, for API-20 ArkIR's unresolved built-in target, a source-rule return carrier of \texttt{Promise<T>}. A resolved application-defined owner named \texttt{then} does not satisfy the guard. The re-rooted fact preserves $\epsilon(d)$ and records \textsc{PromiseThen}. Rejection handlers and unrelated callback positions receive no fact.
 
-\subsubsection{T5: Async/Await Bridge Binding}
+For an assigned continuation $s:q=b.\texttt{then}(cb)$, taint reaches $q$ only through a tainted callback return:
+\begin{equation}
+\mathcal{F}_{ret}^{then}(return\;x,s,d)=
+\begin{cases}
+\{\mathit{ReRoot}(d,q,\mathit{PromisePayload})\},&
+\mathit{val}(d)=x,\\
+\emptyset,&\text{otherwise}.
+\end{cases}
+\end{equation}
+This return-flow rule records \textsc{PromiseReturn}. It supports sequential continuations and Promise flattening while rejecting a chain whose first handler returns a constant independent of its payload.
+
+\subsubsection{T5: Native Async/Await Normal Flow}
 
 An asynchronous function that awaits a Promise-wrapped source API creates an explicit ArkIR use from the Promise value to the assignment target:
 
@@ -354,20 +401,23 @@ data = await\; promiseMethod() \;\Rightarrow\;\\
 Edge(resolve_{arg}, await_{res}) \cup Edge(await_{res}, data_{uses})
 \end{multline}
 
-The normal-flow function therefore maps a fact on $promiseMethod()$ to $data$ and its subsequent uses. A bounded fallback remains available for definition-backed wrapper Promises whose executor-to-\texttt{await} relation is absent from ArkIR; such outcomes retain separate supplementary provenance and do not alter the IFDS fact relation.
+No continuation-specific IFDS rule is needed when this use is explicit: the native normal-flow function maps the Promise payload to $data$ and its subsequent uses. A bounded fallback remains available for definition-backed wrapper Promises whose executor-to-\texttt{await} relation is absent from ArkIR; such outcomes retain separate supplementary provenance and do not alter the IFDS fact relation.
 
 \subsubsection{Algorithm}
 
-Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It executes at the \texttt{then} call edge, not after solver termination. The transfer is monotone: it only adds a source-preserving fact for the success parameter when receiver dependence and callback-position evidence hold.
+Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It executes on a resolved edge in $E_{cb}$, not after solver termination. The transfer is monotone: it only adds a source-preserving fact for the success parameter when Promise ownership, payload state, root identity, and callback-position evidence hold.
 
 \begin{algorithm}[H]
-\caption{Continuation-aware IFDS call flow}
+\caption{Promise success-continuation IFDS call flow}
 \label{alg:callback}
 \footnotesize
 \begin{algorithmic}[1]
 \Require Call site $s$, resolved callee $m$, incoming fact $d$
 \Ensure Call-flow facts $D'$
 \State $D' \gets \Call{StandardCallFlow}{s,m,d}$
+\If{$(s,m)\notin E_{cb}$}
+  \State \Return $D'$
+\EndIf
 \If{$s.member \neq \texttt{then}$}
   \State \Return $D'$
 \EndIf
@@ -376,9 +426,8 @@ Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It execut
   \State \Return $D'$
 \EndIf
 \If{$d\neq\mathbf{0} \land
-     (\Call{Depends}{s.base,\mathit{val}(d)} \lor
-      \Call{MayAlias}{s.base,\mathit{val}(d)})$}
-  \State $d' \gets \Call{CopyFact}{d,cb.param_0}$
+     \Call{PromiseGuard}{s,d} \land \Call{Root}{s.base,d}$}
+  \State $d' \gets \Call{ReRoot}{d,cb.param_0,\mathit{CallbackPayload}}$
   \State $d'.derivation \gets d'.derivation\cup\{\textsc{PromiseThen}\}$
   \State $D' \gets D'\cup\{d'\}$
 \EndIf
@@ -386,7 +435,7 @@ Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It execut
 \end{algorithmic}
 \end{algorithm}
 
-Relative to the resolved ArkIR call edge and available alias relation, this transfer follows Promise success semantics: every accepted fact denotes a value that may be supplied as the first success-handler argument. The guard excludes \texttt{catch}, rejection callbacks, nonzero callback positions, and same-named \texttt{then} calls whose receiver is unrelated to the incoming fact. The source witness is copied rather than reconstructed, so source-distinct IFDS facts remain distinct across the continuation.
+Relative to the resolved callback edge and available alias relation, this transfer follows Promise success semantics: every accepted fact denotes a modeled Promise payload that may be supplied as the first success-handler argument. The guard excludes \texttt{catch}, rejection callbacks, nonzero callback positions, custom resolved \texttt{then} owners, and receiver facts without Promise-payload state. The source witness is copied rather than reconstructed, so source-distinct IFDS facts remain distinct across the continuation.
 
 \subsection{Callback-augmented Call-chain Recovery}
 
@@ -443,11 +492,17 @@ and the report exposes $T_Q=T_I\cup T_A$, stratified as
 T_P=\{q\in T_Q\mid src(q)\in S_P\},\qquad
 T_F=\{q\in T_Q\mid src(q)\in S_F\}.
 \end{equation}
-For duplicate endpoint/path outcomes, path provenance is retained as
+For duplicate endpoint/path outcomes, provenance separates the producing analysis from the continuation transfers used inside that analysis:
 
 \begin{equation}
-\tau(q)\in\{\mathit{ifds},\mathit{async\_supplement},\mathit{both}\}.
+\Pi(q)=\langle producer(q),deriv(q)\rangle,
 \end{equation}
+where
+\begin{align}
+producer(q)&\in\{\mathit{ifds},\mathit{async\_supplement},\mathit{both}\},\\
+deriv(q)&\subseteq\{\mathit{PromiseThen},\mathit{PromiseReturn}\}.
+\end{align}
+The first component states which analysis emitted the complete path; the second records continuation-specific transfers within it. Derivation labels are monotone metadata and are excluded from fact identity, whereas carrier state is part of that identity.
 
 A partial linkage relation
 
@@ -474,7 +529,7 @@ The loader, fact-identity keys, transfer functions, and evidence linker enforce 
 
 \subsubsection{Provenance Annotation}
 
-The report stores provenance at the level where it is produced. A call-chain relation carries a \texttt{callType}; a configured-query path carries $\tau(q)\in\{\mathit{ifds},\mathit{async\_supplement},\mathit{both}\}$; and an endpoint link records \texttt{exact\_statement} or \texttt{source\_location}. Detector-local sink edges are identified by their containing record. Evidence-graph assembly maps these fields to $\omega_u$ rather than replacing them with a synthetic global confidence score. Consequently, an asynchronous supplement cannot be presented as an IFDS path, and a normalized-location join remains distinguishable from an exact-statement join.
+The report stores provenance at the level where it is produced. A call-chain relation carries a \texttt{callType}; a configured-query path carries $\Pi(q)$; and an endpoint link records \texttt{exact\_statement} or \texttt{source\_location}. Detector-local sink edges are identified by their containing record. Evidence-graph assembly maps these fields to $\omega_u$ rather than replacing them with a synthetic global confidence score. Consequently, an asynchronous supplement cannot be presented as an IFDS path, a Promise-return transfer remains distinguishable from initial Promise binding, and a normalized-location join remains distinguishable from an exact-statement join.
 
 \subsection{Analysis Contract}
 \label{subsec:analysis_contract}
