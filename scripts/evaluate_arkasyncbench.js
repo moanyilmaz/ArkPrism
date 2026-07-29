@@ -1,5 +1,15 @@
+const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+
+function usage() {
+  return [
+    'Usage: node scripts/evaluate_arkasyncbench.js',
+    '  --oracle <oracle.json> --full <reports-dir>',
+    '  (--continuation-off <reports-dir> | --post-ifds <reports-dir>',
+    '   | --callback-off <reports-dir>) --output-dir <dir>',
+  ].join('\n');
+}
 
 function parseArgs(argv) {
   const args = {
@@ -7,14 +17,19 @@ function parseArgs(argv) {
     full: '',
     callbackOff: '',
     continuationOff: '',
+    postIfds: '',
     outputDir: '',
   };
   for (let index = 0; index < argv.length; index++) {
     const arg = argv[index];
-    if (arg === '--oracle') args.oracle = argv[++index] || '';
+    if (arg === '--help' || arg === '-h') {
+      console.log(usage());
+      process.exit(0);
+    } else if (arg === '--oracle') args.oracle = argv[++index] || '';
     else if (arg === '--full') args.full = argv[++index] || '';
     else if (arg === '--callback-off') args.callbackOff = argv[++index] || '';
     else if (arg === '--continuation-off') args.continuationOff = argv[++index] || '';
+    else if (arg === '--post-ifds') args.postIfds = argv[++index] || '';
     else if (arg === '--output-dir') args.outputDir = argv[++index] || '';
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -23,17 +38,85 @@ function parseArgs(argv) {
       throw new Error(`--${key.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)} is required`);
     }
   }
-  if (!args.continuationOff && !args.callbackOff) {
-    throw new Error('--continuation-off is required');
-  }
-  if (args.continuationOff && args.callbackOff) {
-    throw new Error('Use either --continuation-off or --callback-off, not both');
+  const comparisons = [args.continuationOff, args.postIfds, args.callbackOff].filter(Boolean);
+  if (comparisons.length !== 1) {
+    throw new Error('Use exactly one of --continuation-off, --post-ifds, or --callback-off');
   }
   return args;
 }
 
 function readJson(filePath) {
   return JSON.parse(fs.readFileSync(filePath, 'utf8').replace(/^\uFEFF/, ''));
+}
+
+function sha256File(filePath) {
+  return crypto.createHash('sha256').update(fs.readFileSync(filePath)).digest('hex');
+}
+
+function callbackAnalysisEnabled(manifest) {
+  const args = manifest.execution?.arkArgs || [];
+  let enabled = true;
+  for (let index = 0; index < args.length; index++) {
+    if (args[index] !== '--callback-analysis') continue;
+    const value = String(args[index + 1] || '').toLowerCase();
+    if (!['true', 'false'].includes(value)) throw new Error('Invalid --callback-analysis value');
+    enabled = value === 'true';
+  }
+  return enabled;
+}
+
+function continuationFlowDisabled(manifest) {
+  return Boolean(
+    manifest.execution?.disableContinuationFlow
+    ?? manifest.environment?.analysisFeatureFlags?.disableContinuationFlow
+    ?? false,
+  );
+}
+
+function inspectRun(root) {
+  const manifestPath = path.join(path.resolve(root), 'run_manifest.json');
+  if (!fs.existsSync(manifestPath)) throw new Error(`Missing run manifest: ${path.basename(root)}`);
+  const manifest = readJson(manifestPath);
+  if (manifest.status !== 'complete') throw new Error(`${path.basename(root)} is not complete`);
+  if (Number(manifest.progress?.errors) !== 0) throw new Error(`${path.basename(root)} has errors`);
+  if (manifest.execution?.resume === true) throw new Error(`${path.basename(root)} used resume mode`);
+  return {
+    runId: path.basename(path.resolve(root)),
+    manifestSha256: sha256File(manifestPath),
+    disableContinuationFlow: continuationFlowDisabled(manifest),
+    callbackAnalysis: callbackAnalysisEnabled(manifest),
+  };
+}
+
+function validateRunConfiguration(mode, full, comparison) {
+  const expected = {
+    continuation_off: {
+      full: [false, false],
+      comparison: [true, false],
+    },
+    post_ifds: {
+      full: [false, false],
+      comparison: [true, true],
+    },
+    callback_off: {
+      full: [false, true],
+      comparison: [false, false],
+    },
+  }[mode];
+  if (!expected) throw new Error(`Unknown comparison mode: ${mode}`);
+  for (const [name, run, values] of [
+    ['full', full, expected.full],
+    [mode, comparison, expected.comparison],
+  ]) {
+    const [disableContinuationFlow, callbackAnalysis] = values;
+    if (run.disableContinuationFlow !== disableContinuationFlow
+      || run.callbackAnalysis !== callbackAnalysis) {
+      throw new Error(
+        `${name} has incompatible flags: continuationOff=${run.disableContinuationFlow}, `
+        + `callbackAnalysis=${run.callbackAnalysis}`,
+      );
+    }
+  }
 }
 
 function reportFiles(root) {
@@ -88,6 +171,9 @@ function metrics(records) {
 }
 
 function evaluateConfiguration(name, reports, oracleCases) {
+  if (reports.size !== oracleCases.length) {
+    throw new Error(`${name}: expected ${oracleCases.length} reports, found ${reports.size}`);
+  }
   const records = oracleCases.map(item => {
     const report = reports.get(item.id);
     if (!report) throw new Error(`${name}: missing report ${item.id}`);
@@ -161,15 +247,25 @@ function exactMcNemar(leftOnly, rightOnly) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const oracle = readJson(args.oracle);
+  const comparisonRoot = args.continuationOff || args.postIfds || args.callbackOff;
+  const ablationName = args.continuationOff
+    ? 'continuation_off'
+    : args.postIfds
+      ? 'post_ifds'
+      : 'callback_off';
+  const runs = {
+    full: inspectRun(args.full),
+    comparison: inspectRun(comparisonRoot),
+  };
+  validateRunConfiguration(ablationName, runs.full, runs.comparison);
   const full = evaluateConfiguration(
     'full',
     reportIndex(args.full),
     oracle.cases,
   );
-  const ablationName = args.continuationOff ? 'continuation_off' : 'callback_off';
   const ablation = evaluateConfiguration(
     ablationName,
-    reportIndex(args.continuationOff || args.callbackOff),
+    reportIndex(comparisonRoot),
     oracle.cases,
   );
   const fullOnlyCorrect = oracle.cases.filter((item, index) =>
@@ -179,9 +275,13 @@ function main() {
     ablation.records[index].predicted === item.expected
     && full.records[index].predicted !== item.expected).map(item => item.id);
   const result = {
-    schemaVersion: 2,
+    schemaVersion: 3,
     generatedAt: new Date().toISOString(),
-    oracle: path.resolve(args.oracle),
+    oracle: {
+      file: path.basename(args.oracle),
+      sha256: sha256File(path.resolve(args.oracle)),
+    },
+    runs,
     definition: oracle.definition,
     full,
     ablation,
@@ -228,4 +328,11 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { evaluateConfiguration, exactMcNemar, metrics };
+module.exports = {
+  callbackAnalysisEnabled,
+  continuationFlowDisabled,
+  evaluateConfiguration,
+  exactMcNemar,
+  metrics,
+  validateRunConfiguration,
+};

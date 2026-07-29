@@ -11,6 +11,7 @@ if (!sdkPath || !fs.existsSync(sdkPath)) {
 
 const checks = [
   'verify_api_usage_dedup.js',
+  'verify_arkasyncbench_evaluator.js',
   'verify_arkpromisebench.js',
   'verify_call_chain_dominators.js',
   'verify_corpus_summary.js',
@@ -29,6 +30,7 @@ const checks = [
   'verify_runner_strictness.js',
   'verify_semantic_path_audit_evaluator.js',
   'verify_semantic_path_audit_queue.js',
+  'verify_semantic_path_audit_rebind.js',
   'verify_source_audit_export.js',
   'verify_source_rule_contract.js',
   'verify_taint_flow_dedup.js',
