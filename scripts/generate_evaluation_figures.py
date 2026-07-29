@@ -23,10 +23,6 @@ from matplotlib.path import Path as MplPath
 
 
 PAPER_ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_ARK_ROOT = Path(r"E:\arkprism-fse2027-experiments")
-DEFAULT_REPORTS_DIR = (
-    DEFAULT_ARK_ROOT / "experiments" / "argus1014_final_single_20260727_v22"
-)
 FIG_DIR = PAPER_ROOT / "figs"
 OUT_JSON = PAPER_ROOT / "data" / "evaluation_figure_summary.json"
 
@@ -51,11 +47,15 @@ COLORS = {
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
+    reports_dir = os.environ.get("ARKPRISM_REPORTS_DIR")
     parser.add_argument(
         "--reports-dir",
         type=Path,
-        default=Path(
-            os.environ.get("ARKPRISM_REPORTS_DIR", str(DEFAULT_REPORTS_DIR))
+        default=Path(reports_dir) if reports_dir else None,
+        required=reports_dir is None,
+        help=(
+            "Validated single-run report directory. May also be supplied "
+            "through ARKPRISM_REPORTS_DIR."
         ),
     )
     return parser.parse_args()
@@ -1601,12 +1601,13 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
 
 def main() -> None:
     args = parse_args()
+    reports_dir = args.reports_dir.resolve()
     configure_style()
     FIG_DIR.mkdir(parents=True, exist_ok=True)
     OUT_JSON.parent.mkdir(parents=True, exist_ok=True)
 
     reports, run_manifest, manifest_path = load_single_run_reports(
-        args.reports_dir
+        reports_dir
     )
     report_summary = summarize_reports(reports)
 
@@ -1615,8 +1616,8 @@ def main() -> None:
     project_rows = report_summary["projectRows"]
     output = {
         "provenance": {
-            "reportsDir": str(args.reports_dir),
-            "runManifest": str(manifest_path),
+            "runId": reports_dir.name,
+            "runManifest": manifest_path.name,
             "runManifestSha256": sha256_file(manifest_path),
             "runStartedAt": run_manifest.get("startedAt"),
             "runCompletedAt": run_manifest.get("completedAt"),
