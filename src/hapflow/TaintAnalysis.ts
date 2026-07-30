@@ -19,6 +19,11 @@ import { TaintCarrierState, TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
 import { ArkThisRef } from "../arkanalyzer";
+import {
+    isPlatformTaskCallbackSignature,
+    isPromiseTypeText,
+    SdkPromiseContractResolver,
+} from "./SdkContinuationContracts";
 
 // @ts-ignore - ClassCategory may need deep import
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
@@ -37,7 +42,7 @@ function continuationFlowEnabled(): boolean {
     return process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW !== '1';
 }
 
-export type SdkContinuationEdgeKind = 'source_callback' | 'framework_event' | 'promise_fulfillment';
+export type SdkContinuationEdgeKind = 'source_callback' | 'framework_event' | 'framework_task' | 'promise_fulfillment';
 
 const ARKUI_FRAMEWORK_EVENT_NAMES = new Set(CALLBACK_METHOD_NAME);
 
@@ -124,6 +129,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private santizations: MethodSignature[] = [];
     private pointerAnalysis: PointerAnalysis | undefined;
     private detectOutcome: TaintFact[] = [];
+    private promiseContractResolver: SdkPromiseContractResolver;
 
     // Budget options for callback analysis
     private callbackBudgetOptions = {
@@ -139,6 +145,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         this.entryPoint = stmt;
         this.entryMethod = method;
         this.scene = method.getDeclaringArkFile().getScene();
+        this.promiseContractResolver = new SdkPromiseContractResolver(this.scene);
         this.pointerAnalysis = pta;
     }
 
@@ -1466,7 +1473,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         visited.add(value);
 
         const typeName = value.getType().toString();
-        if (/(^|[<:.\s])Promise(?:<|[.:\s])/i.test(typeName)) return true;
+        if (isPromiseTypeText(typeName)) return true;
         if (!(value instanceof Local)) return false;
 
         const declaration = value.getDeclaringStmt();
@@ -1479,6 +1486,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         const source = callSource(rightOp, this.sources, this.scene, this.pointerAnalysis);
         if (/^\s*Promise\s*</.test(source?.rule.returnType || '')) return true;
+        if (this.promiseContractResolver.invocationReturnsPromise(rightOp)) return true;
 
         if (rightOp instanceof ArkInstanceInvokeExpr
             && rightOp.getMethodSignature().getMethodSubSignature().getMethodName() === 'then') {
@@ -1486,14 +1494,13 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
 
         const target = rightOp.getMethodSignature().toString();
-        return /(^|[<:/.\s])Promise(?:<|[.:\s])/i.test(target);
+        return isPromiseTypeText(target);
     }
 
     private hasStaticPromiseOwnerWitness(invokeExpr: ArkInstanceInvokeExpr): boolean {
         const baseType = invokeExpr.getBase().getType().toString();
         const target = invokeExpr.getMethodSignature().toString();
-        if (/(^|[<:.\s])Promise(?:<|[.:\s])/i.test(baseType)
-            || /(^|[<:/.\s])Promise(?:<|[.:\s])/i.test(target)) {
+        if (isPromiseTypeText(baseType) || isPromiseTypeText(target)) {
             return true;
         }
 
@@ -1524,6 +1531,26 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         return methodSignature.toString().includes('@%unk/%unk');
     }
 
+    private hasPlatformTaskCallbackWitness(
+        invokeExpr: AbstractInvokeExpr,
+        callbackIndex: number
+    ): boolean {
+        const methodSignature = invokeExpr.getMethodSignature();
+        const classSignature = methodSignature.getDeclaringClassSignature();
+        if (!isPlatformTaskCallbackSignature(
+            methodSignature.getMethodSubSignature().getMethodName(),
+            classSignature.getClassName(),
+            callbackIndex
+        )) {
+            return false;
+        }
+
+        const targetFileSignature = classSignature.getDeclaringFileSignature();
+        const targetFile = this.scene.getFile(targetFileSignature);
+        if (targetFile) return this.scene.hasSdkFile(targetFileSignature);
+        return methodSignature.toString().includes('@%unk/%unk');
+    }
+
     public getSdkContinuationEdgeKind(
         callStmt: Stmt,
         callbackMethod: ArkMethod
@@ -1537,6 +1564,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
         if (source?.sourceType === 'callback' && source.callbackIndex === callbackIndex) {
             return 'source_callback';
+        }
+
+        if (this.hasPlatformTaskCallbackWitness(invokeExpr, callbackIndex)) {
+            return 'framework_task';
         }
 
         if (invokeExpr instanceof ArkInstanceInvokeExpr
