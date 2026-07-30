@@ -7,7 +7,8 @@ function usage() {
     'Usage: node scripts/evaluate_arkasyncbench.js',
     '  --oracle <oracle.json> --full <reports-dir>',
     '  (--continuation-off <reports-dir> | --post-ifds <reports-dir>',
-    '   | --callback-off <reports-dir>) --output-dir <dir>',
+    '   | --callback-off <reports-dir> | --unrestricted-sdk-callbacks <reports-dir>)',
+    '  --output-dir <dir>',
   ].join('\n');
 }
 
@@ -18,6 +19,7 @@ function parseArgs(argv) {
     callbackOff: '',
     continuationOff: '',
     postIfds: '',
+    unrestrictedSdkCallbacks: '',
     outputDir: '',
   };
   for (let index = 0; index < argv.length; index++) {
@@ -30,6 +32,9 @@ function parseArgs(argv) {
     else if (arg === '--callback-off') args.callbackOff = argv[++index] || '';
     else if (arg === '--continuation-off') args.continuationOff = argv[++index] || '';
     else if (arg === '--post-ifds') args.postIfds = argv[++index] || '';
+    else if (arg === '--unrestricted-sdk-callbacks') {
+      args.unrestrictedSdkCallbacks = argv[++index] || '';
+    }
     else if (arg === '--output-dir') args.outputDir = argv[++index] || '';
     else throw new Error(`Unknown argument: ${arg}`);
   }
@@ -38,9 +43,16 @@ function parseArgs(argv) {
       throw new Error(`--${key.replace(/[A-Z]/g, x => `-${x.toLowerCase()}`)} is required`);
     }
   }
-  const comparisons = [args.continuationOff, args.postIfds, args.callbackOff].filter(Boolean);
+  const comparisons = [
+    args.continuationOff,
+    args.postIfds,
+    args.callbackOff,
+    args.unrestrictedSdkCallbacks,
+  ].filter(Boolean);
   if (comparisons.length !== 1) {
-    throw new Error('Use exactly one of --continuation-off, --post-ifds, or --callback-off');
+    throw new Error(
+      'Use exactly one comparison: continuation-off, post-ifds, callback-off, or unrestricted-sdk-callbacks',
+    );
   }
   return args;
 }
@@ -73,6 +85,14 @@ function continuationFlowDisabled(manifest) {
   );
 }
 
+function unrestrictedSdkCallbacksEnabled(manifest) {
+  return Boolean(
+    manifest.execution?.unrestrictedSdkCallbacks
+    ?? manifest.environment?.analysisFeatureFlags?.unrestrictedSdkCallbacks
+    ?? false,
+  );
+}
+
 function inspectRun(root) {
   const manifestPath = path.join(path.resolve(root), 'run_manifest.json');
   if (!fs.existsSync(manifestPath)) throw new Error(`Missing run manifest: ${path.basename(root)}`);
@@ -85,22 +105,27 @@ function inspectRun(root) {
     manifestSha256: sha256File(manifestPath),
     disableContinuationFlow: continuationFlowDisabled(manifest),
     callbackAnalysis: callbackAnalysisEnabled(manifest),
+    unrestrictedSdkCallbacks: unrestrictedSdkCallbacksEnabled(manifest),
   };
 }
 
 function validateRunConfiguration(mode, full, comparison) {
   const expected = {
     continuation_off: {
-      full: [false, false],
-      comparison: [true, false],
+      full: [false, false, false],
+      comparison: [true, false, false],
     },
     post_ifds: {
-      full: [false, false],
-      comparison: [true, true],
+      full: [false, false, false],
+      comparison: [true, true, false],
     },
     callback_off: {
-      full: [false, true],
-      comparison: [false, false],
+      full: [false, true, false],
+      comparison: [false, false, false],
+    },
+    unrestricted_sdk_callbacks: {
+      full: [false, false, false],
+      comparison: [false, false, true],
     },
   }[mode];
   if (!expected) throw new Error(`Unknown comparison mode: ${mode}`);
@@ -108,12 +133,14 @@ function validateRunConfiguration(mode, full, comparison) {
     ['full', full, expected.full],
     [mode, comparison, expected.comparison],
   ]) {
-    const [disableContinuationFlow, callbackAnalysis] = values;
+    const [disableContinuationFlow, callbackAnalysis, unrestrictedSdkCallbacks] = values;
     if (run.disableContinuationFlow !== disableContinuationFlow
-      || run.callbackAnalysis !== callbackAnalysis) {
+      || run.callbackAnalysis !== callbackAnalysis
+      || run.unrestrictedSdkCallbacks !== unrestrictedSdkCallbacks) {
       throw new Error(
         `${name} has incompatible flags: continuationOff=${run.disableContinuationFlow}, `
-        + `callbackAnalysis=${run.callbackAnalysis}`,
+        + `callbackAnalysis=${run.callbackAnalysis}, `
+        + `unrestrictedSdkCallbacks=${run.unrestrictedSdkCallbacks}`,
       );
     }
   }
@@ -247,12 +274,17 @@ function exactMcNemar(leftOnly, rightOnly) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const oracle = readJson(args.oracle);
-  const comparisonRoot = args.continuationOff || args.postIfds || args.callbackOff;
+  const comparisonRoot = args.continuationOff
+    || args.postIfds
+    || args.callbackOff
+    || args.unrestrictedSdkCallbacks;
   const ablationName = args.continuationOff
     ? 'continuation_off'
     : args.postIfds
       ? 'post_ifds'
-      : 'callback_off';
+      : args.callbackOff
+        ? 'callback_off'
+        : 'unrestricted_sdk_callbacks';
   const runs = {
     full: inspectRun(args.full),
     comparison: inspectRun(comparisonRoot),
@@ -331,6 +363,7 @@ if (require.main === module) main();
 module.exports = {
   callbackAnalysisEnabled,
   continuationFlowDisabled,
+  unrestrictedSdkCallbacksEnabled,
   evaluateConfiguration,
   exactMcNemar,
   metrics,

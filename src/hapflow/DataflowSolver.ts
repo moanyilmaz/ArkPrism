@@ -316,10 +316,9 @@ export abstract class DataflowSolver<D extends object> {
             if (this.scene.getFile(invokeMethodFileSignature) && !this.scene.hasSdkFile(invokeMethodFileSignature)) {
                 callees = this.getAllCalleeMethodsFromCG(invokeStmt, paramFuncs);
             } else {
-                // For SDK calls, include any found paramFuncs or callbacks
-                if (paramFuncs.length > 0) {
-                    for (const pf of paramFuncs) {
-                        callees.add(pf);
+                for (const callback of paramFuncs) {
+                    if (this.shouldIncludeSdkCallback(invokeStmt, callback)) {
+                        callees.add(callback);
                     }
                 }
             }
@@ -330,6 +329,14 @@ export abstract class DataflowSolver<D extends object> {
             console.log(`[HAPFLOW][CALL] ${invokeStmt.toString()} -> ${resolved || '<unresolved>'}`);
         }
         return callees;
+    }
+
+    /**
+     * SDK declarations do not expose callback bodies. Specialized analyses can
+     * admit only callbacks for which they have an execution or carrier model.
+     */
+    protected shouldIncludeSdkCallback(_callNode: Stmt, _callback: ArkMethod): boolean {
+        return true;
     }
 
     private addInstanceInitializerCallees(callNode: Stmt, callees: Set<ArkMethod>): void {
@@ -816,7 +823,9 @@ export abstract class DataflowSolver<D extends object> {
                 if (file && this.scene.getFiles().includes(file)) {
                     return true;
                 }
-                if (getRecallMethodInParam(stmt).length > 0) {
+                if (getRecallMethodInParam(stmt).some(callback =>
+                    this.shouldIncludeSdkCallback(stmt, callback)
+                )) {
                     return true;
                 }
             }

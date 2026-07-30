@@ -37,6 +37,8 @@ function continuationFlowEnabled(): boolean {
     return process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW !== '1';
 }
 
+export type SdkContinuationEdgeKind = 'source_callback' | 'promise_fulfillment';
+
 function normalizeSdkPathForTypeImports(sdkPath?: string): string {
     return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
 }
@@ -1446,6 +1448,82 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         });
     }
 
+    private valueOriginatesFromPromise(
+        value: Value,
+        depth: number = 0,
+        visited: Set<Value> = new Set()
+    ): boolean {
+        if (depth > 8 || visited.has(value)) return false;
+        visited.add(value);
+
+        const typeName = value.getType().toString();
+        if (/(^|[<:.\s])Promise(?:<|[.:\s])/i.test(typeName)) return true;
+        if (!(value instanceof Local)) return false;
+
+        const declaration = value.getDeclaringStmt();
+        if (!(declaration instanceof ArkAssignStmt)) return false;
+        const rightOp = declaration.getRightOp();
+        if (rightOp instanceof Local) {
+            return this.valueOriginatesFromPromise(rightOp, depth + 1, visited);
+        }
+        if (!(rightOp instanceof AbstractInvokeExpr)) return false;
+
+        const source = callSource(rightOp, this.sources, this.scene, this.pointerAnalysis);
+        if (/^\s*Promise\s*</.test(source?.rule.returnType || '')) return true;
+
+        if (rightOp instanceof ArkInstanceInvokeExpr
+            && rightOp.getMethodSignature().getMethodSubSignature().getMethodName() === 'then') {
+            return this.valueOriginatesFromPromise(rightOp.getBase(), depth + 1, visited);
+        }
+
+        const target = rightOp.getMethodSignature().toString();
+        return /(^|[<:/.\s])Promise(?:<|[.:\s])/i.test(target);
+    }
+
+    private hasStaticPromiseOwnerWitness(invokeExpr: ArkInstanceInvokeExpr): boolean {
+        const baseType = invokeExpr.getBase().getType().toString();
+        const target = invokeExpr.getMethodSignature().toString();
+        if (/(^|[<:.\s])Promise(?:<|[.:\s])/i.test(baseType)
+            || /(^|[<:/.\s])Promise(?:<|[.:\s])/i.test(target)) {
+            return true;
+        }
+
+        const targetFileSignature = invokeExpr.getMethodSignature()
+            .getDeclaringClassSignature()
+            .getDeclaringFileSignature();
+        const targetFile = this.scene.getFile(targetFileSignature);
+        if (targetFile && !this.scene.hasSdkFile(targetFileSignature)) return false;
+        if (!target.includes('@%unk/%unk')) return false;
+
+        return this.valueOriginatesFromPromise(invokeExpr.getBase());
+    }
+
+    public getSdkContinuationEdgeKind(
+        callStmt: Stmt,
+        callbackMethod: ArkMethod
+    ): SdkContinuationEdgeKind | null {
+        const invokeExpr = callStmt.getInvokeExpr();
+        if (!invokeExpr) return null;
+
+        const callbackIndex = this.getCallbackArgumentIndex(callStmt, callbackMethod);
+        if (callbackIndex < 0) return null;
+
+        const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
+        if (source?.sourceType === 'callback' && source.callbackIndex === callbackIndex) {
+            return 'source_callback';
+        }
+
+        if (continuationFlowEnabled()
+            && callbackIndex === 0
+            && invokeExpr instanceof ArkInstanceInvokeExpr
+            && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() === 'then'
+            && this.hasStaticPromiseOwnerWitness(invokeExpr)) {
+            return 'promise_fulfillment';
+        }
+
+        return null;
+    }
+
     private hasPromiseOwnerWitness(invokeExpr: ArkInstanceInvokeExpr, dataFact: TaintFact): boolean {
         if (dataFact.getCarrierState() !== 'promise_payload') return false;
 
@@ -1740,6 +1818,22 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             getDataFacts(dataFact: TaintFact): Set<TaintFact> {
                 const dataValue = dataFact.getValue();
                 const ret: Set<TaintFact> = new Set();
+                const callbackTarget = getRecallMethodInParam(srcStmt).includes(method);
+                const sdkContinuation = callbackTarget
+                    ? checkerInstance.getSdkContinuationEdgeKind(srcStmt, method)
+                    : null;
+
+                if (sdkContinuation === 'promise_fulfillment'
+                    && (dataFact === checkerInstance.getZeroValue()
+                        || dataFact.getCarrierState() === 'promise_payload')) {
+                    if (dataFact === checkerInstance.getZeroValue()) {
+                        ret.add(checkerInstance.getZeroValue());
+                    } else {
+                        checkerInstance.addPromiseContinuationFact(srcStmt, method, dataFact, ret);
+                    }
+                    return ret;
+                }
+
                 if (checkerInstance.getZeroValue() == dataFact) {
                     ret.add(checkerInstance.getZeroValue());
                     checkerInstance.addTaintFromSourceCall(srcStmt, method, ret);
@@ -1882,8 +1976,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
                 }
                 const callStmt = srcStmt;
-                if (getRecallMethodInParam(callStmt).includes(method)) {
-                    checkerInstance.addPromiseContinuationFact(callStmt, method, dataFact, ret);
+                if (callbackTarget) {
+                    if (sdkContinuation === 'promise_fulfillment') {
+                        checkerInstance.addPromiseContinuationFact(callStmt, method, dataFact, ret);
+                    }
                     return ret;
                 }
                 const args = callStmt.getInvokeExpr()?.getArgs() || [];

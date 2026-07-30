@@ -24,6 +24,7 @@ function usage() {
     '  --sdk-fingerprint-cache <file>  Reuse a content fingerprint for this SDK root',
     '  --refresh-sdk-fingerprint      Recompute the SDK content fingerprint',
     '  --disable-continuation-flow    Disable Promise continuation IFDS flow',
+    '  --unrestricted-sdk-callbacks   Admit every typed SDK callback (ablation)',
     '  --resume             Skip samples whose report JSON already exists',
     '  --prior-log <file>    Recover duration for skipped samples from a previous batch log',
     '  --help               Show this help message',
@@ -47,6 +48,7 @@ function parseArgs(argv) {
     sdkFingerprintCache: '',
     refreshSdkFingerprint: false,
     disableContinuationFlow: false,
+    unrestrictedSdkCallbacks: false,
     resume: false,
     priorLog: '',
     arkArgs: [],
@@ -81,6 +83,7 @@ function parseArgs(argv) {
     else if (arg === '--sdk-fingerprint-cache') args.sdkFingerprintCache = ownArgs[++i] || '';
     else if (arg === '--refresh-sdk-fingerprint') args.refreshSdkFingerprint = true;
     else if (arg === '--disable-continuation-flow') args.disableContinuationFlow = true;
+    else if (arg === '--unrestricted-sdk-callbacks') args.unrestrictedSdkCallbacks = true;
     else if (arg === '--resume') args.resume = true;
     else if (arg === '--prior-log') args.priorLog = ownArgs[++i] || '';
     else if (arg === '--help' || arg === '-h') {
@@ -295,6 +298,9 @@ function runProjectOnce(projectName, projectDir, args, index, total, attempt) {
       ARKPRISM_DISABLE_CONTINUATION_FLOW: args.disableContinuationFlow
         ? '1'
         : (process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW || '0'),
+      ARKPRISM_UNRESTRICTED_SDK_CALLBACKS: args.unrestrictedSdkCallbacks
+        ? '1'
+        : (process.env.ARKPRISM_UNRESTRICTED_SDK_CALLBACKS || '0'),
     };
     const startedAt = Date.now();
     logStream.write(`[RUNNER] [${index + 1}/${total}] ${projectName} attempt=${attempt}/${args.maxAttempts}\n`);
@@ -472,6 +478,9 @@ async function main() {
         disableContinuationFlow:
           args.disableContinuationFlow
           || process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW === '1',
+        unrestrictedSdkCallbacks:
+          args.unrestrictedSdkCallbacks
+          || process.env.ARKPRISM_UNRESTRICTED_SDK_CALLBACKS === '1',
       },
     },
     inputs: {
@@ -524,6 +533,7 @@ async function main() {
       maxAttempts: args.maxAttempts,
       retryDelayMs: args.retryDelayMs,
       disableContinuationFlow: args.disableContinuationFlow,
+      unrestrictedSdkCallbacks: args.unrestrictedSdkCallbacks,
     },
     progress: {
       finished: 0,
