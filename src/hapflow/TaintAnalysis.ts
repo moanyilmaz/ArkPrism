@@ -1,5 +1,5 @@
 
-import { Scene } from "../arkanalyzer";
+import { CALLBACK_METHOD_NAME, Scene } from "../arkanalyzer";
 import { DataflowProblem, FlowFunction } from "../arkanalyzer";
 import { Local } from "../arkanalyzer";
 import { Value } from "../arkanalyzer";
@@ -37,7 +37,16 @@ function continuationFlowEnabled(): boolean {
     return process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW !== '1';
 }
 
-export type SdkContinuationEdgeKind = 'source_callback' | 'promise_fulfillment';
+export type SdkContinuationEdgeKind = 'source_callback' | 'framework_event' | 'promise_fulfillment';
+
+const ARKUI_FRAMEWORK_EVENT_NAMES = new Set(CALLBACK_METHOD_NAME);
+
+export function isArkUIFrameworkEventSignature(
+    methodName: string,
+    declaringClassName: string
+): boolean {
+    return declaringClassName === '' && ARKUI_FRAMEWORK_EVENT_NAMES.has(methodName);
+}
 
 function normalizeSdkPathForTypeImports(sdkPath?: string): string {
     return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
@@ -1498,6 +1507,23 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         return this.valueOriginatesFromPromise(invokeExpr.getBase());
     }
 
+    private hasArkUIFrameworkEventWitness(invokeExpr: ArkInstanceInvokeExpr): boolean {
+        const methodSignature = invokeExpr.getMethodSignature();
+        const classSignature = methodSignature.getDeclaringClassSignature();
+        if (!isArkUIFrameworkEventSignature(
+            methodSignature.getMethodSubSignature().getMethodName(),
+            classSignature.getClassName()
+        )) {
+            return false;
+        }
+
+        const targetFileSignature = classSignature.getDeclaringFileSignature();
+        const targetFile = this.scene.getFile(targetFileSignature);
+        if (targetFile) return this.scene.hasSdkFile(targetFileSignature);
+
+        return methodSignature.toString().includes('@%unk/%unk');
+    }
+
     public getSdkContinuationEdgeKind(
         callStmt: Stmt,
         callbackMethod: ArkMethod
@@ -1511,6 +1537,11 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
         if (source?.sourceType === 'callback' && source.callbackIndex === callbackIndex) {
             return 'source_callback';
+        }
+
+        if (invokeExpr instanceof ArkInstanceInvokeExpr
+            && this.hasArkUIFrameworkEventWitness(invokeExpr)) {
+            return 'framework_event';
         }
 
         if (continuationFlowEnabled()

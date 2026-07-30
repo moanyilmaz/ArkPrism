@@ -28,6 +28,7 @@ const checks = [
   'verify_pta_container_edges.js',
   'verify_rule_deduplication.js',
   'verify_runner_strictness.js',
+  'verify_sdk_continuation_classifier.js',
   'verify_semantic_path_audit_evaluator.js',
   'verify_semantic_path_audit_queue.js',
   'verify_semantic_path_audit_rebind.js',
