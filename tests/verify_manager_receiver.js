@@ -53,6 +53,15 @@ const cases = [
     ],
   },
   {
+    fixture: 'typed_receiver_specificity',
+    expected: [
+      'Album.getAssets|receiver_type',
+      'Album.getAssets|receiver_type',
+      'PhotoAccessHelper.getAssets|receiver_type',
+      'PhotoAccessHelper.getAssets|receiver_type',
+    ],
+  },
+  {
     fixture: 'receiver_collision',
     expected: [],
   },
