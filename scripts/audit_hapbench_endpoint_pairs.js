@@ -90,17 +90,6 @@ const manualDecisions = new Map([
   }],
 ]);
 
-function wilsonLower(successes, total, z = 1.96) {
-  if (total === 0) {
-    return null;
-  }
-  const p = successes / total;
-  const denominator = 1 + (z * z) / total;
-  const center = p + (z * z) / (2 * total);
-  const margin = z * Math.sqrt((p * (1 - p) + (z * z) / (4 * total)) / total);
-  return (center - margin) / denominator;
-}
-
 function main() {
   const args = parseArgs(process.argv);
   const reportsRoot = path.resolve(args.reports);
@@ -187,8 +176,6 @@ function main() {
       precision,
       recall,
       f1,
-      precisionWilson95Lower: wilsonLower(tp, tp + fp),
-      recallWilson95Lower: wilsonLower(tp, goldCases.length),
     },
     falseNegativeCases: fnCases,
     records,

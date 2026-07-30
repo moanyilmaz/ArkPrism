@@ -12,9 +12,15 @@ const artifactPath = path.resolve(
   'endpoint_pair_audit.json',
 );
 const artifact = JSON.parse(fs.readFileSync(artifactPath, 'utf8'));
+const evaluatorSource = fs.readFileSync(
+  path.resolve(__dirname, '..', 'scripts', 'audit_hapbench_endpoint_pairs.js'),
+  'utf8',
+);
 
 assert.strictEqual(artifact.schemaVersion, 1);
 assert.strictEqual(artifact.unit, 'unique source-sink endpoint pair');
+assert.ok(!evaluatorSource.includes('precisionWilson95Lower'));
+assert.ok(!evaluatorSource.includes('recallWilson95Lower'));
 assert.deepStrictEqual(
   {
     goldPairs: artifact.metrics.goldPairs,
