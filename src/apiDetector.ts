@@ -198,6 +198,40 @@ function apiReceiverIdentities(api: PrivacyDataAPI): Set<string> {
     return identities;
 }
 
+function receiverIdentityMatchScore(
+    api: PrivacyDataAPI,
+    observedIdentities: Iterable<string>,
+): number {
+    const observed = [...observedIdentities].map(normalizedIdentity).filter(Boolean);
+    const identities = apiReceiverIdentities(api);
+    const namespace = normalizedIdentity(api.namespace);
+    let score = -1;
+    for (let index = 0; index < observed.length; index++) {
+        const identity = observed[index];
+        if (identities.has(identity)) score = Math.max(score, 100_000 + index * 1_000);
+        if (identity === namespace && index === observed.length - 1) {
+            score = Math.max(score, 1_000_000 + index * 10_000);
+        }
+    }
+    return score;
+}
+
+function findBestReceiverIdentityCandidate<T extends { api: PrivacyDataAPI }>(
+    candidates: T[],
+    observedIdentities: Iterable<string>,
+): T | undefined {
+    return candidates
+        .map((item, order) => {
+            return {
+                item,
+                order,
+                score: receiverIdentityMatchScore(item.api, observedIdentities),
+            };
+        })
+        .filter(match => match.score >= 0)
+        .sort((left, right) => right.score - left.score || left.order - right.order)[0]?.item;
+}
+
 const GENERIC_INDIRECT_METHODS = new Set([
     'cancel', 'close', 'connect', 'create', 'delete', 'disconnect',
     'get', 'head', 'off', 'on', 'open', 'post', 'put', 'read',
@@ -209,12 +243,38 @@ interface ReceiverDefinitionEvidence {
     identities: string[];
 }
 
-type SourceTypeHints = Map<string, Set<string>>;
+interface SourceTypeHint {
+    line: number;
+    identities: Set<string>;
+}
+
+type SourceTypeHints = Map<string, SourceTypeHint[]>;
+
+function sourceTypeIdentities(
+    hints: SourceTypeHints,
+    name: string,
+    sourceLine?: number,
+): Set<string> {
+    const records = hints.get(normalizedIdentity(name)) || [];
+    if (records.length === 0) return new Set();
+    if (!sourceLine) {
+        return new Set(records.flatMap(record => [...record.identities]));
+    }
+    const preceding = records
+        .filter(record => record.line <= sourceLine)
+        .sort((left, right) => right.line - left.line)[0];
+    const nearest = preceding || [...records]
+        .sort((left, right) =>
+            Math.abs(left.line - sourceLine) - Math.abs(right.line - sourceLine),
+        )[0];
+    return new Set(nearest?.identities || []);
+}
 
 interface SourceOccurrence {
     member: string;
     accessKind: "call" | "property";
     receiver: string;
+    owner: string;
     line: number;
     column: number;
     expression: string;
@@ -254,7 +314,11 @@ function collectSourceTypeHints(file: ArkFile): SourceTypeHints {
             if (imported) identities.add(imported);
         }
         if (identities.size > 0) {
-            hints.set(normalizedIdentity(name.text), identities);
+            const key = normalizedIdentity(name.text);
+            const location = source.getLineAndCharacterOfPosition(name.getStart(source));
+            const records = hints.get(key) || [];
+            records.push({ line: location.line + 1, identities });
+            hints.set(key, records);
         }
     }
 
@@ -262,7 +326,10 @@ function collectSourceTypeHints(file: ArkFile): SourceTypeHints {
         if (ts.isParameter(node) ||
             ts.isPropertyDeclaration(node) ||
             ts.isPropertySignature(node) ||
-            ts.isVariableDeclaration(node)) {
+            ts.isVariableDeclaration(node) ||
+            ts.isMethodDeclaration(node) ||
+            ts.isMethodSignature(node) ||
+            ts.isFunctionDeclaration(node)) {
             recordHint(node.name, node.type);
         }
         ts.forEachChild(node, collectDeclarations);
@@ -283,7 +350,16 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
     );
     const occurrences: SourceOccurrence[] = [];
 
-    function visit(node: any): void {
+    function visit(node: any, owner = ''): void {
+        let lexicalOwner = owner;
+        if ((ts.isMethodDeclaration(node) ||
+            ts.isMethodSignature(node) ||
+            ts.isFunctionDeclaration(node) ||
+            ts.isGetAccessorDeclaration(node) ||
+            ts.isSetAccessorDeclaration(node)) &&
+            node.name && ts.isIdentifier(node.name)) {
+            lexicalOwner = normalizedIdentity(node.name.text);
+        }
         if (ts.isPropertyAccessExpression(node)) {
             const call = ts.isCallExpression(node.parent) && node.parent.expression === node
                 ? node.parent
@@ -294,12 +370,13 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
                 member: node.name.text,
                 accessKind: call ? "call" : "property",
                 receiver: node.expression.getText(source),
+                owner: lexicalOwner,
                 line: location.line + 1,
                 column: location.character + 1,
                 expression: (call || node).getText(source),
             });
         }
-        ts.forEachChild(node, visit);
+        ts.forEachChild(node, child => visit(child, lexicalOwner));
     }
     visit(source);
     return occurrences;
@@ -322,7 +399,11 @@ function recoverSourceLocations(
         for (const name of [receiverRoot, receiverTail]) {
             const identity = normalizedIdentity(name.replace(/^this\./, ''));
             if (identity) receiverIdentities.add(identity);
-            for (const hinted of sourceTypeHints.get(identity) || []) receiverIdentities.add(hinted);
+            for (const hinted of sourceTypeIdentities(
+                sourceTypeHints,
+                identity,
+                occurrence.line,
+            )) receiverIdentities.add(hinted);
         }
         const api: PrivacyDataAPI = {
             namespace: result.namespace,
@@ -338,12 +419,20 @@ function recoverSourceLocations(
             receiverText.startsWith(`${info.importClauseName}.`) ||
             receiverText.startsWith(`${info.importClauseName}?.`),
         );
-        const typedReceiver = [...receiverIdentities].some(identity => expectedIdentities.has(identity));
+        const typedReceiverScore = receiverIdentityMatchScore(api, receiverIdentities);
         const exactReceiver = expectedIdentities.has(normalizedIdentity(receiverTail));
+        const ownerMatch = String(result.declaringMethod || '').match(
+            /:\s+[^:]*\.([A-Za-z_$][\w$]*)\s*\(/,
+        );
+        const resultOwner = normalizedIdentity(ownerMatch?.[1]);
+        const ownerScore = resultOwner && occurrence.owner
+            ? (resultOwner === occurrence.owner ? 20_000_000 : -20_000_000)
+            : 0;
         const lineDistance = Math.abs(occurrence.line - (result.line || occurrence.line));
-        return (namespaceReceiver ? 10000 : 0)
-            + (typedReceiver ? 8000 : 0)
-            + (exactReceiver ? 6000 : 0)
+        return ownerScore
+            + (namespaceReceiver ? 10_000_000 : 0)
+            + Math.max(typedReceiverScore, 0)
+            + (exactReceiver ? 50_000 : 0)
             - Math.min(lineDistance, 1000);
     }
 
@@ -402,12 +491,13 @@ function findReceiverDefinitionEvidence(
     const visitedDefinitions = new Set<ArkAssignStmt>();
     const matchedUnits = new Set<ImportEntryCheckUnit>();
     const identities = new Set<string>();
+    const sourceLine = (currentStmt as any).getOriginPositionInfo?.()?.getLineNo?.() || undefined;
 
     function addIdentity(value: Value | undefined): void {
         if (!value) return;
         for (const token of identityTokens(value.toString())) {
             identities.add(token);
-            for (const hintedType of sourceTypeHints.get(token) || []) {
+            for (const hintedType of sourceTypeIdentities(sourceTypeHints, token, sourceLine)) {
                 identities.add(hintedType);
             }
         }
@@ -489,11 +579,15 @@ function resolveIndirectMatch(
     const receiver = invokeExpr instanceof ArkInstanceInvokeExpr ? invokeExpr.getBase() : undefined;
     if (receiver) {
         const receiverName = normalizedIdentity(receiver.toString());
-        const receiverTypes = new Set(typeIdentityTokens(receiver.getType().getTypeString()));
-        const typeMatch = candidates.find(item => {
-            return [...apiReceiverIdentities(item.api)]
-                .some(identity => receiverTypes.has(identity));
-        });
+        const receiverTypeTokens = [
+            ...typeIdentityTokens(receiver.getType().getTypeString()),
+            ...sourceTypeIdentities(
+                sourceTypeHints,
+                receiverName,
+                stmt.getOriginPositionInfo?.()?.getLineNo?.() || undefined,
+            ),
+        ];
+        const typeMatch = findBestReceiverIdentityCandidate(candidates, receiverTypeTokens);
         if (typeMatch) return { ...typeMatch, evidence: "receiver_type" };
 
         const targetClass = normalizedIdentity(
@@ -522,10 +616,10 @@ function resolveIndirectMatch(
             return { ...originCandidates[0], evidence: "receiver_origin" };
         }
 
-        const definitionMatch = candidates.find(item => {
-            const identities = apiReceiverIdentities(item.api);
-            return definitionEvidence.identities.some(identity => identities.has(identity));
-        });
+        const definitionMatch = findBestReceiverIdentityCandidate(
+            candidates,
+            definitionEvidence.identities,
+        );
         if (definitionMatch) return { ...definitionMatch, evidence: "receiver_type" };
 
         const genericMethod = GENERIC_INDIRECT_METHODS.has(invokeMethodName.toLowerCase());
