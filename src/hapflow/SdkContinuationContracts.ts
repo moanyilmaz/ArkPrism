@@ -17,19 +17,41 @@ export interface SdkMethodContract {
     returnsPromise: boolean;
 }
 
-const PLATFORM_TASK_CALLBACK_INDEX = new Map<string, number>([
-    ['setTimeout', 0],
-    ['setInterval', 0],
-    ['queueMicrotask', 0],
+interface PlatformTaskCallbackContract {
+    callbackIndex: number;
+    receiverHints?: readonly string[];
+}
+
+const PLATFORM_TASK_CALLBACK_CONTRACTS = new Map<string, PlatformTaskCallbackContract>([
+    ['setTimeout', { callbackIndex: 0 }],
+    ['setInterval', { callbackIndex: 0 }],
+    ['queueMicrotask', { callbackIndex: 0 }],
+    ['requestPermissionsFromUser', {
+        callbackIndex: 2,
+        receiverHints: ['atmanager', 'abilityaccessctrl'],
+    }],
 ]);
+
+function normalizeCallbackOwner(value: string): string {
+    return value.toLowerCase().replace(/[^a-z0-9]/g, '');
+}
 
 export function isPlatformTaskCallbackSignature(
     methodName: string,
     declaringClassName: string,
-    callbackIndex: number
+    callbackIndex: number,
+    receiverTexts: readonly string[] = []
 ): boolean {
-    return declaringClassName === ''
-        && PLATFORM_TASK_CALLBACK_INDEX.get(methodName) === callbackIndex;
+    const contract = PLATFORM_TASK_CALLBACK_CONTRACTS.get(methodName);
+    if (!contract || contract.callbackIndex !== callbackIndex) return false;
+    if (!contract.receiverHints) return declaringClassName === '';
+
+    const witnesses = [declaringClassName, ...receiverTexts]
+        .map(normalizeCallbackOwner)
+        .filter(Boolean);
+    return contract.receiverHints.some(hint =>
+        witnesses.some(witness => witness.includes(hint) || hint.includes(witness))
+    );
 }
 
 export function isPromiseTypeText(typeName: string): boolean {

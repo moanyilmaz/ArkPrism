@@ -53,6 +53,15 @@ export function isArkUIFrameworkEventSignature(
     return declaringClassName === '' && ARKUI_FRAMEWORK_EVENT_NAMES.has(methodName);
 }
 
+export function callbackMethodSignatureMatches(
+    argumentSignature: MethodSignature,
+    callbackMethod: ArkMethod,
+    resolvedMethod?: ArkMethod | null
+): boolean {
+    if (resolvedMethod === callbackMethod) return true;
+    return argumentSignature.toString() === callbackMethod.getSignature().toString();
+}
+
 function normalizeSdkPathForTypeImports(sdkPath?: string): string {
     return (sdkPath || '').replace(/\\/g, '/').replace(/\/+$/, '');
 }
@@ -1459,8 +1468,13 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         if (!invokeExpr) return -1;
         return invokeExpr.getArgs().findIndex(argument => {
             const argumentType = argument.getType();
-            if (!(argumentType instanceof FunctionType) || !callerClass) return false;
-            return callerClass.getMethod(argumentType.getMethodSignature()) === callbackMethod;
+            if (!(argumentType instanceof FunctionType)) return false;
+            const argumentSignature = argumentType.getMethodSignature();
+            return callbackMethodSignatureMatches(
+                argumentSignature,
+                callbackMethod,
+                callerClass?.getMethod(argumentSignature)
+            );
         });
     }
 
@@ -1540,7 +1554,10 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         if (!isPlatformTaskCallbackSignature(
             methodSignature.getMethodSubSignature().getMethodName(),
             classSignature.getClassName(),
-            callbackIndex
+            callbackIndex,
+            invokeExpr instanceof ArkInstanceInvokeExpr
+                ? [invokeExpr.getBase().getType().toString(), invokeExpr.getBase().toString()]
+                : []
         )) {
             return false;
         }

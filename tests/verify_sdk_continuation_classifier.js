@@ -21,6 +21,15 @@ assert.strictEqual(isPlatformTaskCallbackSignature('setInterval', '', 0), true);
 assert.strictEqual(isPlatformTaskCallbackSignature('queueMicrotask', '', 0), true);
 assert.strictEqual(isPlatformTaskCallbackSignature('setTimeout', '', 1), false);
 assert.strictEqual(isPlatformTaskCallbackSignature('setTimeout', 'AppTimers', 0), false);
+assert.strictEqual(isPlatformTaskCallbackSignature('requestPermissionsFromUser', '', 2, [
+  'unknown',
+  'atManager',
+]), true);
+assert.strictEqual(isPlatformTaskCallbackSignature('requestPermissionsFromUser', 'AtManager', 2), true);
+assert.strictEqual(isPlatformTaskCallbackSignature('requestPermissionsFromUser', '', 1, ['atManager']), false);
+assert.strictEqual(isPlatformTaskCallbackSignature('requestPermissionsFromUser', '', 2, [
+  'permissionCache',
+]), false);
 assert.strictEqual(isPlatformTaskCallbackSignature('storeCallback', '', 0), false);
 
 assert.strictEqual(isPromiseTypeText('Promise<PermissionRequestResult>'), true);
