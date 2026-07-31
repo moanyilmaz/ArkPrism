@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-27T10:59:02.953Z",
+  "generatedAt": "2026-07-31T05:52:52.933Z",
   "definitions": {
     "sourceFingerprint": "SHA-256 of TypeScript scanner tokens after removing comments and trivia; identifiers and literals are preserved.",
     "exactProjectClone": "Projects with the same multiset of source-file token fingerprints.",
@@ -32,11 +32,11 @@
       "withApi": 353,
       "withChain": 353,
       "withSink": 224,
-      "withTaint": 181,
+      "withTaint": 183,
       "apiRate": 0.34812623274161736,
       "chainRate": 0.34812623274161736,
       "sinkRate": 0.22090729783037474,
-      "taintRate": 0.17850098619329388
+      "taintRate": 0.1804733727810651
     },
     "onePerExactCloneCluster": {
       "projects": 995,
@@ -44,11 +44,11 @@
       "withApi": 350,
       "withChain": 350,
       "withSink": 222,
-      "withTaint": 179,
+      "withTaint": 181,
       "apiRate": 0.35175879396984927,
       "chainRate": 0.35175879396984927,
       "sinkRate": 0.22311557788944725,
-      "taintRate": 0.1798994974874372
+      "taintRate": 0.18190954773869347
     },
     "onePerNearCloneCluster": {
       "projects": 993,
@@ -56,11 +56,11 @@
       "withApi": 348,
       "withChain": 348,
       "withSink": 221,
-      "withTaint": 179,
+      "withTaint": 181,
       "apiRate": 0.3504531722054381,
       "chainRate": 0.3504531722054381,
       "sinkRate": 0.22255790533736153,
-      "taintRate": 0.18026183282980865
+      "taintRate": 0.1822759315206445
     },
     "reviewedTop120": {
       "projects": 119,
@@ -68,11 +68,11 @@
       "withApi": 119,
       "withChain": 119,
       "withSink": 100,
-      "withTaint": 36,
+      "withTaint": 38,
       "apiRate": 1,
       "chainRate": 1,
       "sinkRate": 0.8403361344537815,
-      "taintRate": 0.3025210084033613
+      "taintRate": 0.31932773109243695
     }
   },
   "benchmarkSampling": {
@@ -788,9 +788,9 @@
       "exactCloneClusterSize": 1,
       "nearCloneClusterSize": 1,
       "report": {
-        "apiUsages": 46,
-        "callChains": 46,
-        "chainsWithPath": 46,
+        "apiUsages": 47,
+        "callChains": 47,
+        "chainsWithPath": 47,
         "sinks": 8,
         "taintFlows": 0
       }
@@ -805,9 +805,9 @@
       "exactCloneClusterSize": 1,
       "nearCloneClusterSize": 1,
       "report": {
-        "apiUsages": 25,
-        "callChains": 25,
-        "chainsWithPath": 25,
+        "apiUsages": 26,
+        "callChains": 26,
+        "chainsWithPath": 26,
         "sinks": 1,
         "taintFlows": 0
       }
@@ -4225,7 +4225,7 @@
         "apiUsages": 4,
         "callChains": 4,
         "chainsWithPath": 4,
-        "sinks": 8,
+        "sinks": 9,
         "taintFlows": 1
       }
     },
@@ -5909,7 +5909,7 @@
         "callChains": 50,
         "chainsWithPath": 50,
         "sinks": 27,
-        "taintFlows": 26
+        "taintFlows": 27
       }
     },
     {
@@ -6266,7 +6266,7 @@
         "callChains": 20,
         "chainsWithPath": 20,
         "sinks": 14,
-        "taintFlows": 10
+        "taintFlows": 6
       }
     },
     {
@@ -7813,7 +7813,7 @@
         "callChains": 27,
         "chainsWithPath": 27,
         "sinks": 20,
-        "taintFlows": 23
+        "taintFlows": 24
       }
     },
     {
@@ -9530,7 +9530,7 @@
         "callChains": 63,
         "chainsWithPath": 63,
         "sinks": 84,
-        "taintFlows": 42
+        "taintFlows": 43
       }
     },
     {
@@ -11553,7 +11553,7 @@
         "callChains": 13,
         "chainsWithPath": 13,
         "sinks": 10,
-        "taintFlows": 0
+        "taintFlows": 4
       }
     },
     {
@@ -12692,7 +12692,7 @@
         "callChains": 10,
         "chainsWithPath": 10,
         "sinks": 0,
-        "taintFlows": 3
+        "taintFlows": 5
       }
     },
     {
@@ -14052,7 +14052,7 @@
         "callChains": 5,
         "chainsWithPath": 5,
         "sinks": 4,
-        "taintFlows": 0
+        "taintFlows": 3
       }
     },
     {
@@ -14647,7 +14647,7 @@
         "callChains": 52,
         "chainsWithPath": 52,
         "sinks": 42,
-        "taintFlows": 32
+        "taintFlows": 33
       }
     },
     {
@@ -15106,7 +15106,7 @@
         "callChains": 48,
         "chainsWithPath": 48,
         "sinks": 64,
-        "taintFlows": 36
+        "taintFlows": 37
       }
     },
     {
@@ -16466,7 +16466,7 @@
         "callChains": 14,
         "chainsWithPath": 14,
         "sinks": 17,
-        "taintFlows": 3
+        "taintFlows": 1
       }
     },
     {
@@ -17142,11 +17142,11 @@
       "exactCloneClusterSize": 1,
       "nearCloneClusterSize": 1,
       "report": {
-        "apiUsages": 64,
-        "callChains": 64,
-        "chainsWithPath": 64,
+        "apiUsages": 65,
+        "callChains": 65,
+        "chainsWithPath": 65,
         "sinks": 75,
-        "taintFlows": 36
+        "taintFlows": 37
       }
     },
     {

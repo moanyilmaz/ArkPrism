@@ -55,6 +55,7 @@
 \newcommand{\mytooltitle}{\texorpdfstring{ArkPrism: Evidence-Carrying Privacy API Resolution for ArkTS Taint Analysis}{ArkPrism: Evidence-Carrying Privacy API Resolution for ArkTS Taint Analysis}}
 \newcommand{\arkts}{ArkTS\xspace}
 \newcommand{\openharmony}{OpenHarmony\xspace}
+\input{data/corpus_numbers}
 
 \definecolor{deepblue}{rgb}{0,0,0.5}
 \definecolor{deepred}{rgb}{0.6,0,0}
@@ -179,7 +180,7 @@ Static privacy analysis for \openharmony/\arkts depends on a step that conventio
 
 We present \mytool, an evidence-preserving static analysis that resolves the triple $\langle$identity, witness, carrier$\rangle$ from package, namespace, receiver, access-kind, SDK, and IR evidence. Well-formed return, argument, and callback carriers seed a continuation-aware IFDS analysis over initializers, closures, exceptions, access paths, callbacks, Promise-\texttt{then}, and \texttt{await}. Provenance-preserving evidence graphs retain the identity witness, call context, sink, transfer derivation, and source location while keeping privacy-data and framework-input paths distinct.
 
-Within a fixed rule set and statically enumerable candidate universe, a source-first benchmark shows that \mytool recovers all 90 gold occurrences at exact locations and rejects all 96 candidate collisions. It classifies all 64 matched identity cases correctly. On the complete 67-case HapBench suite, \mytool achieves 100\% case-level precision and specificity, 97.09\% F1, and 98.04\% endpoint-pair precision. On a balanced asynchronous benchmark, the Promise-\texttt{then} transfer recovers all nine targeted positive cases with no change to 24 matched negatives; removing that transfer reduces recall from 100\% to 62.50\% ($p=0.00390625$). A 16-case adversarial Promise suite further covers non-Promise \texttt{then}, handler position, alias separation, sequential continuations, and Promise flattening, classifying every positive and negative correctly. A structured source/IR audit confirms all 90 sampled real-project privacy-data paths and 114/120 paths in the stratified sample. Across 1,014 projects, \mytool identifies 2,336 privacy-API usages and 243 privacy-data paths without resource fallback.
+Within a fixed rule set and statically enumerable candidate universe, a source-first benchmark shows that \mytool recovers all 90 gold occurrences at exact locations and rejects all 96 candidate collisions. It classifies all 64 matched identity cases correctly. On the complete 67-case HapBench suite, \mytool achieves 100\% case-level precision and specificity, 97.09\% F1, and 98.04\% endpoint-pair precision. On a balanced asynchronous benchmark, the Promise-\texttt{then} transfer recovers all nine targeted positive cases with no change to 24 matched negatives; removing that transfer reduces recall from 100\% to 62.50\% ($p=0.00390625$). A 24-case Promise mutation suite further tests owner identity, handler position, alias separation, callback executability, sequential continuations, and Promise flattening; \mytool classifies all seven positive and 17 negative cases correctly. A structured source/IR audit confirms all 90 sampled real-project privacy-data paths and 115/120 paths in the stratified sample. Across \CorpusProjects{} projects, \mytool identifies \CorpusApiOccurrences{} privacy-API usages and \CorpusPrivacyPaths{} privacy-data paths without resource fallback.
 \end{abstract}
 
 \begin{CCSXML}
@@ -214,7 +215,7 @@ Within a fixed rule set and statically enumerable candidate universe, a source-f
 \input{8.Conclusion}
 
 \section*{Data Availability}
-The replication package contains the \mytool source and build scripts; API, source, sink, and package-migration rules; ArkSourceFirst60 and ArkIdentityBench; the Top-120 stress audit; HapBench and ArkAsyncBench oracles and outputs; the 120-path semantic review; and per-project results for the 1,014-project corpus. Machine-readable results regenerate every table and figure. Dataset redistribution follows each constituent project's license; project identifiers and derived reports are supplied where source redistribution is restricted.
+The replication package contains the \mytool source and build scripts; API, source, sink, and package-migration rules; ArkSourceFirst60 and ArkIdentityBench; the Top-120 stress audit; HapBench, ArkAsyncBench, and ArkPromiseBench sources, oracles, and configuration outputs; the 120-path semantic review; and per-project results for the \CorpusProjects{}-project corpus. Run manifests bind each result to analyzer and frontend commits, rule hashes, SDK fingerprints, feature flags, and resource policy. Machine-readable results regenerate every table and figure. Dataset redistribution follows each constituent project's license; project identifiers and derived reports are supplied where source redistribution is restricted.
 
 \appendix
 \input{9.Appendix}

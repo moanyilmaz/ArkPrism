@@ -104,6 +104,28 @@ def wilson_interval(
     )
 
 
+def spearman_rho(left: np.ndarray, right: np.ndarray) -> float:
+    """Compute Spearman's rho with average ranks for tied observations."""
+
+    def average_ranks(values: np.ndarray) -> np.ndarray:
+        order = np.argsort(values, kind="stable")
+        ranks = np.empty(len(values), dtype=float)
+        start = 0
+        while start < len(values):
+            end = start + 1
+            while end < len(values) and values[order[end]] == values[order[start]]:
+                end += 1
+            ranks[order[start:end]] = (start + end - 1) / 2.0 + 1.0
+            start = end
+        return ranks
+
+    left_ranks = average_ranks(np.asarray(left))
+    right_ranks = average_ranks(np.asarray(right))
+    if np.std(left_ranks) == 0 or np.std(right_ranks) == 0:
+        return 0.0
+    return float(np.corrcoef(left_ranks, right_ranks)[0, 1])
+
+
 def load_json(path: Path) -> Any:
     with path.open("r", encoding="utf-8") as handle:
         return json.load(handle)
@@ -522,11 +544,19 @@ def summarize_reports(
         )
         for flow in taints:
             path = flow.get("path", []) or []
+            derivations = sorted(
+                {
+                    str(item).strip().lower()
+                    for item in (flow.get("analysisDerivations", []) or [])
+                    if str(item).strip()
+                }
+            )
             flow_rows.append(
                 {
                     "project": report.get("projectName"),
                     "sourceKind": flow.get("sourceKind", "unknown"),
                     "provenance": flow.get("provenance", "unknown"),
+                    "analysisDerivations": derivations,
                     "sourceScope": flow_source_scope(flow),
                     "pathStatements": len(path),
                 }
@@ -1563,11 +1593,39 @@ def build_corpus_figure(report_summary: dict[str, Any]) -> dict[str, Any]:
             row["project"]
         )
 
+    derivation_counts: Counter[str] = Counter()
+    derivation_projects: defaultdict[str, set[str]] = defaultdict(set)
+    derivation_provenance: defaultdict[str, Counter[str]] = defaultdict(Counter)
+    derivation_combinations: Counter[str] = Counter()
+    for row in flow_rows:
+        derivations = row["analysisDerivations"]
+        if derivations:
+            derivation_combinations["+".join(derivations)] += 1
+        for derivation in derivations:
+            derivation_counts[derivation] += 1
+            derivation_projects[derivation].add(row["project"])
+            derivation_provenance[derivation][row["provenance"]] += 1
+
     return {
         "categories": categories,
         "sinkTypes": SINK_ORDER,
         "categorySinkMatrix": matrix.tolist(),
         "topCutoffs": top_cutoffs,
+        "correlations": {
+            "methodsVsPaths": spearman_rho(methods, taints),
+        },
+        "continuationDerivations": {
+            "counts": dict(sorted(derivation_counts.items())),
+            "projects": {
+                key: len(projects)
+                for key, projects in sorted(derivation_projects.items())
+            },
+            "byProvenance": {
+                key: dict(sorted(counts.items()))
+                for key, counts in sorted(derivation_provenance.items())
+            },
+            "combinations": dict(sorted(derivation_combinations.items())),
+        },
         "methodSizeDeciles": size_strata,
         "pathScope": {
             source_kind: {

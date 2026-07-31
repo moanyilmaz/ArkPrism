@@ -24,117 +24,116 @@
 \@writefile{toc}{\contentsline {section}{Abstract}{1}{section*.1}}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}}
 \newlabel{sec:introduction}{{1}{1}{Introduction}{section.1}{}}
-\citation{reprodroid}
-\citation{taintbench}
-\citation{muse}
-\citation{arzt14,pacdroid}
 \citation{openharmony,arktsdoc,huaweiHarmonyWhitepaper}
+\citation{arkanalyzer}
+\citation{hapflow}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Background and Motivation}{3}{section.2}}
 \newlabel{sec:background}{{2}{3}{Background and Motivation}{section.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1}OpenHarmony and ArkTS}{3}{subsection.2.1}}
-\citation{arkanalyzer}
-\citation{hapflow}
-\citation{arkanalyzer}
-\citation{hapflow}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Foundational Static Analysis for ArkTS}{4}{subsection.2.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Information-flow Subgraphs}{4}{subsection.2.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Motivating Example}{4}{subsection.2.4}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Recurring Failure Modes}{4}{subsection.2.5}}
-\newlabel{subsec:failure_modes}{{2.5}{4}{Recurring Failure Modes}{subsection.2.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Foundational Static Analysis for ArkTS}{3}{subsection.2.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Motivating ArkTS example and the evidence recovered by \textsc  {ArkPrism}\xspace  .\relax }}{4}{figure.caption.2}}
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{lst:motivation}{{1}{5}{Simplified privacy-sensitive information flow in an ArkTS component}{lstlisting.1}{}}
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}Simplified privacy-sensitive information flow in an ArkTS component.}{5}{lstlisting.1}}
+\newlabel{fig:motivation}{{1}{4}{Motivating ArkTS example and the evidence recovered by \mytool .\relax }{figure.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Provenance-Preserving Evidence Graphs}{4}{subsection.2.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Motivating Example}{4}{subsection.2.4}}
+\citation{arkanalyzer}
+\citation{hapflow}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}Analysis Requirements}{5}{subsection.2.5}}
+\newlabel{subsec:failure_modes}{{2.5}{5}{Analysis Requirements}{subsection.2.5}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Design of \textsc  {ArkPrism}\xspace  }{5}{section.3}}
 \newlabel{sec:design}{{3}{5}{Design of \mytool }{section.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Problem Definition and Notation}{5}{subsection.3.1}}
 \newlabel{subsec:problem_def}{{3.1}{5}{Problem Definition and Notation}{subsection.3.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces \textsc  {ArkPrism}\xspace  analysis pipeline and evidence assembly.\relax }}{7}{figure.caption.3}}
-\newlabel{fig:architecture}{{1}{7}{\mytool analysis pipeline and evidence assembly.\relax }{figure.caption.3}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces \textsc  {ArkPrism}\xspace  analysis pipeline and evidence assembly.\relax }}{7}{figure.caption.3}}
+\newlabel{fig:architecture}{{2}{7}{\mytool analysis pipeline and evidence assembly.\relax }{figure.caption.3}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Architecture Overview}{7}{subsection.3.2}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Running Example: Why Direct Calls Are Insufficient}{7}{subsection.3.3}}
 \newlabel{subsec:running_example}{{3.3}{7}{Running Example: Why Direct Calls Are Insufficient}{subsection.3.3}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Running example of API recognition and evidence construction.\relax }}{8}{figure.caption.4}}
-\newlabel{fig:running_design}{{2}{8}{Running example of API recognition and evidence construction.\relax }{figure.caption.4}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Evidence-carrying resolution for manager receivers and compound namespaces.\relax }}{8}{figure.caption.4}}
+\newlabel{fig:running_design}{{3}{8}{Evidence-carrying resolution for manager receivers and compound namespaces.\relax }{figure.caption.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Namespace-constrained Package Migration}{8}{subsection.3.4}}
 \newlabel{subsec:pkg_norm}{{3.4}{8}{Namespace-constrained Package Migration}{subsection.3.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Package- and Receiver-aware API Identity Resolution}{8}{subsection.3.5}}
-\newlabel{subsec:identity_resolution}{{3.5}{8}{Package- and Receiver-aware API Identity Resolution}{subsection.3.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Package- and Receiver-aware API Identity Resolution}{9}{subsection.3.5}}
+\newlabel{subsec:identity_resolution}{{3.5}{9}{Package- and Receiver-aware API Identity Resolution}{subsection.3.5}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.1}Identity Function}{9}{subsubsection.3.5.1}}
 \@writefile{toc}{\contentsline {paragraph}{IFDS source-rule acceptance.}{9}{section*.5}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces API identity resolution examples.\relax }}{10}{table.caption.6}}
-\newlabel{tab:identity_examples}{{1}{10}{API identity resolution examples.\relax }{table.caption.6}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.2}Receiver-Origin Tracing}{10}{subsubsection.3.5.2}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.5.3}Access-Kind Classification}{10}{subsubsection.3.5.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Lifecycle State Machine Model}{10}{subsection.3.6}}
-\newlabel{subsec:lifecycle}{{3.6}{10}{Lifecycle State Machine Model}{subsection.3.6}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Asynchronous carrier and context recovery rules.\relax }}{11}{table.caption.7}}
-\newlabel{tab:transfer_rules}{{2}{11}{Asynchronous carrier and context recovery rules.\relax }{table.caption.7}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces API identity resolution examples.\relax }}{11}{table.caption.6}}
+\newlabel{tab:identity_examples}{{1}{11}{API identity resolution examples.\relax }{table.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Lifecycle State Machine Model}{11}{subsection.3.6}}
+\newlabel{subsec:lifecycle}{{3.6}{11}{Lifecycle State Machine Model}{subsection.3.6}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Asynchronous Carrier and Context Recovery}{11}{subsection.3.7}}
 \newlabel{subsec:async_binding}{{3.7}{11}{Asynchronous Carrier and Context Recovery}{subsection.3.7}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.1}T1: Callback Parameter Binding}{11}{subsubsection.3.7.1}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}T2: Field-Stored Callback Binding}{12}{subsubsection.3.7.2}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.3}T3: Builder-Option Callback Binding}{12}{subsubsection.3.7.3}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.4}T4: Promise \texttt  {.then()} Chain Binding}{12}{subsubsection.3.7.4}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.5}T5: \texttt  {async/await} Bridge Binding}{12}{subsubsection.3.7.5}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.6}Algorithm}{13}{subsubsection.3.7.6}}
-\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Post-IFDS Asynchronous Carrier Recovery\relax }}{13}{algorithm.1}}
-\newlabel{alg:callback}{{1}{13}{Post-IFDS Asynchronous Carrier Recovery\relax }{algorithm.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Context-Sensitive Call Graph Construction}{13}{subsection.3.8}}
-\newlabel{subsec:context_sensitive}{{3.8}{13}{Context-Sensitive Call Graph Construction}{subsection.3.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}Callback-augmented Call-chain Recovery}{14}{subsection.3.9}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.10}Sink and Taint Attachment}{14}{subsection.3.10}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.10.1}Provenance Annotation}{15}{subsubsection.3.10.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.11}Analysis Contract and Soundness Envelope}{15}{subsection.3.11}}
-\newlabel{subsec:analysis_contract}{{3.11}{15}{Analysis Contract and Soundness Envelope}{subsection.3.11}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.12}Corpus-scale Hardening}{15}{subsection.3.12}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{16}{section.4}}
-\newlabel{sec:implementation}{{4}{16}{Implementation}{section.4}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{18}{section.5}}
-\newlabel{sec:evaluation}{{5}{18}{Evaluation}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Experimental Design}{18}{subsection.5.1}}
-\newlabel{subsec:eval_design}{{5.1}{18}{Experimental Design}{subsection.5.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}RQ1: Privacy-API Identity Resolution}{19}{subsection.5.2}}
-\newlabel{subsec:api_accuracy}{{5.2}{19}{RQ1: Privacy-API Identity Resolution}{subsection.5.2}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Asynchronous carrier and context recovery rules.\relax }}{12}{table.caption.7}}
+\newlabel{tab:transfer_rules}{{2}{12}{Asynchronous carrier and context recovery rules.\relax }{table.caption.7}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.1}Callback ICFG Edges and Fact Domain}{12}{subsubsection.3.7.1}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}T1: Callback Parameter Binding}{13}{subsubsection.3.7.2}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.3}T2: Field-Stored Callback Binding}{13}{subsubsection.3.7.3}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.4}T3: Builder-Option Callback Binding}{13}{subsubsection.3.7.4}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.5}T4: Promise Success-Continuation Binding}{13}{subsubsection.3.7.5}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.6}T5: Native Async/Await Normal Flow}{14}{subsubsection.3.7.6}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.7}Algorithm}{14}{subsubsection.3.7.7}}
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Promise ownership and payload-dependence boundaries.\relax }}{15}{figure.caption.8}}
+\newlabel{fig:promise_semantic_boundaries}{{4}{15}{Promise ownership and payload-dependence boundaries.\relax }{figure.caption.8}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces Promise success-continuation IFDS call flow\relax }}{15}{algorithm.1}}
+\newlabel{alg:callback}{{1}{15}{Promise success-continuation IFDS call flow\relax }{algorithm.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Callback-augmented Call-chain Recovery}{15}{subsection.3.8}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.9}Sink and Taint Attachment}{16}{subsection.3.9}}
+\@writefile{toc}{\contentsline {paragraph}{Construction invariants.}{17}{section*.9}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.9.1}Provenance Annotation}{17}{subsubsection.3.9.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.10}Analysis Contract}{17}{subsection.3.10}}
+\newlabel{subsec:analysis_contract}{{3.10}{17}{Analysis Contract}{subsection.3.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.11}Scalable Execution}{18}{subsection.3.11}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Implementation}{18}{section.4}}
+\newlabel{sec:implementation}{{4}{18}{Implementation}{section.4}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Evaluation}{21}{section.5}}
+\newlabel{sec:evaluation}{{5}{21}{Evaluation}{section.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Evaluation Protocol}{21}{subsection.5.1}}
+\newlabel{subsec:eval_design}{{5.1}{21}{Evaluation Protocol}{subsection.5.1}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Identity evidence progression.\relax }}{22}{table.caption.10}}
+\newlabel{tab:identity_progression}{{3}{22}{Identity evidence progression.\relax }{table.caption.10}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}RQ1: Privacy-API Identity}{22}{subsection.5.2}}
+\newlabel{subsec:api_detection_accuracy}{{5.2}{22}{RQ1: Privacy-API Identity}{subsection.5.2}{}}
 \citation{hapflow}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Identity-resolution progression on ArkIdentityBench.\relax }}{20}{table.caption.8}}
-\newlabel{tab:identity_progression}{{3}{20}{Identity-resolution progression on ArkIdentityBench.\relax }{table.caption.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}RQ2: End-to-End Flow Classification}{20}{subsection.5.3}}
-\newlabel{subsec:hapbench}{{5.3}{20}{RQ2: End-to-End Flow Classification}{subsection.5.3}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Complete HapBench reproduction (53 positive and 14 negative cases).\relax }}{20}{table.caption.9}}
-\newlabel{tab:hapbench_main}{{4}{20}{Complete HapBench reproduction (53 positive and 14 negative cases).\relax }{table.caption.9}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Statistical and configuration-level diagnosis on HapBench. (a) Point estimates and 95\% Wilson intervals. (b) Category--configuration error rates, with cells reporting error counts. (c) Metric changes relative to the full configuration and exact paired McNemar tests.\relax }}{21}{figure.caption.10}}
-\newlabel{fig:eval_hapbench}{{3}{21}{Statistical and configuration-level diagnosis on HapBench. (a) Point estimates and 95\% Wilson intervals. (b) Category--configuration error rates, with cells reporting error counts. (c) Metric changes relative to the full configuration and exact paired McNemar tests.\relax }{figure.caption.10}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}RQ3: Mechanism Contribution and Trade-offs}{21}{subsection.5.4}}
-\newlabel{subsec:component_ablation}{{5.4}{21}{RQ3: Mechanism Contribution and Trade-offs}{subsection.5.4}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces HapBench mechanism ablations.\relax }}{22}{table.caption.11}}
-\newlabel{tab:hapbench_ablation}{{5}{22}{HapBench mechanism ablations.\relax }{table.caption.11}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Complementary asynchronous-carrier coverage.\relax }}{22}{table.caption.12}}
-\newlabel{tab:asyncbench}{{6}{22}{Complementary asynchronous-carrier coverage.\relax }{table.caption.12}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}RQ4: Large-Corpus Characterization}{23}{subsection.5.5}}
-\newlabel{subsec:corpus_patterns}{{5.5}{23}{RQ4: Large-Corpus Characterization}{subsection.5.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Large-corpus privacy evidence.\relax }}{23}{table.caption.13}}
-\newlabel{tab:corpus_summary}{{7}{23}{Large-corpus privacy evidence.\relax }{table.caption.13}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Detector/configured-query evidence concentration, detector-local category--sink structure, and project-scale relationships in the large corpus.\relax }}{24}{figure.caption.14}}
-\newlabel{fig:eval_corpus_landscape}{{4}{24}{Detector/configured-query evidence concentration, detector-local category--sink structure, and project-scale relationships in the large corpus.\relax }{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{24}{section.6}}
-\newlabel{sec:discussion}{{6}{24}{Discussion}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}What the Evidence Supports}{24}{subsection.6.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Threats to Validity}{25}{subsection.6.2}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces HapBench case-level classification.\relax }}{23}{table.caption.11}}
+\newlabel{tab:hapbench_main}{{4}{23}{HapBench case-level classification.\relax }{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces HapBench uncertainty, category errors, and paired ablation effects.\relax }}{23}{figure.caption.12}}
+\newlabel{fig:eval_hapbench}{{5}{23}{HapBench uncertainty, category errors, and paired ablation effects.\relax }{figure.caption.12}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}RQ2: End-to-End Flow Classification}{23}{subsection.5.3}}
+\newlabel{subsec:hapbench}{{5.3}{23}{RQ2: End-to-End Flow Classification}{subsection.5.3}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces HapBench ablation results.\relax }}{24}{table.caption.13}}
+\newlabel{tab:hapbench_ablation}{{5}{24}{HapBench ablation results.\relax }{table.caption.13}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}RQ3: Mechanism and Path Quality}{24}{subsection.5.4}}
+\newlabel{subsec:component_ablation}{{5.4}{24}{RQ3: Mechanism and Path Quality}{subsection.5.4}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Asynchronous carrier isolation and Promise-boundary results.\relax }}{25}{table.caption.14}}
+\newlabel{tab:asyncbench}{{6}{25}{Asynchronous carrier isolation and Promise-boundary results.\relax }{table.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Manual semantic audit of 120 real-project paths.\relax }}{25}{table.caption.15}}
+\newlabel{tab:semantic_path_audit}{{7}{25}{Manual semantic audit of 120 real-project paths.\relax }{table.caption.15}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}RQ4: Large-Corpus Characterization}{25}{subsection.5.5}}
+\newlabel{subsec:corpus_patterns}{{5.5}{25}{RQ4: Large-Corpus Characterization}{subsection.5.5}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Privacy evidence across 1,014{} projects.\relax }}{26}{table.caption.16}}
+\newlabel{tab:corpus_summary}{{8}{26}{Privacy evidence across \CorpusProjects {} projects.\relax }{table.caption.16}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Corpus evidence concentration, category--sink structure, scale-stratified prevalence, and provenance-conditioned path complexity.\relax }}{26}{figure.caption.17}}
+\newlabel{fig:eval_corpus_landscape}{{6}{26}{Corpus evidence concentration, category--sink structure, scale-stratified prevalence, and provenance-conditioned path complexity.\relax }{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Discussion}{27}{section.6}}
+\newlabel{sec:discussion}{{6}{27}{Discussion}{section.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Evidence as the Analysis Contract}{27}{subsection.6.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Core Privacy Paths and Framework Context}{27}{subsection.6.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Precision-Oriented Reachability}{27}{subsection.6.3}}
 \citation{harmobridge}
 \citation{stowaway,pscout,susi,axplorer,fuse}
 \citation{appaudit,appintent,policheck,ppchecker}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Validity Controls}{28}{subsection.6.4}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.5}Applicability}{28}{subsection.6.5}}
 \citation{hapflow}
-\citation{arkanalyzer}
 \citation{comdroid,chex,epicc,ic3,iccta,didfail,raicc}
 \citation{edgeminer}
 \citation{lee16,bridgescope,babelview,eoeidroid}
 \citation{wemint}
+\citation{executesbefore}
+\citation{promisekeeper}
 \citation{hapflow}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Limitations}{26}{subsection.6.3}}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Related Work}{26}{section.7}}
-\newlabel{sec:related}{{7}{26}{Related Work}{section.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Source Identity and Privacy API Recognition}{26}{subsection.7.1}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Asynchronous Semantics and Lifecycle Modeling}{26}{subsection.7.2}}
 \citation{traintdroid}
 \citation{arzt14}
 \citation{wei2018amandroid,gordon2015droidsafe,iccta,leakminer,androidleaks}
@@ -143,6 +142,11 @@
 \citation{arkanalyzer,arktsPointer}
 \citation{harmonyflow}
 \citation{taintmini}
+\@writefile{toc}{\contentsline {section}{\numberline {7}Related Work}{29}{section.7}}
+\newlabel{sec:related}{{7}{29}{Related Work}{section.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Source Identity and Privacy API Recognition}{29}{subsection.7.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Asynchronous Semantics and Lifecycle Modeling}{29}{subsection.7.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Evidence Representation and Large-scale Auditing}{29}{subsection.7.3}}
 \citation{drebin,droidapiminer,droidsift,apposcopy,appcontext,droidranger,droidmoss,onw19,yan12,copperdroid,intellidroid,harvester,triggerscope}
 \citation{Androzoo}
 \citation{reps95,sagiv96}
@@ -156,101 +160,104 @@
 \citation{reprodroid}
 \citation{taintbench}
 \citation{muse}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Evidence Representation and Large-scale Auditing}{27}{subsection.7.3}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Evaluation Methodology for Mobile Analyses}{27}{subsection.7.4}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{28}{section.8}}
-\newlabel{sec:conclusion}{{8}{28}{Conclusion}{section.8}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Reproduction Details}{28}{appendix.A}}
-\newlabel{sec:appendix}{{A}{28}{Reproduction Details}{appendix.A}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}HapBench Case-level Outcomes}{28}{subsection.A.1}}
-\newlabel{subsec:app_hapbench_errors}{{A.1}{28}{HapBench Case-level Outcomes}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Evaluation Methodology for Mobile Analyses}{30}{subsection.7.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusion}{30}{section.8}}
+\newlabel{sec:conclusion}{{8}{30}{Conclusion}{section.8}{}}
 \citation{hapflow}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Case-level error inventory for the main HapBench comparison.\relax }}{31}{table.caption.19}}
+\newlabel{tab:hapbench_errors_app}{{9}{31}{Case-level error inventory for the main HapBench comparison.\relax }{table.caption.19}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {A}Reproduction Details}{31}{appendix.A}}
+\newlabel{sec:appendix}{{A}{31}{Reproduction Details}{appendix.A}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.1}HapBench Case-level Outcomes}{31}{subsection.A.1}}
+\newlabel{subsec:app_hapbench_errors}{{A.1}{31}{HapBench Case-level Outcomes}{subsection.A.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Lifecycle-Oracle Sensitivity}{31}{subsection.A.2}}
+\newlabel{subsec:app_oracle_sensitivity}{{A.2}{31}{Lifecycle-Oracle Sensitivity}{subsection.A.2}{}}
 \citation{hapflow}
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Complete error inventory for the main HapBench comparison.\relax }}{29}{table.caption.16}}
-\newlabel{tab:hapbench_errors_app}{{8}{29}{Complete error inventory for the main HapBench comparison.\relax }{table.caption.16}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.2}Lifecycle-Oracle Sensitivity}{29}{subsection.A.2}}
-\newlabel{subsec:app_oracle_sensitivity}{{A.2}{29}{Lifecycle-Oracle Sensitivity}{subsection.A.2}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Sensitivity to strict lifecycle execution order.\relax }}{29}{table.caption.17}}
-\newlabel{tab:hapbench_strict_oracle}{{9}{29}{Sensitivity to strict lifecycle execution order.\relax }{table.caption.17}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Uncertainty and Category Robustness}{30}{subsection.A.3}}
-\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces HapBench uncertainty and category robustness.\relax }}{30}{table.caption.18}}
-\newlabel{tab:hapbench_ci_app}{{10}{30}{HapBench uncertainty and category robustness.\relax }{table.caption.18}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Per-category F1 on all HapBench cases.\relax }}{30}{table.caption.19}}
-\newlabel{tab:hapbench_categories_app}{{11}{30}{Per-category F1 on all HapBench cases.\relax }{table.caption.19}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Source-first Benchmark Protocol}{30}{subsection.A.4}}
-\newlabel{subsec:app_manual_audit}{{A.4}{30}{Source-first Benchmark Protocol}{subsection.A.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}High-output Stress-audit Decision Rule}{30}{subsection.A.5}}
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Sensitivity to strict lifecycle execution order.\relax }}{32}{table.caption.20}}
+\newlabel{tab:hapbench_strict_oracle}{{10}{32}{Sensitivity to strict lifecycle execution order.\relax }{table.caption.20}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces HapBench uncertainty and category robustness.\relax }}{32}{table.caption.21}}
+\newlabel{tab:hapbench_ci_app}{{11}{32}{HapBench uncertainty and category robustness.\relax }{table.caption.21}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Per-category HapBench errors and F1.\relax }}{32}{table.caption.22}}
+\newlabel{tab:hapbench_categories_app}{{12}{32}{Per-category HapBench errors and F1.\relax }{table.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.3}Uncertainty and Category Robustness}{32}{subsection.A.3}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.4}Source-first Benchmark Protocol}{32}{subsection.A.4}}
+\newlabel{subsec:app_manual_audit}{{A.4}{32}{Source-first Benchmark Protocol}{subsection.A.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.5}High-output Stress-audit Protocol}{33}{subsection.A.5}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Real-project Path-audit Protocol}{33}{subsection.A.6}}
+\newlabel{subsec:app_path_audit}{{A.6}{33}{Real-project Path-audit Protocol}{subsection.A.6}{}}
 \bibstyle{ACM-Reference-Format}
 \bibdata{references}
 \bibcite{droidapiminer}{{1}{2013}{{Aafer et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{Androzoo}{{2}{2016}{{Allix et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{policheck}{{3}{2020}{{Andow et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {A.6}Artifact-to-Paper Traceability}{31}{subsection.A.6}}
-\newlabel{subsec:app_traceability}{{A.6}{31}{Artifact-to-Paper Traceability}{subsection.A.6}{}}
-\@writefile{toc}{\contentsline {section}{References}{31}{section*.21}}
-\bibcite{drebin}{{4}{2014}{{Arp et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{arzt14}{{5}{2014}{{Arzt et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{pscout}{{6}{2012}{{Au et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{axplorer}{{7}{2016}{{Backes et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{covert}{{8}{2015}{{Bagheri et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{heros}{{9}{2012}{{Bodden}}{{}}}
-\bibcite{muse}{{10}{2018}{{Bonett et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{babelview}{{11}{2018}{{Brucker and Herzberg}}{{}}}
-\bibcite{horndroid}{{12}{2016}{{Calzavara et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{edgeminer}{{13}{2015}{{Cao et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{arkanalyzer}{{14}{2025a}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{hapflow}{{15}{2026}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{pacdroid}{{16}{2025d}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{hmtest}{{17}{2025b}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{harmobridge}{{18}{2025c}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{comdroid}{{19}{2011}{{Chin et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{traintdroid}{{20}{2014}{{Enck et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{stowaway}{{21}{2011}{{Felt et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{apposcopy}{{22}{2014}{{Feng et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{wala}{{23}{2008}{{Fink et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{triggerscope}{{24}{2016}{{Fratantonio et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{androidleaks}{{25}{2012}{{Gibler et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{gordon2015droidsafe}{{26}{2015}{{Gordon et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{huaweiHarmonyWhitepaper}{{27}{2021}{{Huawei}}{{}}}
-\bibcite{arktsdoc}{{28}{2026}{{Huawei Developer}}{{}}}
-\bibcite{didfail}{{29}{2014}{{Klieber et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{lee16}{{30}{2016}{{Lee et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{iccta}{{31}{2015}{{Li et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{harmonyroadmap}{{32}{2025}{{Li et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{taintmini}{{33}{2023}{{Li et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{promisekeeper}{{2}{2018}{{Alimadadi et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{Androzoo}{{3}{2016}{{Allix et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{policheck}{{4}{2020}{{Andow et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{drebin}{{5}{2014}{{Arp et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{arzt14}{{6}{2014}{{Arzt et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{pscout}{{7}{2012}{{Au et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{axplorer}{{8}{2016}{{Backes et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{covert}{{9}{2015}{{Bagheri et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{heros}{{10}{2012}{{Bodden}}{{}}}
+\bibcite{muse}{{11}{2018}{{Bonett et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{babelview}{{12}{2018}{{Brucker and Herzberg}}{{}}}
+\bibcite{horndroid}{{13}{2016}{{Calzavara et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{edgeminer}{{14}{2015}{{Cao et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {A.7}Result Traceability}{34}{subsection.A.7}}
+\newlabel{subsec:app_traceability}{{A.7}{34}{Result Traceability}{subsection.A.7}{}}
+\@writefile{toc}{\contentsline {section}{References}{34}{section*.24}}
+\bibcite{arkanalyzer}{{15}{2025a}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{hapflow}{{16}{2026}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{pacdroid}{{17}{2025d}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{hmtest}{{18}{2025b}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{harmobridge}{{19}{2025c}{{Chen et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{comdroid}{{20}{2011}{{Chin et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{traintdroid}{{21}{2014}{{Enck et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{stowaway}{{22}{2011}{{Felt et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{apposcopy}{{23}{2014}{{Feng et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{wala}{{24}{2008}{{Fink et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{triggerscope}{{25}{2016}{{Fratantonio et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{androidleaks}{{26}{2012}{{Gibler et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{gordon2015droidsafe}{{27}{2015}{{Gordon et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{huaweiHarmonyWhitepaper}{{28}{2021}{{Huawei}}{{}}}
+\bibcite{arktsdoc}{{29}{2026}{{Huawei Developer}}{{}}}
+\bibcite{didfail}{{30}{2014}{{Klieber et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{lee16}{{31}{2016}{{Lee et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{iccta}{{32}{2015}{{Li et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{harmonyroadmap}{{33}{2025}{{Li et~al\unhbox \voidb@x \hbox {.}}}{{}}}
 \bibcite{haprepair}{{34}{2025}{{Lin et~al\unhbox \voidb@x \hbox {.}}}{{}}}
 \bibcite{haptest}{{35}{2025}{{Liu et~al\unhbox \voidb@x \hbox {.}}}{{}}}
 \bibcite{chex}{{36}{2012}{{Lu et~al\unhbox \voidb@x \hbox {.}}}{{}}}
 \bibcite{taintbench}{{37}{2022}{{Luo et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{epicc}{{38}{2013}{{Octeau et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{ic3}{{39}{2015}{{Octeau et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{onw19}{{40}{2019}{{Onwuzurike et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{openharmony}{{41}{2026}{{OpenAtom Foundation}}{{}}}
-\bibcite{reprodroid}{{42}{2018}{{Pauck et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{susi}{{43}{2014}{{Rasthofer et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{harvester}{{44}{2016}{{Rasthofer et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{fuse}{{45}{2014}{{Ravitch et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{reps95}{{46}{1995}{{Reps et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{sagiv96}{{47}{1996}{{Sagiv et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{raicc}{{48}{2021}{{Samhi et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{copperdroid}{{49}{2015}{{Tam et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{soot}{{50}{2010}{{Vall{\'e}e-Rai et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{harmonyflow}{{51}{2025}{{Wang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{wei2018amandroid}{{52}{2018}{{Wei et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{intellidroid}{{53}{2016}{{Wong and Lie}}{{}}}
-\bibcite{wemint}{{54}{2023}{{Wu et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{appaudit}{{55}{2015}{{Xia et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{yan12}{{56}{2012}{{Yan and Yin}}{{}}}
-\bibcite{eoeidroid}{{57}{2018}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{bridgescope}{{58}{2017}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{appcontext}{{59}{2015}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{arktsPointer}{{60}{2026}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{leakminer}{{61}{2012}{{Yang and Yang}}{{}}}
-\bibcite{appintent}{{62}{2013}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{ppchecker}{{63}{2021}{{Yu et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{droidsift}{{64}{2014}{{Zhang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{droidmoss}{{65}{2012b}{{Zhou et~al\unhbox \voidb@x \hbox {.}}}{{}}}
-\bibcite{droidranger}{{66}{2012a}{{Zhou et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{wemint}{{38}{2023}{{Meng et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{epicc}{{39}{2013}{{Octeau et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{ic3}{{40}{2015}{{Octeau et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{onw19}{{41}{2019}{{Onwuzurike et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{openharmony}{{42}{2026}{{OpenAtom Foundation}}{{}}}
+\bibcite{executesbefore}{{43}{2022}{{Pai et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{reprodroid}{{44}{2018}{{Pauck et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{susi}{{45}{2014}{{Rasthofer et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{harvester}{{46}{2016}{{Rasthofer et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{fuse}{{47}{2014}{{Ravitch et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{reps95}{{48}{1995}{{Reps et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{sagiv96}{{49}{1996}{{Sagiv et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{raicc}{{50}{2021}{{Samhi et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{copperdroid}{{51}{2015}{{Tam et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{soot}{{52}{2010}{{Vall{\'e}e-Rai et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{taintmini}{{53}{2023}{{Wang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{harmonyflow}{{54}{2025}{{Wang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{wei2018amandroid}{{55}{2018}{{Wei et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{intellidroid}{{56}{2016}{{Wong and Lie}}{{}}}
+\bibcite{appaudit}{{57}{2015}{{Xia et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{yan12}{{58}{2012}{{Yan and Yin}}{{}}}
+\bibcite{eoeidroid}{{59}{2018}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{bridgescope}{{60}{2017}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{appcontext}{{61}{2015}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{arktsPointer}{{62}{2026}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{leakminer}{{63}{2012}{{Yang and Yang}}{{}}}
+\bibcite{appintent}{{64}{2013}{{Yang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{ppchecker}{{65}{2021}{{Yu et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{droidsift}{{66}{2014}{{Zhang et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{droidmoss}{{67}{2012b}{{Zhou et~al\unhbox \voidb@x \hbox {.}}}{{}}}
+\bibcite{droidranger}{{68}{2012a}{{Zhou et~al\unhbox \voidb@x \hbox {.}}}{{}}}
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{4.65pt}
@@ -258,4 +265,4 @@
 \newlabel{tocindent3}{22.99997pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
-\newlabel{TotPages}{{34}{34}{}{page.34}{}}
+\newlabel{TotPages}{{37}{37}{}{page.37}{}}

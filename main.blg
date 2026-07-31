@@ -25,7 +25,6 @@ Warning--empty publisher in covert
 Warning--empty address in covert
 Warning--empty publisher in heros
 Warning--empty address in heros
-Warning--empty publisher in muse
 Warning--empty address in muse
 Warning--empty publisher in babelview
 Warning--empty address in babelview
@@ -63,21 +62,20 @@ Warning--empty publisher in didfail
 Warning--empty address in didfail
 Warning--empty publisher in iccta
 Warning--empty address in iccta
-Warning--empty publisher in taintmini
-Warning--empty address in taintmini
-Warning--page numbers missing in both pages and numpages fields in taintmini
 Warning--empty publisher in haprepair
 Warning--empty address in haprepair
 Warning--empty publisher in haptest
 Warning--empty address in haptest
 Warning--empty publisher in chex
 Warning--empty address in chex
+Warning--empty address in wemint
 Warning--empty publisher in epicc
 Warning--empty address in epicc
 Warning--empty publisher in ic3
 Warning--empty address in ic3
 Warning--articleno or eid field, but no numpages field, in onw19
 Warning--INFO: reduced pages = [10:1--10:29] to numpages = [29]
+Warning--empty address in executesbefore
 Warning--empty publisher in reprodroid
 Warning--empty address in reprodroid
 Warning--empty publisher in susi
@@ -95,13 +93,11 @@ Warning--empty publisher in copperdroid
 Warning--empty address in copperdroid
 Warning--page numbers missing in both pages and numpages fields in copperdroid
 Warning--empty address in soot
+Warning--empty address in taintmini
 Warning--no number and no volume in harmonyflow
 Warning--empty publisher in intellidroid
 Warning--empty address in intellidroid
 Warning--page numbers missing in both pages and numpages fields in intellidroid
-Warning--empty publisher in wemint
-Warning--empty address in wemint
-Warning--page numbers missing in both pages and numpages fields in wemint
 Warning--empty publisher in appaudit
 Warning--empty address in appaudit
 Warning--empty publisher in eoeidroid
@@ -122,45 +118,45 @@ Warning--empty address in droidmoss
 Warning--empty publisher in droidranger
 Warning--empty address in droidranger
 Warning--page numbers missing in both pages and numpages fields in droidranger
-You've used 66 entries,
+You've used 68 entries,
             6273 wiz_defined-function locations,
-            1863 strings with 33563 characters,
-and the built_in function-call counts, 80378 in all, are:
-= -- 8834
-> -- 3070
+            1882 strings with 34236 characters,
+and the built_in function-call counts, 83585 in all, are:
+= -- 9278
+> -- 3188
 < -- 0
-+ -- 1039
-- -- 1014
-* -- 5988
-:= -- 7859
-add.period$ -- 315
-call.type$ -- 66
-change.case$ -- 578
-chr.to.int$ -- 134
-cite$ -- 175
-duplicate$ -- 7391
-empty$ -- 5161
-format.name$ -- 1243
-if$ -- 19217
++ -- 1080
+- -- 1053
+* -- 6251
+:= -- 8162
+add.period$ -- 327
+call.type$ -- 68
+change.case$ -- 601
+chr.to.int$ -- 136
+cite$ -- 173
+duplicate$ -- 7649
+empty$ -- 5340
+format.name$ -- 1290
+if$ -- 20004
 int.to.chr$ -- 6
 int.to.str$ -- 1
-missing$ -- 295
-newline$ -- 545
-num.names$ -- 458
-pop$ -- 3421
+missing$ -- 303
+newline$ -- 564
+num.names$ -- 472
+pop$ -- 3499
 preamble$ -- 1
-purify$ -- 1098
+purify$ -- 1137
 quote$ -- 0
-skip$ -- 2700
+skip$ -- 2797
 stack$ -- 0
-substring$ -- 5509
-swap$ -- 690
+substring$ -- 5802
+swap$ -- 729
 text.length$ -- 45
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 1791
-warning$ -- 110
-while$ -- 365
+type$ -- 1837
+warning$ -- 106
+while$ -- 380
 width$ -- 0
-write$ -- 1259
-(There were 110 warnings)
+write$ -- 1306
+(There were 106 warnings)

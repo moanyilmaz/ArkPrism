@@ -309,54 +309,65 @@ Lifecycle information is consumed in two distinct ways. For call-chain recovery,
 \label{tab:transfer_rules}
 \papertablestyle
 \setlength{\tabcolsep}{2.8pt}
-\begin{tabularx}{\columnwidth}{@{}llYYll@{}}
+\begin{tabularx}{\columnwidth}{@{}llYYl@{}}
 \toprule
-Rule & Construct & Recovery relation & Required witness & Output & Domain \\
+Rule & Construct & Recovery relation & Required witness & Domain \\
 \midrule
-T1 & Callback source & $Resolve(a_i)\!\to\!cb.param_j$ & Typed callback and carrier index & May-path & IFDS call flow \\
-T2 & Field callback & $Read(this.f)\!\to\!cb$ & Traced field assignment & Call edge & Report CG \\
-T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Named option field & Call edge & Report CG \\
-T4 & Promise \texttt{then} & $fact(base)\!\to\!cb.param_0$ & Success handler and carrier dependence & May-path & IFDS call flow \\
-T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt{await} expression & May-path & Native IFDS normal flow \\
+T1 & Callback source & $Resolve_T(a_i)\!\to\!cb.param_j$ & Typed callback and carrier index & IFDS call flow \\
+T2 & Field callback & $Read(this.f)\!\to\!cb$ & Traced field assignment & Report CG \\
+T3 & Builder option & $Arg(bld,f)\!\to\!cb$ & Named option field & Report CG \\
+T4 & Promise \texttt{then} & $fact(base)\!\to\!cb.param_0$ & Success-handler dependence & IFDS call flow \\
+T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt{await} expression & Native IFDS normal flow \\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \subsubsection{Callback ICFG Edges and Fact Domain}
 
-ArkAnalyzer represents an arrow function argument with a \texttt{FunctionType} carrying its generated method signature. \mytool applies this resolver to every statement containing an invoke expression, including assignments such as \texttt{q = p.then(cb)}. Let
+ArkAnalyzer represents an arrow function argument with a \texttt{FunctionType} carrying its generated method signature; \texttt{ClosureType} is a function-type specialization that additionally carries a lexical environment. \mytool applies typed lookup to every statement containing an invoke expression, including assignments such as \texttt{q = p.then(cb)}. A typed argument alone, however, does not establish execution. For SDK and built-in calls, \mytool admits four witnessed edge classes: a configured callback-source carrier, a lifecycle-governed ArkUI event, a registered platform task, or the first fulfillment handler of a witnessed Promise owner. Let
 \begin{equation}
-E_{cb}=\{(s,m)\mid
-a_i\in args(s),\;a_i\in\mathit{FunctionType},\;
-m=\mathit{Lkp}(a_i.sig),\;\mathit{CFG}(m)\neq\emptyset\}.
+\begin{split}
+E_{src}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
+SourceCb(s,i,j)\},\\
+E_{evt}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
+ArkUIEvent(s,i)\land FrameworkTarget(s)\},\\
+E_{task}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
+TaskContract(s,i,o)\land OwnerWitness(s,o)\},\\
+E_{then}={}&\{(s,m)\mid Resolve_T(a_0)=m,\;
+Then(s)\land PromiseOwner(s)\}.
+\end{split}
 \end{equation}
-The IFDS ICFG is $E'_{ICFG}=E_{ICFG}\cup E_{cb}$. For SDK calls, resolved callback methods are the executable callees; for application calls, they supplement receiver-resolved callees. This construction is shared by T1 and T4 and occurs before their call-flow functions execute.
+Here $SourceCb(s,i,j)$ means that the source rule for $s$ names callback argument $i$ and payload parameter $j$. $ArkUIEvent$ requires a member in the versioned event registry and its exact function-typed argument position. $TaskContract(s,i,o)$ is a versioned tuple of member, callback position, and owner family: global tasks such as \texttt{setTimeout} use a global owner, while receiver-bound completion APIs additionally require an SDK receiver witness such as an access-control manager. $OwnerWitness$ accepts the corresponding SDK declaration, receiver type, or receiver expression and rejects an exact application target with the same member. $PromiseOwner$ accepts a Promise receiver/target or an unresolved built-in whose receiver definition has a proved Promise-return contract. That proof is either a configured \texttt{Promise<T>} carrier, a resolved return signature, or a receiver-qualified SDK declaration for which every arity-compatible overload returns \texttt{Promise<T>}; callback-returning overloads therefore cannot justify a success edge. A resolved application owner named \texttt{then} also fails this predicate. The IFDS ICFG is $E'_{ICFG}=E_{ICFG}\cup E_{src}\cup E_{evt}\cup E_{task}\cup E_{then}$, together with application callback edges justified by an invocation in a resolved application callee. Edges in $E_{evt}$ and $E_{task}$ use zero/capture flow, whereas $E_{then}$ additionally admits the payload-specific transfer below. Other function-typed registrations remain report context and are not converted into execution.
 
 An evidence-carrying fact is
 \begin{equation}
-d=\langle v,\kappa,\epsilon,\delta\rangle,
+d=\langle v,\alpha,\kappa,\epsilon,\delta\rangle,
 \end{equation}
-where $v$ is the current ArkIR value, $\epsilon$ is immutable source evidence, $\delta$ is transfer metadata, and
+where $v$ is the root ArkIR value, $\alpha$ is its field/array access path, $\epsilon$ is immutable source evidence, $\delta$ is transfer metadata, and
 \begin{equation}
 \kappa\in\{\mathit{DirectValue},\mathit{PromisePayload},
 \mathit{CallbackPayload},\mathit{FrameworkArgument}\}.
 \end{equation}
-Fact identity includes $\langle v,\epsilon,\kappa\rangle$; $\delta$ is joined as path metadata and does not create a new semantic fact. Re-rooting replaces $v$ and $\kappa$ while preserving $\epsilon$ and the accumulated derivations.
+Fact identity includes $\langle v,\alpha,\epsilon,\kappa\rangle$; $\delta$ is joined as path metadata and does not create a new semantic fact. The implementation stores $\langle v,\alpha\rangle$ as a structured ArkIR local, instance-field, array, or multi-field value. Promise binding uses
+\begin{equation}
+\mathit{ReRoot}(d,v',\kappa')=
+\langle v',\varnothing,\kappa',\epsilon(d),\delta(d)\rangle,
+\end{equation}
+which clears the container's access path while preserving its source witness and accumulated derivations.
 
 \subsubsection{T1: Callback Parameter Binding}
 
-When an $R_T$ source accepts a callback as a direct argument at position $i$, the binding is $\mathit{SrcBind}(s, cb, param_j)$ where $cb = Resolve(a_i)$ and $param_j$ is the callback parameter selected by the rule's carrier metadata. The IFDS call-flow function accepts only typed or definition-backed callbacks. Resolution applies three strategies in order:
+When an $R_T$ source accepts a callback as a direct argument at position $i$, the binding is $\mathit{SrcBind}(s, cb, param_j)$ where $cb = Resolve_T(a_i)$ and $param_j$ is the callback parameter selected by the rule's carrier metadata. The IFDS edge uses the compiler-provided function signature:
 
 \begin{equation}
-Resolve(a_i) =
+Resolve_T(a_i) =
 \begin{cases}
-m_f, & a_i \in FuncType \land m_f = Lkp(a_i.sig)\\
-m_c, & a_i \in ClosureType \land m_c = Lkp(Ext(a_i))\\
-m_l, & a_i \in Local \land m_l = Trc(a_i)
+m, & type(a_i)\preceq FunctionType \land m=Lkp(type(a_i).sig)\\
+\bot, & \text{otherwise}.
 \end{cases}
 \end{equation}
 
-$FunctionType$ resolution ($Lkp$) extracts the method signature from the compiler-generated function type and looks up the corresponding method in the declaring class. $ClosureType$ resolution ($Ext$+$Lkp$) parses the closure variable name from the closure type string (e.g., \texttt{closures: \_\_lambda1}) and performs a method name lookup. $Local$ variable tracing ($Trc$) follows the definition chain: if $a_i$ is assigned from a \texttt{new LambdaClass()} expression, the ClosureType of the constructor call provides the callback method. Example: \texttt{getData((err,data)$\Rightarrow$...)} resolves the arrow function to its IR method and binds \texttt{data} as the sensitive parameter.
+$Lkp$ extracts the compiler-generated method signature and requires a corresponding method with a CFG in the declaring class. Since \texttt{ClosureType} refines \texttt{FunctionType}, the same lookup also preserves its lexical environment. Definition-backed recovery remains available only in the separately labeled report/supplementary analysis; it is not used to manufacture an IFDS callback edge. For \texttt{getData((err,data)$\Rightarrow$...)}, T1 resolves the arrow function through its typed signature and binds only \texttt{data}.
 
 The tracer seeds only $param_j$ selected by $r_T.i_{src}$, not every callback parameter. It propagates through ArkIR value-use edges and assignments, and accepts a sink only when a sink argument structurally depends on the current fact. IR-local names are never compared by substring, and control dependence alone does not constitute an explicit data-flow edge.
 
@@ -379,18 +390,18 @@ Promise \texttt{.then()} carries the receiver's resolved value into the success 
 \emptyset, & \text{otherwise}.
 \end{cases}
 \end{equation}
-Here $\mathit{Root}(b,d)$ requires exact value identity or an available pointer alias between $b$ and the root of $d$; a nonempty field access path is not copied onto the callback parameter. $\mathit{PromiseGuard}$ requires $\kappa(d)=\mathit{PromisePayload}$ and either a Promise receiver/target type or, for API-20 ArkIR's unresolved built-in target, a source-rule return carrier of \texttt{Promise<T>}. A resolved application-defined owner named \texttt{then} does not satisfy the guard. The re-rooted fact preserves $\epsilon(d)$ and records \textsc{PromiseThen}. Rejection handlers and unrelated callback positions receive no fact.
+Here $\mathit{Root}(b,d)$ requires $\alpha(d)=\varnothing$ and exact value identity or an available pointer alias between $b$ and $v(d)$. A property of a Promise object is therefore not rebound as its resolved payload. $PromiseOwner(s)$ proves that the success callback may execute; it does not itself create sensitive data. $\mathit{PromiseGuard}$ separately requires $\kappa(d)=\mathit{PromisePayload}$, an immutable source witness whose carrier is \texttt{Promise<T>}, and the owner evidence above. Consequently, a non-sensitive SDK Promise may expose a callback body containing a later source, but its resolved value is not reclassified as privacy data. The re-rooted fact preserves $\epsilon(d)$ and records \textsc{PromiseThen}. Rejection handlers and unrelated callback positions receive no fact.
 
 For an assigned continuation $s:q=b.\texttt{then}(cb)$, taint reaches $q$ only through a tainted callback return:
 \begin{equation}
 \mathcal{F}_{ret}^{then}(return\;x,s,d)=
 \begin{cases}
 \{\mathit{ReRoot}(d,q,\mathit{PromisePayload})\},&
-\mathit{val}(d)=x,\\
+\mathit{Returned}(x,d),\\
 \emptyset,&\text{otherwise}.
 \end{cases}
 \end{equation}
-This return-flow rule records \textsc{PromiseReturn}. It supports sequential continuations and Promise flattening while rejecting a chain whose first handler returns a constant independent of its payload.
+$\mathit{Returned}(x,d)$ holds when normal flow has produced a fact whose structured value matches the return operand $x$; thus an alias or property-derived value can match with its access path intact, whereas mere control dependence or consumption by a constant-returning transform cannot. This return-flow rule records \textsc{PromiseReturn}, supports sequential continuations and Promise flattening, and rejects a chain whose first handler returns an independent constant.
 
 \subsubsection{T5: Native Async/Await Normal Flow}
 
@@ -405,7 +416,7 @@ No continuation-specific IFDS rule is needed when this use is explicit: the nati
 
 \subsubsection{Algorithm}
 
-Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It executes on a resolved edge in $E_{cb}$, not after solver termination. The transfer is monotone: it only adds a source-preserving fact for the success parameter when Promise ownership, payload state, root identity, and callback-position evidence hold.
+Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It executes on an edge in $E_{then}$, not after solver termination. Promise-payload facts bypass positional argument mapping: the resolved value is not an ordinary argument of \texttt{then}. Non-payload facts may still enter through exact lexical captures. The transfer is monotone and adds a source-preserving fact only when Promise ownership, payload state, root identity, and callback-position evidence hold.
 
 \begin{algorithm}[H]
 \caption{Promise success-continuation IFDS call flow}
@@ -414,20 +425,18 @@ Algorithm~\ref{alg:callback} gives the T4 extension to IFDS call flow. It execut
 \begin{algorithmic}[1]
 \Require Call site $s$, resolved callee $m$, incoming fact $d$
 \Ensure Call-flow facts $D'$
-\State $D' \gets \Call{StandardCallFlow}{s,m,d}$
-\If{$(s,m)\notin E_{cb}$}
-  \State \Return $D'$
+\If{$(s,m)\notin E_{then}$}
+  \State \Return $\Call{StandardCallFlow}{s,m,d}$
 \EndIf
-\If{$s.member \neq \texttt{then}$}
-  \State \Return $D'$
+\If{$d=\mathbf{0}$}
+  \State \Return $\{\mathbf{0}\}$
 \EndIf
-\State $cb \gets \Call{ResolveCallback}{s.args[0]}$
-\If{$cb=\emptyset \lor cb\neq m \lor cb.param_0=\emptyset$}
-  \State \Return $D'$
+\If{$\kappa(d)\neq\mathit{PromisePayload}$}
+  \State \Return $\Call{CapturedCallFlow}{s,m,d}$
 \EndIf
-\If{$d\neq\mathbf{0} \land
-     \Call{PromiseGuard}{s,d} \land \Call{Root}{s.base,d}$}
-  \State $d' \gets \Call{ReRoot}{d,cb.param_0,\mathit{CallbackPayload}}$
+\State $D' \gets \emptyset$
+\If{$\Call{PromiseGuard}{s,d} \land \Call{Root}{s.base,d}$}
+  \State $d' \gets \Call{ReRoot}{d,m.param_0,\mathit{CallbackPayload}}$
   \State $d'.derivation \gets d'.derivation\cup\{\textsc{PromiseThen}\}$
   \State $D' \gets D'\cup\{d'\}$
 \EndIf

@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2025.5.1)  27 JUL 2026 11:47
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/W32TeX) (preloaded format=pdflatex 2025.5.1)  31 JUL 2026 14:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1595,113 +1595,114 @@ File: tikzlibrarybackgrounds.code.tex 2013/07/18 v3.0.1a (rcs-revision 1.3)
 )
 \@float@every@algorithm=\toks58
 \c@algorithm=\count318
-Class acmart Info: Printing bibformat on input line 149.
-Package hyperref Info: Option `colorlinks' set `true' on input line 156.
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 156
+ (./data/corpus_numbers.tex)
+Class acmart Info: Printing bibformat on input line 166.
+Package hyperref Info: Option `colorlinks' set `true' on input line 173.
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 173
 .
 \c@theorem=\count319
- Include comment 'screenonly'
-Excluding comment 'printonly' Excluding comment 'anonsuppress'
-Excluding comment 'acks' (./main.aux)
+
+Include comment 'screenonly' Excluding comment 'printonly'
+Excluding comment 'anonsuppress' Excluding comment 'acks' (./main.aux)
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 156.
-LaTeX Font Info:    Try loading font information for OML+nxlmi on input line 15
-6.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 173.
+LaTeX Font Info:    Try loading font information for OML+nxlmi on input line 17
+3.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 156.
-LaTeX Font Info:    Try loading font information for U+ntxexa on input line 156
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 173.
+LaTeX Font Info:    Try loading font information for U+ntxexa on input line 173
 .
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 156.
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 156.
-LaTeX Font Info:    Try loading font information for TS1+cmr on input line 156.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 173.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 173.
+LaTeX Font Info:    Try loading font information for TS1+cmr on input line 173.
 
 
 (d:/Texlive/2017/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 156.
-LaTeX Font Info:    Try loading font information for LMS+ntxsy on input line 15
-6.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 173.
+LaTeX Font Info:    Try loading font information for LMS+ntxsy on input line 17
+3.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 156.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 156.
+LaTeX Font Info:    ... okay on input line 173.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 173.
 LaTeX Font Info:    Try loading font information for LMX+ntxexx on input line 1
-56.
+73.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 156.
+LaTeX Font Info:    ... okay on input line 173.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 156.
+(Font)              scaled to size 8.0pt on input line 173.
 LaTeX Font Info:    Try loading font information for OT1+LinuxLibertineT-TLF on
- input line 156.
+ input line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/libertine/ot1linuxlibertinet-tlf.fd
 File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 156.
+(Font)              scaled to size 8.0pt on input line 173.
 <<ot1.cmap>>
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.2pt on input line 156.
+(Font)              scaled to size 6.2pt on input line 173.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 156.
+(Font)              scaled to size 5.5pt on input line 173.
 <<oml.cmap>>
-LaTeX Font Info:    Try loading font information for U+msa on input line 156.
+LaTeX Font Info:    Try loading font information for U+msa on input line 173.
  (d:/Texlive/2017/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 156.
+LaTeX Font Info:    Try loading font information for U+msb on input line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for U+ntxmia on input line 156
+LaTeX Font Info:    Try loading font information for U+ntxmia on input line 173
 .
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2016/01/31 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsym on input line 156
+LaTeX Font Info:    Try loading font information for U+ntxsym on input line 173
 .
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2015/03/20 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 156
+LaTeX Font Info:    Try loading font information for U+ntxsyc on input line 173
 .
 
 (d:/Texlive/2017/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Info: Redefining \microtypecontext on input line 156.
+LaTeX Info: Redefining \microtypecontext on input line 173.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
@@ -1718,7 +1719,7 @@ Package microtype Info: Loading generic settings for font family
 
 ABD: EveryShipout initializing macros
 \AtBeginShipoutBox=\box88
-Package hyperref Info: Link coloring ON on input line 156.
+Package hyperref Info: Link coloring ON on input line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2016/05/21 v2.44 Cross-referencing by name of section
@@ -1728,9 +1729,9 @@ Package: gettitlestring 2016/05/16 v1.5 Cleanup title references (HO)
 )
 \c@section@level=\count320
 )
-LaTeX Info: Redefining \ref on input line 156.
-LaTeX Info: Redefining \pageref on input line 156.
-LaTeX Info: Redefining \nameref on input line 156.
+LaTeX Info: Redefining \ref on input line 173.
+LaTeX Info: Redefining \pageref on input line 173.
+LaTeX Info: Redefining \nameref on input line 173.
 
 (./main.out) (./main.out)
 \@outlinefile=\write8
@@ -1829,13 +1830,13 @@ File: siunitx-abbreviations.cfg 2017/05/19 v2.7g siunitx: Abbreviated units
 )
 \c__siunitx_mathsf_int=\count330
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 156.
+(Font)              scaled to size 10.0pt on input line 173.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 156.
+(Font)              scaled to size 7.3pt on input line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -1844,30 +1845,30 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Try loading font information for T1+LinuxBiolinumT-TLF on i
-nput line 156.
+nput line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/libertine/t1linuxbiolinumt-tlf.fd
 File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/Lin
 uxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 156.
+(Font)              scaled to size 10.0pt on input line 173.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 156.
+(Font)              scaled to size 7.3pt on input line 173.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 156.
+(Font)              scaled to size 5.5pt on input line 173.
 \c__siunitx_mathtt_int=\count331
-LaTeX Font Info:    Try loading font information for T1+zi4 on input line 156.
+LaTeX Font Info:    Try loading font information for T1+zi4 on input line 173.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/inconsolata/t1zi4.fd
 File: t1zi4.fd 2016/12/29 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 10.0pt on input line 156.
+(Font)              scaled to size 10.0pt on input line 173.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1879,7 +1880,7 @@ Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/10'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 7.3pt on input line 156.
+(Font)              scaled to size 7.3pt on input line 173.
 Package microtype Info: Character `textendash ' is missing
 (microtype)             in font `T1/zi4/m/n/7.3'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -1887,7 +1888,7 @@ Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/7.3'.
 (microtype)             Ignoring protrusion settings for this character.
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 5.5pt on input line 156.
+(Font)              scaled to size 5.5pt on input line 173.
 Package microtype Info: Character `textendash ' is missing
 (microtype)             in font `T1/zi4/m/n/5.5'.
 (microtype)             Ignoring protrusion settings for this character.
@@ -1897,48 +1898,48 @@ Package microtype Info: Character `textemdash ' is missing
 
 Excluding 'CCSXML' comment.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 189.
+(Font)              scaled to size 14.4pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 14.4pt on input line 189.
+(Font)              scaled to size 14.4pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 14.4pt on input line 189.
+(Font)              scaled to size 14.4pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 189.
+(Font)              scaled to size 10.95pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 10.95pt on input line 189.
+(Font)              scaled to size 10.95pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
+(Font)              scaled to size 9.0pt on input line 206.
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
+(Font)              scaled to size 9.0pt on input line 206.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 206.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
+(Font)              scaled to size 9.0pt on input line 206.
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
+(Font)              scaled to size 9.0pt on input line 206.
 Package microtype Info: Character `textendash ' is missing
 (microtype)             in font `T1/zi4/m/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
 Package microtype Info: Character `textemdash ' is missing
 (microtype)             in font `T1/zi4/m/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 9.0pt on input line 189.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
 LaTeX Font Info:    Try loading font information for TS1+LinuxLibertineT-TLF on
- input line 189.
+ input line 206.
 
 (d:/Texlive/2017/texmf-dist/tex/latex/libertine/ts1linuxlibertinet-tlf.fd
 File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/
 LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
+(Font)              scaled to size 9.0pt on input line 206.
 Package microtype Info: Loading generic settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 189.
+(Font)              scaled to size 9.0pt on input line 206.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 9.0pt on input line 189.
+(Font)              scaled to size 9.0pt on input line 206.
 
 (./1.Introduction.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
@@ -1946,6 +1947,9 @@ LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 7.0pt on input line 7.
  [1.1{d:/Texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
+(Font)              scaled to size 10.0pt on input line 8.
+
 Underfull \hbox (badness 10000) in paragraph at lines 8--9
 []\T1/LinuxLibertineT-TLF/m/n/10 (+20) Consider \T1/zi4/m/n/10 helper.createAss
 et(...) \T1/LinuxLibertineT-TLF/m/n/10 (+20) af-ter \T1/zi4/m/n/10 helper \T1/L
@@ -1953,77 +1957,48 @@ inuxLibertineT-TLF/m/n/10 (+20) is re-turned by
  []
 
 
-Underfull \hbox (badness 1596) in paragraph at lines 8--9
+Underfull \hbox (badness 10000) in paragraph at lines 8--9
 \T1/zi4/m/n/10 photoAccessHelper.getPhotoAccessHelper(ctx)\T1/LinuxLibertineT-T
 LF/m/n/10 (+20) . The mem-ber \T1/zi4/m/n/10 createAsset \T1/LinuxLibertineT-TL
-F/m/n/10 (+20) alone is in-
+F/m/n/10 (+20) is com-
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
 (Font)              scaled to size 10.0pt on input line 10.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 10.0pt on input line 18.
+
+Underfull \vbox (badness 3250) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 8.0pt on input line 19.
-[2.2]) (./2.Background.tex
+(Font)              scaled to size 8.0pt on input line 20.
+ [2.2])
+(./2.Background.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [3.3]
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 18.
+<figs/listing1.png, id=251, 1397.22pt x 770.88pt>
+File: figs/listing1.png Graphic file (type png)
+ <use figs/listing1.png>
+Package pdftex.def Info: figs/listing1.png used on input line 28.
+(pdftex.def)             Requested size: 336.45152pt x 185.62663pt.
+LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/sc' will be
+(Font)              scaled to size 9.0pt on input line 29.
 
-(d:/Texlive/2017/texmf-dist/tex/latex/listings/lstlang1.sty
-File: lstlang1.sty 2015/06/04 1.6 listings language file
-)
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on i
-nput line 26.
-LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 7.0pt on input line 26.
-Package microtype Info: Character `textendash ' is missing
-(microtype)             in font `T1/zi4/m/n/7'.
-(microtype)             Ignoring protrusion settings for this character.
-Package microtype Info: Character `textemdash ' is missing
-(microtype)             in font `T1/zi4/m/n/7'.
-(microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 8.0pt on input line 27.
-Package microtype Info: Character `textendash ' is missing
-(microtype)             in font `T1/zi4/m/n/8'.
-(microtype)             Ignoring protrusion settings for this character.
-Package microtype Info: Character `textemdash ' is missing
-(microtype)             in font `T1/zi4/m/n/8'.
-(microtype)             Ignoring protrusion settings for this character.
-LaTeX Font Info:    Try loading font information for TS1+zi4 on input line 27.
-
-(d:/Texlive/2017/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
-File: ts1zi4.fd 2016/12/29 TS1/zi4 (Inconsolata)
-)
-LaTeX Font Info:    Font shape `TS1/zi4/m/n' will be
-(Font)              scaled to size 7.0pt on input line 27.
-Package microtype Info: Loading generic settings for font family
-(microtype)             `zi4' (encoding: TS1).
-(microtype)             For optimal results, create family-specific settings.
-(microtype)             See the microtype manual for details.
-)
-(./3.DesignofRAPA.tex
+[4.4 <./figs/listing1.png>]) (./3.DesignofRAPA.tex
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/sc' will be
 (Font)              scaled to size 10.0pt on input line 1.
-
-Underfull \vbox (badness 1895) has occurred while \output is active []
-
- [4.4]
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 21.
+(Font)              scaled to size 10.0pt on input line 15.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 7.3pt on input line 21.
+(Font)              scaled to size 7.3pt on input line 15.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 5.5pt on input line 21.
+(Font)              scaled to size 5.5pt on input line 15.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 7.3pt on input line 23.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
 (Font)              scaled to size 5.5pt on input line 23.
 
-[5.5]
 Underfull \hbox (badness 5817) in paragraph at lines 33--34
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) traces the re-ceiver ob-ject back to its s
 ource via bounded back-ward data-flow (e.g.,
@@ -2036,214 +2011,172 @@ Underfull \hbox (badness 1681) in paragraph at lines 33--34
 nd $[] \LMS/ntxsy/m/n/10 2
  []
 
-[6.6]
-<figs/arkprism_architecture_generated.jpg, id=309, 2762.32pt x 1391.1975pt>
-File: figs/arkprism_architecture_generated.jpg Graphic file (type jpg)
+[5.5]
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
+(Font)              scaled to size 10.0pt on input line 63.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
+(Font)              scaled to size 7.3pt on input line 63.
+LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/sb/n' will be
+(Font)              scaled to size 5.5pt on input line 63.
+ [6.6] <figs/fig1.png, id=289, 1000.48781pt x 526.21594pt>
+File: figs/fig1.png Graphic file (type png)
 
-<use figs/arkprism_architecture_generated.jpg>
-Package pdftex.def Info: figs/arkprism_architecture_generated.jpg used on input
- line 89.
-(pdftex.def)             Requested size: 395.8225pt x 199.33032pt.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/sc' will be
-(Font)              scaled to size 9.0pt on input line 90.
+<use figs/fig1.png>
+Package pdftex.def Info: figs/fig1.png used on input line 116.
+(pdftex.def)             Requested size: 336.45152pt x 176.9599pt.
+ <figs/fig2.png, id=292, 1014.79124pt x 569.12625pt>
+File: figs/fig2.png Graphic file (type png)
 
-<figs/2.jpg, id=312, 2029.5825pt x 1190.4475pt>
-File: figs/2.jpg Graphic file (type jpg)
- <use figs/2.jpg>
-Package pdftex.def Info: figs/2.jpg used on input line 104.
-(pdftex.def)             Requested size: 395.8225pt x 232.16357pt.
- [7.7 <./figs/arkprism_architecture_generated.jpg>]
+<use figs/fig2.png>
+Package pdftex.def Info: figs/fig2.png used on input line 131.
+(pdftex.def)             Requested size: 356.23782pt x 199.78769pt.
+ [7.7 <./figs/fig1.png>] [8.8 <./figs/fig2.png>]
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/it' will be
-(Font)              scaled to size 10.0pt on input line 139.
- [8.8 <./figs/2.jpg>] [9.9] [10.10]
-Underfull \hbox (badness 10000) in paragraph at lines 265--266
+(Font)              scaled to size 10.0pt on input line 166.
+ [9.9]
+[10.10]
+Underfull \hbox (badness 10000) in paragraph at lines 302--303
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) OpenHarmony pri-vacy APIs of-ten de-liver 
 sen-si-tive data through asyn-chro-nous
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 265--266
+Underfull \hbox (badness 10000) in paragraph at lines 302--303
 \T1/LinuxLibertineT-TLF/m/n/10 (+20) call-backs and Promise chains rather than 
 di-rect re-turn val-ues. For ex-am-ple,
  []
 
 
-Underfull \hbox (badness 2393) in paragraph at lines 265--266
+Underfull \hbox (badness 2393) in paragraph at lines 302--303
 \T1/zi4/m/n/10 geoLocationManager.getCurrentLocation(callback) \T1/LinuxLiberti
 neT-TLF/m/n/10 (+20) passes lo-ca-tion data to a call-back
  []
 
-[11.11]
-
-LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
-(Font)              using `T1/zi4/m/n' instead on input line 314.
-
-
-Underfull \hbox (badness 7522) in paragraph at lines 316--317
-[]\T1/LinuxLibertineT-TLF/b/n/10 Direct chain-ing: $\OML/nxlmi/m/it/10 sourceAp
-i\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 args\LMS/ntxsy/m/n/10 º\OML/nxlmi/m/it/1
-0 :then\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 cb\LMS/ntxsy/m/n/10 º$ \T1/LinuxLi
-bertineT-TLF/m/n/10 (+20) cre-ates $[]\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 sou
-rceStmt; cb; param\LMS/ntxsy/m/n/10 º$ \T1/LinuxLibertineT-TLF/m/n/10 (+20) wit
-h
- []
-
-
-Underfull \hbox (badness 1259) in paragraph at lines 320--321
-[]\T1/LinuxLibertineT-TLF/b/n/10 Sequential chain-ing: $\OML/nxlmi/m/it/10 x:th
-en\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 cb[]\LMS/ntxsy/m/n/10 º\OML/nxlmi/m/it/
-10 :then\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 cb[]\LMS/ntxsy/m/n/10 º$ \T1/Linu
-xLibertineT-TLF/m/n/10 (+20) cre-ates $[][] \OML/nxlmi/m/it/10 Edge\LMS/ntxsy/m
-/n/10 ¹\OML/nxlmi/m/it/10 cb[]; cb[]\LMS/ntxsy/m/n/10 º$\T1/LinuxLibertineT-TLF
-/m/n/10 (+20) , prop-a-gat-ing taint
- []
-
-LaTeX Font Info:    Font shape `T1/zi4/m/it' will be
-(Font)              scaled to size 10.0pt on input line 324.
-Package microtype Info: Character `textendash ' is missing
-(microtype)             in font `T1/zi4/m/it/10'.
-(microtype)             Ignoring protrusion settings for this character.
-Package microtype Info: Character `textemdash ' is missing
-(microtype)             in font `T1/zi4/m/it/10'.
-(microtype)             Ignoring protrusion settings for this character.
-[12.12]
+[11.11] [12.12] [13.13]
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 338.
+put line 422.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 8.0pt on input line 342.
-LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 6.2pt on input line 342.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 8.0pt on input line 342.
-LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 6.2pt on input line 342.
-LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 6.2pt on input line 342.
-Package microtype Info: Character `textendash ' is missing
-(microtype)             in font `T1/zi4/m/n/6.2'.
-(microtype)             Ignoring protrusion settings for this character.
-Package microtype Info: Character `textemdash ' is missing
-(microtype)             in font `T1/zi4/m/n/6.2'.
-(microtype)             Ignoring protrusion settings for this character.
+(Font)              scaled to size 8.0pt on input line 426.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/sc' will be
-(Font)              scaled to size 8.0pt on input line 343.
+(Font)              scaled to size 8.0pt on input line 429.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.2pt on input line 343.
- [13.13] [14.14]
-Underfull \hbox (badness 2556) in paragraph at lines 453--454
- \T1/LinuxBiolinumT-TLF/m/it/10 (+20) 3.10.1 Prove-nance An-no-ta-tion.[] \T1/L
-inuxLibertineT-TLF/m/n/10 (+20) Each edge $\OML/nxlmi/m/it/10 e \LMS/ntxsy/m/n/
-10 2 \OML/nxlmi/m/it/10 E[]$ \T1/LinuxLibertineT-TLF/m/n/10 (+20) car-ries a pr
-ove-nance la-bel $\OML/nxlmi/m/it/10 !\LMS/ntxsy/m/n/10 ¹\OML/nxlmi/m/it/10 e\L
-MS/ntxsy/m/n/10 º 2
- []
+(Font)              scaled to size 6.2pt on input line 429.
 
-) (./4.Implementation.tex [15.15] [16.16]) (./5.Evaluation.tex
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [17.17]
-Underfull \vbox (badness 2698) has occurred while \output is active []
+ [14.14]
+<figs/promise_semantic_boundaries.png, id=383, 2200.22pt x 481.8pt>
+File: figs/promise_semantic_boundaries.png Graphic file (type png)
 
- [18.18]
-Underfull \vbox (badness 6396) has occurred while \output is active []
+<use figs/promise_semantic_boundaries.png>
+Package pdftex.def Info: figs/promise_semantic_boundaries.png used on input lin
+e 453.
+(pdftex.def)             Requested size: 395.8225pt x 86.67615pt.
+ [15.15 <./figs/promise_semantic_boundaries.png>] [16.16] [17.17]) (./4.Impleme
+ntation.tex [18.18] [19.19])
+(./5.Evaluation.tex
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [19.19]
-Underfull \hbox (badness 1019) in paragraph at lines 68--69
-\T1/LinuxLibertineT-TLF/m/n/10 (+20) is an ex-e-cutable prop-erty, whereas \T1/
-zi4/m/it/10 helper.createAsset() \T1/LinuxLibertineT-TLF/m/n/10 (+20) re-quires
- a def-i-ni-tion chain to
+ [20.20]
+Underfull \hbox (badness 3746) in paragraph at lines 17--19
+[]\T1/LinuxLibertineT-TLF/b/n/10 Identity bench-marks. \T1/LinuxLibertineT-TLF/
+m/it/10 (+20) Ark-Source-First60 \T1/LinuxLibertineT-TLF/m/n/10 (+20) fixes ten
+ projects from each of six project-
  []
 
-[20.20] <figs/eval_hapbench.pdf, id=438, 534.84639pt x 123.0366pt>
+
+Underfull \vbox (badness 2698) has occurred while \output is active []
+
+ [21.21]
+[22.22] <figs/eval_hapbench.pdf, id=441, 534.84639pt x 123.0366pt>
 File: figs/eval_hapbench.pdf Graphic file (type pdf)
 
 <use figs/eval_hapbench.pdf>
 Package pdftex.def Info: figs/eval_hapbench.pdf used on input line 97.
 (pdftex.def)             Requested size: 395.8225pt x 91.05504pt.
 
-Underfull \vbox (badness 5147) has occurred while \output is active []
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [21.21 <./figs/eval_hapbench.pdf>]
-Underfull \hbox (badness 2980) in paragraph at lines 168--170
-[]\T1/LinuxLibertineT-TLF/b/n/10 Receiver re-fine-ment pro-tects speci-ficity. 
-\T1/LinuxLibertineT-TLF/m/n/10 (+20) With-out receiver-sensitive tar-get fil-te
-r-ing,
- []
+ [23.23 <./figs/eval_hapbench.pdf>]
+Underfull \vbox (badness 3547) has occurred while \output is active []
 
-[22.22] <figs/eval_corpus_landscape.pdf, id=485, 519.67624pt x 142.93513pt>
+ [24.24]
+[25.25] <figs/eval_corpus_landscape.pdf, id=498, 529.09859pt x 141.23315pt>
 File: figs/eval_corpus_landscape.pdf Graphic file (type pdf)
 
 <use figs/eval_corpus_landscape.pdf>
-Package pdftex.def Info: figs/eval_corpus_landscape.pdf used on input line 204.
+Package pdftex.def Info: figs/eval_corpus_landscape.pdf used on input line 250.
 
-(pdftex.def)             Requested size: 395.8225pt x 108.87172pt.
- [23.23]) (./6.Discussion.tex [24.24 <./figs/eval_corpus_landscape.pdf>]
-Underfull \vbox (badness 6396) has occurred while \output is active []
+(pdftex.def)             Requested size: 395.8225pt x 105.65736pt.
 
- [25.25])
-(./7.RelatedWork.tex [26.26]) (./8.Conclusion.tex [27.27]) (./9.Appendix.tex
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1596) has occurred while \output is active []
 
- [28.28]
-[29.29] [30.30]) (./main.bbl
+ [26.26 <./figs/eval_corpus_landscape.pdf>]) (./6.Discussion.tex [27.27])
+(./7.RelatedWork.tex [28.28]
+Underfull \vbox (badness 4660) has occurred while \output is active []
+
+ [29.29])
+(./8.Conclusion.tex) [30.30] (./9.Appendix.tex [31.31] [32.32]
+Underfull \vbox (badness 1377) has occurred while \output is active []
+
+ [33.33])
+(./main.bbl
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
 (Font)              scaled to size 8.0pt on input line 46.
 
-Underfull \vbox (badness 1377) has occurred while \output is active []
+Underfull \vbox (badness 4927) has occurred while \output is active []
 
- [31.31]
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ [34.34]
+LaTeX Info: Redefining \tempurl on input line 395.
+LaTeX Info: Redefining \tempurl on input line 408.
 
- [32.32]
-LaTeX Info: Redefining \tempurl on input line 379.
-LaTeX Info: Redefining \tempurl on input line 392.
-LaTeX Info: Redefining \tempurl on input line 573.
+Underfull \vbox (badness 6396) has occurred while \output is active []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+ [35.35]
+LaTeX Info: Redefining \tempurl on input line 591.
 
- [33.33]
-LaTeX Info: Redefining \tempurl on input line 806.
+Underfull \vbox (badness 6396) has occurred while \output is active []
+
+ [36.36]
+LaTeX Info: Redefining \tempurl on input line 841.
 )
-[34.34]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 209.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 209.
+[37.37]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 226.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 226.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 209.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 209.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 226.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 226.
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 16CA3186DBBD58FE9BBD9E9A436BD6D6;10220.
-
-
-LaTeX Font Warning: Some font shapes were not available, defaults substituted.
-
+(rerunfilecheck)             Checksum: 920FBCDDA28E40A7ADBF7101F8A2E919;10442.
  ) 
 Here is how much of TeX's memory you used:
- 45312 strings out of 492995
- 845004 string characters out of 6136403
- 994850 words of memory out of 5000000
- 46932 multiletter control sequences out of 15000+600000
- 294365 words of font info for 620 fonts, out of 8000000 for 9000
+ 45337 strings out of 492995
+ 847142 string characters out of 6136403
+ 937545 words of memory out of 5000000
+ 46924 multiletter control sequences out of 15000+600000
+ 305900 words of font info for 643 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 60i,16n,94p,10378b,1498s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 60i,20n,94p,10378b,1073s stack positions out of 5000i,500n,10000p,200000b,80000s
 {d:/Texlive/2017/texmf-dist/fonts/enc/dvips/newtx/libertinealt.enc}{d:/Texliv
 e/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{d:/Texlive/2017/te
-xmf-dist/fonts/enc/dvips/libertine/lbtn_omcwp2.enc}{d:/Texlive/2017/texmf-dist/
+xmf-dist/fonts/enc/dvips/libertine/lbtn_fygcup.enc}{d:/Texlive/2017/texmf-dist/
 fonts/enc/dvips/libertine/lbtn_kijugd.enc}{d:/Texlive/2017/texmf-dist/fonts/enc
-/dvips/libertine/lbtn_jtta5h.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/in
-consolata/i4-ts1.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn
-_7grukw.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.e
-nc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{d:/Te
-xlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{d:/Texlive/201
-7/texmf-dist/fonts/enc/dvips/base/8r.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/
-dvips/libertine/lbtn_ncsllp.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/inc
-onsolata/i4-t1-4.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn
-_76gpa5.enc}<d:/Texlive/2017/texmf-dist/fonts/type1/public/inconsolata/Inconsol
-ata-zi4r.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolin
-umT.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.
-pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb>
-<d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb><d:/
-Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb><d:/Tex
-live/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb><d:/Texliv
+/dvips/libertine/lbtn_jtta5h.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/li
+bertine/lbtn_omcwp2.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/l
+btn_7grukw.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77j
+q.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{d:
+/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}{d:/Texlive/
+2017/texmf-dist/fonts/enc/dvips/base/8r.enc}{d:/Texlive/2017/texmf-dist/fonts/e
+nc/dvips/inconsolata/i4-t1-4.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/li
+bertine/lbtn_ncsllp.enc}{d:/Texlive/2017/texmf-dist/fonts/enc/dvips/libertine/l
+btn_76gpa5.enc}<d:/Texlive/2017/texmf-dist/fonts/type1/public/inconsolata/Incon
+solata-zi4r.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBio
+linumT.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinum
+TB.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.p
+fb><d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb><
+d:/Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb><d:/
+Texlive/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb><d:/Tex
+live/2017/texmf-dist/fonts/type1/public/libertine/LinLibertineTZ.pfb><d:/Texliv
 e/2017/texmf-dist/fonts/type1/public/newtx/fxlri-5letters.pfb><d:/Texlive/2017/
 texmf-dist/fonts/type1/public/newtx/fxlri-7letters.pfb><d:/Texlive/2017/texmf-d
 ist/fonts/type1/public/newtx/ntxsyralt.pfb><d:/Texlive/2017/texmf-dist/fonts/ty
@@ -2254,10 +2187,10 @@ texmf-dist/fonts/type1/public/txfonts/txsya.pfb><d:/Texlive/2017/texmf-dist/fon
 ts/type1/public/txfonts/txsyc.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/publi
 c/newtx/txsys.pfb><d:/Texlive/2017/texmf-dist/fonts/type1/public/newtx/zxlr.pfb
 ><d:/Texlive/2017/texmf-dist/fonts/type1/public/newtx/zxlri.pfb>
-Output written on main.pdf (34 pages, 2573696 bytes).
+Output written on main.pdf (37 pages, 4739546 bytes).
 PDF statistics:
- 870 PDF objects out of 1000 (max. 8388607)
- 752 compressed objects within 8 object streams
- 232 named destinations out of 1000 (max. 500000)
- 102817 words of extra memory for PDF output out of 106986 (max. 10000000)
+ 908 PDF objects out of 1000 (max. 8388607)
+ 773 compressed objects within 8 object streams
+ 236 named destinations out of 1000 (max. 500000)
+ 100283 words of extra memory for PDF output out of 106986 (max. 10000000)
 

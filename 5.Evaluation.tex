@@ -15,27 +15,27 @@ Each oracle supports a distinct claim: source-first benchmarks evaluate identity
 We compare \mytool and HapFlow using ArkAnalyzer IR and an identical source--sink query over HapBench. HapBench is evaluated with its bundled API-17 SDK, while the real-project benchmarks and corpus use OpenHarmony API-20. Each experiment uses its designated SDK without fallback, and IFDS analyzes each project as a whole.
 
 \textbf{Identity benchmarks.}
-\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates statically named candidates compatible with the fixed rule/import universe but does not label them; source review then assigns 186 exact-location decisions. The resulting oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
+\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates statically named candidates compatible with the fixed rule/import universe but does not label them. Oracle construction then uses two evidence passes: source-only classification establishes executable access, package ownership, and receiver origin before detector reports are consulted; source/IR adjudication resolves ambiguous aliases and lowered receiver forms. Every accepted or rejected candidate retains its exact location, evidence excerpt, and decision reason. The resulting 186-item oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
 
 The \emph{Top-120 stress audit} complements the source-first oracle by concentrating projects with high API volume. Its 1,533 reviewed location rows canonicalize to 666 project--API keys with executable source evidence. \mytool preserves all 666 confirmed keys, so this experiment measures confirmed-key coverage under a high-volume workload.
 
 \textbf{Flow benchmarks.}
-\emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local. \emph{ArkPromiseBench} adds 16 adversarial cases (six positive and ten negative) over custom and non-Promise \texttt{then} owners, success/rejection handler positions, \texttt{catch}/\texttt{finally}, ignored and constant-returning handlers, independent and reassigned aliases, sequential continuations, and Promise flattening.
+\emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local. \emph{ArkPromiseBench} applies ten source-to-source boundary operators to 24 cases (seven positive and 17 negative): owner substitution, handler-position exchange, Promise alias mutation, payload-to-constant return replacement, rejection-operator insertion, chain extension and flattening, and callback registration without a trigger. Each mutant changes one semantic obligation while preserving the surrounding source and sink context.
 
 \textbf{Real-project path audit.}
-A deterministic diversity sampler selects 120 of the 449 corpus paths from 48 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 30 supplementary, and 26 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Structured source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold.
+A deterministic diversity sampler constructs a 120-path audit set from 47 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 28 supplementary, and 28 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Structured source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold. Each decision record retains both endpoints, the complete statement path, the relevant source/IR excerpts, and a reason code. Final-result rebinding preserves 118 exact paths; two deterministic replacements are reviewed from source without inherited labels, and two exact paths with strengthened provenance are rechecked against their Promise declarations.
 
 \textbf{Large corpus.}
-The corpus contains 1,014 ArkTS projects analyzed under a common implementation, API-20 SDK, rule set, and resource policy. Its applications, libraries, and capability demonstrations expose diverse project roles and API usage patterns. Each project contributes one validated result; aggregation excludes incomplete analyses, unresolved endpoints, and invalid provenance.
+The corpus contains \CorpusProjects{} ArkTS projects analyzed under a common implementation, API-20 SDK, rule set, and resource policy. Its applications, libraries, and capability demonstrations expose diverse project roles and API usage patterns. Each project contributes one validated result; aggregation excludes incomplete analyses, unresolved endpoints, and invalid provenance.
 
 \textbf{Metrics.}
-Identity occurrences match on project, normalized file, line/column, canonical package/namespace/member, and access kind. Flow benchmarks report precision, recall, specificity, balanced accuracy, F1, and MCC. We use Wilson intervals for binomial rates and exact two-sided McNemar tests for paired predictions. Corpus statistics quantify project prevalence, concentration (Gini and HHI), Spearman associations, source scope, clone sensitivity, and runtime; the preceding oracles provide the accuracy evidence.
+Identity occurrences match on project, normalized file, line/column, canonical package/namespace/member, and access kind. Flow benchmarks report precision, recall, specificity, balanced accuracy, F1, and MCC. Exact two-sided McNemar tests compare paired predictions; Wilson intervals describe HapBench rates and corpus proportions where sampling uncertainty is meaningful. Deterministic source-first, stress, mutation, and path audits report their exact reviewed ratios rather than population confidence intervals. Corpus statistics quantify project prevalence, concentration (Gini and HHI), Spearman associations, source scope, clone sensitivity, and runtime; the preceding oracles provide the accuracy evidence.
 
 \subsection{RQ1: Privacy-API Identity}
 \label{subsec:api_detection_accuracy}
 
 \textbf{Source-first accuracy.}
-Within the fixed rule set and statically enumerable candidate universe, \mytool reports exactly the 90 gold occurrences in ArkSourceFirst60: TP/FP/FN$=90/0/0$, for 100\% observed precision, recall, and F1 (95\% Wilson interval: 95.91--100\%). It also classifies all 16 positive and 44 zero projects correctly. Exact-location matching prevents one call from masking a missed occurrence elsewhere in the same file.
+Within the fixed rule set and statically enumerable candidate universe, \mytool reports exactly the 90 gold occurrences in ArkSourceFirst60: TP/FP/FN$=90/0/0$, for 100\% observed precision, recall, and F1. It also classifies all 16 positive and 44 zero projects correctly. Exact-location matching prevents one call from masking a missed occurrence elsewhere in the same file.
 
 The gold set contains 44 executable namespace properties, 26 namespace calls, 11 typed receivers, four constructed receivers, three manager receivers, and two factory receivers. Thus, 20/90 occurrences require receiver evidence beyond the accepted line's namespace syntax, and nearly half are property reads rather than calls. The 96 negatives stress the complementary boundary: application wrappers, UI controllers, collections, test drivers, and third-party methods reuse generic members such as \texttt{create}, \texttt{on}, \texttt{request}, and \texttt{getData}.
 
@@ -62,7 +62,7 @@ Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00\% & 87.50\% & 100.00\% & 93.33
 \end{table}
 
 \textbf{High-volume reproduction.}
-\mytool recovers all 666 manually confirmed project--API keys in the Top-120 stress audit (100\% confirmed-key coverage; 95\% Wilson lower bound 99.43\%), including 558 namespace-qualified, 102 member/receiver, five template-expression, and one compound-qualified key. This result demonstrates stable recognition across both dominant namespace calls and less common receiver, template, and compound forms under high API volume.
+\mytool recovers all 666 manually confirmed project--API keys in the Top-120 stress audit (100\% confirmed-key coverage), including 558 namespace-qualified, 102 member/receiver, five template-expression, and one compound-qualified key. This result demonstrates stable recognition across both dominant namespace calls and less common receiver, template, and compound forms under high API volume.
 
 \noindent\textbf{Answer to RQ1.}
 On a source-first real-project oracle defined over the fixed rule and static-candidate universe, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit adds 102 confirmed member/receiver keys and shows that the evaluated detector configuration preserves all 666 previously confirmed high-volume keys.
@@ -122,10 +122,10 @@ Table~\ref{tab:hapbench_ablation} reports pre-specified ablations under the same
 \toprule
 Configuration & TP & TN & FP & FN & Prec. & Rec. & Spec. & F1 & Acc. & BAcc. & MCC \\
 \midrule
-\mytool & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00\%} & 94.34\% & \textbf{100.00\%} & 97.09\% & 95.52\% & \textbf{97.17\%} & 0.881 \\
-$-$IR recovery & 37 & \textbf{14} & \textbf{0} & 16 & \textbf{100.00\%} & 69.81\% & \textbf{100.00\%} & 82.22\% & 76.12\% & 84.91\% & 0.571 \\
+\mytool (default) & 50 & \textbf{14} & \textbf{0} & 3 & \textbf{100.00\%} & 94.34\% & \textbf{100.00\%} & 97.09\% & 95.52\% & \textbf{97.17\%} & 0.881 \\
+$-$IR recovery & 37 & 14 & 0 & 16 & 100.00\% & 69.81\% & 100.00\% & 82.22\% & 76.12\% & 84.91\% & 0.571 \\
 $-$receiver refinement & 50 & 13 & 1 & 3 & 98.04\% & 94.34\% & 92.86\% & 96.15\% & 94.03\% & 93.60\% & 0.831 \\
-Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & 98.11\% & \textbf{98.11\%} & 92.86\% & \textbf{98.11\%} & \textbf{97.01\%} & 95.49\% & \textbf{0.910} \\
+Unbounded lifecycle & 52 & 13 & 1 & 1 & 98.11\% & 98.11\% & 92.86\% & 98.11\% & 97.01\% & 95.49\% & 0.910 \\
 \bottomrule
 \end{tabular*}
 \end{table}
@@ -133,11 +133,11 @@ Unbounded lifecycle & \textbf{52} & 13 & 1 & \textbf{1} & 98.11\% & \textbf{98.1
 The bounded default preserves all 14 negatives and attains 97.17\% balanced accuracy, compared with 95.49\% under unbounded lifecycle cycling. Removing the bound accepts two additional published positives but also recreates the benchmark's explicit unreachable-flow negative. Because F1 omits true negatives, it ranks the unbounded setting higher on that narrower objective; balanced accuracy measures the positive and negative obligations together. Under the strict executed-order contract in Appendix~\ref{subsec:app_oracle_sensitivity}, bounded \mytool classifies 67/67 cases, whereas unbounded cycling creates three cross-event false positives. The default therefore targets the audit objective: preserve negative-case discrimination unless an executable transition witness exists.
 
 \textbf{Continuation transfer.}
-ArkAsyncBench isolates asynchronous carrier semantics with matched positive and negative cases. Both configurations in Table~\ref{tab:asyncbench} disable the optional unresolved-IR fallback, so the comparison measures the IFDS transfer itself. Full IFDS classifies all 48 cases correctly. Removing only T4 preserves every T1 callback and T5 \texttt{await} result but misses all nine Promise-\texttt{then} positives, reducing recall from 100\% to 62.50\% and F1 from 100\% to 76.92\% ($p=0.00390625$). All 24 negatives remain negative. ArkPromiseBench then tests whether this gain survives substantially sharper Promise boundaries: the full analysis classifies all 16 cases correctly, whereas $-$T4 retains all ten negatives but misses all six positives ($p=0.03125$). We also run a bounded post-IFDS recovery baseline with T4 disabled to distinguish semantic integration from enabling another recovery pass.
+ArkAsyncBench isolates asynchronous carrier semantics with matched positive and negative cases. Both configurations in Table~\ref{tab:asyncbench} disable the optional unresolved-IR fallback, so the comparison measures the IFDS transfer itself. Full IFDS classifies all 48 cases correctly. Removing only T4 preserves every T1 callback and T5 \texttt{await} result but misses all nine Promise-\texttt{then} positives, reducing recall from 100\% to 62.50\% and F1 from 100\% to 76.92\% ($p=0.00390625$). All 24 negatives remain negative. ArkPromiseBench then separates payload propagation from edge executability. Full \mytool classifies all 24 mutants correctly. Removing T4 retains all 17 negatives but misses all seven positives ($p=0.015625$); admitting every function-typed SDK argument as an executable callback retains all positives but accepts a registered source callback for which no trigger exists, reducing precision to 87.50\% and specificity to 94.12\%.
 
 \begin{table}[tbp]
 \centering
-\caption{Continuation isolation and adversarial Promise semantics.}
+\caption{Asynchronous carrier isolation and Promise-boundary results.}
 \label{tab:asyncbench}
 \papertablestyle
 \begin{minipage}[t]{0.40\columnwidth}
@@ -158,34 +158,35 @@ Total & 24 & 24 & 24 & 15 & \textbf{9} & 24 \\
 \end{minipage}\hfill
 \begin{minipage}[t]{0.58\columnwidth}
 \centering
-\textbf{(b) Adversarial Promise semantics}\\[-2pt]
+\textbf{(b) Promise semantic mutations}\\[-2pt]
 \setlength{\tabcolsep}{0.7pt}
 \begin{tabular*}{\linewidth}{@{\extracolsep{\fill}}lrrrrrr@{}}
 \toprule
 & & & & \multicolumn{3}{c}{Correct classifications} \\
 \cmidrule(lr){5-7}
-Boundary & Cases & Pos. & Neg. & Full & Post & $-$T4 \\
+Boundary & Cases & Pos. & Neg. & Full & \makecell{All typed\\SDK callbacks} & $-$T4 \\
 \midrule
-Alias identity & 3 & 1 & 2 & 3/3 & 2/3 & 2/3 \\
-Handler position & 2 & 1 & 1 & 2/2 & 2/2 & 1/2 \\
-Promise flattening & 1 & 1 & 0 & 1/1 & 0/1 & 0/1 \\
-Promise owner & 1 & 0 & 1 & 1/1 & 1/1 & 1/1 \\
+Alias identity & 4 & 1 & 3 & 4/4 & 4/4 & 3/4 \\
+Callback execution & 3 & 0 & 3 & 3/3 & 2/3 & 3/3 \\
+Handler position & 3 & 1 & 2 & 3/3 & 3/3 & 2/3 \\
+Promise flattening & 3 & 2 & 1 & 3/3 & 3/3 & 1/3 \\
+Promise owner & 2 & 0 & 2 & 2/2 & 2/2 & 2/2 \\
 Rejection operator & 2 & 0 & 2 & 2/2 & 2/2 & 2/2 \\
-Sanitizer return & 1 & 0 & 1 & 1/1 & 0/1 & 1/1 \\
-Sequential chain & 3 & 2 & 1 & 3/3 & 1/3 & 1/3 \\
+Sanitizer return & 1 & 0 & 1 & 1/1 & 1/1 & 1/1 \\
+Sequential chain & 3 & 2 & 1 & 3/3 & 3/3 & 1/3 \\
 Success handler & 1 & 1 & 0 & 1/1 & 1/1 & 0/1 \\
 Value dependence & 2 & 0 & 2 & 2/2 & 2/2 & 2/2 \\
 \midrule
-Total & 16 & 6 & 10 & \textbf{16/16} & 11/16 & 10/16 \\
+Total & 24 & 7 & 17 & \textbf{24/24} & 23/24 & 17/24 \\
 \bottomrule
 \end{tabular*}
 \end{minipage}
 \end{table}
 
-The Promise suite instantiates the ownership and payload-dependence boundaries in Figure~\ref{fig:promise_semantic_boundaries}. A user-defined \texttt{then}, a non-Promise receiver, rejection callbacks, \texttt{catch}/\texttt{finally}, an unrelated Promise, a reassigned alias, and handlers that ignore or replace the payload remain negative. Payload-dependent sequential chains and Promise flattening remain positive; these multi-hop paths carry both \texttt{promise\_then} and \texttt{promise\_return} derivations. The post-IFDS configuration recovers two of six positives and accepts the constant-returning sanitizer; it misses the same-Promise alias, both sequential transforms, and Promise flattening. Integrating the relation into call and return flow therefore supplies ordinary alias and multi-hop composition while preserving all ten negative boundaries.
+The Promise suite instantiates the ownership, execution, and payload-dependence boundaries in Figure~\ref{fig:promise_semantic_boundaries}. User-defined or non-Promise \texttt{then} owners, rejection positions, \texttt{catch}/\texttt{finally}, unrelated or reassigned aliases, constant-return transforms, and registrations without a modeled trigger remain negative. Payload-dependent aliases, sequential chains, and Promise flattening remain positive; multi-hop paths carry both \texttt{promise\_then} and \texttt{promise\_return} derivations. The two ablations expose complementary obligations: T4 is necessary to retain payload identity across success continuations, while semantic edge selection is necessary to distinguish callback registration from callback execution.
 
 \textbf{Stratified semantic audit.}
-Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every sampled path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Complete-path correctness in this stratified sample is 114/120 (95.00\%; 95\% Wilson interval 89.52--97.69\%).
+Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Source identity, sink identity, and provenance are correct for every sampled path. All 90 sampled privacy-data paths are fully correct across the audited producer strata. Complete-path correctness in this stratified sample is 115/120 (95.83\%).
 
 \begin{table}[tbp]
 \centering
@@ -193,34 +194,34 @@ Table~\ref{tab:semantic_path_audit} reports the 120-path source/IR review. Sourc
 \label{tab:semantic_path_audit}
 \papertablestyle
 \setlength{\tabcolsep}{2.8pt}
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrrc@{}}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}lrrrrrrr@{}}
 \toprule
-Audited dimension & All & Privacy & Framework & IFDS & Supp. & Both & Rate & 95\% CI \\
+Audited dimension & All & Privacy & Framework & IFDS & Supp. & Both & Rate \\
 \midrule
-Source identity & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90\%, 100.00\%] \\
-Sink identity & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90\%, 100.00\%] \\
-Explicit value dependence & 114/120 & 90/90 & 24/30 & 58/64 & 30/30 & 26/26 & 95.00\% & [89.52\%, 97.69\%] \\
-Reachability & 114/120 & 90/90 & 24/30 & 58/64 & 30/30 & 26/26 & 95.00\% & [89.52\%, 97.69\%] \\
-Provenance label & 120/120 & 90/90 & 30/30 & 64/64 & 30/30 & 26/26 & 100.00\% & [96.90\%, 100.00\%] \\
+Source identity & 120/120 & 90/90 & 30/30 & 64/64 & 28/28 & 28/28 & 100.00\% \\
+Sink identity & 120/120 & 90/90 & 30/30 & 64/64 & 28/28 & 28/28 & 100.00\% \\
+Explicit value dependence & 115/120 & 90/90 & 25/30 & 59/64 & 28/28 & 28/28 & 95.83\% \\
+Reachability & 115/120 & 90/90 & 25/30 & 59/64 & 28/28 & 28/28 & 95.83\% \\
+Provenance label & 120/120 & 90/90 & 30/30 & 64/64 & 28/28 & 28/28 & 100.00\% \\
 \midrule
-Complete path & 114/120 & \textbf{90/90} & 24/30 & 58/64 & \textbf{30/30} & \textbf{26/26} & 95.00\% & [89.52\%, 97.69\%] \\
+Complete path & 115/120 & \textbf{90/90} & 25/30 & 59/64 & \textbf{28/28} & \textbf{28/28} & 95.83\% \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-The six rejected paths all belong to the optional framework-input model. Four join a lifecycle-written static URI field to unrelated component fields or constants; two connect a lifecycle argument to a permission Toast or a hard-coded event value. This localization matters operationally: the core privacy-data analysis attains 90/90 in the audit, while the framework-input layer remains separately identifiable by source kind and provenance instead of silently entering the privacy-path claim.
+The five rejected paths all belong to the optional framework-input model. Each starts from a lifecycle-written static URI field but reaches an unrelated component value: two input fields, two fixed validation messages, or an independent camera-picker result. This localization matters operationally: the core privacy-data analysis attains 90/90 in the audit, while the framework-input layer remains separately identifiable by source kind and provenance instead of silently entering the privacy-path claim. A corpus-wide change-impact audit isolates the receiver-witnessed platform-task contract: it adds one source-reviewed sensor path nested under a permission-completion callback while preserving the other 457 exact paths.
 
 \noindent\textbf{Answer to RQ3.}
-IR recovery supplies the largest HapBench coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and the continuation-aware IFDS transfer uniquely recovers nine Promise-\texttt{then} cases. Its Promise-owner, handler-position, alias, and return-dependence guards classify all 16 adversarial Promise cases correctly. The stratified real-project audit confirms every sampled privacy-data path and 114/120 complete paths overall.
+IR recovery supplies the largest HapBench coverage gain, receiver refinement and lifecycle bounds preserve negative-case discrimination, and the continuation-aware IFDS transfer uniquely recovers nine Promise-\texttt{then} cases. Its Promise-owner, executable-edge, handler-position, alias, and return-dependence guards classify all 24 Promise mutation cases correctly. The stratified real-project audit confirms every sampled privacy-data path and 115/120 complete paths overall.
 
 \subsection{RQ4: Large-Corpus Characterization}
 \label{subsec:corpus_patterns}
 
-The corpus analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods. Table~\ref{tab:corpus_summary} separates detector evidence, privacy-data paths, and framework-input paths. All 449 configured-query paths retain source and sink endpoints; source scope further distinguishes production, test, and generated code.
+The corpus analysis covers \CorpusFiles{} ArkTS/TypeScript files and \CorpusMethods{} methods. Table~\ref{tab:corpus_summary} separates detector evidence, privacy-data paths, and framework-input paths. All \CorpusPaths{} configured-query paths retain source and sink endpoints; source scope further distinguishes production, test, and generated code.
 
 \begin{table}[tbp]
 \centering
-\caption{Privacy evidence across 1,014 projects.}
+\caption{Privacy evidence across \CorpusProjects{} projects.}
 \label{tab:corpus_summary}
 \papertablestyle
 \setlength{\tabcolsep}{3.2pt}
@@ -228,21 +229,21 @@ The corpus analysis covers 31,205 ArkTS/TypeScript files and 233,894 methods. Ta
 \toprule
 Evidence & Records & Projects & Project rate & Rec./positive proj. & Prod. & Test & Gen. \\
 \midrule
-Privacy-API usages & 2,336 & 353 & 34.81\% & 6.62 & -- & -- & -- \\
-Detector-local sinks & 1,754 & 224 & 22.09\% & 7.83 & -- & -- & -- \\
-Privacy-data paths & 243 & 29 & 2.86\% & 8.38 & 231 & 2 & 10 \\
-Framework-input paths & 206 & 159 & 15.68\% & 1.30 & 49 & 157 & 0 \\
-All configured paths & 449 & 181 & 17.85\% & 2.48 & 280 & 159 & 10 \\
+Privacy-API usages & \CorpusApiOccurrences & \CorpusApiProjects & \CorpusApiRate & \CorpusApisPerPositiveProject & -- & -- & -- \\
+Detector-local sinks & \CorpusSinkObservations & \CorpusSinkProjects & \CorpusSinkRate & \CorpusSinksPerPositiveProject & -- & -- & -- \\
+Privacy-data paths & \CorpusPrivacyPaths & \CorpusPrivacyPathProjects & \CorpusPrivacyPathRate & \CorpusPrivacyPathsPerPositiveProject & \CorpusPrivacyProductionPaths & \CorpusPrivacyTestPaths & \CorpusPrivacyGeneratedPaths \\
+Framework-input paths & \CorpusFrameworkPaths & \CorpusFrameworkPathProjects & \CorpusFrameworkPathRate & \CorpusFrameworkPathsPerPositiveProject & \CorpusFrameworkProductionPaths & \CorpusFrameworkTestPaths & \CorpusFrameworkGeneratedPaths \\
+All configured paths & \CorpusPaths & \CorpusPathProjects & \CorpusPathRate & \CorpusPathsPerPositiveProject & \CorpusProductionPaths & \CorpusTestPaths & \CorpusGeneratedPaths \\
 \bottomrule
 \end{tabular*}
 \end{table}
 
-The scope split exposes two distinct corpus phenomena. Privacy-data paths overwhelmingly occur in production source (231/243), while framework-input paths are dominated by generated test abilities (157/206). We therefore use the former for privacy-flow claims and retain the latter as a separately labeled analysis of framework-provided values.
+The scope split exposes two distinct corpus phenomena. Privacy-data paths overwhelmingly occur in production source (\CorpusPrivacyProductionPaths/\CorpusPrivacyPaths), while framework-input paths are dominated by test abilities (\CorpusFrameworkTestPaths/\CorpusFrameworkPaths). We therefore use the former for privacy-flow claims and retain the latter as a separately labeled analysis of framework-provided values.
 
 \textbf{Concentration and structure.}
-API evidence is long-tailed: 65.19\% of projects have no recognized API, while the top 10, 50, and 120 projects contain 24.49\%, 54.92\%, and 77.83\% of all occurrences. The API Gini coefficient is 0.857; HHI is 0.0104, equivalent to 95.8 equally sized contributing projects. Network connectivity (18.28\%), screen identity (17.25\%), hardware identity (15.11\%), account data (8.05\%), and clipboard data (5.09\%) form the five largest categories.
+API evidence is long-tailed: \CorpusZeroApiRate{} of projects have no recognized API, while the top 10, 50, and 120 projects contain \CorpusTopTenApiShare, \CorpusTopFiftyApiShare, and \CorpusTopOneTwentyApiShare{} of all occurrences. The API Gini coefficient is \CorpusApiGini; HHI is \CorpusApiHhi, equivalent to \CorpusApiEffectiveProjects{} equally sized contributing projects. Network connectivity (\CorpusNetworkConnectivityShare), screen identity (\CorpusScreenIdentityShare), hardware identity (\CorpusHardwareIdentityShare), account data (\CorpusAccountDataShare), and clipboard data (\CorpusClipboardDataShare) form the five largest categories.
 
-Project size helps explain identity volume but not path formation. Method count correlates moderately with API occurrences ($\rho=0.485$) and weakly with configured paths ($\rho=0.164$); API occurrences correlate strongly with detector-local sinks ($\rho=0.789$) and weakly with configured paths ($\rho=0.175$). Figure~\ref{fig:eval_corpus_landscape}(c) partitions projects into ten equally sized method-count strata and reports Wilson intervals. From the smallest to largest stratum, API-positive rates rise from 7.84\% to 92.08\% and detector-local-sink-positive rates from 0.98\% to 69.31\%. Path-positive rates instead remain between 18.81\% and 25.74\% across the four largest strata, separating codebase scale from configured-path formation.
+Project size helps explain identity volume but not path formation. Method count correlates moderately with API occurrences ($\rho=\CorpusMethodsApisRho$) and weakly with configured paths ($\rho=\CorpusMethodsPathsRho$); API occurrences correlate strongly with detector-local sinks ($\rho=\CorpusApisSinksRho$) and weakly with configured paths ($\rho=\CorpusApisPathsRho$). Figure~\ref{fig:eval_corpus_landscape}(c) partitions projects into ten equally sized method-count strata and reports Wilson intervals. From the smallest to largest stratum, API-positive rates rise from \CorpusSmallestDecileApiRate{} to \CorpusLargestDecileApiRate{} and detector-local-sink-positive rates from \CorpusSmallestDecileSinkRate{} to \CorpusLargestDecileSinkRate. Path-positive rates instead remain between \CorpusLargeDecilePathRateMin{} and \CorpusLargeDecilePathRateMax{} across the four largest strata, separating codebase scale from configured-path formation.
 
 \begin{figure}[t]
 \centering
@@ -253,13 +254,13 @@ Project size helps explain identity volume but not path formation. Method count 
 \end{figure}
 
 \textbf{Destinations and paths.}
-Logging accounts for 1,441/1,754 detector-local sinks (82.16\%), followed by UI display (136; 7.75\%), storage (94; 5.36\%), data return (57; 3.25\%), and network (26; 1.48\%). Call chains have median/P95 lengths of 1/4; configured paths have median/P95 lengths of 5/10 and a maximum of 21 statements. Provenance comprises 322 IFDS, 84 supplementary, and 43 dual paths. Figure~\ref{fig:eval_corpus_landscape}(d) exposes their discrete structure: privacy IFDS, supplementary, and dual paths have medians of 5, 4, and 4 statements and P95 values of 7.5, 10, and 6.9, respectively; framework-input IFDS paths have a median of 5 and the longest tail (P95 10.75; maximum 21).
+Logging accounts for \CorpusLogSinkCount/\CorpusSinkObservations{} detector-local sinks (\CorpusLogSinkShare), followed by UI display (\CorpusUiSinkCount; \CorpusUiSinkShare), storage (\CorpusStorageSinkCount; \CorpusStorageSinkShare), data return (\CorpusReturnSinkCount; \CorpusReturnSinkShare), and network (\CorpusNetworkSinkCount; \CorpusNetworkSinkShare). Call chains have median/P95 lengths of \CorpusChainMedian/\CorpusChainPNinetyFive; configured paths have median/P95 lengths of \CorpusPathMedian/\CorpusPathPNinetyFive{} and a maximum of \CorpusPathMaximum{} statements. Provenance comprises \CorpusIfdsPaths{} IFDS, \CorpusAsyncPaths{} supplementary, and \CorpusBothPaths{} dual paths. Figure~\ref{fig:eval_corpus_landscape}(d) exposes their discrete structure: privacy IFDS, supplementary, and dual paths have medians of \CorpusPrivacyIfdsPathMedian, \CorpusPrivacyAsyncPathMedian, and \CorpusPrivacyBothPathMedian{} statements and P95 values of \CorpusPrivacyIfdsPathPNinetyFive, \CorpusPrivacyAsyncPathPNinetyFive, and \CorpusPrivacyBothPathPNinetyFive, respectively; framework-input IFDS paths have a median of \CorpusFrameworkIfdsPathMedian{} and the longest tail (P95 \CorpusFrameworkIfdsPathPNinetyFive; maximum \CorpusFrameworkIfdsPathMaximum).
 
 \textbf{Integrity and cost.}
-All 1,014 projects complete without IFDS batching, resource or callback truncation, timeout, or out-of-memory failure. The audit resolves all 3,316 trace endpoints, validates all 236 detector-to-path links, and finds no invalid source kind or provenance. The solver processes 3.16 million IFDS edges in total; per-project median/P95/maximum is 805/11,396/197,173. Deduplication reduces 492 raw outcomes to 449 paths. Median runtime is 20.2\,s, P95 is 26.9\,s, and the 10,757-method outlier completes in 577.9\,s.
+All \CorpusProjects{} projects complete without IFDS batching, resource or callback truncation, timeout, or out-of-memory failure. The audit resolves all \CorpusTraceEndpoints{} trace endpoints, validates all \CorpusTaintFlowLinks{} detector-to-path links, and finds \CorpusUnresolvedTraceEndpoints{} unresolved endpoints and \CorpusInvalidTaintFlowLinks{} invalid links. The solver processes \CorpusIfdsEdges{} IFDS edges in total; per-project median/P95/maximum is \CorpusIfdsEdgesMedian/\CorpusIfdsEdgesPNinetyFive/\CorpusIfdsEdgesMaximum. Deduplication reduces \CorpusRawPaths{} raw outcomes to \CorpusPaths{} paths. Median runtime is \CorpusRuntimeMedian\,s, P95 is \CorpusRuntimePNinetyFive\,s, and the \CorpusMethodsMaximum{}-method outlier completes in \CorpusRuntimeMaximum\,s.
 
 \textbf{Clone sensitivity.}
-The token profile contains 31,998 source files and 21,430 unique fingerprints. It forms nine exact-duplicate and eleven near-duplicate project clusters. Retaining one representative per exact cluster changes API/sink/path-positive rates from 34.81/22.09/17.85\% to 35.18/22.31/17.99\%; near-cluster representatives yield 35.05/22.26/18.03\%. The maximum shift is 0.36 percentage points, showing that project-level rates are not driven by repeated copies of a small template set.
+The token profile contains \CorpusSourceFiles{} source files and \CorpusUniqueFingerprints{} unique fingerprints. It forms \CorpusExactCloneClusters{} exact-duplicate and \CorpusNearCloneClusters{} near-duplicate project clusters. Retaining one representative per exact cluster yields API/sink/path-positive rates of \CorpusExactCloneApiRate/\CorpusExactCloneSinkRate/\CorpusExactClonePathRate; near-cluster representatives yield \CorpusNearCloneApiRate/\CorpusNearCloneSinkRate/\CorpusNearClonePathRate. The maximum shift is \CorpusCloneMaxShift{} percentage points, showing that project-level rates are not driven by repeated copies of a small template set.
 
 \noindent\textbf{Answer to RQ4.}
-\mytool completes all 1,014 projects without resource fallbacks. Privacy-data paths are primarily production-source phenomena, identity and sink evidence are strongly concentrated, and clone-aware resampling leaves all project rates stable within 0.36 percentage points.
+\mytool completes all \CorpusProjects{} projects without resource fallbacks. Privacy-data paths are primarily production-source phenomena, identity and sink evidence are strongly concentrated, and clone-aware resampling leaves all project rates stable within \CorpusCloneMaxShift{} percentage points.

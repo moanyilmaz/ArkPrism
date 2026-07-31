@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{66}
+\begin{thebibliography}{68}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -45,6 +45,21 @@
   \bibinfo{booktitle}{\emph{Proceedings of the International Conference on
   Security and Privacy in Communication Systems}}. \bibinfo{pages}{86--103}.
 \newblock
+
+
+\bibitem[Alimadadi et~al\mbox{.}(2018)]%
+        {promisekeeper}
+\bibfield{author}{\bibinfo{person}{Saba Alimadadi}, \bibinfo{person}{Di Zhong},
+  \bibinfo{person}{Magnus Madsen}, {and} \bibinfo{person}{Frank Tip}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Finding Broken Promises in Asynchronous JavaScript
+  Programs}.
+\newblock \bibinfo{journal}{\emph{Proceedings of the ACM on Programming
+  Languages}} \bibinfo{volume}{2}, \bibinfo{number}{OOPSLA}, Article
+  \bibinfo{articleno}{162} (\bibinfo{year}{2018}),
+  \bibinfo{numpages}{26}~pages.
+\newblock
+\href{https://doi.org/10.1145/3276532}{doi:\nolinkurl{10.1145/3276532}}
 
 
 \bibitem[Allix et~al\mbox{.}(2016)]%
@@ -160,7 +175,8 @@
 \newblock \showarticletitle{Discovering Flaws in Security-Focused Static
   Analysis Tools for Android Using Systematic Mutation}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 27th USENIX Security
-  Symposium}}. \bibinfo{pages}{1263--1280}.
+  Symposium}}. \bibinfo{publisher}{USENIX Association},
+  \bibinfo{pages}{1263--1280}.
 \newblock
 \urldef\tempurl%
 \url{https://www.usenix.org/conference/usenixsecurity18/presentation/bonett}
@@ -454,18 +470,6 @@
 \href{https://doi.org/10.1145/3720538}{doi:\nolinkurl{10.1145/3720538}}
 
 
-\bibitem[Li et~al\mbox{.}(2023)]%
-        {taintmini}
-\bibfield{author}{\bibinfo{person}{Yi Li}, \bibinfo{person}{Yanyan Chen},
-  \bibinfo{person}{Teng Wang}, {et~al\mbox{.}}}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \showarticletitle{TaintMini: Detecting Privacy Data Leaks in
-  Mini-Programs via Universal Data Flow Graph}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 45th International Conference on
-  Software Engineering (ICSE)}}.
-\newblock
-
-
 \bibitem[Lin et~al\mbox{.}(2025)]%
         {haprepair}
 \bibfield{author}{\bibinfo{person}{Zhihao Lin}, \bibinfo{person}{Mingyi Zhou},
@@ -522,6 +526,20 @@
 \href{https://doi.org/10.1007/s10664-021-10013-5}{doi:\nolinkurl{10.1007/s10664-021-10013-5}}
 
 
+\bibitem[Meng et~al\mbox{.}(2023)]%
+        {wemint}
+\bibfield{author}{\bibinfo{person}{Shi Meng}, \bibinfo{person}{Liu Wang},
+  \bibinfo{person}{Shenao Wang}, \bibinfo{person}{Kailong Wang},
+  \bibinfo{person}{Xusheng Xiao}, \bibinfo{person}{Guangdong Bai}, {and}
+  \bibinfo{person}{Haoyu Wang}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{WeMinT}: Tainting Sensitive Data Leaks in {WeChat}
+  Mini-Programs}. In \bibinfo{booktitle}{\emph{Proceedings of the 38th IEEE/ACM
+  International Conference on Automated Software Engineering (ASE)}}.
+  \bibinfo{publisher}{IEEE}, \bibinfo{pages}{1403--1415}.
+\newblock
+\href{https://doi.org/10.1109/ASE56229.2023.00151}{doi:\nolinkurl{10.1109/ASE56229.2023.00151}}
+
+
 \bibitem[Octeau et~al\mbox{.}(2013)]%
         {epicc}
 \bibfield{author}{\bibinfo{person}{Damien Octeau}, \bibinfo{person}{Somesh
@@ -573,6 +591,21 @@
 \url{https://www.openharmony.cn/}
 \showURL{%
 \tempurl}
+
+
+\bibitem[Pai et~al\mbox{.}(2022)]%
+        {executesbefore}
+\bibfield{author}{\bibinfo{person}{Rekha Pai}, \bibinfo{person}{Abhishek
+  Uppar}, \bibinfo{person}{Akshatha Shenoy}, \bibinfo{person}{Pranshul
+  Kushwaha}, {and} \bibinfo{person}{Deepak D'Souza}.}
+  \bibinfo{year}{2022}\natexlab{}.
+\newblock \showarticletitle{Static Executes-Before Analysis for Event-Driven
+  Programs}. In \bibinfo{booktitle}{\emph{Proceedings of the 30th ACM Joint
+  European Software Engineering Conference and Symposium on the Foundations of
+  Software Engineering (ESEC/FSE)}}. \bibinfo{publisher}{Association for
+  Computing Machinery}, \bibinfo{pages}{233--244}.
+\newblock
+\href{https://doi.org/10.1145/3540250.3549116}{doi:\nolinkurl{10.1145/3540250.3549116}}
 
 
 \bibitem[Pauck et~al\mbox{.}(2018)]%
@@ -684,6 +717,20 @@
 \newblock
 
 
+\bibitem[Wang et~al\mbox{.}(2023)]%
+        {taintmini}
+\bibfield{author}{\bibinfo{person}{Chao Wang}, \bibinfo{person}{Ronny Ko},
+  \bibinfo{person}{Yue Zhang}, \bibinfo{person}{Yuqing Yang}, {and}
+  \bibinfo{person}{Zhiqiang Lin}.} \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{{TaintMini}: Detecting Flow of Sensitive Data in
+  Mini-Programs with Static Taint Analysis}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 45th International Conference on
+  Software Engineering (ICSE)}}. \bibinfo{publisher}{IEEE},
+  \bibinfo{pages}{932--944}.
+\newblock
+\href{https://doi.org/10.1109/ICSE48619.2023.00086}{doi:\nolinkurl{10.1109/ICSE48619.2023.00086}}
+
+
 \bibitem[Wang et~al\mbox{.}(2025)]%
         {harmonyflow}
 \bibfield{author}{\bibinfo{person}{Yue Wang}, \bibinfo{person}{Sen Chen},
@@ -719,18 +766,6 @@
   Dynamic Analysis of {Android} Malware}. In
   \bibinfo{booktitle}{\emph{Proceedings of the Network and Distributed System
   Security Symposium}}.
-\newblock
-
-
-\bibitem[Wu et~al\mbox{.}(2023)]%
-        {wemint}
-\bibfield{author}{\bibinfo{person}{Haoyu Wu}, \bibinfo{person}{Lingxiang Yang},
-  \bibinfo{person}{Mengfei Wang}, {et~al\mbox{.}}}
-  \bibinfo{year}{2023}\natexlab{}.
-\newblock \showarticletitle{WEMINT: Detecting Sensitive Data Flows in
-  Mini-Programs via Explicit Asynchronous Callback Modeling}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 38th IEEE/ACM International
-  Conference on Automated Software Engineering (ASE)}}.
 \newblock
 
 

@@ -1,24 +1,24 @@
 {
   "schemaVersion": 1,
   "benchmark": "ArkSemanticPath120",
-  "queueSha256": "9ddd1df187e7b3bdefd685a7bc879913cd21352c20699f94c093ec4ef3f8518d",
-  "decisionSha256": "6e8f39403339777d745adcba6490c4fc495ea57dcf89ef745fe539f4cfe23d11",
+  "queueSha256": "57551efcde104df515c9f05da0810b6145e1d5f32fe9e82a0d30a5b09a025e32",
+  "decisionSha256": "f53e58378a47e843717925a8b67ea06623b3f68910166a7fd39980b2bb86b5a8",
   "sample": {
     "paths": 120,
-    "projects": 48,
+    "projects": 47,
     "sourceKind": {
       "framework_input": 30,
       "privacy_data": 90
     },
     "provenance": {
-      "async_supplement": 30,
-      "both": 26,
+      "async_supplement": 28,
+      "both": 28,
       "ifds": 64
     },
     "sinkFamily": {
-      "logging": 113,
+      "logging": 114,
       "network": 2,
-      "ui": 5
+      "ui": 4
     },
     "pathLengthBin": {
       "long_8_plus": 27,
@@ -26,16 +26,15 @@
       "short_1_3": 23
     },
     "strata": {
-      "framework_input|ifds|logging|long_8_plus": 10,
+      "framework_input|ifds|logging|long_8_plus": 11,
       "framework_input|ifds|logging|medium_4_7": 13,
       "framework_input|ifds|logging|short_1_3": 2,
-      "framework_input|ifds|ui|long_8_plus": 1,
       "framework_input|ifds|ui|medium_4_7": 4,
       "privacy_data|async_supplement|logging|long_8_plus": 9,
-      "privacy_data|async_supplement|logging|medium_4_7": 18,
+      "privacy_data|async_supplement|logging|medium_4_7": 16,
       "privacy_data|async_supplement|logging|short_1_3": 3,
       "privacy_data|both|logging|long_8_plus": 1,
-      "privacy_data|both|logging|medium_4_7": 18,
+      "privacy_data|both|logging|medium_4_7": 20,
       "privacy_data|both|logging|short_1_3": 7,
       "privacy_data|ifds|logging|long_8_plus": 4,
       "privacy_data|ifds|logging|medium_4_7": 17,
@@ -64,18 +63,18 @@
       "upper": 1
     },
     "explicitDataDependence": {
-      "successes": 114,
+      "successes": 115,
       "total": 120,
-      "estimate": 0.95,
-      "lower": 0.8951971146376326,
-      "upper": 0.9768856355855343
+      "estimate": 0.9583333333333334,
+      "lower": 0.9061591476629647,
+      "upper": 0.9820732831198906
     },
     "reachabilityConsistent": {
-      "successes": 114,
+      "successes": 115,
       "total": 120,
-      "estimate": 0.95,
-      "lower": 0.8951971146376326,
-      "upper": 0.9768856355855343
+      "estimate": 0.9583333333333334,
+      "lower": 0.9061591476629647,
+      "upper": 0.9820732831198906
     },
     "provenanceCorrect": {
       "successes": 120,
@@ -85,21 +84,21 @@
       "upper": 1
     },
     "fullPathCorrect": {
-      "successes": 114,
+      "successes": 115,
       "total": 120,
-      "estimate": 0.95,
-      "lower": 0.8951971146376326,
-      "upper": 0.9768856355855343
+      "estimate": 0.9583333333333334,
+      "lower": 0.9061591476629647,
+      "upper": 0.9820732831198906
     }
   },
   "fullPathBreakdown": {
     "sourceKind": {
       "framework_input": {
-        "successes": 24,
+        "successes": 25,
         "total": 30,
-        "estimate": 0.8,
-        "lower": 0.6269430358685175,
-        "upper": 0.9049489282271013
+        "estimate": 0.8333333333333334,
+        "lower": 0.6643564949358397,
+        "upper": 0.9266345762815146
       },
       "privacy_data": {
         "successes": 90,
@@ -111,34 +110,34 @@
     },
     "provenance": {
       "async_supplement": {
-        "successes": 30,
-        "total": 30,
+        "successes": 28,
+        "total": 28,
         "estimate": 1,
-        "lower": 0.8864866068260312,
-        "upper": 0.9999999999999999
+        "lower": 0.8793566952341543,
+        "upper": 0.9999999999999998
       },
       "both": {
-        "successes": 26,
-        "total": 26,
+        "successes": 28,
+        "total": 28,
         "estimate": 1,
-        "lower": 0.8712710781407846,
-        "upper": 1
+        "lower": 0.8793566952341543,
+        "upper": 0.9999999999999998
       },
       "ifds": {
-        "successes": 58,
+        "successes": 59,
         "total": 64,
-        "estimate": 0.90625,
-        "lower": 0.810171204003544,
-        "upper": 0.9563217474148016
+        "estimate": 0.921875,
+        "lower": 0.8298046264583709,
+        "upper": 0.9661688230914496
       }
     },
     "sinkFamily": {
       "logging": {
-        "successes": 112,
-        "total": 113,
-        "estimate": 0.9911504424778761,
-        "lower": 0.9515691320824156,
-        "upper": 0.9984361239315607
+        "successes": 113,
+        "total": 114,
+        "estimate": 0.9912280701754386,
+        "lower": 0.9519796532398638,
+        "upper": 0.9984498570602217
       },
       "network": {
         "successes": 2,
@@ -149,19 +148,19 @@
       },
       "ui": {
         "successes": 0,
-        "total": 5,
+        "total": 4,
         "estimate": 0,
         "lower": 0,
-        "upper": 0.43448246478317476
+        "upper": 0.4898908364545973
       }
     },
     "pathLengthBin": {
       "long_8_plus": {
-        "successes": 25,
+        "successes": 26,
         "total": 27,
-        "estimate": 0.9259259259259259,
-        "lower": 0.7663040731697686,
-        "upper": 0.9794453459390113
+        "estimate": 0.9629629629629629,
+        "lower": 0.8171653406642414,
+        "upper": 0.9934318540192149
       },
       "medium_4_7": {
         "successes": 66,
@@ -187,18 +186,18 @@
         "upper": 1
       },
       "production": {
-        "successes": 95,
-        "total": 99,
-        "estimate": 0.9595959595959596,
-        "lower": 0.9006797874974577,
-        "upper": 0.9841773610058524
+        "successes": 96,
+        "total": 101,
+        "estimate": 0.9504950495049505,
+        "lower": 0.8893057492703144,
+        "upper": 0.9786714901119936
       },
       "test": {
         "successes": 14,
-        "total": 16,
-        "estimate": 0.875,
-        "lower": 0.639771727342413,
-        "upper": 0.9650225122567595
+        "total": 14,
+        "estimate": 1,
+        "lower": 0.7846891972623643,
+        "upper": 1
       }
     }
   },
@@ -218,18 +217,11 @@
       "evidence": "Manual source inspection: onCreate stores want.uri in OHBridge.wantUri, while InputPage line 71 formats this.inputText; the reported path omits any value-producing read that could connect the fields."
     },
     {
-      "id": "ed3853b17be41cbf07e5e304",
-      "project": "VoiceCallDemo",
+      "id": "b8f4947069338f893938e9a2",
+      "project": "HarmonyOS-Inno",
       "sourceKind": "framework_input",
       "provenance": "ifds",
-      "evidence": "Manual source inspection: the UIAbility Want reaches readWant, but the reported Toast at Index line 51 is driven only by the permission result and a resource constant."
-    },
-    {
-      "id": "c043c9c9f9de6adb00760dce",
-      "project": "VoiceCallDemo",
-      "sourceKind": "framework_input",
-      "provenance": "ifds",
-      "evidence": "Manual source inspection: readWant selects an emitter event, but the listener passes a hard-coded EVENT_UI_ANSWER constant to the logger; this is control selection, not explicit value dependence."
+      "evidence": "Manual source inspection confirms that EntryAbility.onCreate stores want.uri in OHBridge.wantUri, whereas CameraPicker.ets:34 logs fields of the independent picker.pick result. The reported path contains no read of OHBridge.wantUri and therefore has no explicit value dependence."
     },
     {
       "id": "a0cb9d779f2ceac08f8d6113",
