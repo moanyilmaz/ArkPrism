@@ -120,6 +120,80 @@ function matchRecords(previousRecords, candidates) {
   });
 }
 
+function bindRecords(previousRecords, candidates) {
+  const candidatesByKey = new Map();
+  for (const candidate of candidates) {
+    const key = stablePathKey(candidate);
+    const bucket = candidatesByKey.get(key) || [];
+    bucket.push(candidate);
+    candidatesByKey.set(key, bucket);
+  }
+
+  const used = new Set();
+  const bindings = [];
+  const missing = [];
+  for (const previous of previousRecords) {
+    const matches = candidatesByKey.get(stablePathKey(previous)) || [];
+    if (matches.length > 1) {
+      throw new Error(`${previous.id}: expected at most one exact path in the new run, found ${matches.length}`);
+    }
+    if (matches.length === 0) {
+      missing.push(previous);
+      continue;
+    }
+    const [current] = matches;
+    if (used.has(current.id)) throw new Error(`${previous.id}: new path ${current.id} was matched twice`);
+    used.add(current.id);
+    assertArtifactIdentity(previous, current);
+    bindings.push({
+      kind: 'exact',
+      previous,
+      current,
+      provenanceChanged: previous.provenance !== current.provenance,
+      derivationsChanged: JSON.stringify(previous.analysisDerivations || [])
+        !== JSON.stringify(current.analysisDerivations || []),
+      carrierStateChanged: (previous.carrierState || null) !== (current.carrierState || null),
+    });
+  }
+
+  for (const previous of missing) {
+    const available = candidates
+      .filter(candidate => !used.has(candidate.id) && candidate.sourceKind === previous.sourceKind)
+      .map(candidate => ({
+        candidate,
+        score: (
+          (candidate.stratum === previous.stratum ? 1_000_000 : 0)
+          + (candidate.provenance === previous.provenance ? 100_000 : 0)
+          + (candidate.sinkFamily === previous.sinkFamily ? 10_000 : 0)
+          + (candidate.pathLengthBin === previous.pathLengthBin ? 1_000 : 0)
+        ),
+        tieHash: sha256(`${previous.id}\0${candidate.id}`),
+      }))
+      .sort((left, right) => (
+        right.score - left.score || left.tieHash.localeCompare(right.tieHash)
+      ));
+    if (available.length === 0) {
+      throw new Error(`${previous.id}: no replacement path with source kind ${previous.sourceKind}`);
+    }
+    const [{ candidate, score }] = available;
+    used.add(candidate.id);
+    bindings.push({
+      kind: 'replacement',
+      previous,
+      current: candidate,
+      replacementScore: score,
+      sameStratum: candidate.stratum === previous.stratum,
+      provenanceChanged: previous.provenance !== candidate.provenance,
+      derivationsChanged: true,
+      carrierStateChanged: (previous.carrierState || null) !== (candidate.carrierState || null),
+    });
+  }
+
+  const order = new Map(previousRecords.map((record, index) => [record.id, index]));
+  bindings.sort((left, right) => order.get(left.previous.id) - order.get(right.previous.id));
+  return bindings;
+}
+
 function buildCandidates(reportRoot, datasetRoot) {
   const sourceCache = createSourceCache();
   const candidates = [];
@@ -191,18 +265,20 @@ function main() {
   }
 
   const candidates = buildCandidates(args.reports, args.dataset);
-  const matches = matchRecords(previousQueue.records || [], candidates);
-  const reboundRecords = matches.map(match => ({
-    ...match.current,
-    predecessorId: match.previous.id,
-    rebindEvidence: 'exact source, sink, source identity, and normalized statement path',
+  const bindings = bindRecords(previousQueue.records || [], candidates);
+  const reboundRecords = bindings.map(binding => ({
+    ...binding.current,
+    predecessorId: binding.previous.id,
+    rebindEvidence: binding.kind === 'exact'
+      ? 'exact source, sink, source identity, and normalized statement path'
+      : 'deterministic replacement preserving source kind and prioritizing the predecessor stratum',
   }));
   const reboundQueue = {
     schemaVersion: 3,
     reportsDirectory: args.reports,
     datasetDirectory: args.dataset,
     runManifestSha256: sha256File(manifestPath),
-    selectionAlgorithm: 'exact-path-rebind-v1',
+    selectionAlgorithm: 'exact-path-rebind-with-reviewed-replacements-v2',
     predecessorQueueSha256: previousQueueHash,
     requested: previousQueue.requested,
     population: {
@@ -231,14 +307,28 @@ function main() {
     role: 'draft-rebound-semantic-path-decisions',
     reviewQueueSha256: reboundQueueHash,
     predecessorDecisionSha256: sha256(fs.readFileSync(args.decisions)),
-    decisions: matches.map((match) => {
-      const previousDecision = decisionById.get(match.previous.id);
-      if (!previousDecision) throw new Error(`Missing predecessor decision: ${match.previous.id}`);
-      const needsReview = match.provenanceChanged || match.derivationsChanged;
+    decisions: bindings.map((binding) => {
+      const previousDecision = decisionById.get(binding.previous.id);
+      if (!previousDecision) throw new Error(`Missing predecessor decision: ${binding.previous.id}`);
+      if (binding.kind === 'replacement') {
+        return {
+          id: binding.current.id,
+          sourceIdentityCorrect: null,
+          sinkIdentityCorrect: null,
+          explicitDataDependence: null,
+          reachabilityConsistent: null,
+          provenanceCorrect: null,
+          fullPathCorrect: null,
+          evidence: '',
+          predecessorId: binding.previous.id,
+          rebindStatus: 'replacement_review_required',
+        };
+      }
+      const needsReview = binding.provenanceChanged || binding.derivationsChanged;
       return {
         ...previousDecision,
-        id: match.current.id,
-        predecessorId: match.previous.id,
+        id: binding.current.id,
+        predecessorId: binding.previous.id,
         rebindStatus: needsReview ? 'provenance_review_required' : 'exact_path_unchanged',
         provenanceCorrect: needsReview ? null : previousDecision.provenanceCorrect,
         fullPathCorrect: needsReview ? null : previousDecision.fullPathCorrect,
@@ -251,23 +341,35 @@ function main() {
     schemaVersion: 1,
     predecessorQueueSha256: previousQueueHash,
     reboundQueueSha256: reboundQueueHash,
-    total: matches.length,
-    exactUnchanged: matches.filter(match => !(
-      match.provenanceChanged || match.derivationsChanged
+    total: bindings.length,
+    exactMatched: bindings.filter(binding => binding.kind === 'exact').length,
+    exactUnchanged: bindings.filter(binding => binding.kind === 'exact' && !(
+      binding.provenanceChanged || binding.derivationsChanged
     )).length,
-    provenanceReviewRequired: matches.filter(match => (
-      match.provenanceChanged || match.derivationsChanged
-    )).map(match => ({
-      project: match.current.project,
-      previousId: match.previous.id,
-      currentId: match.current.id,
-      previousProvenance: match.previous.provenance,
-      currentProvenance: match.current.provenance,
-      previousDerivations: match.previous.analysisDerivations || [],
-      currentDerivations: match.current.analysisDerivations || [],
-      previousCarrierState: match.previous.carrierState || null,
-      currentCarrierState: match.current.carrierState || null,
+    provenanceReviewRequired: bindings.filter(binding => (
+      binding.kind === 'exact' && (binding.provenanceChanged || binding.derivationsChanged)
+    )).map(binding => ({
+      project: binding.current.project,
+      previousId: binding.previous.id,
+      currentId: binding.current.id,
+      previousProvenance: binding.previous.provenance,
+      currentProvenance: binding.current.provenance,
+      previousDerivations: binding.previous.analysisDerivations || [],
+      currentDerivations: binding.current.analysisDerivations || [],
+      previousCarrierState: binding.previous.carrierState || null,
+      currentCarrierState: binding.current.carrierState || null,
     })),
+    replacementReviewRequired: bindings.filter(binding => binding.kind === 'replacement')
+      .map(binding => ({
+        retiredProject: binding.previous.project,
+        retiredId: binding.previous.id,
+        retiredStratum: binding.previous.stratum,
+        replacementProject: binding.current.project,
+        replacementId: binding.current.id,
+        replacementStratum: binding.current.stratum,
+        sameStratum: binding.sameStratum,
+        replacementScore: binding.replacementScore,
+      })),
   };
   writeJson(args['output-mapping'], mapping);
   console.log(JSON.stringify(mapping, null, 2));
@@ -275,4 +377,10 @@ function main() {
 
 if (require.main === module) main();
 
-module.exports = { assertArtifactIdentity, identityKey, matchRecords, stablePathKey };
+module.exports = {
+  assertArtifactIdentity,
+  bindRecords,
+  identityKey,
+  matchRecords,
+  stablePathKey,
+};
