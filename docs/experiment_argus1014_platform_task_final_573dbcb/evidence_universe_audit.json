@@ -1,0 +1,51 @@
+{
+  "generatedAt": "2026-07-31T05:47:18.123Z",
+  "reportsDirectory": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_platform_task_final_573dbcb",
+  "definitions": {
+    "detectorLocalSinks": "Sinks attached to detector usages by report-local tracing.",
+    "ifdsQueryFlows": "Flows from the independent IFDS query and asynchronous supplement.",
+    "configuredSourceEndpoints": "Unique configured-query source endpoints represented by a path.",
+    "configuredSinkEndpoints": "Unique configured-query sink endpoints represented by a path.",
+    "privacyDataFlows": "Configured-query paths seeded by a typed privacy-data carrier.",
+    "frameworkInputFlows": "Configured-query paths seeded by an explicitly modeled framework input.",
+    "endpointLinks": "Conservative joins between the two evidence universes.",
+    "invariant": "Every configured-query flow has one retained source endpoint and one retained sink endpoint; detector-local sink projects remain a separate set."
+  },
+  "projects": 1014,
+  "projectSets": {
+    "detectorApiPositive": 353,
+    "detectorSinkPositive": 224,
+    "ifdsFlowPositive": 183,
+    "configuredSourceEndpointPositive": 183,
+    "configuredSinkEndpointPositive": 183,
+    "privacyDataFlowPositive": 31,
+    "frameworkInputFlowPositive": 159,
+    "linkedFlowPositive": 31
+  },
+  "totals": {
+    "detectorApiUsages": 2339,
+    "detectorLocalSinks": 1755,
+    "ifdsQueryFlows": 458,
+    "configuredSourceEndpoints": 320,
+    "configuredSinkEndpoints": 416,
+    "privacyDataFlows": 258,
+    "frameworkInputFlows": 200,
+    "endpointLinks": 252,
+    "linkedFlows": 248
+  },
+  "provenance": {
+    "ifds": 331,
+    "async_supplement": 78,
+    "both": 49,
+    "missing": 0,
+    "invalid": 0
+  },
+  "sourceKinds": {
+    "privacy_data": 258,
+    "framework_input": 200,
+    "missing": 0,
+    "invalid": 0
+  },
+  "valid": true,
+  "errors": []
+}

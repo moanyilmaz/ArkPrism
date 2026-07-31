@@ -1,0 +1,1442 @@
+{
+  "schemaVersion": 3,
+  "generatedAt": "2026-07-31T02:08:39.878Z",
+  "oracle": {
+    "file": "oracle.json",
+    "sha256": "f9f8b92454ca841f27c89f8c2717eeb267191f56afcc139bbabd2959ce5487c8"
+  },
+  "runs": {
+    "full": {
+      "runId": "arkpromisebench_final_573dbcb_full",
+      "manifestSha256": "4d44250af0389bb564759f4f8d7e143e0bb2169067ee2fae59f007d9093d1525",
+      "disableContinuationFlow": false,
+      "callbackAnalysis": false,
+      "unrestrictedSdkCallbacks": false
+    },
+    "comparison": {
+      "runId": "arkpromisebench_final_573dbcb_off",
+      "manifestSha256": "f502846d7d4852954a1575c01a67a9e3bd4d1083cfcd250cd933468e2661f4d6",
+      "disableContinuationFlow": true,
+      "callbackAnalysis": false,
+      "unrestrictedSdkCallbacks": false
+    }
+  },
+  "definition": "A positive case requires explicit dependence from a configured Promise payload to console.info. Rejection values, constants, independent Promise payloads, and constant-returning transforms are negative.",
+  "full": {
+    "name": "full",
+    "overall": {
+      "cases": 24,
+      "tp": 7,
+      "tn": 17,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "specificity": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "byConstruct": {
+      "Promise": {
+        "cases": 24,
+        "tp": 7,
+        "tn": 17,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byApi": {
+      "undefined": {
+        "cases": 24,
+        "tp": 7,
+        "tn": 17,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byCategory": {
+      "alias-identity": {
+        "cases": 4,
+        "tp": 1,
+        "tn": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "callback-execution": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "handler-position": {
+        "cases": 3,
+        "tp": 1,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "promise-flattening": {
+        "cases": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "promise-owner": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "rejection-operator": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sanitizer-return": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sequential-chain": {
+        "cases": 3,
+        "tp": 2,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "success-handler": {
+        "cases": 1,
+        "tp": 1,
+        "tn": 0,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": null,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "value-dependence": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      }
+    },
+    "records": [
+      {
+        "id": "direct_success",
+        "construct": "Promise",
+        "category": "success-handler",
+        "boundaryOperator": "fulfillment-binding",
+        "expected": true,
+        "oracleReason": "The configured Promise resolved payload is bound to the first then-handler parameter and that parameter reaches console.info.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "same_promise_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": true,
+        "oracleReason": "The alias denotes the same configured Promise, so its resolved payload is bound to the success-handler parameter and reaches console.info.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "success_with_rejection_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": true,
+        "oracleReason": "The sensitive resolved payload reaches the first then argument; the presence of a separate rejection handler does not change that dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "sequential_value",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": true,
+        "oracleReason": "The first success handler returns its input unchanged, making the next Promise payload data-dependent on the configured source.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "sequential_property",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": true,
+        "oracleReason": "The first success handler returns a property derived from its input, so the next Promise payload remains data-dependent on the configured source.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "promise_flattening",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": true,
+        "oracleReason": "Promise.resolve wraps the sensitive handler input and Promise flattening carries that resolved value to the next success handler.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "promise_flattening_alias",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": true,
+        "oracleReason": "The handler returns Promise.resolve of an exact local alias of its payload, so flattening preserves dependence into the following continuation.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 1
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "custom_then_constant",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "boundaryOperator": "receiver-owner",
+        "expected": false,
+        "oracleReason": "The then receiver is a user-defined TaskQueue whose callback argument is a constant, not the configured Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "custom_then_ignored_return",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "boundaryOperator": "receiver-owner",
+        "expected": false,
+        "oracleReason": "The user-defined then invokes a source-capturing callback but discards its return and produces an independent constant Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "rejection_argument",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": false,
+        "oracleReason": "Only the rejection-handler parameter reaches console.info; it is not the configured Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "undefined_success_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": false,
+        "oracleReason": "The fulfillment handler is absent and only the rejection handler reaches the sink, so no resolved privacy payload is bound to that callback.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "catch_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "boundaryOperator": "rejection-channel",
+        "expected": false,
+        "oracleReason": "The catch callback receives a rejection reason, whereas the configured source is the Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "finally_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "boundaryOperator": "rejection-channel",
+        "expected": false,
+        "oracleReason": "The finally callback receives no resolved payload and the sink argument is a constant.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "ignored_success_value",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "boundaryOperator": "sink-dependence",
+        "expected": false,
+        "oracleReason": "The success-handler parameter is never used and the sink argument is a constant independent of the resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_in_success",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "boundaryOperator": "sink-dependence",
+        "expected": false,
+        "oracleReason": "The success handler receives the resolved payload but console.info consumes a separately created constant.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "independent_promise",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The observed handler belongs to an independent constant Promise; the configured Promise is never attached to that continuation.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "two_promise_cross_binding",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The sink observes a distinct constant Promise while the configured Promise is attached to a separate handler that does not use its payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "reassigned_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The alias is overwritten with an independent constant Promise before then is invoked, killing identity with the configured Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_sanitizer",
+        "construct": "Promise",
+        "category": "sanitizer-return",
+        "boundaryOperator": "return-dependence",
+        "expected": false,
+        "oracleReason": "The helper consumes its input but returns the same constant for every input, so the sink value is not data-dependent on the resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_constant",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": false,
+        "oracleReason": "The first success handler replaces the resolved payload with a constant, so the following Promise payload has no source dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "flattening_constant_promise",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": false,
+        "oracleReason": "The first handler replaces its input with an independently resolved constant Promise, so Promise flattening carries no source dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_callback_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "Registering an emitter callback does not execute it, and the program contains no matching emit operation that could reach the captured Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_source_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "The emitter callback contains a configured Promise source, but registration alone does not execute that callback and no matching emit operation exists.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_once_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "A one-shot emitter registration remains dormant without a matching emit operation, so its captured configured Promise cannot reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "ablation": {
+    "name": "continuation_off",
+    "overall": {
+      "cases": 24,
+      "tp": 0,
+      "tn": 17,
+      "fp": 0,
+      "fn": 7,
+      "precision": null,
+      "recall": 0,
+      "specificity": 1,
+      "f1": null,
+      "accuracy": 0.7083333333333334
+    },
+    "byConstruct": {
+      "Promise": {
+        "cases": 24,
+        "tp": 0,
+        "tn": 17,
+        "fp": 0,
+        "fn": 7,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.7083333333333334
+      }
+    },
+    "byApi": {
+      "undefined": {
+        "cases": 24,
+        "tp": 0,
+        "tn": 17,
+        "fp": 0,
+        "fn": 7,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.7083333333333334
+      }
+    },
+    "byCategory": {
+      "alias-identity": {
+        "cases": 4,
+        "tp": 0,
+        "tn": 3,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.75
+      },
+      "callback-execution": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 3,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "handler-position": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.6666666666666666
+      },
+      "promise-flattening": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 2,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.3333333333333333
+      },
+      "promise-owner": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "rejection-operator": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sanitizer-return": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      },
+      "sequential-chain": {
+        "cases": 3,
+        "tp": 0,
+        "tn": 1,
+        "fp": 0,
+        "fn": 2,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.3333333333333333
+      },
+      "success-handler": {
+        "cases": 1,
+        "tp": 0,
+        "tn": 0,
+        "fp": 0,
+        "fn": 1,
+        "precision": null,
+        "recall": 0,
+        "specificity": null,
+        "f1": null,
+        "accuracy": 0
+      },
+      "value-dependence": {
+        "cases": 2,
+        "tp": 0,
+        "tn": 2,
+        "fp": 0,
+        "fn": 0,
+        "precision": null,
+        "recall": null,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 1
+      }
+    },
+    "records": [
+      {
+        "id": "direct_success",
+        "construct": "Promise",
+        "category": "success-handler",
+        "boundaryOperator": "fulfillment-binding",
+        "expected": true,
+        "oracleReason": "The configured Promise resolved payload is bound to the first then-handler parameter and that parameter reaches console.info.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "same_promise_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": true,
+        "oracleReason": "The alias denotes the same configured Promise, so its resolved payload is bound to the success-handler parameter and reaches console.info.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "success_with_rejection_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": true,
+        "oracleReason": "The sensitive resolved payload reaches the first then argument; the presence of a separate rejection handler does not change that dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_value",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": true,
+        "oracleReason": "The first success handler returns its input unchanged, making the next Promise payload data-dependent on the configured source.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_property",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": true,
+        "oracleReason": "The first success handler returns a property derived from its input, so the next Promise payload remains data-dependent on the configured source.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "promise_flattening",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": true,
+        "oracleReason": "Promise.resolve wraps the sensitive handler input and Promise flattening carries that resolved value to the next success handler.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "promise_flattening_alias",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": true,
+        "oracleReason": "The handler returns Promise.resolve of an exact local alias of its payload, so flattening preserves dependence into the following continuation.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "custom_then_constant",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "boundaryOperator": "receiver-owner",
+        "expected": false,
+        "oracleReason": "The then receiver is a user-defined TaskQueue whose callback argument is a constant, not the configured Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "custom_then_ignored_return",
+        "construct": "Promise",
+        "category": "promise-owner",
+        "boundaryOperator": "receiver-owner",
+        "expected": false,
+        "oracleReason": "The user-defined then invokes a source-capturing callback but discards its return and produces an independent constant Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "rejection_argument",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": false,
+        "oracleReason": "Only the rejection-handler parameter reaches console.info; it is not the configured Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "undefined_success_handler",
+        "construct": "Promise",
+        "category": "handler-position",
+        "boundaryOperator": "handler-position",
+        "expected": false,
+        "oracleReason": "The fulfillment handler is absent and only the rejection handler reaches the sink, so no resolved privacy payload is bound to that callback.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "catch_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "boundaryOperator": "rejection-channel",
+        "expected": false,
+        "oracleReason": "The catch callback receives a rejection reason, whereas the configured source is the Promise resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "finally_handler",
+        "construct": "Promise",
+        "category": "rejection-operator",
+        "boundaryOperator": "rejection-channel",
+        "expected": false,
+        "oracleReason": "The finally callback receives no resolved payload and the sink argument is a constant.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "ignored_success_value",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "boundaryOperator": "sink-dependence",
+        "expected": false,
+        "oracleReason": "The success-handler parameter is never used and the sink argument is a constant independent of the resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_in_success",
+        "construct": "Promise",
+        "category": "value-dependence",
+        "boundaryOperator": "sink-dependence",
+        "expected": false,
+        "oracleReason": "The success handler receives the resolved payload but console.info consumes a separately created constant.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "independent_promise",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The observed handler belongs to an independent constant Promise; the configured Promise is never attached to that continuation.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "two_promise_cross_binding",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The sink observes a distinct constant Promise while the configured Promise is attached to a separate handler that does not use its payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "reassigned_alias",
+        "construct": "Promise",
+        "category": "alias-identity",
+        "boundaryOperator": "receiver-identity",
+        "expected": false,
+        "oracleReason": "The alias is overwritten with an independent constant Promise before then is invoked, killing identity with the configured Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "constant_sanitizer",
+        "construct": "Promise",
+        "category": "sanitizer-return",
+        "boundaryOperator": "return-dependence",
+        "expected": false,
+        "oracleReason": "The helper consumes its input but returns the same constant for every input, so the sink value is not data-dependent on the resolved payload.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "sequential_constant",
+        "construct": "Promise",
+        "category": "sequential-chain",
+        "boundaryOperator": "return-dependence",
+        "expected": false,
+        "oracleReason": "The first success handler replaces the resolved payload with a constant, so the following Promise payload has no source dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "flattening_constant_promise",
+        "construct": "Promise",
+        "category": "promise-flattening",
+        "boundaryOperator": "promise-assimilation",
+        "expected": false,
+        "oracleReason": "The first handler replaces its input with an independently resolved constant Promise, so Promise flattening carries no source dependence.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_callback_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "Registering an emitter callback does not execute it, and the program contains no matching emit operation that could reach the captured Promise.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_source_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "The emitter callback contains a configured Promise source, but registration alone does not execute that callback and no matching emit operation exists.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "registered_once_without_emit",
+        "construct": "Promise",
+        "category": "callback-execution",
+        "boundaryOperator": "callback-execution",
+        "expected": false,
+        "oracleReason": "A one-shot emitter registration remains dormant without a matching emit operation, so its captured configured Promise cannot reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "paired": {
+    "fullOnlyCorrect": [
+      "direct_success",
+      "same_promise_alias",
+      "success_with_rejection_handler",
+      "sequential_value",
+      "sequential_property",
+      "promise_flattening",
+      "promise_flattening_alias"
+    ],
+    "ablationOnlyCorrect": [],
+    "exactMcNemarP": 0.015625
+  }
+}

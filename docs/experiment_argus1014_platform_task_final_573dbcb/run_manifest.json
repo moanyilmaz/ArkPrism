@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "status": "complete",
+  "startedAt": "2026-07-31T02:34:03.599Z",
+  "updatedAt": "2026-07-31T04:59:44.021Z",
+  "completedAt": "2026-07-31T04:59:44.018Z",
+  "command": [
+    "D:\\nodejs\\node.exe",
+    "E:\\arkprism-fse2027-experiments\\scripts\\run_argus_batch_isolated.js",
+    "--dataset",
+    "E:\\Projects\\ARGUS\\release_20260617\\ARGUS-successful-1015-samples-20260617",
+    "--output-dir",
+    "experiments\\argus1014_platform_task_final_573dbcb",
+    "--sdkPath",
+    "E:\\OpenHarmony_SDK\\20\\ets",
+    "--log-dir",
+    "experiments\\argus1014_platform_task_final_573dbcb\\logs",
+    "--timeout-ms",
+    "3600000",
+    "--node-options",
+    "--max-old-space-size=8192",
+    "--concurrency",
+    "2",
+    "--engine",
+    "compiled",
+    "--max-attempts",
+    "2",
+    "--retry-delay-ms",
+    "5000",
+    "--sdk-fingerprint-cache",
+    "experiments\\.cache\\sdk-api20-20260727.json",
+    "--exclude-project",
+    "readmigo_harmony-app",
+    "--",
+    "--ifds-max-edges",
+    "30000000",
+    "--ifds-max-worklist",
+    "8000000",
+    "--ifds-timeout-ms",
+    "1800000",
+    "--callback-analysis",
+    "true",
+    "--callback-max-methods",
+    "200000",
+    "--callback-max-sources",
+    "20000",
+    "--callback-max-states",
+    "50000",
+    "--callback-max-path-len",
+    "160"
+  ],
+  "environment": {
+    "node": "v20.18.0",
+    "platform": "win32",
+    "arch": "x64",
+    "git": {
+      "revision": "573dbcb82e6cfb071a5cde2c7552e190156c37f6",
+      "trackedFilesDirty": false
+    },
+    "analysisFeatureFlags": {
+      "disableIrRecovery": false,
+      "disableReceiverRefinement": false,
+      "disableLifecycleBounds": false,
+      "disableContinuationFlow": false,
+      "unrestrictedSdkCallbacks": false
+    }
+  },
+  "inputs": {
+    "dataset": "E:\\Projects\\ARGUS\\release_20260617\\ARGUS-successful-1015-samples-20260617",
+    "datasetProjectCount": 1015,
+    "projectCount": 1014,
+    "includedProjects": [],
+    "excludedProjects": [
+      "readmigo_harmony-app"
+    ],
+    "sdk": {
+      "root": "E:\\OpenHarmony_SDK\\20\\ets",
+      "sha256": "70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6",
+      "files": 13721,
+      "bytes": 311592147,
+      "cache": "E:\\arkprism-fse2027-experiments\\experiments\\.cache\\sdk-api20-20260727.json",
+      "cacheHit": true
+    },
+    "configHashes": {
+      "sensitive_apis.json": "66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc",
+      "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+      "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+      "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+      "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+      "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e"
+    },
+    "implementation": {
+      "runnerPath": "E:\\arkprism-fse2027-experiments\\scripts\\run_argus_batch_isolated.js",
+      "runnerSha256": "62de2d51590f1f35d42405c4daeb25edd2474c6c648192d36c6831600444a502",
+      "source": {
+        "path": "E:\\arkprism-fse2027-experiments\\src",
+        "sha256": "950886fc00033eab3f2747566620ee48ccf2e145a2e3023262f87b9a4e62252c",
+        "files": 437,
+        "bytes": 3501589
+      },
+      "packageJsonSha256": "09305967665e74394b07f9a08403ba6d16a83a60b5627f8692b211247686b2ad",
+      "packageLockSha256": "a4ed0623fe2361a98e231d8a2f6c52f18cc13d9cb0383e4988845be590449190",
+      "tsconfigSha256": "196e2e89c429479466c72c4ec7a0b04fb89f3c0179f9c88cba203b2abd8bb325"
+    },
+    "build": {
+      "path": "E:\\arkprism-fse2027-experiments\\dist",
+      "entrySha256": "c45809597196232983661584cba583180b9adc4fffdb8f00a31fda248cbada26",
+      "sha256": "94a1f34ccfd965b811647ea6e9651e22d63ec88658de084afecb9a4abd6622b8",
+      "files": 328,
+      "bytes": 4066590
+    }
+  },
+  "execution": {
+    "outputDir": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_platform_task_final_573dbcb",
+    "logDir": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_platform_task_final_573dbcb\\logs",
+    "engine": "compiled",
+    "concurrency": 2,
+    "timeoutMs": 3600000,
+    "nodeOptions": "--max-old-space-size=8192",
+    "resume": false,
+    "arkArgs": [
+      "--ifds-max-edges",
+      "30000000",
+      "--ifds-max-worklist",
+      "8000000",
+      "--ifds-timeout-ms",
+      "1800000",
+      "--callback-analysis",
+      "true",
+      "--callback-max-methods",
+      "200000",
+      "--callback-max-sources",
+      "20000",
+      "--callback-max-states",
+      "50000",
+      "--callback-max-path-len",
+      "160"
+    ],
+    "maxAttempts": 2,
+    "retryDelayMs": 5000,
+    "disableContinuationFlow": false,
+    "unrestrictedSdkCallbacks": false
+  },
+  "progress": {
+    "finished": 1014,
+    "completed": 1014,
+    "errors": 0
+  }
+}

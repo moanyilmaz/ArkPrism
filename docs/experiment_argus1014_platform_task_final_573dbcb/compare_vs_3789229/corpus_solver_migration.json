@@ -1,0 +1,118 @@
+{
+  "generatedAt": "2026-07-31T05:47:52.768Z",
+  "definitions": {
+    "endpoint": "Project, source identity/location, source statement, sink location, and sink statement.",
+    "exactPath": "Endpoint plus normalized statement, source file, line, and method sequence.",
+    "transition": "Set-valued provenance or derivation labels on matched endpoints."
+  },
+  "baseline": {
+    "root": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_semantic_edges_final_3789229",
+    "manifest": {
+      "revision": "37892293fe6681c896fb7e6d96d5b28074d3a95f",
+      "trackedFilesDirty": false,
+      "completedAt": "2026-07-30T09:16:11.101Z",
+      "projects": 1014,
+      "sdkSha256": "70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6",
+      "buildSha256": "b315ac9f261c7991900abef15c7e65de60ad90b9f22cd22a7ba6165e0d2f0d5d",
+      "configHashes": {
+        "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+        "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+        "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+        "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e",
+        "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+        "sensitive_apis.json": "66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc"
+      }
+    },
+    "totals": {
+      "flows": 457,
+      "endpoints": 448,
+      "exactPaths": 457,
+      "ifdsEdges": 2987356,
+      "runtimeMs": 24198137
+    },
+    "provenance": {
+      "ifds": 330,
+      "async_supplement": 79,
+      "both": 48
+    },
+    "derivations": {
+      "promise_then": 14
+    },
+    "carrierStates": {
+      "framework_argument": 200,
+      "callback_payload": 118,
+      "direct_value": 99,
+      "promise_payload": 40
+    }
+  },
+  "candidate": {
+    "root": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_platform_task_final_573dbcb",
+    "manifest": {
+      "revision": "573dbcb82e6cfb071a5cde2c7552e190156c37f6",
+      "trackedFilesDirty": false,
+      "completedAt": "2026-07-31T04:59:44.018Z",
+      "projects": 1014,
+      "sdkSha256": "70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6",
+      "buildSha256": "94a1f34ccfd965b811647ea6e9651e22d63ec88658de084afecb9a4abd6622b8",
+      "configHashes": {
+        "data_sinks.json": "944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9",
+        "hapflow_sinks.json": "529315bdc9d0650b7c2d37719d80ac0c1426b0fe6bafb68a3338b94ba8534980",
+        "hapflow_sources.json": "0e5d1bdf354259b491a08d597798810e6ba3620d7d1fdfedcd2427a8f1847edb",
+        "lifecycle_sources.json": "afaf8c80ded570dcedd26ff0ada37518aff7ae7cb187565a3cbaf62b91ce499e",
+        "package_aliases.json": "866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339",
+        "sensitive_apis.json": "66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc"
+      }
+    },
+    "totals": {
+      "flows": 458,
+      "endpoints": 449,
+      "exactPaths": 458,
+      "ifdsEdges": 3006526,
+      "runtimeMs": 17468880
+    },
+    "provenance": {
+      "ifds": 331,
+      "async_supplement": 78,
+      "both": 49
+    },
+    "derivations": {
+      "promise_then": 15
+    },
+    "carrierStates": {
+      "framework_argument": 200,
+      "callback_payload": 120,
+      "direct_value": 99,
+      "promise_payload": 39
+    }
+  },
+  "overlap": {
+    "matchedEndpoints": 448,
+    "baselineOnlyEndpoints": 0,
+    "candidateOnlyEndpoints": 1,
+    "endpointSetPreserved": false,
+    "exactMatchedPaths": 457,
+    "baselineOnlyPaths": 0,
+    "candidateOnlyPaths": 1,
+    "exactPathSetPreserved": false
+  },
+  "transitions": {
+    "provenance": {
+      "ifds -> ifds": 324,
+      "async_supplement -> async_supplement": 73,
+      "both -> both": 46,
+      "async_supplement+ifds -> async_supplement+ifds": 4,
+      "async_supplement -> both": 1
+    },
+    "derivations": {
+      "(none) -> (none)": 433,
+      "promise_then -> promise_then": 14,
+      "(none) -> promise_then": 1
+    }
+  },
+  "changedEndpointExamples": {
+    "baselineOnly": [],
+    "candidateOnly": [
+      "[\"sensorjssamples\",\"privacy_data\",[\"@ohos.sensor\",\"sensor\",\"\",\"on\",\"callback\",\"\",\"1\",\"@@ohossdk/api/@ohos.sensor.d.ts: sensor.%dflt.on(sensorid.accelerometer, callback<accelerometerresponse>, options)\"],\"instanceinvoke sensor.<@%unk/%unk: .on()>(%4, %am7$%am6$%am5$%am4$build, useroption)\",\"entry/src/main/ets/pages/index.ets\",252,\"instanceinvoke hilog.<@%unk/%unk: .info()>(%0, %1, %2, args)\",\"entry/src/main/ets/pages/index.ets\",59]"
+    ]
+  }
+}

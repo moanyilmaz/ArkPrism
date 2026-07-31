@@ -1,481 +1,473 @@
-# ArkPrism 工程化测试与实验分析报告
+# ArkPrism 工程测试与实验分析报告
 
-## 1. 报告范围
+## 1. 报告目的
 
-本报告汇总 ArkPrism 在真实 OpenHarmony SDK、HapBench 独立 oracle 和大规模 ArkTS 项目语料上的最终实验结果。报告遵循三个相互独立的证据口径：
+本报告汇总 ArkPrism 最终交付版本的工程验证与实验结果。所有结论按证据来源分开：
 
-1. **HapBench** 用于端到端污点流准确率、召回率和特异度评估。
-2. **120 项目源码审计集** 用于评估已报告敏感 API 身份的 precision，不用于推断未报告调用的 recall。
-3. **大规模项目语料** 用于分析检出规模、证据分布、调用链、sink、IFDS 路径、运行性能和稳健性，不把工具输出本身当作 ground truth。
+1. **源码优先的 API 身份 benchmark**评估敏感 API 定位的准确率与召回率；
+2. **HapBench**评估端到端 source-to-sink 分类，并与 HapFlow 发布 artifact 对比；
+3. **ArkAsyncBench 与 ArkPromiseBench**验证异步 carrier、Promise 执行边和载荷传播语义；
+4. **120 条真实项目路径的源码/IR 审核**评估路径级语义质量；
+5. **1,014 项目大规模语料**分析检出规模、结构、性能、稳定性和重复样本敏感性。
 
-这种分离非常重要。没有独立 oracle 时，API 数量、调用链数量和 taint-flow 数量只能描述工具产生的静态证据，不能直接转化成准确率或召回率。
+大规模语料没有穷举 oracle，因此其 API、sink 和路径数量用于描述工具输出，不能直接转换为总体准确率或召回率。准确率结论来自独立 benchmark 和人工审核。
 
-## 2. 实验环境与可复现配置
+## 2. 最终版本与实验契约
 
-| 项目 | 配置 |
+### 2.1 分析版本
+
+| 项目 | 最终值 |
 |---|---|
-| 操作系统 | Windows |
-| Node.js | v20.18.0 |
-| OpenHarmony SDK | `E:\OpenHarmony_SDK\20\ets` |
-| SDK 文件数 | 13,721 |
-| SDK 大小 | 311,592,147 bytes |
+| ArkPrism commit | `573dbcb82e6cfb071a5cde2c7552e190156c37f6` |
+| OpenHarmony SDK | API-20 |
 | SDK SHA-256 | `70a7319f9bf543ad1bf6c60a6a847d611a088d5003261d1feda33bca556334a6` |
-| 候选项目目录 | `E:\Projects\ARGUS\release_20260617\ARGUS-successful-1015-samples-20260617` |
-| 单项目堆上限 | 8 GB |
+| 敏感 API 配置 SHA-256 | `66484695bf88e16d4746ed8be945446de979b3a595add930f284634e8fdb68dc` |
+| package alias 配置 SHA-256 | `866f8afdb27c47c125d41a6e6b996f67e9ff687adcacebb379b6e640833de339` |
+| sink 配置 SHA-256 | `944a7824994739faf3b02f5adc3a7404dc9cf1637c6b816f6b612d3074fbc9a9` |
+| 最终 run manifest SHA-256 | `5b6b2b5ddd2cd47d4e49e7f7268057f0f42f7ae7f9d3b08727dd5bbad405ea19` |
+
+最终大规模结果来自一个 analyzer build、一个 SDK、一个规则集合和一次完整运行，不使用旧结果 overlay，也不把失败或资源受限分析解释为零结果。
+
+### 2.2 资源策略
+
+| 参数 | 配置 |
+|---|---:|
 | 项目并发度 | 2 |
+| Node.js heap 上限 | 8 GB/进程 |
+| 单项目外层超时 | 3,600 s |
+| IFDS 超时 | 1,800 s |
 | IFDS 最大边数 | 30,000,000 |
 | IFDS 最大 worklist | 8,000,000 |
-| IFDS 超时 | 1,800,000 ms |
 | callback 最大方法数 | 200,000 |
 | callback 最大 source 数 | 20,000 |
 | callback 最大状态数 | 50,000 |
 | callback 最大路径长度 | 160 |
 
-SDK fallback 被禁用。保留的 1,014 个项目日志均包含：
+IFDS 默认联合分析项目中的全部 source，不分批执行。批处理只保留为显式资源降级机制；最终 1,014 项目运行没有触发该机制。
 
-- `Loading SDK files from: E:\OpenHarmony_SDK\20\ets`
-- `Pointer analysis complete.`
-- `Taint analysis ... Status: SUCCESS`
+## 3. 总体结果
 
-没有保留任何 PTA 失败后继续执行、SDK fallback、IFDS 分批或 budget-exceeded 的结果。
+| 证据层 | 样本 | 核心结果 |
+|---|---:|---|
+| ArkSourceFirst60 | 186 个源码候选 | 90 TP、96 TN、0 FP、0 FN |
+| ArkIdentityBench | 64 cases | 32 TP、32 TN、0 FP、0 FN |
+| Top-120 stress audit | 666 个确认 API key | 666/666 reproduction coverage |
+| HapBench | 67 cases | 50 TP、14 TN、0 FP、3 FN；F1 97.09% |
+| ArkAsyncBench | 48 cases | 24 TP、24 TN、0 FP、0 FN |
+| ArkPromiseBench | 24 mutants | 7 TP、17 TN、0 FP、0 FN |
+| 真实项目路径审核 | 120 paths | 隐私数据路径 90/90；全部路径 115/120 |
+| 大规模语料 | 1,014 projects | 2,339 API occurrences；258 privacy-data paths；0 errors |
 
-## 3. 最终结果如何构成
+## 4. 敏感 API 身份定位
 
-完整项目分析不重复运行。最终结果由一次完整运行和两组定向回归组成：
+### 4.1 ArkSourceFirst60
 
-| 层次 | 结果目录 | 作用 |
-|---|---|---|
-| 完整基础运行 | `experiments/argus1015_full_taint_20260724_v4` | 1,014 个成功项目的 frontend、调用图、IFDS、callback 和运行时间 |
-| detector 定向回归 | `experiments/detector_factory_api_impact_20260724_v6_dedup` | 对 24 个受 package alias、factory/manager receiver 和 def-use 修复影响的项目更新 API、调用链和 sink |
-| PTA/IFDS 定向回归 | `experiments/strict_pta_taint_replacement_20260724_v7` | 对旧日志中曾发生 PTA 降级的 10 个项目执行严格 PTA 和完整 IFDS 替换 |
+该 benchmark 在查看 ArkPrism 输出前固定项目，并从源码中枚举与冻结规则和 import universe 兼容的静态候选。标注在精确位置级完成，不把同一文件中的一次正确检出替代其他 occurrence。
 
-合成规则由 `scripts/project_corpus_detector_overlay.js` 固化：
-
-- detector overlay 替换同名项目的 API、调用链和 sink。
-- taint overlay 替换同名项目的 IFDS 结果。
-- 其余项目保留完整基础运行结果。
-- API 调用点按 package、namespace、method、文件、声明方法和 IR 语句去重。
-- package、namespace、method 和路径比较不区分大小写；IR 语句保留原文，以区分同一方法内的不同调用点。
-
-完整性审计由 `scripts/audit_composite_run.js` 重算，而不是手工汇总。
-
-### 3.1 项目纳入与排除
-
-候选目录包含 1,015 个项目，最终大语料统计纳入 1,014 个完整成功项目。
-
-`readmigo_harmony-app` 未纳入最终统计。修复原始 CFG/参数映射崩溃后，该项目的 PTA 已成功，但不分批 IFDS 在 30 分钟上限内仍为 `PARTIAL_SUCCESS`：处理 501,534 条边，产生 18 条临时 flow。由于其分析状态与其余项目不一致，不能把它的部分结果混入完整结果。项目名称、失败原因和部分报告保留在 artifact 中。
-
-这属于预先定义的完整性条件排除，不应描述成 1,015/1,015 全部完成。
-
-## 4. 代码修复与定向验证
-
-### 4.1 IFDS 参数映射
-
-原实现把调用实参映射到 callee CFG 首块语句，不能保证对应真正的 parameter instance，并可能在闭包参数偏移时访问非法位置。修复后：
-
-- 直接读取 callee parameter instances。
-- 只在闭包参数布局得到证实时应用偏移。
-- 越界和未知布局显式返回不可映射，而不是构造错误 fact。
-
-对应测试：`tests/verify_ifds_parameter_mapping.js`。
-
-### 4.2 PTA 容器字段边
-
-ArkAnalyzer PTA 在数组/容器字段节点缺失时会抛出异常。旧实现捕获异常后继续 IFDS，造成静默精度降级。修复后：
-
-- 非法容器字段边被显式拒绝和计数。
-- PTA 主过程继续处理其他合法边。
-- PTA 真正失败时 ArkPrism 整体失败，不允许静默 fallback。
-- 报告记录 `pointerAnalysis.status` 和 `rejectedContainerFieldEdges`。
-
-10 个定向项目全部 `PTA=SUCCESS`，共拒绝 30 条不合法容器字段边，没有出现 PTA fallback。对应测试：`tests/verify_pta_container_edges.js`。
-
-### 4.3 manager/factory receiver 恢复
-
-源码和 IR 审计发现三类真实漏配：
-
-- `audio.getAudioManager()` 返回对象上的 `getAudioScene()`。
-- `createAVMetadataExtractor()` 返回对象上的 `fetchMetadata()`、`fetchAlbumCover()`。
-- `createAVImageGenerator()` 返回对象上的 `fetchFrameByTime()` 等方法。
-- `reminderAgentManager.publishReminder()` 在 `@kit.ReminderAgentKit` 和 `@kit.BackgroundTasksKit` 包族中的别名场景。
-
-修复包含：
-
-- `@ohos.multimedia.media` 与 `@kit.MediaKit` 双向包族归一化。
-- reminder agent 包族和 namespace alias 归一化。
-- `receiverFactories` 规则。
-- 基于 receiver 声明、factory origin、类型和 target signature 的分层匹配。
-- `Local.getDeclaringStmt()` 驱动的跨 CFG block def-use 恢复。
-- `await` 和 IR alias 展开。
-
-全语料源码搜索定位到 24 个可能受影响项目。定向回归结果：
-
-| 指标 | 修复前 | 修复后 | 变化 |
-|---|---:|---:|---:|
-| 唯一 API 调用点 | 413 | 441 | +28 |
-| 调用链 | 413 | 441 | +28 |
-| sink 观察 | 388 | 431 | +43 |
-| API-positive 项目 | 20 | 21 | +1 |
-| sink-positive 项目 | 16 | 19 | +3 |
-
-28 个新增调用点逐条检查了源码 import、factory/manager 定义和实际调用语句；全部存在于 `sensitive_apis.json` 定义范围内，没有删除原有调用点。13 个由 IFDS source 与 detector 不一致审计得到的强候选，在修复后全部获得 detector 证据。
-
-### 4.4 API 结果去重
-
-完整基础报告原始包含 2,099 条 API 记录，其中存在配置重叠产生的重复记录：
-
-- 完全相同调用点重复 222 条。
-- namespace 仅大小写不同的重复 9 条，例如同一 IR 调用同时记为 `userAuth` 和 `UserAuth`。
-- 合计 231 条非独立调用点记录，分布在 84 个项目。
-
-去重发生在 detector 输出边界，因此下游调用链和 sink 不再重复消费同一调用点。叠加 24 项修复后：
-
-| 指标 | 数量 |
+| 指标 | 数值 |
 |---|---:|
-| 合成前原始 detector 记录 | 2,107 |
-| 移除重复记录 | 211 |
-| 最终唯一 API 调用点 | 1,896 |
-| 最终调用链 | 1,896 |
+| 源码候选 | 186 |
+| 敏感 API occurrence | 90 |
+| 同名或 owner 不兼容负例 | 96 |
+| TP / TN / FP / FN | 90 / 96 / 0 / 0 |
+| Precision | 100.00% |
+| Recall | 100.00% |
+| Specificity | 100.00% |
+| F1 | 100.00% |
 
-对应测试：`tests/verify_api_usage_dedup.js`。
+90 个正例包含：
 
-## 5. 独立基准上的端到端准确性
+- 44 个 executable property；
+- 26 个 namespace call；
+- 11 个 typed receiver；
+- 4 个 constructed receiver；
+- 3 个 manager receiver；
+- 2 个 factory receiver。
 
-### 5.1 HapBench 设置
+其中 20/90 必须使用 receiver 或 factory 证据，不能仅靠调用行上的 namespace 语法恢复。96 个负例覆盖应用 wrapper、UI controller、集合、测试驱动和第三方库中的 `create`、`on`、`request`、`getData` 等同名方法。
 
-HapBench 是 HapFlow 发布 artifact 中的完整 67-case suite：
+### 4.2 ArkIdentityBench 机制进展
 
-- 正例 53 个。
-- 负例 14 个。
-- 覆盖 alias、匿名结构、数组、对象/字段、语言特性、生命周期和 OpenHarmony API。
+| 配置 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 | MCC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Lexical token | 32 | 0 | 32 | 0 | 50.00% | 100.00% | 0.00% | 66.67% | 0.000 |
+| Import-aware namespace | 17 | 32 | 0 | 15 | 100.00% | 53.13% | 100.00% | 69.39% | 0.601 |
+| Declared receiver | 26 | 32 | 0 | 6 | 100.00% | 81.25% | 100.00% | 89.66% | 0.827 |
+| Factory-aware receiver | 28 | 32 | 0 | 4 | 100.00% | 87.50% | 100.00% | 93.33% | 0.882 |
+| ArkPrism full | 32 | 32 | 0 | 0 | 100.00% | 100.00% | 100.00% | 100.00% | 1.000 |
 
-预测单位为 case。工具至少报告一条 source-to-sink path 时记为 positive。
+结果表明：
 
-定义：
+- 词法匹配具备召回能力，但无法排除同名 collision；
+- import ownership 可以消除 collision，但不能覆盖 manager、factory、property 和 IR alias；
+- receiver/factory evidence 逐步恢复间接 API；
+- 完整 resolver 通过 package migration、receiver origin/type、property read、compound namespace 与 IR alias 补齐剩余正例。
 
-```text
-Precision = TP / (TP + FP)
-Recall = TP / (TP + FN)
-Specificity = TN / (TN + FP)
-F1 = 2PR / (P + R)
-Balanced Accuracy = (Recall + Specificity) / 2
-MCC = (TP*TN - FP*FN) /
-      sqrt((TP+FP)(TP+FN)(TN+FP)(TN+FN))
-```
+### 4.3 Top-120 高输出压力审核
 
-### 5.2 主结果
+Top-120 审核包含 1,533 条源码位置记录，规范化为 666 个经源码确认的 project–API key：
 
-| 工具 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 | BAcc | MCC |
+| 证据形态 | 确认 key |
+|---|---:|
+| Namespace-qualified | 558 |
+| Member/receiver | 102 |
+| Template expression | 5 |
+| Compound-qualified | 1 |
+| 总计 | 666 |
+
+最终 detector 恢复 666/666 个确认 key。该指标是**确认 key reproduction coverage**，用于验证高输出项目中的稳定性；由于该集合源自早期输出排序，不将未审核的新 key 计为 FP，也不用于推断真实项目总体 recall。
+
+## 5. HapBench 端到端对比
+
+### 5.1 Case-level 结果
+
+HapBench 包含 HapFlow artifact 发布的全部 67 个可执行案例，其中 53 个正例、14 个负例。
+
+| 工具 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 | Accuracy | Balanced Accuracy | MCC |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| HapFlow | 51 | 10 | 4 | 2 | 92.73% | 96.23% | 71.43% | 94.44% | 91.04% | 83.83% | 0.717 |
+| ArkPrism | 50 | 14 | 0 | 3 | 100.00% | 94.34% | 100.00% | 97.09% | 95.52% | 97.17% | 0.881 |
+| ArkPrism 相对变化 | -1 | +4 | -4 | +1 | +7.27 pp | -1.89 pp | +28.57 pp | +2.65 pp | +4.48 pp | +13.34 pp | +0.164 |
+
+ArkPrism 的优势集中在负例判别：
+
+- 14/14 个负例全部拒绝；
+- 消除 HapFlow 的 array-index collapse、不可行 virtual target 和 unrestricted lifecycle FP；
+- 在六个类别达到 100.00% F1，lifecycle 类别 F1 为 85.71%。
+
+九个不一致案例中，ArkPrism 独占正确 6 个，HapFlow 独占正确 3 个。配对 McNemar `p=0.508`，因此本文把结论限定为该 suite 上观察到的 specificity、F1、balanced accuracy 和 MCC 优势，不外推为所有任务上的显著总体优越性。
+
+### 5.2 Endpoint-pair 结果
+
+ArkPrism 报告的 52 条原始路径规范化为 51 个 source–sink pair：
+
+| 指标 | 数值 |
+|---|---:|
+| TP / FP / FN | 50 / 1 / 3 |
+| Precision | 98.04% |
+| Recall | 94.34% |
+| F1 | 96.15% |
+
+该层次可以识别“正例 case 中额外报告错误 endpoint”的情况，比只判断 case 是否至少存在一条路径更严格。
+
+### 5.3 机制消融
+
+| 配置 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 | Balanced Accuracy | MCC |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| HapFlow artifact | 51 | 10 | 4 | 2 | 92.73% | 96.23% | 71.43% | 94.44% | 83.83% | 0.717 |
-| ArkPrism | 50 | 14 | 0 | 3 | 100.00% | 94.34% | 100.00% | 97.09% | 97.17% | 0.881 |
+| Full | 50 | 14 | 0 | 3 | 100.00% | 94.34% | 100.00% | 97.09% | 97.17% | 0.881 |
+| −IR recovery | 37 | 14 | 0 | 16 | 100.00% | 69.81% | 100.00% | 82.22% | 84.91% | 0.571 |
+| −receiver refinement | 50 | 13 | 1 | 3 | 98.04% | 94.34% | 92.86% | 96.15% | 93.60% | 0.831 |
+| Unbounded lifecycle | 52 | 13 | 1 | 1 | 98.11% | 98.11% | 92.86% | 98.11% | 95.49% | 0.910 |
 
-ArkPrism 的 95% Wilson 区间：
+主要机制结论：
 
-| 指标 | 估计值 | 95% CI |
-|---|---:|---:|
-| Precision | 100.00% | [92.9%, 100.0%] |
-| Recall | 94.34% | [84.6%, 98.1%] |
-| Specificity | 100.00% | [78.5%, 100.0%] |
-| Accuracy | 95.52% | [87.6%, 98.5%] |
+- IR recovery 恢复 13 个正例，exact McNemar `p=0.000244`，在四项消融的 Bonferroni 校正后仍显著；
+- receiver refinement 消除一个不可行 virtual dispatch target；
+- unbounded lifecycle 增加两个 published positive，同时重新引入明确的 unreachable negative；
+- F1 不使用 TN，因此 unbounded 的 F1 更高；balanced accuracy 同时衡量正负义务，默认有界模型在该目标上更高。
 
-ArkPrism 比 HapFlow 多正确分类 6 个 case，HapFlow 比 ArkPrism 多正确分类 3 个 case。双侧 exact McNemar 检验 `p=0.508`，因此不能声称总体差异达到统计显著；可以声称本套件上的观察结果表现为更高 specificity、F1、balanced accuracy 和 MCC。
+## 6. 异步与 Promise 语义
 
-### 5.3 错误分析
+### 6.1 ArkAsyncBench
 
-ArkPrism 的 3 个 FN 全部位于生命周期类别：
-
-- `ActivityLifecycle4`
-- `BackupExtensionAbility`
-- `Button1`
-
-这些 case 分别要求父类 source-bearing lifecycle、跨实例 restore state 和跨事件静态状态传播。当前默认模型选择有界生命周期，以避免无约束事件环产生不可达路径。
-
-HapFlow 的 4 个 FP 分布于：
-
-- 数组索引合并。
-- 两个 virtual dispatch 目标过近似。
-- unrestricted lifecycle 导致 `UnreachableFlow` 可达。
-
-HapFlow 的 2 个 FN 涉及匿名实例初始化和异常流恢复。
-
-## 6. 机制消融
-
-所有配置均完整运行 67/67 case。
-
-| 配置 | TP | TN | FP | FN | Precision | Recall | F1 | MCC |
+| 配置 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|
-| ArkPrism full | 50 | 14 | 0 | 3 | 100.00% | 94.34% | 97.09% | 0.881 |
-| 关闭 callback supplement | 50 | 14 | 0 | 3 | 100.00% | 94.34% | 97.09% | 0.881 |
-| 关闭 IR recovery | 37 | 14 | 0 | 16 | 100.00% | 69.81% | 82.22% | 0.571 |
-| 关闭 receiver refinement | 50 | 13 | 1 | 3 | 98.04% | 94.34% | 96.15% | 0.831 |
-| unrestricted lifecycle | 52 | 13 | 1 | 1 | 98.11% | 98.11% | 98.11% | 0.910 |
+| Full | 24 | 24 | 0 | 0 | 100.00% | 100.00% | 100.00% | 100.00% |
+| −T4 continuation | 15 | 24 | 0 | 9 | 100.00% | 62.50% | 100.00% | 76.92% |
 
-主要结论：
+分构造结果：
 
-- IR recovery 是贡献最大的机制。关闭后增加 13 个 FN，full 相对该消融的 McNemar `p=0.000244`。
-- receiver refinement 消除 `VirtualDispatch3` FP，证明“解析更多 target”并不自动等于更准确。
-- HapBench 上 callback supplement 没有改变 case、唯一端点或精确路径；这不能外推为真实项目不需要 callback 分析。
-- unrestricted lifecycle 提高 nominal recall，但重新引入 `UnreachableFlow` FP，因此默认保留有界策略。
+| 构造 | Positive | Negative | Full TP | −T4 TP | T4 独占恢复 | TN |
+|---|---:|---:|---:|---:|---:|---:|
+| T1 callback | 9 | 9 | 9 | 9 | 0 | 9 |
+| T4 `then` | 9 | 9 | 9 | 0 | 9 | 9 |
+| T5 `await` | 6 | 6 | 6 | 6 | 0 | 6 |
 
-## 7. 120 项目源码审计集
+该消融只关闭 T4，因此 T1 与 T5 保持不变是实验隔离成功的表现，不是机制无效。完整配置相对 −T4 独占正确 9 个案例，exact McNemar `p=0.00390625`。
 
-该审计集包含 120 个高输出项目和 848 个去重的 `project + namespace + method/property` 键。每条记录保留：
+### 6.2 ArkPromiseBench
 
-- 项目和源码路径。
-- source line、column、matched text 和上下文 snippet。
-- package、namespace、method/property。
-- 人工确认标签及证据类型。
+ArkPromiseBench 包含 7 个正例和 17 个 adversarial negative，覆盖：
 
-人工复核排除注释、字符串字面量、普通同名业务方法和只有声明没有可执行访问的情况。848 个 project-API 键均具有可执行源码证据：
+- user-defined 或 non-Promise `then`；
+- success/rejection handler 位置；
+- `catch` 与 `finally`；
+- 同一 Promise alias、reassigned alias 和 independent Promise；
+- callback 忽略输入或仅使用常量；
+- constant sanitizer；
+- sequential `then`；
+- Promise flattening；
+- 只有注册、没有执行触发的 SDK callback。
 
-| 粒度 | 已确认 | 观察 precision | Wilson 95% 下界 |
-|---|---:|---:|---:|
-| project-API 键 | 848/848 | 100.00% | 99.55% |
+| 配置 | TP | TN | FP | FN | Precision | Recall | Specificity | F1 |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| Full | 7 | 17 | 0 | 0 | 100.00% | 100.00% | 100.00% | 100.00% |
+| −T4 | 0 | 17 | 0 | 7 | N/A | 0.00% | 100.00% | N/A |
+| 所有 typed SDK callback 均可执行 | 7 | 16 | 1 | 0 | 87.50% | 100.00% | 94.12% | 93.33% |
 
-必须限定该结论的范围：
+两种消融验证两项正交义务：
 
-- 样本从工具高输出项目中选择，适合发现 FP，但不能观察工具未报告的调用。
-- 因此 recall 在该审计设计下是 **undefined**，不能写成 100%。
-- 当前工具在该 benchmark 上的恢复覆盖和未审计新增项由 `evaluate_top120_benchmark.js` 单独计算。
+1. T4 保留 Promise fulfillment payload 的 identity；
+2. execution witness 区分 callback registration 与 callback execution。
 
-## 8. 大规模语料总体结果
+### 6.3 Receiver-witnessed completion callback
 
-### 8.1 规模和项目阳性率
+最终版本把平台完成回调建模为：
 
-| 指标 | 数量 | 项目数 | 项目率 |
-|---|---:|---:|---:|
-| 完整项目 | 1,014 | 1,014 | 100.00% |
-| ArkTS/TypeScript 分析文件 | 31,205 | - | - |
-| 分析方法 | 233,894 | - | - |
-| 唯一敏感 API 调用点 | 1,896 | 273 | 26.92% |
-| 调用链 | 1,896 | 273 | 26.92% |
-| sink 观察 | 1,542 | 185 | 18.24% |
-| IFDS may-flow | 1,103 | 257 | 25.35% |
+`<member, callback-index, optional receiver-family>`
 
-调用链为 1,896/1,896，表示每个最终 API 调用点均生成一条审计入口记录；这反映调用链构建完整性，不等于语义准确率。
+`requestPermissionsFromUser` 只在 callback index 为 2，且 receiver 具有 `AtManager`/`AbilityAccessCtrl` 证据时建立执行边。普通同名业务方法不会匹配。
 
-IFDS flow 与敏感 API 调用链是两个相关但不等价的证据集合。IFDS 的 source 规则包含 lifecycle、callback、参数和其他 source，因此存在：
+该修复在最终 1,014 项目运行中只新增一条 endpoint 和一条精确路径，没有删除其他路径。新增路径位于 `SensorJsSamples`：
 
-- 152 个 `API=0, Taint=1` 项目。
-- 23 个 `API=1, Sink=0, Taint=1` 项目。
-- 65 个 `API=1, Sink=0, Taint=0` 项目。
+`sensor.on` callback data → `JSON.stringify(data)` → `Logger.info` → `hilog.info`
 
-不能把 API、sink 和 IFDS 数量简单串成单向漏斗。
+源码确认该 `sensor.on` 嵌套在权限请求完成回调和 `getSingleSensor` 回调内，路径具有真实执行上下文和显式数据依赖。该路径此前已在人工审核中标记为正确。
 
-### 8.2 分布和长尾
+## 7. 真实项目路径语义审核
 
-| 每项目指标 | P25 | Median | P75 | P90 | P95 | P99 | Max |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| 文件 | 9 | 13 | 25 | 67 | 119 | 260 | 1,620 |
-| 方法 | 52 | 86 | 177 | 474 | 967 | 2,463 | 10,757 |
-| API 调用点 | 0 | 0 | 1 | 5 | 10 | 28 | 97 |
-| sink | 0 | 0 | 0 | 3 | 7 | 32 | 80 |
-| taint flow | 0 | 0 | 1 | 1 | 4 | 22 | 99 |
+### 7.1 最终审核集合
 
-API 分布高度长尾：
+最终审核集合包含：
 
-- Top-10 项目占 26.42%。
-- Top-50 项目占 59.44%。
-- Top-120 项目占 83.60%。
-- API Gini = 0.886。
-- API HHI = 0.0121，对应 effective projects = 82.88。
-- sink Gini = 0.929。
-- taint-flow Gini = 0.915。
+- 120 条路径，来自 47 个项目；
+- 90 条 privacy-data 路径、30 条 framework-input 路径；
+- 64 条 IFDS、28 条 supplementary、28 条 dual-provenance 路径；
+- 23 条短路径、70 条中等路径、27 条长路径；
+- 114 条 logging、4 条 UI、2 条 network 路径。
 
-这说明仅报告均值会掩盖结构：大部分项目没有 API 或 sink，少量大型/功能密集项目贡献主要证据量。
+最终重绑定过程保留 118 条精确路径。两条已退出最终结果集的旧路径由确定性分层采样替换，新记录不继承旧标签并重新查看源码；两条 provenance 从 supplementary 增强为 both 的精确路径重新核对了 Promise SDK 声明。
 
-### 8.3 敏感数据类别
+### 7.2 审核结果
 
-| 类别 | API 调用点 | 占全部 API |
+| 审核维度 | 全部 | Privacy-data | Framework-input | IFDS | Supplementary | Both |
+|---|---:|---:|---:|---:|---:|---:|
+| Source identity | 120/120 | 90/90 | 30/30 | 64/64 | 28/28 | 28/28 |
+| Sink identity | 120/120 | 90/90 | 30/30 | 64/64 | 28/28 | 28/28 |
+| Explicit dependence | 115/120 | 90/90 | 25/30 | 59/64 | 28/28 | 28/28 |
+| Reachability | 115/120 | 90/90 | 25/30 | 59/64 | 28/28 | 28/28 |
+| Provenance | 120/120 | 90/90 | 30/30 | 64/64 | 28/28 | 28/28 |
+| Complete path | 115/120 | 90/90 | 25/30 | 59/64 | 28/28 | 28/28 |
+
+关键结论：
+
+- 隐私数据路径为 90/90；
+- 全部路径完整正确率为 95.83%；
+- source identity、sink identity 和 provenance 为 120/120；
+- 五条错误路径全部属于独立标记的 framework-input 模型。
+
+五条错误路径均位于同一类静态字段混淆：生命周期方法把 `want.uri` 写入静态字段，但报告路径的 sink 实际使用独立的输入字段、固定校验文本或 camera-picker 结果，缺少对该静态字段的读取和显式数据依赖。这些结果不进入 privacy-data 路径结论。
+
+## 8. 1,014 项目大规模实验
+
+### 8.1 完成度与规模
+
+| 指标 | 数值 |
+|---|---:|
+| 完成项目 | 1,014/1,014 |
+| 运行错误 | 0 |
+| ArkTS/TypeScript 文件 | 31,205 |
+| Ark 方法 | 233,894 |
+| Privacy API occurrence | 2,339 |
+| Call chain | 2,339 |
+| Detector-local sink | 1,755 |
+| Configured-query path | 458 |
+| Privacy-data path | 258 |
+| Framework-input path | 200 |
+| Unique configured source endpoint | 320 |
+| Unique configured sink endpoint | 416 |
+| Detector-to-path link | 252 |
+
+项目级阳性率：
+
+| 证据 | 阳性项目 | 比例 |
 |---|---:|---:|
-| `device_identity.hardware` | 353 | 18.62% |
-| `network.connectivity` | 273 | 14.40% |
-| `device_identity.screen` | 222 | 11.71% |
-| `user_data.account` | 180 | 9.49% |
-| `user_data.clipboard` | 113 | 5.96% |
-| `network.bluetooth` | 103 | 5.43% |
-| `location` | 102 | 5.38% |
-| `device_status.sensor` | 76 | 4.01% |
-| `network.wifi` | 69 | 3.64% |
-| `device_identity.software` | 63 | 3.32% |
-| 其他类别 | 342 | 18.04% |
+| Privacy API | 353 | 34.81% |
+| Call chain | 353 | 34.81% |
+| Detector-local sink | 224 | 22.09% |
+| Configured path | 183 | 18.05% |
+| Privacy-data path | 31 | 3.06% |
+| Framework-input path | 159 | 15.68% |
 
-detector 结构：
+API detector、detector-local sink 和 configured-query path 是不同证据空间。Configured path 中 91 个项目没有 detector API，原因是其 source 属于独立配置的 framework-input；不能要求 detector-local sink project 包含所有 configured-path project。
 
-| 模式 | 数量 | 占比 |
+### 8.2 API 结构
+
+Access mode：
+
+| 模式 | 数量 | 比例 |
 |---|---:|---:|
-| assigned/direct-result invoke | 689 | 36.34% |
-| manager/receiver indirect invoke | 583 | 30.75% |
-| property/constant access | 417 | 21.99% |
-| direct invoke statement | 207 | 10.92% |
+| Assigned/direct-result invoke | 915 | 39.12% |
+| Manager/receiver indirect invoke | 783 | 33.48% |
+| Property/constant access | 417 | 17.83% |
+| Direct invoke statement | 224 | 9.58% |
 
-583 条 indirect invoke 和 417 条 property access 合计占 52.74%。这解释了仅使用直接方法签名会遗漏大量 ArkTS 敏感 source 的原因。
+间接 receiver 与 property 合计 1,200/2,339，即 51.30%。这说明仅解析 `namespace.method(...)` 无法覆盖大规模语料中的主要 ArkTS 身份形态。
 
-### 8.4 sink 结构
+Detector acceptance witness：
 
-| sink 类型 | 数量 | 占比 |
+| 证据 | 数量 |
+|---|---:|
+| Direct/property | 1,556 |
+| Receiver type | 592 |
+| Receiver origin | 190 |
+| Exact namespace receiver | 1 |
+
+前五类 privacy evidence：
+
+| 类别 | Occurrence | 占比 |
 |---|---:|---:|
-| log | 1,272 | 82.49% |
-| UI display | 136 | 8.82% |
-| storage | 93 | 6.03% |
-| data return | 32 | 2.08% |
-| network | 9 | 0.58% |
+| `network.connectivity` | 427 | 18.26% |
+| `device_identity.screen` | 403 | 17.23% |
+| `device_identity.hardware` | 353 | 15.09% |
+| `user_data.account` | 189 | 8.08% |
+| `user_data.clipboard` | 119 | 5.09% |
 
-log sink 占绝对多数，因此 1,542 个 sink 不能直接解释成 1,542 个外传漏洞。更合适的解释是：
+### 8.3 Sink 结构
 
-- log/UI 代表本地可观察性和潜在暴露面。
-- storage 代表持久化风险。
-- network 数量较少，但风险优先级通常更高。
-- 同一 API 调用链可到达多个 sink，所以 sink 数可大于 API 数。
+| Sink 类型 | 数量 | 占比 |
+|---|---:|---:|
+| Log | 1,441 | 82.11% |
+| UI display | 136 | 7.75% |
+| Storage | 94 | 5.36% |
+| Data return | 58 | 3.30% |
+| Network | 26 | 1.48% |
 
-### 8.5 路径可审计性
+这些是 detector-local 观察，不等价于泄露结论。Log 与 UI 主要表示本地可观察面；storage 表示持久化；network 数量较少但通常具有更高审核优先级。
 
-| 指标 | Median | P95 | P99 | Max |
-|---|---:|---:|---:|---:|
-| 调用链边数 | 1 | 4 | 6 | 9 |
-| taint path statement 数 | 5 | 9 | 22 | 33 |
+### 8.4 路径 provenance 与 carrier
 
-其他可审计性指标：
+| Provenance | 路径 |
+|---|---:|
+| IFDS | 331 |
+| Async supplement | 78 |
+| Both | 49 |
 
-- async 调用链：323。
-- local-fallback 调用链：0。
-- 带 permission 的 API 调用点：830。
-- source、sink 和 path-step 路径端点：7,875。
-- 已解析端点：7,875/7,875，100.00%。
+| Carrier state | 路径 |
+|---|---:|
+| Framework argument | 200 |
+| Callback payload | 120 |
+| Direct value | 99 |
+| Promise payload | 39 |
 
-### 8.6 项目规模与结果关系
+最终语料包含 15 条 `promise_then` 路径，分布于 9 个项目；其中 9 条为 IFDS-only、6 条为 dual provenance。没有观察到 `promise_return` 路径，这说明真实语料中已检出的 Promise 链主要在第一个 fulfillment handler 内到达 sink；顺序链和 flattening 能力由 ArkPromiseBench 单独验证。
+
+### 8.5 证据可追溯性
+
+| 指标 | 数值 |
+|---|---:|
+| Call-chain 长度 median / P95 / max | 1 / 4 / 10 |
+| Taint-path statement 数 median / P95 / max | 5 / 9 / 16 |
+| Async call chain | 424 |
+| Local fallback call chain | 0 |
+| Permission-bearing occurrence | 1,075 |
+| 已解析 trace endpoint | 3,337/3,337 |
+| 无效 detector-to-path link | 0 |
+| Strict report checks | 1,014 |
+| Strict check failure | 0 |
+
+Detector–IFDS 一致性审核覆盖 258 条 privacy-data configured flow：
+
+- covered configured flows：258/258；
+- unique candidate mismatch：0；
+- strong candidate mismatch：0。
+
+### 8.6 规模、集中度与相关性
+
+API occurrence 呈长尾分布：
+
+| 指标 | 数值 |
+|---|---:|
+| Top-10 占比 | 24.54% |
+| Top-50 占比 | 54.98% |
+| Top-120 占比 | 77.85% |
+| Gini | 0.858 |
+| HHI | 0.0105 |
+| Effective contributing projects | 95.6 |
 
 Spearman 相关系数：
 
 | 变量 | rho |
 |---|---:|
-| 文件数 vs 方法数 | 0.9226 |
-| 方法数 vs 运行时间 | 0.3932 |
-| 文件数 vs 运行时间 | 0.4137 |
-| 方法数 vs API 数 | 0.4613 |
-| API 数 vs sink 数 | 0.8230 |
-| API 数 vs taint-flow 数 | 0.2266 |
-| sink 数 vs taint-flow 数 | 0.2451 |
+| Files vs. methods | 0.9226 |
+| Methods vs. runtime | 0.4589 |
+| Methods vs. API occurrence | 0.4847 |
+| API occurrence vs. detector-local sink | 0.7887 |
+| API occurrence vs. configured path | 0.1838 |
+| Sink vs. configured path | 0.1970 |
 
-结论：
+项目规模与 API identity volume 中等相关，但与 configured path 数量仅弱相关。路径形成还取决于 source carrier、sink query、调用关系和数据依赖，不能由代码规模或 API 数量直接推断。
 
-- 文件数与方法数高度相关，说明两个规模指标一致。
-- 运行时间只与规模中等相关；固定 SDK/frontend 启动成本和项目结构同样重要。
-- API 与 sink 高度相关，因为 sink 沿 API 调用链收集。
-- API 与 IFDS flow 仅弱相关，再次说明两类 source 口径不同。
+### 8.7 性能
 
-按方法数五分位：
-
-| 分位 | 项目数 | 方法中位数 | 运行时间中位数 | API-positive | Sink-positive | Taint-positive |
-|---|---:|---:|---:|---:|---:|---:|
-| Q1 | 203 | 34 | 16.0 s | 9.85% | 3.45% | 7.39% |
-| Q2 | 203 | 57 | 16.1 s | 14.78% | 6.90% | 25.62% |
-| Q3 | 203 | 86 | 16.3 s | 17.24% | 9.85% | 28.08% |
-| Q4 | 203 | 145 | 16.3 s | 24.63% | 20.69% | 29.06% |
-| Q5 | 202 | 474 | 18.4 s | 68.32% | 50.50% | 36.63% |
-
-## 9. 运行性能和求解完整性
-
-### 9.1 运行时间
-
-| 指标 | 时间 |
+| 指标 | 数值 |
 |---|---:|
-| P25 | 15.6 s |
-| Median | 16.4 s |
-| P75 | 17.6 s |
-| P90 | 19.4 s |
-| P95 | 21.2 s |
-| P99 | 28.2 s |
-| Max | 351.3 s |
-| 隔离进程时长求和 | 18,020.7 s |
+| Runtime median | 15.7 s/project |
+| Runtime P95 | 21.6 s/project |
+| Runtime maximum | 380.2 s |
+| 隔离进程 wall-time 总和 | 17,468.9 s |
+| IFDS edges | 3,006,526 |
+| IFDS edges median / P95 / max | 739 / 10,811 / 187,278 |
+| IFDS batching | 0 projects |
+| Resource/callback truncation | 0 projects |
+| Timeout / OOM | 0 projects |
 
-最大值来自 `CommonAppDevelopment`，包含 1,620 个分析文件和 10,757 个方法。第二个高耗时项目为 `legado-Harmony-main`。P95 仅 21.2 秒，说明极端大型项目导致的尾部开销没有代表典型项目。
+### 8.8 Clone 敏感性
 
-### 9.2 IFDS 健康度
-
-| 指标 | 数量 |
-|---|---:|
-| `SUCCESS` 项目 | 1,014/1,014 |
-| SDK 路径验证通过 | 1,014/1,014 |
-| PTA complete 日志 | 1,014/1,014 |
-| PTA failure/fallback | 0 |
-| IFDS budget exceeded | 0 |
-| IFDS batching | 0 |
-| callback enabled | 1,014/1,014 |
-
-IFDS 边数分布：
-
-| P25 | Median | P75 | P95 | P99 | Max |
-|---:|---:|---:|---:|---:|---:|
-| 382 | 837 | 2,345 | 13,857 | 66,678 | 778,986 |
-
-CFG 中存在无法构造语义边的 malformed edge：
-
-- 420/1,014 个项目至少出现 1 条。
-- 总体中位数为 0，P95 为 22，最大值为 404。
-- 这些边被记录并跳过，没有触发 batch 或 budget 降级。
-
-flow 去重：
-
-| 指标 | 数量 |
-|---|---:|
-| 去重前 flow | 1,549 |
-| 唯一 flow | 1,103 |
-| 移除重复 flow | 446 |
-| 发生 flow 去重的项目 | 42 |
-
-flow identity 由 source、sink 和传播路径共同确定，避免 callback/IFDS 多入口产生的同路径重复。
-
-## 10. clone 稳健性
-
-源代码 token fingerprint 分析在 1,015 个候选源码目录中识别：
-
-- 32,233 个 `.ets/.ts` 源文件。
-- 21,663 个唯一 token fingerprint。
-- 10,570 个重复文件 occurrence。
-- 9 个 exact project-clone cluster。
-- 11 个 near-clone cluster。
-
-在 1,014 个完整分析项目上重新计算阳性率：
-
-| 采样口径 | N | API-positive | Sink-positive | Taint-positive |
+| 采样单位 | N | API-positive | Sink-positive | Path-positive |
 |---|---:|---:|---:|---:|
-| 全部完整项目 | 1,014 | 26.923% | 18.245% | 25.345% |
-| 每个 exact-clone cluster 保留 1 个 | 995 | 27.236% | 18.392% | 25.628% |
-| 每个 near-clone cluster 保留 1 个 | 993 | 27.090% | 18.328% | 25.680% |
+| 原始项目 | 1,014 | 34.81% | 22.09% | 18.05% |
+| Exact-clone 每簇一个 | 995 | 35.18% | 22.31% | 18.19% |
+| Near-clone 每簇一个 | 993 | 35.05% | 22.26% | 18.23% |
 
-最大绝对变化为 0.335 个百分点。结果不由少量完全复制的 demo 项目主导，但共享 framework/示例代码仍会影响具体 API 类别频率。
+语料包含 31,998 个源码文件、21,430 个唯一 token fingerprint、9 个 exact-clone cluster 和 11 个 near-clone cluster。去重后的项目率最大变化为 0.363 个百分点，因此项目级 prevalence 不是由少量重复模板主导。
 
-## 11. 结论与可接受声明
+## 9. 最终运行差异审计
 
-可以由现有证据支持的结论：
+最终版本相对前一冻结版本：
 
-1. ArkPrism 在完整 HapBench 上达到 100.00% precision、94.34% recall 和 97.09% F1，且 14 个负例全部正确。
-2. 相比 HapFlow artifact，ArkPrism 的主要观察优势是 specificity 和整体类别平衡；总体 paired 差异没有统计显著。
-3. 120 项目高输出源码审计中，已审计的 848 个 project-API 键全部具有真实源码证据，但该设计不能估计 recall。
-4. 最终 1,014 项目结果包含 1,896 个唯一敏感 API 调用点、1,542 个 sink 和 1,103 条 IFDS may-flow。
-5. 1,014 个保留项目均使用真实 API-20 SDK、成功 PTA、单次不分批 IFDS，且没有 budget exceeded。
-6. manager/factory 修复新增 28 个经源码逐条确认的真实调用点，没有删除原调用点。
+| 指标 | 前一版本 | 最终版本 | 变化 |
+|---|---:|---:|---:|
+| Unique path | 457 | 458 | +1 |
+| Unique endpoint | 448 | 449 | +1 |
+| IFDS edges | 3,006,311 | 3,006,526 | +215 |
+| 删除路径 | 0 | 0 | 0 |
 
-不能由现有证据支持的表述：
+唯一新增路径为经源码确认的权限完成回调内 `sensor.on` 路径。其他 457 条精确路径全部保持，说明 receiver-witnessed completion contract 的影响范围与设计目标一致。
 
-- “1,014 个真实项目上的敏感 API recall 为 100%。”
-- “1,542 个 sink 或 1,103 条 flow 都是确认漏洞。”
-- “HapBench 上 ArkPrism 显著优于 HapFlow。”
-- “120 项目输出选择审计证明了未报告项目不存在漏检。”
-- “1,015 个项目全部完整成功。”
+## 10. 结论边界
 
-## 12. 结果文件
+本轮结果支持以下结论：
 
-| 文件 | 内容 |
-|---|---|
-| `docs/experiment_argus1014_full_20260724_v4_final/large_corpus_summary.json` | 最终逐项目和总体描述统计 |
-| `docs/experiment_argus1014_full_20260724_v4_final/large_corpus_summary.md` | 自动生成的大语料摘要 |
-| `docs/experiment_argus1014_full_20260724_v4_final/audited_corpus_projection.json` | detector/taint overlay 与去重合成清单 |
-| `docs/experiment_argus1014_full_20260724_v4_final/composite_run_integrity.json` | SDK、PTA、IFDS、budget、batching 完整性审计 |
-| `docs/experiment_argus1014_full_20260724_v4_final/redundancy_sensitivity.json` | clone-aware 阳性率敏感性分析 |
-| `docs/experiment_argus1014_full_20260724_v4_final/factory_api_targeted_diff_final.json` | 24 项 detector 修复差异 |
-| `docs/experiment_argus1014_full_20260724_v4_final/strong_candidate_resolution.json` | 13 个强候选的修复覆盖 |
-| `docs/experiment_hapbench_20260724_v8_final/hapbench_results.json` | HapBench case-level 结果和统计 |
-| `docs/experiment_hapbench_20260724_v8_final/hapbench_results.md` | HapBench 表格、消融和错误列表 |
+1. 在冻结规则和静态可枚举候选 universe 内，API identity 的 observed precision、recall 和 specificity 均为 100.00%；
+2. ArkPrism 在 HapBench 上的核心优势是负例判别，specificity 提升 28.57 个百分点，F1 提升 2.65 个百分点；
+3. T4 对 Promise fulfillment payload 传播是必要的，严格 execution witness 对避免 callback-registration FP 是必要的；
+4. 人工审核的 privacy-data 路径为 90/90，全部分层路径为 115/120；
+5. 最终 1,014 项目运行完整、无资源 fallback，结果端点和 provenance 均通过一致性审核。
+
+本轮结果不把以下内容等同：
+
+- API occurrence 与隐私违规；
+- detector-local sink 与 IFDS sink endpoint；
+- may-flow 与运行时必然执行；
+- 1,014 项目输出统计与总体准确率；
+- 高输出 Top-120 reproduction coverage 与未报告调用的 recall。
+
+## 11. 最终产物
+
+主要机器可读产物：
+
+- `docs/experiment_argus1014_platform_task_final_573dbcb/large_corpus_summary.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/run_manifest.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/evidence_universe_audit.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/detector_ifds_consistency.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/semantic_path_audit_queue.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/semantic_path_audit_decisions.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/semantic_path_audit_evaluation/semantic_path_audit.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/corpus_redundancy/corpus_redundancy.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/benchmarks/hapbench/hapbench_results.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/benchmarks/arkasyncbench/arkasyncbench_results.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/benchmarks/arkpromisebench/comparison_t4_off.json`
+- `docs/experiment_argus1014_platform_task_final_573dbcb/benchmarks/arkpromisebench/comparison_unrestricted_callbacks.json`
+
+所有论文 corpus 数字、Figure 5 和相关表格均由上述最终 JSON 自动生成。

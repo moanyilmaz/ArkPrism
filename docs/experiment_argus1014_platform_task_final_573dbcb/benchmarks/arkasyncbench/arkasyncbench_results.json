@@ -1,0 +1,2322 @@
+{
+  "schemaVersion": 3,
+  "generatedAt": "2026-07-31T02:20:51.218Z",
+  "oracle": {
+    "file": "oracle.json",
+    "sha256": "294df2e467a339db067e3fff4d6cfc89d336142107cd6c286950da358f3695be"
+  },
+  "runs": {
+    "full": {
+      "runId": "arkasyncbench_final_573dbcb_full",
+      "manifestSha256": "016ed3864af4f5fd5f1516ca6e39cef1eeef156f934b2b57694697f5ae021217",
+      "disableContinuationFlow": false,
+      "callbackAnalysis": false,
+      "unrestrictedSdkCallbacks": false
+    },
+    "comparison": {
+      "runId": "arkasyncbench_final_573dbcb_off",
+      "manifestSha256": "0e2a7f7c6d4709d4b3136d341821194eab81a9f7cbcec462fb7d1d621de6af00",
+      "disableContinuationFlow": true,
+      "callbackAnalysis": false,
+      "unrestrictedSdkCallbacks": false
+    }
+  },
+  "definition": "A positive case has an explicit value dependence from the configured privacy-data carrier to console.info. Framework-input paths do not satisfy the oracle.",
+  "full": {
+    "name": "full",
+    "overall": {
+      "cases": 48,
+      "tp": 24,
+      "tn": 24,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "specificity": 1,
+      "f1": 1,
+      "accuracy": 1
+    },
+    "byConstruct": {
+      "T1-callback": {
+        "cases": 18,
+        "tp": 9,
+        "tn": 9,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "T4-then": {
+        "cases": 18,
+        "tp": 9,
+        "tn": 9,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "T5-await": {
+        "cases": 12,
+        "tp": 6,
+        "tn": 6,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byApi": {
+      "oaid": {
+        "cases": 16,
+        "tp": 8,
+        "tn": 8,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "reverse_geocode": {
+        "cases": 16,
+        "tp": 8,
+        "tn": 8,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "sim_account": {
+        "cases": 16,
+        "tp": 8,
+        "tn": 8,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byCategory": {},
+    "records": [
+      {
+        "id": "T1_callback__oaid__callback_inline_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_alias_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_named_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_error_only",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__oaid__callback_constant_only",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__oaid__callback_named_error",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_direct_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__oaid__then_property_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__oaid__then_variable_alias",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__oaid__then_ignore_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_catch_only",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_variable_constant",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__oaid__await_direct_data",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__oaid__await_alias_data",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__oaid__await_similar_local",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__oaid__await_ignored",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_inline_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_alias_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_named_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_error_only",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_constant_only",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_named_error",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_direct_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__sim_account__then_property_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__sim_account__then_variable_alias",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__sim_account__then_ignore_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_catch_only",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_variable_constant",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__sim_account__await_direct_data",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__sim_account__await_alias_data",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__sim_account__await_similar_local",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__sim_account__await_ignored",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_inline_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_alias_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_named_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_error_only",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_constant_only",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_named_error",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_direct_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_property_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_variable_alias",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 1,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_ignore_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_catch_only",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_variable_constant",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_direct_data",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_alias_data",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_similar_local",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_ignored",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "ablation": {
+    "name": "continuation_off",
+    "overall": {
+      "cases": 48,
+      "tp": 15,
+      "tn": 24,
+      "fp": 0,
+      "fn": 9,
+      "precision": 1,
+      "recall": 0.625,
+      "specificity": 1,
+      "f1": 0.7692307692307693,
+      "accuracy": 0.8125
+    },
+    "byConstruct": {
+      "T1-callback": {
+        "cases": 18,
+        "tp": 9,
+        "tn": 9,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      },
+      "T4-then": {
+        "cases": 18,
+        "tp": 0,
+        "tn": 9,
+        "fp": 0,
+        "fn": 9,
+        "precision": null,
+        "recall": 0,
+        "specificity": 1,
+        "f1": null,
+        "accuracy": 0.5
+      },
+      "T5-await": {
+        "cases": 12,
+        "tp": 6,
+        "tn": 6,
+        "fp": 0,
+        "fn": 0,
+        "precision": 1,
+        "recall": 1,
+        "specificity": 1,
+        "f1": 1,
+        "accuracy": 1
+      }
+    },
+    "byApi": {
+      "oaid": {
+        "cases": 16,
+        "tp": 5,
+        "tn": 8,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.625,
+        "specificity": 1,
+        "f1": 0.7692307692307693,
+        "accuracy": 0.8125
+      },
+      "reverse_geocode": {
+        "cases": 16,
+        "tp": 5,
+        "tn": 8,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.625,
+        "specificity": 1,
+        "f1": 0.7692307692307693,
+        "accuracy": 0.8125
+      },
+      "sim_account": {
+        "cases": 16,
+        "tp": 5,
+        "tn": 8,
+        "fp": 0,
+        "fn": 3,
+        "precision": 1,
+        "recall": 0.625,
+        "specificity": 1,
+        "f1": 0.7692307692307693,
+        "accuracy": 0.8125
+      }
+    },
+    "byCategory": {},
+    "records": [
+      {
+        "id": "T1_callback__oaid__callback_inline_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_alias_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_named_data",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__oaid__callback_error_only",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__oaid__callback_constant_only",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__oaid__callback_named_error",
+        "api": "oaid",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_direct_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_property_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_variable_alias",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_ignore_data",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_catch_only",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__oaid__then_variable_constant",
+        "api": "oaid",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__oaid__await_direct_data",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__oaid__await_alias_data",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__oaid__await_similar_local",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__oaid__await_ignored",
+        "api": "oaid",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_inline_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_alias_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_named_data",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__sim_account__callback_error_only",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_constant_only",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__sim_account__callback_named_error",
+        "api": "sim_account",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_direct_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_property_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_variable_alias",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_ignore_data",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_catch_only",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__sim_account__then_variable_constant",
+        "api": "sim_account",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__sim_account__await_direct_data",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__sim_account__await_alias_data",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__sim_account__await_similar_local",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__sim_account__await_ignored",
+        "api": "sim_account",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_inline_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_alias_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Inline callback aliases the configured data parameter before the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_named_data",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": true,
+        "rationale": "Definition-backed callback sends the configured data parameter to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "callback_payload": 1
+        }
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_error_only",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "Only the callback error parameter reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_constant_only",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "The callback executes, but the sensitive parameter is ignored.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T1_callback__reverse_geocode__callback_named_error",
+        "api": "reverse_geocode",
+        "construct": "T1-callback",
+        "expected": false,
+        "rationale": "A definition-backed callback sends only the error parameter.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_direct_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends the resolved value to the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_property_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A direct then handler sends a property derived from the resolved value.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_variable_alias",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": true,
+        "rationale": "A Promise local is consumed by a then handler through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_ignore_data",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The resolved value is ignored and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_catch_only",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "Only the rejection error reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T4_then__reverse_geocode__then_variable_constant",
+        "api": "reverse_geocode",
+        "construct": "T4-then",
+        "expected": false,
+        "rationale": "The Promise is stored, but its resolved value does not reach the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_direct_data",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink directly.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_alias_data",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": true,
+        "rationale": "An awaited sensitive result reaches the sink through an alias.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": true,
+        "privacyFlows": 1,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 1,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {
+          "promise_payload": 1
+        }
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_similar_local",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "A similarly named but independent local reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      },
+      {
+        "id": "T5_await__reverse_geocode__await_ignored",
+        "api": "reverse_geocode",
+        "construct": "T5-await",
+        "expected": false,
+        "rationale": "The awaited value is discarded and only a constant reaches the sink.",
+        "sourceFile": "entryability/EntryAbility.ets",
+        "predicted": false,
+        "privacyFlows": 0,
+        "frameworkInputFlows": 0,
+        "provenance": {
+          "ifds": 0,
+          "async_supplement": 0,
+          "both": 0
+        },
+        "derivations": {
+          "promise_then": 0,
+          "promise_return": 0
+        },
+        "carrierStates": {}
+      }
+    ]
+  },
+  "paired": {
+    "fullOnlyCorrect": [
+      "T4_then__oaid__then_direct_data",
+      "T4_then__oaid__then_property_data",
+      "T4_then__oaid__then_variable_alias",
+      "T4_then__sim_account__then_direct_data",
+      "T4_then__sim_account__then_property_data",
+      "T4_then__sim_account__then_variable_alias",
+      "T4_then__reverse_geocode__then_direct_data",
+      "T4_then__reverse_geocode__then_property_data",
+      "T4_then__reverse_geocode__then_variable_alias"
+    ],
+    "ablationOnlyCorrect": [],
+    "exactMcNemarP": 0.00390625
+  }
+}

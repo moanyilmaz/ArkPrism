@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "predecessorQueueSha256": "9ddd1df187e7b3bdefd685a7bc879913cd21352c20699f94c093ec4ef3f8518d",
+  "reboundQueueSha256": "57551efcde104df515c9f05da0810b6145e1d5f32fe9e82a0d30a5b09a025e32",
+  "total": 120,
+  "exactMatched": 118,
+  "exactUnchanged": 116,
+  "provenanceReviewRequired": [
+    {
+      "project": "Calendar",
+      "previousId": "19ef632898864b6b6f79d57d",
+      "currentId": "57111ace8c0b1bb9b196d2d5",
+      "previousProvenance": "async_supplement",
+      "currentProvenance": "both",
+      "previousDerivations": [],
+      "currentDerivations": [
+        "promise_then"
+      ],
+      "previousCarrierState": null,
+      "currentCarrierState": "callback_payload"
+    },
+    {
+      "project": "ManagerApplicationAccount",
+      "previousId": "5e21e61f9ad0a58a5fd823f8",
+      "currentId": "fb1f9710673ebe154b922065",
+      "previousProvenance": "async_supplement",
+      "currentProvenance": "both",
+      "previousDerivations": [],
+      "currentDerivations": [
+        "promise_then"
+      ],
+      "previousCarrierState": null,
+      "currentCarrierState": "callback_payload"
+    }
+  ],
+  "replacementReviewRequired": [
+    {
+      "retiredProject": "VoiceCallDemo",
+      "retiredId": "ed3853b17be41cbf07e5e304",
+      "retiredStratum": "framework_input|ifds|ui|long_8_plus",
+      "replacementProject": "CateringOrders",
+      "replacementId": "a766e407b2ada118368db4aa",
+      "replacementStratum": "framework_input|ifds|logging|long_8_plus",
+      "sameStratum": false,
+      "replacementScore": 101000
+    },
+    {
+      "retiredProject": "VoiceCallDemo",
+      "retiredId": "c043c9c9f9de6adb00760dce",
+      "retiredStratum": "framework_input|ifds|logging|long_8_plus",
+      "replacementProject": "HarmonyOS-Inno",
+      "replacementId": "b8f4947069338f893938e9a2",
+      "replacementStratum": "framework_input|ifds|logging|long_8_plus",
+      "sameStratum": true,
+      "replacementScore": 1111000
+    }
+  ]
+}

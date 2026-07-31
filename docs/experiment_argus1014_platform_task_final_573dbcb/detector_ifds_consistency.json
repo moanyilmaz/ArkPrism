@@ -1,0 +1,14 @@
+{
+  "generatedAt": "2026-07-31T05:47:19.034Z",
+  "reportsDirectory": "E:\\arkprism-fse2027-experiments\\experiments\\argus1014_platform_task_final_573dbcb",
+  "ruleFile": "E:\\arkprism-fse2027-experiments\\config\\sensitive_apis.json",
+  "definition": "Configured IFDS source statement whose final member is present in sensitive_apis.json but lacks a compatible detector usage in the same project.",
+  "limitation": "Receiver-namespace candidates compare namespace+method identities. Method-only coverage and candidates remain heuristic and require source review.",
+  "flows": 458,
+  "configuredFlows": 258,
+  "coveredConfiguredFlows": 258,
+  "coverage": 1,
+  "uniqueCandidates": 0,
+  "strongCandidates": 0,
+  "candidates": []
+}
