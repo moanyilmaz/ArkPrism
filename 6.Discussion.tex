@@ -1,41 +1,22 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Evidence as the Analysis Contract}
+\subsection{Source Binding as an Analysis Interface}
 
-\mytool treats source resolution as an evidence-producing analysis rather than a configuration side effect. Every accepted API identity carries a package/receiver/access witness; every query source carries a typed value; and every path records its producing analysis. The preserved unit $\langle identity,witness,carrier\rangle$ uses $carrier=\bot$ for detector-only operations. This contract separates three questions that privacy tools often collapse: whether a configured API occurs, whether a modeled value may reach a configured sink, and whether that behavior violates a policy. \mytool answers the first two and supplies the source, sink class, permission, call context, and provenance needed to review the third.
+The central result is that API recognition and taint seeding should share an explicit interface. A canonical API identity alone cannot say which value enters the analysis, while an unqualified value seed cannot explain why the operation belongs to the platform source set. The binding $\langle identity,carrier,witness\rangle$ connects these decisions. It also gives different analyses a common unit: the detector establishes the occurrence, IFDS propagates the carrier, and the evidence graph retains the witness.
 
-This contract aligns claims with evidence units. Identity oracles operate on exact source locations, flow oracles operate on source--sink endpoints, mechanism ablations operate on paired predictions, and the corpus characterizes prevalence and cost. No aggregate is required to serve simultaneously as a detector oracle, a path oracle, and an ecosystem estimate.
+This interface separates three audit questions. An operation can match a privacy rule without producing modeled data; a modeled carrier can reach a sink without establishing a policy violation; and a local sink can be relevant context without being the endpoint of that carrier. ArkPrism reports these relations separately, allowing an auditor to move from API evidence to data-flow evidence without inferring links from project-level co-occurrence.
 
-\subsection{Core Privacy Paths and Framework Context}
+\subsection{Precision at Asynchronous Boundaries}
 
-The semantic audit provides a useful boundary. All 90 sampled privacy-data paths are correct, including IFDS, supplementary, and dual-provenance results. The five rejected paths occur only when the optional framework-input model joins a lifecycle-written static URI to unrelated component values or constants. Because source kind is part of every record, these candidates remain outside the core privacy-data result and can be filtered without changing API identity or privacy-carrier propagation.
+ArkTS continuations require two kinds of evidence. Execution evidence establishes that a callback may run; carrier evidence establishes which value it receives. Treating a function type as both creates paths through callbacks that are merely stored or registered. Treating a Promise receiver as the payload loses the distinction between the container and its fulfilled value. ArkPrism instead re-roots an immutable source binding only at a witnessed success continuation and propagates a later Promise only when the handler return depends on that payload.
 
-This boundary also clarifies corpus interpretation. Of \CorpusPrivacyPaths{} privacy-data paths, \CorpusPrivacyProductionPaths{} originate in production source; by contrast, \CorpusFrameworkTestPaths/\CorpusFrameworkPaths{} framework-input paths originate in test abilities. Reporting the two source universes separately exposes this structural difference and gives auditors a direct way to prioritize production privacy evidence.
+The same principle explains the lifecycle policy. A lifecycle edge supplies execution order, not data dependence. Bounded transitions preserve negative-case discrimination unless the program model provides an executable path between phases. This objective is reflected by balanced accuracy on HapBench and by the separate executed-order sensitivity analysis in Appendix~\ref{subsec:app_oracle_sensitivity}.
 
-\subsection{Precision-Oriented Reachability}
+\subsection{Transferability}
 
-Lifecycle modeling illustrates why the evaluation emphasizes specificity and balanced accuracy in addition to recall and F1. Unbounded cycling accepts more cross-event positives under the published HapBench labels, but also creates the suite's explicit unreachable-flow false positive. F1 ignores the lost true negative; balanced accuracy accounts for both classes and favors the bounded policy. Under the executed-order sensitivity contract, the bounded policy classifies all 67 cases, whereas unbounded cycling creates three false positives. The default therefore requires an explicit parent, same-instance, or later-creation witness before connecting lifecycle phases.
+The platform-specific inputs to ArkPrism are the export map, SDK ownership evidence, receiver factories, carrier contracts, and continuation triggers. The analysis interface and transfer discipline are not tied to ArkTS syntax. A typed event-driven platform can reuse the design by supplying adapters for API ownership and its callback or future abstraction. The reusable lesson is to preserve the source binding across frontend lowering and asynchronous execution rather than reconstructing source identity after propagation.
 
-Continuation transfer follows the same principle. T1 callbacks and Promise-\texttt{then} use construct-specific IFDS call flow; ArkUI events, registered platform tasks, and overload-checked SDK Promise contracts supply execution witnesses; and explicit \texttt{await} follows native normal flow over ArkIR. Execution evidence exposes a callback body but never creates a privacy payload: each propagated fact still requires and retains its own source witness and carrier state. The balanced design isolates T4: only Promise-success cases change under ablation, while callback, \texttt{await}, and every matched negative remain stable. ArkPromiseBench adds orthogonal mutations for Promise ownership, success versus rejection position, payload-dependent return, alias identity, and callback executability. Full \mytool satisfies all 24 obligations; the two ablations independently expose missing payload transfer and over-broad executable-edge construction. The optional unresolved-IR fallback remains separately labeled, so it cannot be mistaken for a solver-derived edge.
+\subsection{Scope and Interpretation}
 
-\subsection{Validity Controls}
-
-\textbf{Oracle separation.}
-ArkSourceFirst60 is selected by project-scale and configured-import strata before detector execution. Its project-wide candidate enumeration locates code but does not assign labels, and the final decision record retains exact source locations for all 186 candidates. The resulting recall claim is explicitly scoped to the fixed rule and statically enumerable candidate universe. ArkAsyncBench similarly defines positives and matched negatives from source-level value dependence. The Top-120 set serves a complementary role by testing preservation of 666 confirmed keys under high API volume, including 102 member/receiver keys.
-
-\textbf{Configuration and query control.}
-HapFlow and \mytool use the same API-17 SDK and source--sink query on HapBench; the real-project evaluation uses OpenHarmony API-20 without SDK fallback. Versioned rules, SDK declarations, and analyzer builds define each configuration, and pre-aggregation validation checks endpoint links, source kinds, provenance, and completion state. Identity accuracy is measured over configured, statically enumerable candidates, while flow evaluation additionally requires a concrete return, callback, or explicit framework-input carrier. These two denominators match the detector and propagation contracts, respectively.
-
-\textbf{Corpus composition.}
-The corpus includes applications, libraries, demonstrations, tests, and a small amount of generated source. Results therefore characterize the analyzed collection. Source-scope stratification prevents generated test abilities from being mistaken for production privacy paths. Exact- and near-clone resampling changes project rates by at most \CorpusCloneMaxShift{} percentage points, showing that the principal corpus patterns are not driven by repeated project copies.
-
-\subsection{Applicability}
-
-The reusable unit in \mytool is not an OpenHarmony package table but the contract
-\[
-\mathit{ResolveUsage}(s)\rightarrow\langle identity,witness,carrier\rangle,
-\]
-followed by witness-preserving continuation transfer. A port to another typed, event-driven platform needs three frontend adapters: an export/migration map, receiver-origin and target evidence, and continuation edges for the platform's callback or future abstraction. The identity domain, carrier-state discipline, IFDS re-rooting rule, and two-level provenance model form the reusable core. This decomposition provides a porting blueprint for ecosystems in which API ownership is obscured by re-exports, factory-returned managers, or asynchronous lowering, without assuming that every platform shares ArkTS syntax.
-
-Native C/C++ bridges, runtime-loaded code, server-side behavior, and consent state require complementary evidence such as HarmoBridge~\cite{harmobridge} or runtime monitoring. \mytool supplies reviewable API identities and may-paths for the statically represented portion; policy adjudication remains an audit task.
+The source-first accuracy result is defined over the fixed rule set and statically enumerable candidate universe; the large corpus is used to characterize the analyzed collection. Source rules, SDK fingerprints, benchmark oracles, and run manifests are versioned in the replication package. Native C/C++ bridges, dynamically loaded code, runtime dispatch unavailable to ArkAnalyzer, server-side behavior, and consent state require complementary analyses such as HarmoBridge or runtime monitoring~\cite{harmobridge}. ArkPrism provides source-level may-flow evidence for the statically represented portion and leaves policy adjudication to the audit process.

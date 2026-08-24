@@ -1,113 +1,7 @@
 \section{Design of \mytool}
 \label{sec:design}
 
-\mytool resolves the \emph{source identity} bottleneck in \arkts privacy analysis and produces provenance-preserving evidence graphs. ArkAnalyzer provides the \arkts IR, project Scene, and call-graph substrate~\cite{arkanalyzer}; HapFlow provides IFDS-based taint propagation over \openharmony programs~\cite{hapflow}. On this substrate, \mytool adds an evidence-carrying domain layer: package- and receiver-aware API identity resolution, continuation-aware IFDS transfer, callback-context recovery, and provenance-preserving graph assembly.
-
-\subsection{Problem Definition and Notation}
-\label{subsec:problem_def}
-
-Let a project be $P=\langle F,M,I,E_c\rangle$, where $F$ is the set of \arkts source files, $M$ is the set of methods in ArkAnalyzer IR, $I$ is the set of import bindings, and $E_c \subseteq M\times M$ is the initial call graph. \mytool deliberately separates detector rules $R_D$ from IFDS query rules $R_T$. A detector rule is
-
-\begin{equation}
-r_D=\langle pkg,ns,mem,mode,factory,perm,cat\rangle,
-\end{equation}
-
-where $pkg$ and $ns$ identify the declaring package and namespace, $mem$ is a method or property token, $mode\in\{\mathit{namespace},\mathit{receiver},\mathit{property}\}$ distinguishes the access forms, $factory$ is an optional set of receiver-producing methods, $perm$ is permission evidence, and $cat$ is a privacy category. The serialized rule inventory normalizes its legacy tri-state access field to this explicit mode. An IFDS query rule is
-
-\begin{equation}
-r_T=\langle sig,meta,carrier,i_{cb},i_{src},kind\rangle,
-\end{equation}
-
-where $sig$ is an SDK method signature; $meta=\langle module,ns,class,mem,params,lit\rangle$ retains the source identity needed when the frontend cannot resolve that signature; and $carrier\in\{\mathit{return},\mathit{arg},\mathit{callback}\}$ identifies the program value to seed. The source kind distinguishes typed privacy data from explicit framework inputs:
-\begin{equation}
-kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}.
-\end{equation}
-The optional $lit$ component records a string-dispatched event name. For callback sources, $i_{cb}$ is the callback-argument position and $i_{src}$ is the sensitive callback-parameter position. A privacy-data return requires a non-\texttt{void} return type; a callback source requires a typed \texttt{Callback<T>} parameter and a valid carrier index; an argument source is accepted only as an explicitly modeled framework input. Rules without this carrier contract are rejected at load time. Keeping $R_D$ and $R_T$ explicit is essential: a permission-bearing API operation may belong to $R_D$ without producing privacy data, and is therefore not automatically promoted into $R_T$.
-
-\textbf{API identity resolution.} The first task is to compute a semantic identity for each candidate API usage. We define:
-
-\begin{equation}
-\mathit{Id}(v) = \langle \mathit{Pkg},\; \mathit{Ns},\; \mathit{Recv},\; \mathit{Mem},\; \mathit{Acc}\rangle,
-\end{equation}
-
-where $\mathit{Pkg}$ and $\mathit{Ns}$ are resolved through a namespace-constrained migration map, $\mathit{Recv}$ traces the receiver object back to its source via bounded backward data-flow (e.g., \texttt{cameraMgr} $\leftarrow$ \texttt{getCameraMgr(ctx)}), $\mathit{Mem}$ is the method or property name, and $\mathit{Acc}\in\{\mathit{direct},\mathit{assign},\mathit{indirect},\mathit{property}\}$ classifies the access pattern. Resolution also returns a witness
-
-\begin{equation}
-w\in\{\mathit{Namespace},\mathit{IRAlias},\mathit{ExactType},
-\mathit{CallTarget},\mathit{FactoryOrigin},\mathit{PropertyRead}\}.
-\end{equation}
-
-A usage $u$ is recognized when:
-
-\begin{equation}
-\exists s\in Stmt(P),\;\exists r_D\in R_D:\;
-\mathit{Accept}(s,r_D,I,A,w),
-\end{equation}
-
-where $A$ is the alias relation recovered from imports, assignments, and IR-lowered namespace-member expressions. The recognized usage set is $U_D=\{u \mid \exists s,r_D,w:\mathit{Accept}(s,r_D,I,A,w)\}$.
-
-\textbf{Source carriers and seeds.} For a statement $s$ matching $r_T$, the rule first identifies a logical carrier rather than immediately materializing an IFDS fact:
-
-\begin{equation}
-\mathit{Carrier}(s,r_T)=
-\begin{cases}
-\mathit{lhs}(s), & carrier=\mathit{return},\\
-\mathit{arg}_{i_{src}}(s), & carrier=\mathit{arg},\\
-\mathit{param}_{i_{src}}(\mathit{ResolveCb}(\mathit{arg}_{i_{cb}}(s))),
-    & carrier=\mathit{callback}.
-\end{cases}
-\end{equation}
-
-Return and argument carriers are materialized from the zero fact at the corresponding normal or call edge. Callback carriers are source-generating call-flow facts:
-\begin{equation}
-\mathcal{F}_{call}^{src}(s,cb,\mathbf{0})=
-\{\langle \mathit{Carrier}(s,r_T),\mathit{CallbackPayload},
-\epsilon(s),\emptyset\rangle\},
-\end{equation}
-only when $cb=\mathit{ResolveCb}(\mathit{arg}_{i_{cb}}(s))$ is the resolved call-edge target. Thus, $\mathit{Carrier}$ denotes the source-bearing program value, while the flow function determines where the initial supergraph fact is created.
-
-Property occurrences in $U_D$ provide right-hand-side values to detector-local tracing. The evaluated $R_T$ inventory contains no property carrier, so these occurrences do not seed IFDS. Framework-provided \texttt{Want} values are query sources of kind \textit{framework\_input}, not privacy-API detector occurrences. These distinctions prevent detector coverage, privacy-data seeding, and framework-input analysis from being silently equated.
-
-The resolution unit preserved downstream is
-\begin{equation}
-\mathit{ResolveUsage}(s)=\langle \mathit{Id}(s),w,c\rangle,
-\end{equation}
-where $c=\mathit{Carrier}(s,r_T)$ for an accepted, well-formed query rule and $c=\bot$ for detector-only evidence. This optional-carrier triple makes API recognition explicit without manufacturing a taint seed for operations whose sensitive value is not modeled.
-
-\textbf{Asynchronous carrier recovery.} The second task is to bind a configured asynchronous source to its consumer. We define:
-
-\begin{equation}
-\mathit{SrcBind}(call, cb, param),
-\end{equation}
-
-where $call$ is the source API invoke statement, $cb$ is the resolved callback method or Promise handler, and $param$ is the specific parameter through which sensitive data flows. Carrier bindings participate in IFDS call flow when ArkIR exposes a typed callback target; callback edges used only for report context and optional recovery for unresolved IR remain separately identifiable.
-
-\textbf{Provenance-preserving evidence graph.} The third task is to construct, for each $u\in U_D$, an evidence graph:
-
-\begin{equation}
-G_u = \langle V_u,E_u,\lambda_u,\omega_u\rangle,
-\end{equation}
-
-where $V_u$ contains API, caller, sink, and taint-fact nodes; $E_u$ contains call, detector-local sink, configured-query path, and endpoint-link edges. The labeling function $\lambda_u$ records the semantic edge role. The origin function $\omega_u$ is reconstructed from the producing record:
-
-\begin{equation}
-\omega_u(e)=
-\begin{cases}
-\mathit{callType}(e), & e\in E_{call},\\
-\mathit{detector\_local}, & e\in E_{sink},\\
-\langle \mathit{producer}(q),\mathit{deriv}(q)\rangle, & e\in E_{path}(q),\\
-\mathit{linkEvidence}(e), & e\in E_{link},
-\end{cases}
-\end{equation}
-
-where call types distinguish direct, callback, and lifecycle-implicit context;
-\begin{equation}
-\mathit{producer}(q)\in\{\mathit{IFDS},\mathit{Supplement},\mathit{Both}\},
-\quad
-\mathit{deriv}(q)\subseteq
-\{\mathit{PromiseThen},\mathit{PromiseReturn}\},
-\end{equation}
-and link evidence distinguishes exact-statement from normalized-source-location joins. Producer provenance is not a confidence score, while transfer derivations record which continuation relations contributed to an IFDS path.
+\mytool addresses privacy-source binding in two stages. It first resolves which platform operation a statement denotes and which value, if any, carries the modeled privacy data. It then propagates that bound value while preserving the evidence used to create it. ArkAnalyzer supplies typed ArkIR, call graphs, and pointer information~\cite{arkanalyzer}; HapFlow supplies the IFDS substrate~\cite{hapflow}. \mytool adds the source-binding and continuation semantics that connect these layers.
 
 \subsection{Architecture Overview}
 
@@ -119,7 +13,24 @@ and link evidence distinguishes exact-statement from normalized-source-location 
 \label{fig:architecture}
 \end{figure}
 
-Figure~\ref{fig:architecture} gives the end-to-end architecture. ArkAnalyzer transforms each project into a Scene, ArkIR, and call graph; the analysis specification configures source identity, carrier, package-alias, and sink rules. \mytool then performs three connected analyses: (1)~API identity resolution computing $\mathit{ResolveUsage}(s)$, (2)~carrier propagation across IR and selected asynchronous continuations, and (3)~evidence-graph assembly that preserves the derivation label $\omega(e)$ on every edge. Lifecycle ordering and call-graph context supply reachability evidence to this pipeline.
+Figure~\ref{fig:architecture} gives the end-to-end architecture. ArkAnalyzer transforms each project into a Scene, ArkIR, and call graph; the analysis specification provides source, carrier, package-migration, and sink rules. \mytool first resolves an evidence-carrying source binding, then propagates its carrier through the IR and witnessed asynchronous continuations. Lifecycle ordering supplies execution context, and evidence assembly attaches the retained source and transfer witnesses to JSON and DOT reports.
+
+\subsection{Privacy-Source Binding}
+\label{subsec:problem_def}
+
+\mytool accepts two related rule sets. Detector rules $R_D$ identify configured platform operations by package, namespace, member, access form, optional receiver factory, permission, and privacy category. Query rules $R_T$ additionally name an SDK owner and a concrete data carrier: a return value, an argument, or a designated callback parameter. Query rules also distinguish privacy data from explicitly modeled framework inputs. A detector rule can therefore describe a privacy-relevant operation without asserting that the operation produces a taint source.
+
+For a candidate statement $s$ and a compatible rule $r$, the analysis returns one unit:
+\begin{equation}
+\mathit{ResolveUsage}(s,r)=\langle identity,carrier,witness\rangle.
+\end{equation}
+The identity records the normalized package/namespace, receiver owner, member, and access form. The carrier is the assigned result, a designated argument or callback parameter, or $\bot$ for detector-only evidence. The witness is the strongest compatible ownership evidence available at the statement: an imported namespace, an IR alias, an exact SDK type or call target, a traced factory origin, or an executable property read. We write $\mathit{Id}(s)$, $\mathit{Carrier}(s,r_T)$, and $w(s,r)$ for these three components. The accepted detector occurrences form $U_D$.
+
+The binding must satisfy two independent conditions. First, the member and access form must agree with the rule and carry an access-appropriate identity witness. Second, a query source must name a concrete carrier that is valid for the resolved SDK declaration. Return sources require a non-\texttt{void} result; callback sources require a typed callback and valid callback/parameter positions; argument sources are admitted only as explicit framework inputs. The loader rejects a query rule that cannot establish this carrier contract.
+
+For a direct return, the carrier becomes an IFDS fact at the assignment. For a callback source, the carrier becomes a fact at the designated parameter of the resolved callback edge. Promise transfer preserves the same source witness while re-rooting the carrier from the Promise object to the success-handler parameter and, when the handler returns a payload-dependent value, to the next Promise. Callback edges recovered only for call context remain distinct and cannot create a taint fact.
+
+Each accepted occurrence and path retains this binding. The report graph links API, caller, sink, and taint-path nodes, while edge metadata records whether a relation came from the call graph, detector-local tracing, IFDS, or bounded supplementary recovery. Provenance identifies the producing analysis and transfer rule; it is not treated as a confidence score. This design makes the report an inspectable derivation of source binding and propagation rather than an additional inference layer.
 
 \subsection{Running Example: Why Direct Calls Are Insufficient}
 \label{subsec:running_example}
@@ -139,8 +50,7 @@ A direct-call baseline that only matches \texttt{namespace.method(...)} statemen
 \subsection{Namespace-constrained Package Migration}
 \label{subsec:pkg_norm}
 
-OpenHarmony API evolution makes exact package matching brittle, but consolidated kit packages are not globally equivalent to their historical modules. We therefore define a directional migration relation over package--namespace pairs,
-$\mathcal{M}\subseteq(Pkg\times Ns)\times(Pkg\times Ns)$. For example, the \texttt{deviceInfo} export maps from \texttt{@ohos.deviceInfo} to \texttt{@kit.BasicServicesKit}, while unrelated exports in the same kit do not become compatible. A detector rule $r_D$ and import binding $i$ are compatible when:
+OpenHarmony API evolution makes exact package matching brittle, but consolidated kit packages are not globally equivalent to their historical modules. We therefore maintain a directional migration relation $\mathcal{M}$ over package--namespace pairs. For example, the \texttt{deviceInfo} export maps from \texttt{@ohos.deviceInfo} to \texttt{@kit.BasicServicesKit}, while unrelated exports in the same kit do not become compatible. A detector rule $r_D$ and import binding $i$ are compatible when they agree exactly or when $\mathcal{M}$ contains the documented export migration:
 
 \begin{equation}
 Compat(i,r_D) \triangleq
@@ -148,90 +58,32 @@ Compat(i,r_D) \triangleq
 \lor ((i.pkg,i.ns),(r_D.pkg,r_D.ns))\in\mathcal{M}.
 \end{equation}
 
-The analyzer also derives namespace aliases from import declarations. If a source file contains \texttt{import wifi from '@ohos.wifiManager'}, then $(wifi,\texttt{wifiManager})\in A_{import}$. If it imports a kit package with a default binding, \mytool records both the textual alias and the canonical namespace. Matching therefore uses a normalized API key:
-
-\begin{equation}
-key(u)=\langle \mu(pkg_u,ns_u), \sigma(mem_u)\rangle,
-\end{equation}
-
-where $\mu$ applies the migration/export map and import-alias normalization to a package--namespace pair, and $\sigma$ normalizes method/property spelling. The report retains both $key(u)$ and the raw package signature so that normalized and SDK-specific identities remain auditable.
+The analyzer also derives namespace aliases from import declarations. For \texttt{import wifi from '@ohos.wifiManager'}, it records \texttt{wifi} as an alias of the canonical \texttt{wifiManager} namespace. Kit imports retain both the textual binding and the exported namespace. Matching uses the normalized package--namespace pair and member, while the report retains the raw import and SDK signature for audit.
 
 \subsection{Package- and Receiver-aware API Identity Resolution}
 \label{subsec:identity_resolution}
 
 HapFlow's namespace--method loader resolves configured entries to SDK declarations, but its schema does not encode executable property reads or retain factory-origin evidence for manager/helper receivers. \mytool represents these access forms by computing a semantic identity and an acceptance witness for each candidate usage.
 
-\subsubsection{Identity Function}
+\subsubsection{Witness-guided Acceptance}
 
-Given a candidate statement $s$, \mytool computes $\mathit{Id}(s)$ as defined in Section~\ref{subsec:problem_def}. The key components are $\mathit{Recv}(s)$ (receiver-origin tracing, detailed below) and $\mathit{Acc}(s)$ (access-kind classification). The rule mode denotes
+Given a candidate statement $s$, \mytool computes its member, access form, and receiver origin. Package compatibility and member agreement generate a candidate; an access-specific witness decides acceptance:
 \begin{equation}
-\mathit{Mode}(r_D)=
-\begin{cases}
-\{\mathit{direct},\mathit{assign}\}, & r_D.mode=\mathit{namespace},\\
-\{\mathit{indirect}\}, & r_D.mode=\mathit{receiver},\\
-\{\mathit{property}\}, & r_D.mode=\mathit{property}.
-\end{cases}
+\mathit{Accept}(s,r_D) \iff
+\mathit{CompatPkgNs}\land\mathit{MemberMatch}\land
+\mathit{ModeMatch}\land\mathit{SufficientWitness}.
 \end{equation}
-
-The candidate predicate is:
-
-\begin{align}
-Match(s,r_D,I,A) ={} & Compat(I_s,r_D) \nonumber\\
-& \wedge\; \mathit{Id}(s).\mathit{Mem} {=} r_D.mem \nonumber\\
-& \wedge\; \mathit{Acc}(s)\in\mathit{Mode}(r_D).
-\end{align}
-
-Package compatibility only generates candidates. Acceptance additionally requires access-specific evidence:
-
-\begin{align}
-\mathit{Accept}(s,r_D,I,A,w) \triangleq{}&
-\mathit{Match}(s,r_D,I,A)\nonumber\\
-&{}\land \mathit{Sufficient}(\mathit{Acc}(s),w,r_D),
-\end{align}
-\begin{equation}
-\mathcal{W}_{ind}=\{\mathit{ExactType},\mathit{CallTarget},
-\mathit{FactoryOrigin},\mathit{Namespace}\}.
-\end{equation}
-\begin{equation}
-\mathit{Sufficient}(a,w,r_D)=
-\begin{cases}
-w\in\{\mathit{Namespace},\mathit{IRAlias}\}, & a\in\{\mathit{direct},\mathit{assign}\},\\
-w=\mathit{PropertyRead}, & a=\mathit{property},\\
-w\in\mathcal{W}_{ind}, & a=\mathit{indirect}.
-\end{cases}
-\end{equation}
-
-For indirect calls, $\mathit{Namespace}$ means an exact namespace receiver, not merely package presence. It is disabled for generic members such as \texttt{get}, \texttt{on}, \texttt{start}, \texttt{request}, and \texttt{close}; these require type, target, or factory-origin evidence. Property acceptance requires both $r_D.mode=\mathit{property}$ and an executable IR field read. Thus, package import or final-token agreement alone is never sufficient.
+Namespace calls require an imported namespace or recovered IR alias. Property rules require an executable field read. Manager calls require an exact SDK receiver type, resolved declaring-class target, traced factory origin, or exact namespace receiver. The last option is disabled for generic members such as \texttt{get}, \texttt{on}, \texttt{start}, \texttt{request}, and \texttt{close}; these members require type, target, or factory evidence. Package presence or final-token agreement alone is never sufficient.
 
 \paragraph{IFDS source-rule acceptance.}
-The IFDS query uses SDK method signatures whenever ArkAnalyzer resolves a call target. For a call whose signature remains unknown after frontend recovery, matching falls back to the configured rule metadata rather than to method name alone. Let $\mathit{Meta}(r_T)$ retain the rule's module, namespace, declaring class, member, arity, parameter types, and any string-dispatched event literal. We define:
-\begin{align}
-\mathit{Exact}_T(s,r_T) \triangleq{}&
-  \mathit{TargetSig}(s)=\mathit{Sig}(r_T),\\
-\mathit{Fuzzy}_T(s,r_T) \triangleq{}&
-  \mathit{UnkSig}(s)\land
-  \mathit{Mem}(s)=r_T.mem \nonumber\\
-  &{}\land \mathit{ArityCompat}(s,r_T)
-  \land \mathit{ParamCompat}(s,r_T).
-\end{align}
-The guard for a generic member and the guard for a string-dispatched overload are:
-\begin{align}
-\mathit{IdentityGuard}(s,r_T) \triangleq{}&
-  \neg\mathit{Generic}(r_T.mem) \nonumber\\
-  &{}\lor \mathit{ReceiverOrModuleWitness}(s,\mathit{Meta}(r_T)),\\
-\mathit{LiteralGuard}(s,r_T) \triangleq{}&
-  \neg\mathit{HasEventLiteral}(r_T)\nonumber\\
-  &{}\lor \mathit{ArgLiteral}(s,0)=\mathit{EventLiteral}(r_T).
-\end{align}
-The source call is accepted iff
+The IFDS query uses an exact SDK method signature whenever ArkAnalyzer resolves the call target. If the target remains unknown after frontend recovery, the fallback must match member, arity, normalized parameter types, owner evidence for generic members, and any string-dispatched event literal:
 \begin{equation}
 \mathit{Accept}_T(s,r_T)\triangleq
 \mathit{Exact}_T(s,r_T)\lor
-\bigl(\mathit{Fuzzy}_T(s,r_T)\land
-\mathit{IdentityGuard}(s,r_T)\land
-\mathit{LiteralGuard}(s,r_T)\bigr).
+\bigl(\mathit{CompatibleFallback}_T(s,r_T)\land
+\mathit{OwnerGuard}\land\mathit{LiteralGuard}\bigr).
 \end{equation}
-Here $\mathit{ArityCompat}$ requires exact arity whenever the rule declares a parameter array, including an empty one. $\mathit{ParamCompat}$ requires parameter types and string-literal discriminators to match after normalizing imported type qualifiers, whitespace, array notation, callback aliases, and union order. Parameter names remain diagnostic metadata because they are not part of call semantics; rules with non-concrete return carriers are rejected before matching. Consequently, an unresolved call such as \texttt{avPlayer.on('error',...)} cannot match a configured geolocation or sensor event merely because both use \texttt{on} with the same arity. This predicate governs IFDS source seeding and is separate from the detector acceptance predicate above.
+Exact arity is required whenever the rule declares a parameter array, including an empty one. Parameter-type comparison normalizes imported qualifiers, whitespace, array notation, callback aliases, and union order. Parameter names remain diagnostic metadata because they are not part of call semantics. Consequently, \texttt{avPlayer.on('error',...)} cannot match a configured geolocation or sensor event merely because both use \texttt{on} with the same arity. This stricter predicate governs source seeding; detector acceptance remains independent.
 
 \subsubsection{Receiver-Origin Tracing}
 
@@ -281,16 +133,12 @@ Source pattern & Pkg. family & Ns./recv. & Origin & Member & Acc. & Acceptance w
 
 IR-lowered multi-segment APIs require an additional alias relation $A_{ir}$. For assignments of the form $t := q.member$, \mytool records $(t,q.member)\in A_{ir}$. A later statement \texttt{t.create(...)} is matched as \texttt{q.member.create(...)} if the composed signature appears in $R_D$. This is essential for APIs such as \texttt{request.agent.create}, whose namespace can disappear after lowering.
 
-\subsection{Lifecycle State Machine Model}
+\subsection{Lifecycle Context}
 \label{subsec:lifecycle}
 
-\openharmony applications follow a structured lifecycle managed by the system runtime. A \texttt{UIAbility} transitions through creation, foreground, background, and destruction phases; custom components follow appearance, build, page visibility, and disappearance phases; UI callbacks are registered during component build and triggered by user interaction. These transitions are \emph{implicit}---the runtime invokes lifecycle methods without visible call edges in application code---so a static analyzer that treats each lifecycle method as an independent entry point misses cross-phase data flow.
+\openharmony applications follow a framework-managed lifecycle. A \texttt{UIAbility} moves through creation, foreground, background, and destruction; components move through appearance, build, visibility, and disappearance; UI handlers execute after registration. These transitions supply execution context for source bindings but do not alter their identity or carrier.
 
-\mytool models the \openharmony application lifecycle as a three-layer state machine. Let the lifecycle model be:
-\begin{equation}
-\mathcal{L} = \langle \Phi_a, \Phi_c, \delta_a, \delta_c, \delta_{cross} \rangle,
-\end{equation}
-where $\Phi_a$ is the set of ability phases (e.g., \texttt{CREATING}, \texttt{FOREGROUNDED}), $\Phi_c$ the component phases (e.g., \texttt{APPEARING}, \texttt{BUILT}), $\delta_a \subseteq \Phi_a \times \Phi_a$ the ability transition relation, $\delta_c \subseteq \Phi_c \times \Phi_c$ the component transition relation, and $\delta_{cross} \subseteq \Phi_a \times \Phi_c$ the cross-layer transition relation.  Cross-layer transitions capture implicit calls such as \texttt{onForeground} $\to$ \texttt{aboutToAppear}.
+\mytool represents ability phases, component phases, and the cross-layer transitions between them. Cross-layer edges include relations such as \texttt{onForeground} to \texttt{aboutToAppear}. This explicit ordering connects source production and later consumption without treating every lifecycle method as mutually reachable.
 
 The lifecycle modeler discovers ability classes by checking superclass inheritance from \texttt{UIAbility}, \texttt{Ability}, and extension ability base classes; component classes by checking superclass (\texttt{CustomComponent}, \texttt{ViewPU}), decorators (\texttt{@Component}), or the presence of two or more component lifecycle methods; and callback methods by scanning IR statements for \texttt{CommonMethod.*} invocations and extracting \texttt{FunctionType} arguments.
 
@@ -324,31 +172,15 @@ T5 & \texttt{async/await} & $fact(promise)\!\to\!await_{res}$ & Explicit \texttt
 
 \subsubsection{Callback ICFG Edges and Fact Domain}
 
-ArkAnalyzer represents an arrow function argument with a \texttt{FunctionType} carrying its generated method signature; \texttt{ClosureType} is a function-type specialization that additionally carries a lexical environment. \mytool applies typed lookup to every statement containing an invoke expression, including assignments such as \texttt{q = p.then(cb)}. A typed argument alone, however, does not establish execution. For SDK and built-in calls, \mytool admits four witnessed edge classes: a configured callback-source carrier, a lifecycle-governed ArkUI event, a registered platform task, or the first fulfillment handler of a witnessed Promise owner. Let
-\begin{equation}
-\begin{split}
-E_{src}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
-SourceCb(s,i,j)\},\\
-E_{evt}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
-ArkUIEvent(s,i)\land FrameworkTarget(s)\},\\
-E_{task}={}&\{(s,m)\mid Resolve_T(a_i)=m,\;
-TaskContract(s,i,o)\land OwnerWitness(s,o)\},\\
-E_{then}={}&\{(s,m)\mid Resolve_T(a_0)=m,\;
-Then(s)\land PromiseOwner(s)\}.
-\end{split}
-\end{equation}
-Here $SourceCb(s,i,j)$ means that the source rule for $s$ names callback argument $i$ and payload parameter $j$. $ArkUIEvent$ requires a member in the versioned event registry and its exact function-typed argument position. $TaskContract(s,i,o)$ is a versioned tuple of member, callback position, and owner family: global tasks such as \texttt{setTimeout} use a global owner, while receiver-bound completion APIs additionally require an SDK receiver witness such as an access-control manager. $OwnerWitness$ accepts the corresponding SDK declaration, receiver type, or receiver expression and rejects an exact application target with the same member. $PromiseOwner$ accepts a Promise receiver/target or an unresolved built-in whose receiver definition has a proved Promise-return contract. That proof is either a configured \texttt{Promise<T>} carrier, a resolved return signature, or a receiver-qualified SDK declaration for which every arity-compatible overload returns \texttt{Promise<T>}; callback-returning overloads therefore cannot justify a success edge. A resolved application owner named \texttt{then} also fails this predicate. The IFDS ICFG is $E'_{ICFG}=E_{ICFG}\cup E_{src}\cup E_{evt}\cup E_{task}\cup E_{then}$, together with application callback edges justified by an invocation in a resolved application callee. Edges in $E_{evt}$ and $E_{task}$ use zero/capture flow, whereas $E_{then}$ additionally admits the payload-specific transfer below. Other function-typed registrations remain report context and are not converted into execution.
+ArkAnalyzer represents an arrow function argument with a \texttt{FunctionType} carrying its generated method signature; \texttt{ClosureType} additionally records the lexical environment. \mytool applies this typed lookup to every statement containing an invocation, including assignments such as \texttt{q = p.then(cb)}. A function type alone does not establish execution. The ICFG admits a callback edge only when one of four witnesses is present: a configured callback-source contract, a lifecycle-governed ArkUI event, a registered platform task with the expected owner and callback position, or the fulfillment handler of a witnessed Promise owner.
+
+Promise ownership is established by a Promise receiver or target, a configured \texttt{Promise<T>} source, or a receiver-qualified SDK declaration whose arity-compatible overloads all return a Promise. Callback-returning overloads and resolved application methods named \texttt{then} do not satisfy this condition. ArkUI and platform-task edges expose executable callback context but carry no privacy payload unless a source binding independently supplies one. Other function-valued registrations remain report context and are not converted into execution.
 
 An evidence-carrying fact is
 \begin{equation}
 d=\langle v,\alpha,\kappa,\epsilon,\delta\rangle,
 \end{equation}
-where $v$ is the root ArkIR value, $\alpha$ is its field/array access path, $\epsilon$ is immutable source evidence, $\delta$ is transfer metadata, and
-\begin{equation}
-\kappa\in\{\mathit{DirectValue},\mathit{PromisePayload},
-\mathit{CallbackPayload},\mathit{FrameworkArgument}\}.
-\end{equation}
-Fact identity includes $\langle v,\alpha,\epsilon,\kappa\rangle$; $\delta$ is joined as path metadata and does not create a new semantic fact. The implementation stores $\langle v,\alpha\rangle$ as a structured ArkIR local, instance-field, array, or multi-field value. Promise binding uses
+where $v$ is the root ArkIR value, $\alpha$ is its field or array access path, $\epsilon$ is immutable source evidence, $\delta$ is transfer metadata, and $\kappa$ distinguishes a direct value, Promise payload, callback payload, or framework argument. Fact identity includes $\langle v,\alpha,\epsilon,\kappa\rangle$; transfer metadata does not create a new semantic fact. Promise binding uses
 \begin{equation}
 \mathit{ReRoot}(d,v',\kappa')=
 \langle v',\varnothing,\kappa',\epsilon(d),\delta(d)\rangle,
@@ -357,17 +189,7 @@ which clears the container's access path while preserving its source witness and
 
 \subsubsection{T1: Callback Parameter Binding}
 
-When an $R_T$ source accepts a callback as a direct argument at position $i$, the binding is $\mathit{SrcBind}(s, cb, param_j)$ where $cb = Resolve_T(a_i)$ and $param_j$ is the callback parameter selected by the rule's carrier metadata. The IFDS edge uses the compiler-provided function signature:
-
-\begin{equation}
-Resolve_T(a_i) =
-\begin{cases}
-m, & type(a_i)\preceq FunctionType \land m=Lkp(type(a_i).sig)\\
-\bot, & \text{otherwise}.
-\end{cases}
-\end{equation}
-
-$Lkp$ extracts the compiler-generated method signature and requires a corresponding method with a CFG in the declaring class. Since \texttt{ClosureType} refines \texttt{FunctionType}, the same lookup also preserves its lexical environment. Definition-backed recovery remains available only in the separately labeled report/supplementary analysis; it is not used to manufacture an IFDS callback edge. For \texttt{getData((err,data)$\Rightarrow$...)}, T1 resolves the arrow function through its typed signature and binds only \texttt{data}.
+When an $R_T$ source accepts a callback argument at position $i$, T1 resolves the compiler-provided function signature to a callback method with a CFG and binds only the payload parameter selected by the rule. Because \texttt{ClosureType} refines \texttt{FunctionType}, this lookup also preserves the lexical environment. Definition-backed recovery remains available only in the separately labeled report/supplementary analysis; it cannot manufacture an IFDS edge. For \texttt{getData((err,data)$\Rightarrow$...)}, T1 binds \texttt{data}, not every callback parameter.
 
 The tracer seeds only $param_j$ selected by $r_T.i_{src}$, not every callback parameter. It propagates through ArkIR value-use edges and assignments, and accepts a sink only when a sink argument structurally depends on the current fact. IR-local names are never compared by substring, and control dependence alone does not constitute an explicit data-flow edge.
 
@@ -405,14 +227,7 @@ $\mathit{Returned}(x,d)$ holds when normal flow has produced a fact whose struct
 
 \subsubsection{T5: Native Async/Await Normal Flow}
 
-An asynchronous function that awaits a Promise-wrapped source API creates an explicit ArkIR use from the Promise value to the assignment target:
-
-\begin{multline}
-data = await\; promiseMethod() \;\Rightarrow\;\\
-Edge(resolve_{arg}, await_{res}) \cup Edge(await_{res}, data_{uses})
-\end{multline}
-
-No continuation-specific IFDS rule is needed when this use is explicit: the native normal-flow function maps the Promise payload to $data$ and its subsequent uses. A bounded fallback remains available for definition-backed wrapper Promises whose executor-to-\texttt{await} relation is absent from ArkIR; such outcomes retain separate supplementary provenance and do not alter the IFDS fact relation.
+For \texttt{data = await promiseMethod()}, ArkIR exposes a use from the resolved Promise value to \texttt{data}. The native normal-flow function therefore maps the Promise payload to the assignment target and its later uses; no continuation-specific call-flow rule is required. A bounded fallback handles wrapper Promises whose executor-to-\texttt{await} relation is absent from ArkIR, and labels those outcomes as supplementary rather than IFDS-derived.
 
 \subsubsection{Algorithm}
 
@@ -458,102 +273,27 @@ Figure~\ref{fig:promise_semantic_boundaries} makes the transfer boundary concret
 
 \subsection{Callback-augmented Call-chain Recovery}
 
-Given a recognized usage $u$ inside method $m_u$, call-chain recovery searches a reverse graph:
-
-\begin{equation}
-E_r = (E_c)^{-1} \cup (E_{invoke})^{-1} \cup (E_{cb})^{-1} \cup (E_{init})^{-1}.
-\end{equation}
-
-Here $E_c$ is the ArkAnalyzer call graph, $E_{invoke}$ contains IR-level call edges absent from the graph, $E_{cb}$ contains callback edges recovered from FunctionType/ClosureType values, field callback assignments, and builder-option callbacks, and $E_{init}$ links generated initialization methods to their owning class or component context. The recovered chain set is:
-
-\begin{align}
-C_u = \{\, &\pi=(m_0,\ldots,m_u) \mid
-m_0\in Entry \cup Init \cup \mathsf{Unk}, \nonumber\\
-& (m_i,m_{i+1})\in E_r^{-1}\,\}.
-\end{align}
-
-Each chain receives an entry-evidence class:
-
-\begin{equation}
-\kappa(\pi)=
-\begin{cases}
-framework, & m_0\in Entry\\
-initialization, & m_0\in Init\\
-local, & \pi=(m_u) \text{ and no predecessor is found}\\
-\mathsf{unk}, & \text{otherwise.}
-\end{cases}
-\end{equation}
-
-\mytool does not collapse these classes into a single coverage number. A local fallback chain is useful evidence that the API usage exists in a method, but it is not a recovered framework-entry path. This distinction is preserved in the report and in the evaluation tables.
+For a recognized usage, call-chain recovery searches backward over ArkAnalyzer call edges, IR-level invocations missing from the graph, witnessed callback edges, and links from generated initialization methods to their owning class or component. The search stops at a framework entry, an initializer, or the first method for which no justified predecessor exists. Each chain is labeled accordingly as framework, initialization, local, or \textit{unk}. A local chain confirms the containing method but is not reported as a recovered framework-entry path.
 
 \subsection{Sink and Taint Attachment}
 
 For each detector occurrence $u\in U_D$, local tracing extracts statements $K_D(u)$ that may expose privacy-related data through logging, UI display, storage, network transfer, or data return. Sink resolution requires an exact configured method token and compatible receiver/namespace evidence; in particular, substring agreement such as \texttt{set} versus \texttt{setData} is rejected.
 
-The IFDS query is configured independently by $R_T$ and its sink set $K_T$. Let $S_P$ and $S_F$ be source statements whose rules have kind \textit{privacy\_data} and \textit{framework\_input}, respectively. The solver computes
+The IFDS query is configured independently by $R_T$ and its sink set. A result $q=\langle s,k,\rho\rangle$ states that the carrier bound at source $s$ may reach sink $k$ along path $\rho$. Every fact retains the source kind, API owner, carrier, SDK signature, rule origin, and normalized source location. Normal, call, continuation, return, and exceptional transfer copy this source witness unchanged, so facts from different source bindings remain distinct even when they reach the same statement.
 
-\begin{equation}
-T_I \subseteq S_T \times K_T \times Path,
-\end{equation}
-
-where $S_T=S_P\uplus S_F$ is the disjoint typed-source universe resolved from $R_T$. Each tuple $\langle s,k,\rho\rangle$ means that the carrier seeded at $s$ may reach configured sink $k$ along path $\rho$. Each seeded fact carries an immutable source witness
-\begin{equation}
-\epsilon(s)=\langle kind,pkg,ns,cls,mem,carrier,sig,rule,loc\rangle,
-\end{equation}
-where $kind\in\{\mathit{privacy\_data},\mathit{framework\_input}\}$ and the remaining fields identify the resolved API, carrier position, SDK signature, rule provenance, and normalized source location. Normal, call, continuation, return, and exceptional transfers copy $\epsilon(s)$ unchanged; fact and edge identities include it. Consequently, values reaching the same statement from different configured sources remain distinct, and the report obtains its source endpoint from $\epsilon(s)$ rather than inferring it from the first statement in $\rho$. Optional bounded recovery for unresolved IR preserves the same witness and produces a separate set
-
-\begin{equation}
-T_A \subseteq S_T \times K_T \times Path,
-\end{equation}
-
-and the report exposes $T_Q=T_I\cup T_A$, stratified as
-\begin{equation}
-T_P=\{q\in T_Q\mid src(q)\in S_P\},\qquad
-T_F=\{q\in T_Q\mid src(q)\in S_F\}.
-\end{equation}
-For duplicate endpoint/path outcomes, provenance separates the producing analysis from the continuation transfers used inside that analysis:
-
-\begin{equation}
-\Pi(q)=\langle producer(q),deriv(q)\rangle,
-\end{equation}
-where
-\begin{align}
-producer(q)&\in\{\mathit{ifds},\mathit{async\_supplement},\mathit{both}\},\\
-deriv(q)&\subseteq\{\mathit{PromiseThen},\mathit{PromiseReturn}\}.
-\end{align}
-The first component states which analysis emitted the complete path; the second records continuation-specific transfers within it. Derivation labels are monotone metadata and are excluded from fact identity, whereas carrier state is part of that identity.
-
-A partial linkage relation
-
-\begin{equation}
-L\subseteq U_D\times T_P
-\end{equation}
-
-is created only when project, normalized source location, and compatible API identity agree. Framework-input paths are never linked to privacy-API detector occurrences. Linked privacy-data paths are attached to the corresponding $G_u$; unlinked configured-query paths remain project-level taint evidence rather than being forced onto a detector occurrence. Consequently, detector-local sink-positive projects and configured-query-path-positive projects are not set-inclusion counts. The corpus evaluation reports both evidence universes and both source kinds separately.
+The report distinguishes paths produced by IFDS, bounded asynchronous recovery, or both. It separately records whether Promise-success and Promise-return transfer contributed to an IFDS path. Privacy-data and framework-input paths also remain separate. A path is linked to a detector occurrence only when project, normalized location, and API identity agree; framework-input paths are never attached to privacy-API occurrences. Unlinked paths remain visible as project-level query evidence instead of being forced onto an unrelated detector record.
 
 \paragraph{Construction invariants.}
-Three invariants connect the formal contract to the implementation. First, \emph{well-formed seeding} requires
-\begin{equation}
-q\in T_Q \Rightarrow
-\exists r_T,\epsilon:\mathit{WellFormed}(r_T)\land
-\mathit{SeededBy}(q,r_T,\epsilon),
-\end{equation}
-so every emitted path has one valid carrier and source kind. Second, \emph{witness preservation} requires $\epsilon_{out}=\epsilon_{in}$ across every normal, call, continuation, return, exceptional, and supplementary transfer; facts from different sources therefore remain distinct even when they reach the same statement. Third, \emph{link safety} requires
-\begin{multline}
-(u,q)\in L \Rightarrow kind(q)=\mathit{privacy\_data}\land\\
-\mathit{ProjectMatch}(u,q)\land\mathit{LocationMatch}(u,q)\land
-\mathit{IdentityCompatible}(u,q).
-\end{multline}
-The loader, fact-identity keys, transfer functions, and evidence linker enforce these properties by construction; the evaluation validates their observable consequences through source-rule resolution, endpoint integrity, and path audits.
+Three invariants connect the design to the implementation. \emph{Well-formed seeding} requires every path to originate from one valid carrier and source kind. \emph{Witness preservation} keeps the original source evidence unchanged across all transfer functions. \emph{Link safety} attaches only privacy-data paths whose project, source location, and API identity agree with the detector occurrence. The loader, fact keys, transfer functions, and evidence linker enforce these properties; the evaluation checks their observable consequences through rule-resolution audits, endpoint integrity, and manual path review.
 
 \subsubsection{Provenance Annotation}
 
-The report stores provenance at the level where it is produced. A call-chain relation carries a \texttt{callType}; a configured-query path carries $\Pi(q)$; and an endpoint link records \texttt{exact\_statement} or \texttt{source\_location}. Detector-local sink edges are identified by their containing record. Evidence-graph assembly maps these fields to $\omega_u$ rather than replacing them with a synthetic global confidence score. Consequently, an asynchronous supplement cannot be presented as an IFDS path, a Promise-return transfer remains distinguishable from initial Promise binding, and a normalized-location join remains distinguishable from an exact-statement join.
+The report stores provenance where it is produced. A call-chain edge records its call type; a query path records its producer and continuation derivations; an endpoint link records exact-statement or normalized-location agreement. Evidence assembly retains these fields instead of replacing them with a global confidence score. An asynchronous supplement therefore cannot be presented as an IFDS path, and Promise-return transfer remains distinguishable from initial Promise binding.
 
 \subsection{Analysis Contract}
 \label{subsec:analysis_contract}
 
-\mytool's recognition claim is parameterized by three explicit inputs: ArkAnalyzer IR for the source construct, the fixed API rule set, and the namespace, receiver, origin, or target-signature evidence required by $\mathit{Accept}$. The analysis targets statically represented \arkts code; native code, dynamic loading, reflection-like runtime dispatch, and APIs absent from the rule set are outside the query domain. A recognized API establishes an executable use under this contract, while policy-level violation assessment remains a downstream audit decision.
+\mytool's recognition claim is parameterized by ArkAnalyzer IR, the fixed API rule set, and the identity witness required by $\mathit{Accept}$. The analysis targets statically represented \arkts code; native code, dynamic loading, runtime dispatch unavailable to the frontend, and APIs absent from the rule set are outside the query domain. A recognized API establishes an executable use under this contract, while policy-level violation assessment remains a downstream audit decision.
 
 Configured-query results are may-flows under their source/sink and reachability models. The evidence model preserves the producing transfer and admits a detector occurrence as an IFDS source only through a source-endpoint link. The solver distinguishes complete, resource-bounded, and failed analyses; only complete analyses contribute negative evidence. Edge deduplication is scoped by IR statement, value identity, access path, and source witness because same-named locals in different methods and facts from different seeds remain distinct. HapBench positive and negative cases exercise these invariants, and project isolation enforces them at corpus scale.
 

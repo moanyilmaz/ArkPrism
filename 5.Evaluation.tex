@@ -2,11 +2,11 @@
 \label{sec:evaluation}
 
 We answer four questions:
-\textbf{RQ1}~How accurately does \mytool resolve privacy-API identities, and which evidence forms account for that accuracy?
-\textbf{RQ2}~How accurately do \mytool and HapFlow classify source-to-sink flows?
-\textbf{RQ3}~How do IR recovery, receiver refinement, lifecycle bounds, and asynchronous recovery affect analysis quality?
-\textbf{RQ4}~What evidence and scalability patterns appear across a large ArkTS corpus?
-Each oracle supports a distinct claim: source-first benchmarks evaluate identity, HapBench evaluates executable flow classification, ArkAsyncBench attributes asynchronous coverage, ArkPromiseBench stresses Promise semantic boundaries, a stratified source audit evaluates real-project path semantics, and the corpus measures prevalence and cost.
+\textbf{RQ1}~Can evidence-carrying source binding identify platform sources while rejecting same-name collisions?
+\textbf{RQ2}~How does \mytool compare with HapFlow on end-to-end source-to-sink classification?
+\textbf{RQ3}~Which mechanisms account for the result, and are the resulting real-project paths semantically valid?
+\textbf{RQ4}~Does the analysis scale, and what privacy evidence appears across a large ArkTS corpus?
+The source-first benchmarks answer RQ1 without using detector output as the oracle. HapBench provides the common end-to-end comparison for RQ2. Controlled ablations, asynchronous mutations, and manual path review answer RQ3. The corpus is used for prevalence and cost, not as an accuracy oracle.
 
 \subsection{Evaluation Protocol}
 \label{subsec:eval_design}
@@ -15,7 +15,7 @@ Each oracle supports a distinct claim: source-first benchmarks evaluate identity
 We compare \mytool and HapFlow using ArkAnalyzer IR and an identical source--sink query over HapBench. HapBench is evaluated with its bundled API-17 SDK, while the real-project benchmarks and corpus use OpenHarmony API-20. Each experiment uses its designated SDK without fallback, and IFDS analyzes each project as a whole.
 
 \textbf{Identity benchmarks.}
-\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. A project-wide AST pass enumerates statically named candidates compatible with the fixed rule/import universe but does not label them. Oracle construction then uses two evidence passes: source-only classification establishes executable access, package ownership, and receiver origin before detector reports are consulted; source/IR adjudication resolves ambiguous aliases and lowered receiver forms. Every accepted or rejected candidate retains its exact location, evidence excerpt, and decision reason. The resulting 186-item oracle contains 90 sensitive occurrences in 16 projects, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} contains 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
+\emph{ArkSourceFirst60} fixes ten projects from each of six project-scale/configured-import strata before detector execution. An AST pass enumerates candidates under the fixed rule/import universe but assigns no labels. Reviewers first decide executable access, package ownership, and receiver origin from source, then consult IR only for aliases or lowered receiver forms. The resulting exact-location oracle contains 90 sensitive occurrences, 96 same-name or owner-incompatible negatives, and 44 confirmed-zero projects. \emph{ArkIdentityBench} adds 32 positive and 32 matched-negative cases spanning imports, typed and constructed receivers, factories, properties, compound namespaces, and package migration.
 
 The \emph{Top-120 stress audit} complements the source-first oracle by concentrating projects with high API volume. Its 1,533 reviewed location rows canonicalize to 666 project--API keys with executable source evidence. \mytool preserves all 666 confirmed keys, so this experiment measures confirmed-key coverage under a high-volume workload.
 
@@ -23,7 +23,7 @@ The \emph{Top-120 stress audit} complements the source-first oracle by concentra
 \emph{HapBench} comprises all 67 executable cases released with HapFlow: 53 positive and 14 negative. We preserve its published case oracle and additionally audit every canonical source--sink endpoint pair reported by \mytool. \emph{ArkAsyncBench} contains 48 source-first cases: 24 positives and 24 matched negatives over callback (T1), Promise-\texttt{then} (T4), and \texttt{await} (T5) carriers. Positives pass the configured carrier, a carrier property, or an alias to a sink; negatives pass an error, constant, rejection value, ignored result, or independent same-named local. \emph{ArkPromiseBench} applies ten source-to-source boundary operators to 24 cases (seven positive and 17 negative): owner substitution, handler-position exchange, Promise alias mutation, payload-to-constant return replacement, rejection-operator insertion, chain extension and flattening, and callback registration without a trigger. Each mutant changes one semantic obligation while preserving the surrounding source and sink context.
 
 \textbf{Real-project path audit.}
-A deterministic diversity sampler constructs a 120-path audit set from 47 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 28 supplementary, and 28 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI path stratum. Structured source and IR review judges source identity, sink identity, explicit value dependence, reachability, and provenance; a path is correct only when all five dimensions hold. Each decision record retains both endpoints, the complete statement path, the relevant source/IR excerpts, and a reason code. Final-result rebinding preserves 118 exact paths; two deterministic replacements are reviewed from source without inherited labels, and two exact paths with strengthened provenance are rechecked against their Promise declarations.
+A deterministic diversity sampler selects 120 paths from 47 projects: 90 privacy-data and 30 framework-input paths; 64 IFDS, 28 supplementary, and 28 dual-provenance paths; and 23 short, 70 medium, and 27 long paths. The sample includes every network and UI stratum. Source and IR review checks source identity, sink identity, explicit value dependence, reachability, and provenance. A path is accepted only when all five dimensions hold, and each decision retains its endpoints, complete statement path, supporting excerpts, and reason code.
 
 \textbf{Large corpus.}
 The corpus contains \CorpusProjects{} ArkTS projects analyzed under a common implementation, API-20 SDK, rule set, and resource policy. Its applications, libraries, and capability demonstrations expose diverse project roles and API usage patterns. Each project contributes one validated result; aggregation excludes incomplete analyses, unresolved endpoints, and invalid provenance.
@@ -31,7 +31,7 @@ The corpus contains \CorpusProjects{} ArkTS projects analyzed under a common imp
 \textbf{Metrics.}
 Identity occurrences match on project, normalized file, line/column, canonical package/namespace/member, and access kind. Flow benchmarks report precision, recall, specificity, balanced accuracy, F1, and MCC. Exact two-sided McNemar tests compare paired predictions; Wilson intervals describe HapBench rates and corpus proportions where sampling uncertainty is meaningful. Deterministic source-first, stress, mutation, and path audits report their exact reviewed ratios rather than population confidence intervals. Corpus statistics quantify project prevalence, concentration (Gini and HHI), Spearman associations, source scope, clone sensitivity, and runtime; the preceding oracles provide the accuracy evidence.
 
-\subsection{RQ1: Privacy-API Identity}
+\subsection{RQ1: Source-Binding Accuracy}
 \label{subsec:api_detection_accuracy}
 
 \textbf{Source-first accuracy.}
@@ -67,10 +67,10 @@ Factory-aware receiver & 28 & 32 & 0 & 4 & 100.00\% & 87.50\% & 100.00\% & 93.33
 \noindent\textbf{Answer to RQ1.}
 On a source-first real-project oracle defined over the fixed rule and static-candidate universe, \mytool resolves all 90 sensitive occurrences and rejects all 96 candidate collisions. The controlled benchmark attributes this result to the composition of package, receiver, factory, property, and IR evidence; the stress audit adds 102 confirmed member/receiver keys and shows that the evaluated detector configuration preserves all 666 previously confirmed high-volume keys.
 
-\subsection{RQ2: End-to-End Flow Classification}
+\subsection{RQ2: End-to-End Comparison with HapFlow}
 \label{subsec:hapbench}
 
-Table~\ref{tab:hapbench_main} reports the complete HapBench reproduction. \mytool classifies 64/67 cases correctly (50 TP, 14 TN), while HapFlow classifies 61/67 (51 TP, 10 TN). \mytool rejects every negative case and retains 50/53 positives, yielding 100\% precision and specificity, 97.09\% F1, 97.17\% balanced accuracy, and 0.881 MCC.
+Table~\ref{tab:hapbench_main} reports all 67 HapBench cases. \mytool classifies 64 correctly (50 TP, 14 TN), while HapFlow classifies 61 (51 TP, 10 TN). \mytool rejects every negative case and retains 50/53 positives, yielding 100\% precision and specificity, 97.09\% F1, 97.17\% balanced accuracy, and 0.881 MCC. Relative to HapFlow, specificity increases by 28.57 percentage points, F1 by 2.65 points, and balanced accuracy by 13.34 points.
 
 \begin{table}[tbp]
 \centering
@@ -88,7 +88,7 @@ HapFlow~\cite{hapflow} & 51 & 10 & 4 & 2 & 92.73\% & 96.23\% & 71.43\% & 94.44\%
 \end{tabular*}
 \end{table}
 
-The tools disagree on nine cases: \mytool alone is correct on six and HapFlow alone on three (exact paired $p=0.508$). The observed advantage is concentrated in negative-case discrimination. Figure~\ref{fig:eval_hapbench}(a) shows Wilson uncertainty, and panel (b) localizes every error across seven categories and five configurations. \mytool reaches 100\% F1 in six categories and 85.71\% in lifecycle cases.
+The tools disagree on nine cases: \mytool alone is correct on six and HapFlow alone on three (exact paired $p=0.508$). The improvement comes from negative-case discrimination rather than broader source acceptance. Figure~\ref{fig:eval_hapbench}(a) shows Wilson uncertainty, and panel (b) localizes every error across seven categories and five configurations. \mytool reaches 100\% F1 in six categories and 85.71\% in lifecycle cases.
 
 The endpoint-pair audit tests precision inside positive cases. The 52 raw paths canonicalize to 51 source--sink pairs: 50 match the benchmark behavior, while one additional virtual target appears inside a positive case. With three missing positive endpoints, pair-level TP/FP/FN is 50/1/3, giving 98.04\% precision, 94.34\% recall, and 96.15\% F1.
 
@@ -100,13 +100,15 @@ The endpoint-pair audit tests precision inside positive cases. The 52 raw paths 
 \Description{Three panels show Wilson intervals, category by configuration error rates, and metric changes under IR, receiver, and lifecycle ablations.}
 \end{figure}
 
-\textbf{Where the classifications differ.}
-ArkTS-specific IR recovery resolves the anonymous initializer and exceptional successor missed by HapFlow, while constant-index access paths, receiver-refined dispatch, and bounded lifecycle transitions remove its array, virtual-target, and cross-event false positives. The three published positives not emitted by \mytool require, respectively, an implicit parent lifecycle execution, state continuity across framework-created extension instances, or a later ability creation after a click callback. Appendix~\ref{subsec:app_oracle_sensitivity} evaluates this event-order distinction without changing the primary published oracle.
+\textbf{Why the classifications differ.}
+The disagreements follow directly from the analyses' program models. In \texttt{AnonymousClass2}, the source lies in an anonymous instance initializer; retaining the lowered initializer makes the path visible. In \texttt{Exceptions4}, an exceptional successor carries the value into the handler. Conversely, \texttt{ArrayIndexNoLeak} requires distinct constant indices, and \texttt{VirtualDispatch2/3} require the receiver-refined target set to remove infeasible callees. HapFlow misses the first two relations and retains the latter three, accounting for five of the six cases classified correctly only by \mytool. Bounded lifecycle ordering also rejects \texttt{UnreachableFlow}, where cycling from a later lifecycle phase creates a spurious path back to an earlier event.
+
+The three published positives not emitted by \mytool depend on stronger event assumptions: implicit execution of an overridden parent method, state shared across framework-created extension instances, or a new ability creation after a click callback. Appendix~\ref{subsec:app_oracle_sensitivity} evaluates these assumptions under a stricter executed-order contract while preserving the published oracle as the primary result.
 
 \noindent\textbf{Answer to RQ2.}
 \mytool combines 100\% case-level precision and specificity with 97.09\% F1 on the full executable suite. Its principal empirical advantage over HapFlow is precise rejection of negative cases; the endpoint audit retains 98.04\% precision at the finer source--sink-pair unit.
 
-\subsection{RQ3: Mechanism and Path Quality}
+\subsection{RQ3: Mechanism Attribution and Path Validity}
 \label{subsec:component_ablation}
 
 \textbf{IR, receiver, and lifecycle mechanisms.}

@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{68}
+\begin{thebibliography}{45}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -36,17 +36,6 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
-\bibitem[Aafer et~al\mbox{.}(2013)]%
-        {droidapiminer}
-\bibfield{author}{\bibinfo{person}{Yousra Aafer}, \bibinfo{person}{Wenliang
-  Du}, {and} \bibinfo{person}{Heng Yin}.} \bibinfo{year}{2013}\natexlab{}.
-\newblock \showarticletitle{{DroidAPIMiner}: Mining API-Level Features for
-  Robust Malware Detection in {Android}}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the International Conference on
-  Security and Privacy in Communication Systems}}. \bibinfo{pages}{86--103}.
-\newblock
-
-
 \bibitem[Alimadadi et~al\mbox{.}(2018)]%
         {promisekeeper}
 \bibfield{author}{\bibinfo{person}{Saba Alimadadi}, \bibinfo{person}{Di Zhong},
@@ -62,20 +51,6 @@
 \href{https://doi.org/10.1145/3276532}{doi:\nolinkurl{10.1145/3276532}}
 
 
-\bibitem[Allix et~al\mbox{.}(2016)]%
-        {Androzoo}
-\bibfield{author}{\bibinfo{person}{Kevin Allix},
-  \bibinfo{person}{Tegawend{\'e}~F. Bissyand{\'e}}, \bibinfo{person}{Jacques
-  Klein}, {and} \bibinfo{person}{Yves Le~Traon}.}
-  \bibinfo{year}{2016}\natexlab{}.
-\newblock \showarticletitle{AndroZoo: Collecting Millions of Android Apps for
-  the Research Community}. In \bibinfo{booktitle}{\emph{Proceedings of the 13th
-  International Conference on Mining Software Repositories (ICMSR)}}.
-  \bibinfo{publisher}{ACM}, \bibinfo{address}{New York, NY, USA},
-  \bibinfo{pages}{468--471}.
-\newblock
-
-
 \bibitem[Andow et~al\mbox{.}(2020)]%
         {policheck}
 \bibfield{author}{\bibinfo{person}{Benjamin Andow},
@@ -88,18 +63,6 @@
   \bibinfo{booktitle}{\emph{29th {USENIX} Security Symposium (USENIX
   Security)}}. \bibinfo{publisher}{{USENIX} Association},
   \bibinfo{address}{Online}, \bibinfo{pages}{985--1002}.
-\newblock
-
-
-\bibitem[Arp et~al\mbox{.}(2014)]%
-        {drebin}
-\bibfield{author}{\bibinfo{person}{Daniel Arp}, \bibinfo{person}{Michael
-  Spreitzenbarth}, \bibinfo{person}{Malte Hubner}, \bibinfo{person}{Hugo
-  Gascon}, \bibinfo{person}{Konrad Rieck}, {and} \bibinfo{person}{CERT
-  Siemens}.} \bibinfo{year}{2014}\natexlab{}.
-\newblock \showarticletitle{{DREBIN}: Effective and Explainable Detection of
-  {Android} Malware in Your Pocket}. In \bibinfo{booktitle}{\emph{Proceedings
-  of the Network and Distributed System Security Symposium}}.
 \newblock
 
 
@@ -153,17 +116,6 @@
   Inter-App Permission Leakage}. In \bibinfo{booktitle}{\emph{Proceedings of
   the IEEE/ACM International Conference on Software Engineering}}.
   \bibinfo{pages}{866--877}.
-\newblock
-
-
-\bibitem[Bodden(2012)]%
-        {heros}
-\bibfield{author}{\bibinfo{person}{Eric Bodden}.}
-  \bibinfo{year}{2012}\natexlab{}.
-\newblock \showarticletitle{Inter-procedural Data-flow Analysis with
-  {IFDS}/{IDE} and {Soot}}. In \bibinfo{booktitle}{\emph{Proceedings of the ACM
-  SIGPLAN International Workshop on State of the Art in Java Program
-  Analysis}}. \bibinfo{pages}{3--8}.
 \newblock
 
 
@@ -248,11 +200,11 @@
 \href{https://doi.org/10.1145/3793863}{doi:\nolinkurl{10.1145/3793863}}
 
 
-\bibitem[Chen et~al\mbox{.}(2025d)]%
+\bibitem[Chen et~al\mbox{.}(2025c)]%
         {pacdroid}
 \bibfield{author}{\bibinfo{person}{Menglong Chen}, \bibinfo{person}{Tian Tan},
   \bibinfo{person}{Minxue Pan}, {and} \bibinfo{person}{Yue Li}.}
-  \bibinfo{year}{2025}\natexlab{d}.
+  \bibinfo{year}{2025}\natexlab{c}.
 \newblock \showarticletitle{{PacDroid}: A Pointer-Analysis-Centric Framework
   for Security Vulnerabilities in Android Apps}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 47th IEEE/ACM International
@@ -262,24 +214,10 @@
 
 
 \bibitem[Chen et~al\mbox{.}(2025b)]%
-        {hmtest}
-\bibfield{author}{\bibinfo{person}{Yige Chen}, \bibinfo{person}{Yujia Fan},
-  \bibinfo{person}{Siyi Wang}, \bibinfo{person}{Yi Tao}, {and}
-  \bibinfo{person}{Yepang Liu}.} \bibinfo{year}{2025}\natexlab{b}.
-\newblock \showarticletitle{{HmTest}: Automated Testing of {HarmonyOS} Apps via
-  Model-Driven Navigation and Reinforcement Learning}.
-\newblock \bibinfo{journal}{\emph{Journal of Computer Science and Technology}}
-  \bibinfo{volume}{40}, \bibinfo{number}{4} (\bibinfo{year}{2025}),
-  \bibinfo{pages}{1006--1021}.
-\newblock
-\href{https://doi.org/10.1007/s11390-025-5142-4}{doi:\nolinkurl{10.1007/s11390-025-5142-4}}
-
-
-\bibitem[Chen et~al\mbox{.}(2025c)]%
         {harmobridge}
 \bibfield{author}{\bibinfo{person}{Zhen Chen}, \bibinfo{person}{Yi Li},
   \bibinfo{person}{Teng Wang}, {et~al\mbox{.}}}
-  \bibinfo{year}{2025}\natexlab{c}.
+  \bibinfo{year}{2025}\natexlab{b}.
 \newblock \showarticletitle{HarmoBridge: Static Analysis of Cross-Language Data
   Flows in HarmonyOS Applications}. In \bibinfo{booktitle}{\emph{Proceedings of
   the 40th IEEE/ACM International Conference on Automated Software Engineering
@@ -299,21 +237,6 @@
 \newblock
 
 
-\bibitem[Enck et~al\mbox{.}(2014)]%
-        {traintdroid}
-\bibfield{author}{\bibinfo{person}{William Enck}, \bibinfo{person}{Peter
-  Gilbert}, \bibinfo{person}{Seungyeop Han}, \bibinfo{person}{Vasant
-  Tendulkar}, \bibinfo{person}{Byung-Gon Chun}, \bibinfo{person}{Landon~P.
-  Cox}, \bibinfo{person}{Jaeyeon Jung}, \bibinfo{person}{Patrick McDaniel},
-  {and} \bibinfo{person}{Anmol~N. Sheth}.} \bibinfo{year}{2014}\natexlab{}.
-\newblock \showarticletitle{{TaintDroid}: An Information-Flow Tracking System
-  for Realtime Privacy Monitoring on Smartphones}.
-\newblock \bibinfo{journal}{\emph{ACM Trans. Comput. Syst.}}
-  \bibinfo{volume}{32}, \bibinfo{number}{2} (\bibinfo{year}{2014}),
-  \bibinfo{pages}{5:1--5:29}.
-\newblock
-
-
 \bibitem[Felt et~al\mbox{.}(2011)]%
         {stowaway}
 \bibfield{author}{\bibinfo{person}{Adrienne~Porter Felt},
@@ -323,54 +246,6 @@
 \newblock \showarticletitle{{Android} Permissions Demystified}. In
   \bibinfo{booktitle}{\emph{Proceedings of the ACM Conference on Computer and
   Communications Security}}. \bibinfo{pages}{627--638}.
-\newblock
-
-
-\bibitem[Feng et~al\mbox{.}(2014)]%
-        {apposcopy}
-\bibfield{author}{\bibinfo{person}{Yu Feng}, \bibinfo{person}{Saswat Anand},
-  \bibinfo{person}{Isil Dillig}, {and} \bibinfo{person}{Alex Aiken}.}
-  \bibinfo{year}{2014}\natexlab{}.
-\newblock \showarticletitle{{Apposcopy}: Semantics-Based Detection of {Android}
-  Malware through Static Analysis}. In \bibinfo{booktitle}{\emph{Proceedings of
-  the ACM SIGSOFT International Symposium on Foundations of Software
-  Engineering}}. \bibinfo{pages}{576--587}.
-\newblock
-
-
-\bibitem[Fink et~al\mbox{.}(2008)]%
-        {wala}
-\bibfield{author}{\bibinfo{person}{Stephen~J. Fink}, \bibinfo{person}{Julian
-  Dolby}, {and} \bibinfo{person}{Eran Yahav}.} \bibinfo{year}{2008}\natexlab{}.
-\newblock \showarticletitle{Effective Typestate Verification in the Presence of
-  Aliasing}.
-\newblock \bibinfo{journal}{\emph{ACM Transactions on Software Engineering and
-  Methodology}} \bibinfo{volume}{17}, \bibinfo{number}{2}, Article
-  \bibinfo{articleno}{9} (\bibinfo{year}{2008}).
-\newblock
-
-
-\bibitem[Fratantonio et~al\mbox{.}(2016)]%
-        {triggerscope}
-\bibfield{author}{\bibinfo{person}{Yanick Fratantonio},
-  \bibinfo{person}{Antonio Bianchi}, \bibinfo{person}{William Robertson},
-  \bibinfo{person}{Dhilung Kirat}, \bibinfo{person}{Christopher Kruegel}, {and}
-  \bibinfo{person}{Giovanni Vigna}.} \bibinfo{year}{2016}\natexlab{}.
-\newblock \showarticletitle{{TriggerScope}: Towards Detecting Logic Bombs in
-  {Android} Applications}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE
-  Symposium on Security and Privacy}}. \bibinfo{pages}{377--396}.
-\newblock
-
-
-\bibitem[Gibler et~al\mbox{.}(2012)]%
-        {androidleaks}
-\bibfield{author}{\bibinfo{person}{Clint Gibler}, \bibinfo{person}{Jonathan
-  Crussell}, \bibinfo{person}{Jeremy Erickson}, {and} \bibinfo{person}{Hao
-  Chen}.} \bibinfo{year}{2012}\natexlab{}.
-\newblock \showarticletitle{{AndroidLeaks}: Automatically Detecting Potential
-  Privacy Leaks in {Android} Applications on a Large Scale}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 5th International Conference on
-  Trust and Trustworthy Computing}}. \bibinfo{pages}{291--307}.
 \newblock
 
 
@@ -470,34 +345,6 @@
 \href{https://doi.org/10.1145/3720538}{doi:\nolinkurl{10.1145/3720538}}
 
 
-\bibitem[Lin et~al\mbox{.}(2025)]%
-        {haprepair}
-\bibfield{author}{\bibinfo{person}{Zhihao Lin}, \bibinfo{person}{Mingyi Zhou},
-  \bibinfo{person}{Wei Ma}, \bibinfo{person}{Chi Chen}, \bibinfo{person}{Yun
-  Yang}, \bibinfo{person}{Jun Wang}, \bibinfo{person}{Chunming Hu}, {and}
-  \bibinfo{person}{Li Li}.} \bibinfo{year}{2025}\natexlab{}.
-\newblock \showarticletitle{{HapRepair}: Learn to Repair {OpenHarmony} Apps}.
-  In \bibinfo{booktitle}{\emph{Proceedings of the 33rd ACM International
-  Conference on the Foundations of Software Engineering, Industry Track}}.
-  \bibinfo{pages}{319--330}.
-\newblock
-\href{https://doi.org/10.1145/3696630.3728556}{doi:\nolinkurl{10.1145/3696630.3728556}}
-
-
-\bibitem[Liu et~al\mbox{.}(2025)]%
-        {haptest}
-\bibfield{author}{\bibinfo{person}{Farong Liu}, \bibinfo{person}{Mingyi Zhou},
-  \bibinfo{person}{Yakun Zhang}, \bibinfo{person}{Ting Su}, \bibinfo{person}{Bo
-  Sun}, \bibinfo{person}{Jacques Klein}, \bibinfo{person}{Xiang Gao}, {and}
-  \bibinfo{person}{Li Li}.} \bibinfo{year}{2025}\natexlab{}.
-\newblock \showarticletitle{{HapTest}: The Dynamic Analysis Framework for
-  {OpenHarmony}}. In \bibinfo{booktitle}{\emph{Proceedings of the 33rd ACM
-  International Conference on the Foundations of Software Engineering,
-  Companion Proceedings}}. \bibinfo{pages}{1--10}.
-\newblock
-\href{https://doi.org/10.1145/3696630.3728565}{doi:\nolinkurl{10.1145/3696630.3728565}}
-
-
 \bibitem[Lu et~al\mbox{.}(2012)]%
         {chex}
 \bibfield{author}{\bibinfo{person}{Long Lu}, \bibinfo{person}{Zhichun Li},
@@ -524,6 +371,22 @@
   \bibinfo{pages}{16}.
 \newblock
 \href{https://doi.org/10.1007/s10664-021-10013-5}{doi:\nolinkurl{10.1007/s10664-021-10013-5}}
+
+
+\bibitem[Mei et~al\mbox{.}(2026)]%
+        {hscope}
+\bibfield{author}{\bibinfo{person}{Aohan Mei}, \bibinfo{person}{Guangliang
+  Yang}, \bibinfo{person}{Xinming Guo}, \bibinfo{person}{Yi Wang},
+  \bibinfo{person}{Fuan Gui}, {and} \bibinfo{person}{Min Yang}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Fine-Grained Privacy Leakage Detection in
+  {OpenHarmony} Apps}. In \bibinfo{booktitle}{\emph{Proceedings of the ACM on
+  Software Engineering, ISSTA}}.
+\newblock
+\urldef\tempurl%
+\url{https://conf.researchr.org/details/issta-2026/issta-2026-research-papers/205/Fine-Grained-Privacy-Leakage-Detection-in-OpenHarmony-Apps}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Meng et~al\mbox{.}(2023)]%
@@ -561,22 +424,6 @@
   {Android} Inter-Component Communication Analysis}. In
   \bibinfo{booktitle}{\emph{Proceedings of the 37th International Conference on
   Software Engineering}}. \bibinfo{pages}{77--88}.
-\newblock
-
-
-\bibitem[Onwuzurike et~al\mbox{.}(2019)]%
-        {onw19}
-\bibfield{author}{\bibinfo{person}{Lucky Onwuzurike}, \bibinfo{person}{Enrico
-  Mariconti}, \bibinfo{person}{Panagiotis Andriotis},
-  \bibinfo{person}{Emiliano~De Cristofaro}, \bibinfo{person}{Gordon Ross},
-  {and} \bibinfo{person}{Gianluca Stringhini}.}
-  \bibinfo{year}{2019}\natexlab{}.
-\newblock \showarticletitle{{MaMaDroid}: Detecting Android Malware by Building
-  Markov Chains of Behavioral Models (Extended Version)}.
-\newblock \bibinfo{journal}{\emph{ACM Transactions on Privacy and Security
-  (TOPS)}} \bibinfo{volume}{22}, \bibinfo{number}{2}, Article
-  \bibinfo{articleno}{10} (\bibinfo{year}{2019}),
-  \bibinfo{numpages}{10:1--10:29}~pages.
 \newblock
 
 
@@ -632,18 +479,6 @@
 \newblock
 
 
-\bibitem[Rasthofer et~al\mbox{.}(2016)]%
-        {harvester}
-\bibfield{author}{\bibinfo{person}{Siegfried Rasthofer},
-  \bibinfo{person}{Steven Arzt}, \bibinfo{person}{Enrico Lovat}, {and}
-  \bibinfo{person}{Eric Bodden}.} \bibinfo{year}{2016}\natexlab{}.
-\newblock \showarticletitle{{HARVESTER}: Automatic Generation of Entry Points
-  for Dynamic Analysis of {Android} Applications}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the Network and Distributed System
-  Security Symposium}}.
-\newblock
-
-
 \bibitem[Ravitch et~al\mbox{.}(2014)]%
         {fuse}
 \bibfield{author}{\bibinfo{person}{Talia Ravitch}, \bibinfo{person}{Eric
@@ -693,44 +528,6 @@
 \newblock
 
 
-\bibitem[Tam et~al\mbox{.}(2015)]%
-        {copperdroid}
-\bibfield{author}{\bibinfo{person}{Kimberly Tam}, \bibinfo{person}{Ali
-  Feizollah}, \bibinfo{person}{Nor~Badrul Anuar}, \bibinfo{person}{Rosli
-  Salleh}, {and} \bibinfo{person}{Lorenzo Cavallaro}.}
-  \bibinfo{year}{2015}\natexlab{}.
-\newblock \showarticletitle{{CopperDroid}: Automatic Reconstruction of
-  {Android} Malware Behaviors}. In \bibinfo{booktitle}{\emph{Proceedings of the
-  Network and Distributed System Security Symposium}}.
-\newblock
-
-
-\bibitem[Vall{\'e}e-Rai et~al\mbox{.}(2010)]%
-        {soot}
-\bibfield{author}{\bibinfo{person}{Raja Vall{\'e}e-Rai}, \bibinfo{person}{Phong
-  Co}, \bibinfo{person}{Etienne Gagnon}, \bibinfo{person}{Laurie Hendren},
-  \bibinfo{person}{Patrick Lam}, {and} \bibinfo{person}{Vijay Sundaresan}.}
-  \bibinfo{year}{2010}\natexlab{}.
-\newblock \showarticletitle{Soot: A Java Bytecode Optimization Framework}. In
-  \bibinfo{booktitle}{\emph{CASCON First Decade High Impact Papers}}.
-  \bibinfo{publisher}{IBM Corp.}, \bibinfo{pages}{214--224}.
-\newblock
-
-
-\bibitem[Wang et~al\mbox{.}(2023)]%
-        {taintmini}
-\bibfield{author}{\bibinfo{person}{Chao Wang}, \bibinfo{person}{Ronny Ko},
-  \bibinfo{person}{Yue Zhang}, \bibinfo{person}{Yuqing Yang}, {and}
-  \bibinfo{person}{Zhiqiang Lin}.} \bibinfo{year}{2023}\natexlab{}.
-\newblock \showarticletitle{{TaintMini}: Detecting Flow of Sensitive Data in
-  Mini-Programs with Static Taint Analysis}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 45th International Conference on
-  Software Engineering (ICSE)}}. \bibinfo{publisher}{IEEE},
-  \bibinfo{pages}{932--944}.
-\newblock
-\href{https://doi.org/10.1109/ICSE48619.2023.00086}{doi:\nolinkurl{10.1109/ICSE48619.2023.00086}}
-
-
 \bibitem[Wang et~al\mbox{.}(2025)]%
         {harmonyflow}
 \bibfield{author}{\bibinfo{person}{Yue Wang}, \bibinfo{person}{Sen Chen},
@@ -758,17 +555,6 @@
 \newblock
 
 
-\bibitem[Wong and Lie(2016)]%
-        {intellidroid}
-\bibfield{author}{\bibinfo{person}{Michelle~Y. Wong} {and}
-  \bibinfo{person}{David Lie}.} \bibinfo{year}{2016}\natexlab{}.
-\newblock \showarticletitle{{IntelliDroid}: A Targeted Input Generator for the
-  Dynamic Analysis of {Android} Malware}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the Network and Distributed System
-  Security Symposium}}.
-\newblock
-
-
 \bibitem[Xia et~al\mbox{.}(2015)]%
         {appaudit}
 \bibfield{author}{\bibinfo{person}{Meng Xia}, \bibinfo{person}{Lu Gong},
@@ -777,19 +563,6 @@
 \newblock \showarticletitle{Effective Real-time {Android} Application
   Auditing}. In \bibinfo{booktitle}{\emph{Proceedings of the IEEE Symposium on
   Security and Privacy}}. \bibinfo{pages}{899--914}.
-\newblock
-
-
-\bibitem[Yan and Yin(2012)]%
-        {yan12}
-\bibfield{author}{\bibinfo{person}{Lok~Kwong Yan} {and} \bibinfo{person}{Heng
-  Yin}.} \bibinfo{year}{2012}\natexlab{}.
-\newblock \showarticletitle{{DroidScope}: seamlessly reconstructing the OS and
-  Dalvik semantic views for dynamic Android malware analysis}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 21st USENIX Conference on
-  Security Symposium (USENIX Security)}} (Bellevue, WA).
-  \bibinfo{publisher}{USENIX Association}, \bibinfo{address}{USA},
-  \bibinfo{pages}{29}.
 \newblock
 
 
@@ -816,42 +589,19 @@
 \newblock
 
 
-\bibitem[Yang et~al\mbox{.}(2015)]%
-        {appcontext}
-\bibfield{author}{\bibinfo{person}{Wei Yang}, \bibinfo{person}{Xusheng Xiao},
-  \bibinfo{person}{Benjamin Andow}, \bibinfo{person}{Sihan Li},
-  \bibinfo{person}{Tao Xie}, {and} \bibinfo{person}{William Enck}.}
-  \bibinfo{year}{2015}\natexlab{}.
-\newblock \showarticletitle{{AppContext}: Differentiating Malicious and Benign
-  Mobile App Behaviors Using Context}. In \bibinfo{booktitle}{\emph{Proceedings
-  of the International Conference on Software Engineering}}.
-  \bibinfo{pages}{303--313}.
-\newblock
-
-
-\bibitem[Yang et~al\mbox{.}(2026)]%
+\bibitem[Yang et~al\mbox{.}(2025)]%
         {arktsPointer}
 \bibfield{author}{\bibinfo{person}{Yizhuo Yang}, \bibinfo{person}{Lingyun Xu},
   \bibinfo{person}{Mingyi Zhou}, {and} \bibinfo{person}{Li Li}.}
-  \bibinfo{year}{2026}\natexlab{}.
-\newblock \bibinfo{title}{Context-Sensitive Pointer Analysis for {ArkTS}}.
-\newblock \bibinfo{howpublished}{arXiv preprint}.
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Context-Sensitive Pointer Analysis for {ArkTS}}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 40th IEEE/ACM International
+  Conference on Automated Software Engineering, Industry Showcase}}.
 \newblock
 \urldef\tempurl%
-\url{https://arxiv.org/abs/2602.00457}
+\url{https://conf.researchr.org/details/ase-2025/ase-2025-industry-showcase/14/Context-Sensitive-Pointer-Analysis-for-ArkTS}
 \showURL{%
 \tempurl}
-
-
-\bibitem[Yang and Yang(2012)]%
-        {leakminer}
-\bibfield{author}{\bibinfo{person}{Zhemin Yang} {and} \bibinfo{person}{Min
-  Yang}.} \bibinfo{year}{2012}\natexlab{}.
-\newblock \showarticletitle{{LeakMiner}: Detect Information Leakage on
-  {Android} with Static Taint Analysis}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the 3rd World Congress on Software
-  Engineering}}. \bibinfo{pages}{101--104}.
-\newblock
 
 
 \bibitem[Yang et~al\mbox{.}(2013)]%
@@ -878,42 +628,6 @@
 \newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering
   (TSE)}} \bibinfo{volume}{47}, \bibinfo{number}{2} (\bibinfo{year}{2021}),
   \bibinfo{pages}{221--242}.
-\newblock
-
-
-\bibitem[Zhang et~al\mbox{.}(2014)]%
-        {droidsift}
-\bibfield{author}{\bibinfo{person}{Mu Zhang}, \bibinfo{person}{Yue Duan},
-  \bibinfo{person}{Heng Yin}, {and} \bibinfo{person}{Zhiruo Zhao}.}
-  \bibinfo{year}{2014}\natexlab{}.
-\newblock \showarticletitle{Semantics-Aware {Android} Malware Classification
-  Using Weighted Contextual API Dependency Graphs}. In
-  \bibinfo{booktitle}{\emph{Proceedings of the ACM Conference on Computer and
-  Communications Security}}. \bibinfo{pages}{1105--1116}.
-\newblock
-
-
-\bibitem[Zhou et~al\mbox{.}(2012b)]%
-        {droidmoss}
-\bibfield{author}{\bibinfo{person}{Wu Zhou}, \bibinfo{person}{Yajin Zhou},
-  \bibinfo{person}{Xuxian Jiang}, {and} \bibinfo{person}{Peng Ning}.}
-  \bibinfo{year}{2012}\natexlab{b}.
-\newblock \showarticletitle{Detecting Repackaged Smartphone Applications in
-  Third-party {Android} Marketplaces}. In \bibinfo{booktitle}{\emph{Proceedings
-  of the ACM Conference on Data and Application Security and Privacy}}.
-  \bibinfo{pages}{317--326}.
-\newblock
-
-
-\bibitem[Zhou et~al\mbox{.}(2012a)]%
-        {droidranger}
-\bibfield{author}{\bibinfo{person}{Yajin Zhou}, \bibinfo{person}{Zhi Wang},
-  \bibinfo{person}{Wu Zhou}, {and} \bibinfo{person}{Xuxian Jiang}.}
-  \bibinfo{year}{2012}\natexlab{a}.
-\newblock \showarticletitle{{DroidRanger}: Systematic Characterization and
-  Detection of Malicious Applications in Official and Alternative {Android}
-  Markets}. In \bibinfo{booktitle}{\emph{Proceedings of the Network and
-  Distributed System Security Symposium}}.
 \newblock
 
 
