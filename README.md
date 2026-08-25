@@ -34,6 +34,12 @@ node dist\arkprism.js --help
 
 Use the compiled entry `dist/arkprism.js` for delivery runs.
 
+## Windows long paths
+
+ArkPrism automatically converts project, SDK, configuration, and output paths to the Windows extended-length namespace before filesystem access. Source discovery, ArkTS parsing, and report generation therefore do not use the legacy 260-character limit. JSON and DOT artifacts retain ordinary paths without the `\\?\` prefix.
+
+The service that receives or extracts a project must preserve the files before ArkPrism starts. In particular, ZIP extraction must use long-path-aware filesystem operations; ArkPrism cannot analyze a source file that an upstream extractor silently omitted. No scan-depth limit or source-file skipping is used as a path-length fallback.
+
 ## Analyze one project
 
 ```powershell

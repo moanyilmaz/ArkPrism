@@ -7,6 +7,7 @@ import { Scene, SceneConfig, ArkFile } from "./arkanalyzer";
 import { PrivacyPackageInfo, ImportBasicInfo } from "./prototypes";
 import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
+import { toDisplayPath } from './pathUtils';
 
 /**
  * Build a Scene from a JSON config file (matches privacyanalyzer's approach).
@@ -85,7 +86,7 @@ export function writeJsonOutput(data: object, outputDir: string, filename: strin
     }
     const outputFilePath = path.join(outputDir, filename);
     writeFileSync(outputFilePath, JSON.stringify(data, null, 2), 'utf8');
-    console.log(`[OUTPUT] Report written to: ${outputFilePath}`);
+    console.log(`[OUTPUT] Report written to: ${toDisplayPath(outputFilePath)}`);
 }
 
 /**

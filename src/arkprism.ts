@@ -35,6 +35,7 @@ import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
 import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
+import { resolveAnalysisPath, toDisplayPath, toFileSystemPath } from './pathUtils';
 
 const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
 const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
@@ -91,7 +92,12 @@ interface AnalysisOptions {
     callbackMaxPathLen?: number;
 }
 
-function analyzeProject(projectDir: string, projectName: string, opts: AnalysisOptions): ArkPrismOutput {
+function analyzeProject(
+    projectDir: string,
+    projectName: string,
+    opts: AnalysisOptions,
+    reportProjectDir: string = toDisplayPath(projectDir)
+): ArkPrismOutput {
     console.log(`[SCENE] Building ArkAnalyzer Scene for ${projectName}...`);
     let sceneConfig = new SceneConfig();
     sceneConfig.buildFromProjectDir(projectDir);
@@ -239,7 +245,7 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
     const taintFlowLinks = linkTaintFlowsToPrivacyUsages(allApiResults, taintFlows);
     let output: ArkPrismOutput = {
         projectName,
-        projectDirectory: projectDir,
+        projectDirectory: reportProjectDir,
         analysisTimestamp: getTimestamp(),
         privacyApiUsages: allApiResults,
         callChains: callChainResults,
@@ -271,7 +277,7 @@ function analyzeProject(projectDir: string, projectName: string, opts: AnalysisO
             if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
             let dotPath = path.join(outDir, `${projectName}-privacy-graph.dot`);
             writeFileSync(dotPath, dotContent, 'utf8');
-            console.log(`[DOT] Privacy graph written to: ${dotPath}`);
+            console.log(`[DOT] Privacy graph written to: ${toDisplayPath(dotPath)}`);
         } catch (e) {
             console.log(`[WARN] DOT generation failed: ${e}`);
         }
@@ -413,16 +419,21 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
 // ---- Run modes ----
 
 function runSingle(projectDir: string, opts: AnalysisOptions): void {
-    projectDir = path.resolve(projectDir);
-    let projectName = path.basename(projectDir);
+    const projectPath = resolveAnalysisPath(projectDir);
+    projectDir = projectPath.fileSystemPath;
+    let projectName = path.basename(projectPath.displayPath);
+
+    if (!existsSync(projectDir) || !statSync(projectDir).isDirectory()) {
+        throw new Error(`[PROJECT_PATH_INVALID] Project directory does not exist: ${projectPath.displayPath}`);
+    }
 
     console.log("=".repeat(70));
     console.log("  ArkPrism - ArkTS Privacy-sensitive API Recognition and Information-flow Subgraph Mapping");
     console.log("=".repeat(70));
     console.log(`[PROJECT] ${projectName}`);
-    console.log(`[DIR]     ${projectDir}\n`);
+    console.log(`[DIR]     ${projectPath.displayPath}\n`);
 
-    let output = analyzeProject(projectDir, projectName, opts);
+    let output = analyzeProject(projectDir, projectName, opts, projectPath.displayPath);
 
     console.log("\n" + "=".repeat(70));
     console.log("  ArkPrism Analysis Summary");
@@ -452,7 +463,11 @@ interface BatchResult {
 }
 
 function runBatch(datasetDir: string, opts: AnalysisOptions): void {
-    datasetDir = path.resolve(datasetDir);
+    const datasetPath = resolveAnalysisPath(datasetDir);
+    datasetDir = datasetPath.fileSystemPath;
+    if (!existsSync(datasetDir) || !statSync(datasetDir).isDirectory()) {
+        throw new Error(`[DATASET_PATH_INVALID] Dataset directory does not exist: ${datasetPath.displayPath}`);
+    }
     let projects = readdirSync(datasetDir).filter(d => {
         let fullPath = path.join(datasetDir, d);
         return statSync(fullPath).isDirectory();
@@ -467,12 +482,13 @@ function runBatch(datasetDir: string, opts: AnalysisOptions): void {
     for (let i = 0; i < projects.length; i++) {
         let projectName = projects[i];
         let projectDir = path.join(datasetDir, projectName);
+        let reportProjectDir = path.join(datasetPath.displayPath, projectName);
         console.log(`\n[${i + 1}/${projects.length}] ${projectName}`);
         console.log(`${"-".repeat(60)}`);
 
         let startTime = Date.now();
         try {
-            let output = analyzeProject(projectDir, projectName, opts);
+            let output = analyzeProject(projectDir, projectName, opts, reportProjectDir);
             let s = output.statistics;
             let sinkCount = 0;
             for (let c of output.callChains) {
@@ -534,11 +550,11 @@ function runBatch(datasetDir: string, opts: AnalysisOptions): void {
     let summaryPath = path.resolve(opts.outputDir, 'batch_summary.json');
     if (!existsSync(opts.outputDir)) mkdirSync(opts.outputDir, { recursive: true });
     writeFileSync(summaryPath, JSON.stringify(results, null, 2), 'utf8');
-    console.log(`\n[OUTPUT] Summary written to: ${summaryPath}`);
+    console.log(`\n[OUTPUT] Summary written to: ${toDisplayPath(summaryPath)}`);
 }
 
 function runConfig(configPath: string, opts: AnalysisOptions): void {
-    configPath = path.resolve(configPath);
+    configPath = toFileSystemPath(configPath);
     let configContent = readFileSync(configPath, 'utf8');
     let config = JSON.parse(configContent);
     let projectDir = config.targetProjectDirectory;
@@ -549,6 +565,11 @@ function runConfig(configPath: string, opts: AnalysisOptions): void {
 // ---- Main ----
 
 let { mode, target, opts } = parseArgs();
+opts = {
+    ...opts,
+    outputDir: toFileSystemPath(opts.outputDir),
+    sdkPath: toFileSystemPath(opts.sdkPath),
+};
 
 if (!target) {
     printUsage();

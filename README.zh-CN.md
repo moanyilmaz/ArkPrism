@@ -34,6 +34,12 @@ node dist\arkprism.js --help
 
 正式运行使用编译后的 `dist/arkprism.js`。
 
+## Windows 长路径
+
+ArkPrism 会在访问文件系统前，将工程、SDK、配置和输出目录自动转换为 Windows Extended-Length Path。源码发现、ArkTS 解析和报告生成不再受传统 260 字符路径限制；JSON 和 DOT 中仍保存不带 `\\?\` 前缀的普通路径。
+
+接收或解压工程的上游服务必须先完整保留源码文件，尤其应使用支持长路径的方式解压 ZIP。若文件已被上游解压程序遗漏，ArkPrism 无法恢复该文件。工具不会以限制扫描深度或跳过源码作为路径问题的降级方案。
+
 ## 分析单个工程
 
 ```powershell

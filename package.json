@@ -18,6 +18,7 @@
     "test:manager-receiver": "npm run build && node tests/verify_manager_receiver.js",
     "test:pta-container-edges": "npm run build && node tests/verify_pta_container_edges.js",
     "test:runner-strictness": "node tests/verify_runner_strictness.js",
+    "test:windows-long-paths": "npm run build && node tests/verify_windows_long_paths.js",
     "test:taint-flow-dedup": "npm run build && node tests/verify_taint_flow_dedup.js",
     "test:taint-source-evidence": "npm run build && node tests/verify_taint_source_evidence.js",
     "test:evidence-linker": "npm run build && node tests/verify_evidence_linker.js",

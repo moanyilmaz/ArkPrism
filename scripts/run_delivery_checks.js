@@ -35,6 +35,7 @@ const checks = [
   'verify_taint_value_dependency.js',
   'verify_top120_benchmark.js',
   'verify_top120_source_packager.js',
+  'verify_windows_long_paths.js',
 ];
 
 for (const check of checks) {
