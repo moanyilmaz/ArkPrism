@@ -10,6 +10,7 @@ if (!sdkPath || !fs.existsSync(sdkPath)) {
 }
 
 const checks = [
+  'verify_arkanalyzer_empty_constructor.js',
   'verify_api_usage_dedup.js',
   'verify_call_chain_dominators.js',
   'verify_corpus_summary.js',

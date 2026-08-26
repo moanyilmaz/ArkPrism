@@ -420,9 +420,14 @@ function addInitInConstructor(arkClass) {
             if (!blocks) {
                 continue;
             }
-            const firstBlockStmts = [...blocks][0].getStmts();
+            const firstBlock = [...blocks][0];
+            if (!firstBlock) {
+                continue;
+            }
+            const firstBlockStmts = firstBlock.getStmts();
             let index = 0;
-            if (firstBlockStmts[0].getDef() instanceof Local_1.Local && firstBlockStmts[0].getDef().getName() === TSConst_1.THIS_NAME) {
+            const firstStmt = firstBlockStmts[0];
+            if (firstStmt && firstStmt.getDef() instanceof Local_1.Local && firstStmt.getDef().getName() === TSConst_1.THIS_NAME) {
                 index = 1;
             }
             firstBlockStmts.splice(index, 0, initInvokeStmt);
