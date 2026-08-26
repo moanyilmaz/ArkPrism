@@ -173,7 +173,7 @@ class Scene {
         var _a;
         this.options = sceneConfig.getOptions();
         this.projectName = sceneConfig.getTargetProjectName();
-        this.realProjectDir = fs_1.default.realpathSync(sceneConfig.getTargetProjectDirectory());
+        this.realProjectDir = fs_1.default.realpathSync.native(sceneConfig.getTargetProjectDirectory());
         this.projectFiles = sceneConfig.getProjectFiles();
         this.parseBuildProfile();
         this.parseOhPackage();

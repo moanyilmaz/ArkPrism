@@ -61,7 +61,7 @@ function getAllFiles(srcPath, exts, ignore = [], filenameArr = [], visited = new
         return filenameArr;
     }
     // 获取src的绝对路径
-    const realSrc = fs_1.default.realpathSync(srcPath);
+    const realSrc = fs_1.default.realpathSync.native(srcPath);
     if (visited.has(realSrc)) {
         return filenameArr;
     }

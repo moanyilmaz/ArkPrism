@@ -11,6 +11,7 @@ const {
   toDisplayPath,
   toFileSystemPath,
 } = require('../dist/pathUtils');
+const { getAllFiles } = require('../dist/arkanalyzer/utils/getAllFiles');
 
 const temporaryRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'arkprism-long-path-'));
 const projectRoot = path.join(temporaryRoot, 'LongPathProject');
@@ -61,6 +62,9 @@ try {
   if (process.platform === 'win32') {
     assert.ok(resolved.fileSystemPath.startsWith('\\\\?\\'));
   }
+
+  const discoveredFiles = getAllFiles(resolved.fileSystemPath, ['.ets']);
+  assert.deepStrictEqual(discoveredFiles, [path.resolve(sourcePath)]);
 
   const result = spawnSync(process.execPath, [
     path.join('dist', 'arkprism.js'),

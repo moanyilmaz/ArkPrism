@@ -35,7 +35,7 @@ import { analyzeDataFlow, getDataFlowStats } from './dataFlowAnalyzer';
 import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector';
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
-import { resolveAnalysisPath, toDisplayPath, toFileSystemPath } from './pathUtils';
+import { resolveAnalysisPath, toDisplayPath } from './pathUtils';
 
 const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
 const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
@@ -420,7 +420,7 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
 
 function runSingle(projectDir: string, opts: AnalysisOptions): void {
     const projectPath = resolveAnalysisPath(projectDir);
-    projectDir = projectPath.fileSystemPath;
+    projectDir = projectPath.displayPath;
     let projectName = path.basename(projectPath.displayPath);
 
     if (!existsSync(projectDir) || !statSync(projectDir).isDirectory()) {
@@ -464,7 +464,7 @@ interface BatchResult {
 
 function runBatch(datasetDir: string, opts: AnalysisOptions): void {
     const datasetPath = resolveAnalysisPath(datasetDir);
-    datasetDir = datasetPath.fileSystemPath;
+    datasetDir = datasetPath.displayPath;
     if (!existsSync(datasetDir) || !statSync(datasetDir).isDirectory()) {
         throw new Error(`[DATASET_PATH_INVALID] Dataset directory does not exist: ${datasetPath.displayPath}`);
     }
@@ -554,7 +554,7 @@ function runBatch(datasetDir: string, opts: AnalysisOptions): void {
 }
 
 function runConfig(configPath: string, opts: AnalysisOptions): void {
-    configPath = toFileSystemPath(configPath);
+    configPath = toDisplayPath(configPath);
     let configContent = readFileSync(configPath, 'utf8');
     let config = JSON.parse(configContent);
     let projectDir = config.targetProjectDirectory;
@@ -567,8 +567,8 @@ function runConfig(configPath: string, opts: AnalysisOptions): void {
 let { mode, target, opts } = parseArgs();
 opts = {
     ...opts,
-    outputDir: toFileSystemPath(opts.outputDir),
-    sdkPath: toFileSystemPath(opts.sdkPath),
+    outputDir: toDisplayPath(opts.outputDir),
+    sdkPath: toDisplayPath(opts.sdkPath),
 };
 
 if (!target) {

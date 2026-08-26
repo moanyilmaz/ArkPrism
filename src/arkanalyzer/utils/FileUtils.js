@@ -114,7 +114,7 @@ function getFileRecursively(srcDir, fileName, visited = new Set()) {
         return res;
     }
     const filesUnderThisDir = fs_1.default.readdirSync(srcDir, { withFileTypes: true });
-    const realSrc = fs_1.default.realpathSync(srcDir);
+    const realSrc = fs_1.default.realpathSync.native(srcDir);
     if (visited.has(realSrc)) {
         return res;
     }
