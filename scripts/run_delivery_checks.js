@@ -25,6 +25,7 @@ const checks = [
   'verify_package_aliases.js',
   'verify_pta_container_edges.js',
   'verify_rule_deduplication.js',
+  'verify_runtime_heap.js',
   'verify_runner_strictness.js',
   'verify_semantic_path_audit_evaluator.js',
   'verify_semantic_path_audit_queue.js',

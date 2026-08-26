@@ -7,9 +7,9 @@ Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
 ## Requirements
 
 - 64-bit Windows, Linux, or macOS
-- Node.js 20.x and npm
+- Node.js 20.x or 24.x and npm
 - OpenHarmony SDK with ArkTS declarations
-- 8 GB Node.js heap for normal projects; larger projects may need more
+- 16 GB system memory is recommended for large-project PTA/IFDS runs
 - Graphviz only when rendering DOT files
 
 The SDK argument must point to the real `ets` directory. Do not use project stubs as an SDK substitute.
@@ -36,14 +36,18 @@ Use the compiled entry `dist/arkprism.js` for delivery runs.
 
 ## Windows long paths
 
-ArkPrism automatically converts project, SDK, configuration, and output paths to the Windows extended-length namespace before filesystem access. Source discovery, ArkTS parsing, and report generation therefore do not use the legacy 260-character limit. JSON and DOT artifacts retain ordinary paths without the `\\?\` prefix.
+ArkPrism keeps logical and report paths in ordinary absolute form and uses Windows-native path resolution at filesystem boundaries. Source discovery, ArkTS parsing, and report generation therefore do not use the legacy 260-character limit, while JSON and DOT artifacts remain free of the `\\?\` prefix.
 
 The service that receives or extracts a project must preserve the files before ArkPrism starts. In particular, ZIP extraction must use long-path-aware filesystem operations; ArkPrism cannot analyze a source file that an upstream extractor silently omitted. No scan-depth limit or source-file skipping is used as a path-length fallback.
 
 ## Analyze one project
 
+ArkPrism checks the V8 heap before analysis and automatically relaunches itself
+with a 12 GB heap when Node's default limit is smaller. This is an upper bound,
+not a pre-allocation. Override it when required by the deployment environment:
+
 ```powershell
-$env:NODE_OPTIONS = "--max-old-space-size=8192"
+$env:ARKPRISM_MAX_OLD_SPACE_SIZE_MB = "12288"  # 0 disables automatic relaunch
 
 node dist\arkprism.js `
   "E:\Projects\MyHarmonyApp" `
@@ -74,7 +78,7 @@ node scripts\run_argus_batch_isolated.js `
   --engine compiled `
   --concurrency 2 `
   --timeout-ms 3600000 `
-  --node-options "--max-old-space-size=8192" `
+  --node-options "--max-old-space-size=12288" `
   --max-attempts 1 `
   -- `
   --ifds-max-edges 30000000 `

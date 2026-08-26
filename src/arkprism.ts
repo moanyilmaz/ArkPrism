@@ -36,6 +36,7 @@ import { detectRecursivePatterns, getRecursiveStats } from './recursiveDetector'
 import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import * as path from 'path';
 import { resolveAnalysisPath, toDisplayPath } from './pathUtils';
+import { ensureAnalysisHeap } from './runtimeHeap';
 
 const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
 const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
@@ -564,6 +565,7 @@ function runConfig(configPath: string, opts: AnalysisOptions): void {
 
 // ---- Main ----
 
+ensureAnalysisHeap();
 let { mode, target, opts } = parseArgs();
 opts = {
     ...opts,
