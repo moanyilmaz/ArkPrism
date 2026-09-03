@@ -3304,7 +3304,10 @@
         "method": "close",
         "permission": "ohos.permission.INTERNET",
         "profilingCategory": "network.connectivity",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "constructTCPSocketInstance"
+        ]
       },
       {
         "namespace": "TCPSocket",
@@ -3416,7 +3419,10 @@
         "method": "close",
         "permission": "ohos.permission.INTERNET",
         "profilingCategory": "network.connectivity",
-        "directCall": false
+        "directCall": false,
+        "receiverFactories": [
+          "constructTLSSocketServerInstance"
+        ]
       },
       {
         "namespace": "TLSSocketConnection",
@@ -5219,7 +5225,10 @@
         "method": "getDeviceCapability",
         "permission": null,
         "profilingCategory": "device_identity.hardware",
-        "directCall": true
+        "directCall": true,
+        "receiverFactories": [
+          "Context.resourceManager"
+        ]
       }
     ]
   },

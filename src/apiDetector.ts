@@ -490,15 +490,24 @@ function resolveIndirectMatch(
     if (receiver) {
         const receiverName = normalizedIdentity(receiver.toString());
         const receiverTypes = new Set(typeIdentityTokens(receiver.getType().getTypeString()));
+        const targetClass = normalizedIdentity(
+            invokeExpr.getMethodSignature().getDeclaringClassSignature().getClassName()
+        );
+        const targetMatchesConfiguredReceiver = candidates.some(item =>
+            targetClass.length > 0
+            && targetClass !== 'unk'
+            && apiReceiverIdentities(item.api).has(targetClass)
+        );
+        if (receiverName === 'this' && targetClass.length > 0
+            && targetClass !== 'unk' && !targetMatchesConfiguredReceiver) {
+            return undefined;
+        }
         const typeMatch = candidates.find(item => {
             return [...apiReceiverIdentities(item.api)]
                 .some(identity => receiverTypes.has(identity));
         });
         if (typeMatch) return { ...typeMatch, evidence: "receiver_type" };
 
-        const targetClass = normalizedIdentity(
-            invokeExpr.getMethodSignature().getDeclaringClassSignature().getClassName()
-        );
         const targetMatch = candidates.find(item => {
             return targetClass.length > 0
                 && targetClass !== 'unk'

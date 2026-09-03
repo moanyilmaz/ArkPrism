@@ -57,6 +57,14 @@ const cases = [
     expected: [],
   },
   {
+    fixture: 'sdk_receiver_origins',
+    expected: [
+      'TCPSocket.close|receiver_type',
+      'TLSSocketServer.close|receiver_type',
+      'resourceManager.getDeviceCapability|receiver_type',
+    ],
+  },
+  {
     fixture: 'api_identity_resolution',
     expected: [
       'UserAuthInstance.on(\'result\')|receiver_type',
