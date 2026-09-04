@@ -65,6 +65,11 @@ function namespaceMatchesImport(apiNamespace: string, importInfo: ImportBasicInf
         return apiNamespace === 'wifiManager';
     }
 
+    if (importInfo.importFrom === '@ohos.bundle' &&
+        [...importedNames].some(name => name.toLowerCase() === 'bundle')) {
+        return apiNamespace === 'bundleManager';
+    }
+
     if ((importInfo.importFrom === '@ohos.deviceInfo' || importInfo.importFrom === '@kit.BasicServicesKit') &&
         (importedNames.has('deviceInfo') || importedNames.has('deviceinfo'))) {
         return apiNamespace === 'deviceInfo' || apiNamespace === 'deviceinfo';
@@ -102,13 +107,48 @@ function argumentCountMatches(api: PrivacyDataAPI, argumentCount: number): boole
     );
 }
 
-function eventDiscriminatorMatches(stmtText: string, expected: string): boolean {
+const SENSOR_ID_VALUES: Record<string, number> = {
+    ACCELEROMETER: 1,
+    GYROSCOPE: 2,
+    AMBIENT_LIGHT: 5,
+    MAGNETIC_FIELD: 6,
+    BAROMETER: 8,
+    PROXIMITY: 12,
+    ORIENTATION: 256,
+    GRAVITY: 257,
+    LINEAR_ACCELEROMETER: 258,
+    ROTATION_VECTOR: 259,
+    MAGNETIC_FIELD_UNCALIBRATED: 261,
+    GYROSCOPE_UNCALIBRATED: 263,
+    SIGNIFICANT_MOTION: 264,
+    PEDOMETER_DETECTION: 265,
+    PEDOMETER: 266,
+    HEART_RATE: 278,
+    ACCELEROMETER_UNCALIBRATED: 281,
+};
+
+function eventDiscriminatorMatches(
+    stmtText: string,
+    expected: string,
+    firstArgument?: string,
+): boolean {
     const expectedTail = expected.split(".").pop() || expected;
     const escape = (value: string): string =>
         value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const exactQualified = new RegExp(`(^|[^A-Za-z0-9_$])${escape(expected)}([^A-Za-z0-9_$]|$)`);
     const exactTail = new RegExp(`(^|[^A-Za-z0-9_$])${escape(expectedTail)}([^A-Za-z0-9_$]|$)`);
-    return exactQualified.test(stmtText) || exactTail.test(stmtText);
+    if (exactQualified.test(stmtText) || exactTail.test(stmtText)) return true;
+
+    const argument = (firstArgument || '').trim();
+    if (/^-?\d+$/.test(argument) && expected.startsWith('SensorId.')) {
+        return SENSOR_ID_VALUES[expectedTail] === Number(argument);
+    }
+    if (/^(['"]).*\1$/.test(argument)) return false;
+    if (/\bSensorId\s*\./.test(argument)) return false;
+
+    // A local/field value is unresolved in the lowered IR. Retaining all
+    // package-qualified event rules is the conservative may-analysis result.
+    return true;
 }
 
 function isTopLevelFunctionApi(api: PrivacyDataAPI): boolean {
@@ -136,6 +176,7 @@ function methodMatches(
     invokeMethodName: string | undefined,
     stmtText: string,
     argumentCount: number,
+    firstArgument?: string,
 ): boolean {
     if (!invokeMethodName) return false;
     const normalized = normalizedRuleMethod(api.method);
@@ -148,7 +189,7 @@ function methodMatches(
     if (api.method.includes("(")) {
         const argMatch = api.method.match(/['"]([^'"]+)['"]/);
         if (!argMatch) return true;
-        return eventDiscriminatorMatches(stmtText, argMatch[1]);
+        return eventDiscriminatorMatches(stmtText, argMatch[1], firstArgument);
     }
 
     return api.method === invokeMethodName || api.method.includes(".");
@@ -191,10 +232,11 @@ function findMatchedApi(
     invokeMethodName: string | undefined,
     stmtText: string,
     argumentCount: number,
+    firstArgument?: string,
 ): { unit: ImportEntryCheckUnit; api: PrivacyDataAPI } | undefined {
     for (const unit of units) {
         const matchedApi = unit.relatedApis.find(api =>
-            methodMatches(api, invokeMethodName, stmtText, argumentCount) ||
+            methodMatches(api, invokeMethodName, stmtText, argumentCount, firstArgument) ||
             topLevelImportMatches(unit, api, invokeMethodName, argumentCount)
         );
         if (matchedApi) return { unit, api: matchedApi };
@@ -218,7 +260,18 @@ function typeIdentityTokens(value: string | undefined): string[] {
     const semanticType = typeText.includes(':')
         ? typeText.slice(typeText.lastIndexOf(':') + 1)
         : typeText;
-    return identityTokens(semanticType);
+    const ignored = new Set(['null', 'undefined', 'unknown', 'any', 'void', 'never']);
+    const result = new Set<string>();
+    for (const branch of semanticType.split(/[|&]/)) {
+        const identifiers = branch.match(/[A-Za-z_$][\w$]*/g) || [];
+        for (let index = identifiers.length - 1; index >= 0; index--) {
+            const identity = normalizedIdentity(identifiers[index]);
+            if (!identity || ignored.has(identity)) continue;
+            result.add(identity);
+            break;
+        }
+    }
+    return [...result];
 }
 
 function apiReceiverIdentities(api: PrivacyDataAPI): Set<string> {
@@ -240,6 +293,50 @@ function apiReceiverIdentities(api: PrivacyDataAPI): Set<string> {
         if (normalized) identities.add(normalized);
     }
     return identities;
+}
+
+function findMatchedApis(
+    units: ImportEntryCheckUnit[],
+    invokeMethodName: string | undefined,
+    stmtText: string,
+    argumentCount: number,
+    firstArgument?: string,
+): Array<{ unit: ImportEntryCheckUnit; api: PrivacyDataAPI }> {
+    const matches = units.flatMap(unit => unit.relatedApis
+        .filter(api =>
+            methodMatches(api, invokeMethodName, stmtText, argumentCount, firstArgument) ||
+            topLevelImportMatches(unit, api, invokeMethodName, argumentCount)
+        )
+        .map(api => ({ unit, api })));
+    const unique = new Map<string, { unit: ImportEntryCheckUnit; api: PrivacyDataAPI }>();
+    for (const match of matches) {
+        const key = [
+            match.unit.systemPackage,
+            match.unit.importSystemNamespace,
+            match.unit.importClauseName,
+            match.api.namespace,
+            match.api.method,
+            match.api.dataType,
+            match.api.label,
+        ].join('|');
+        if (!unique.has(key)) unique.set(key, match);
+    }
+    let candidates = [...unique.values()];
+    if (candidates.length <= 1) return candidates;
+
+    // When both a current Kit rule and a legacy package alias describe the
+    // same call, prefer the API namespace explicitly imported by the source.
+    const exactNamespace = candidates.filter(({ unit, api }) =>
+        [unit.importSystemNamespace, unit.importClauseName]
+            .some(name => name.toLowerCase() === api.namespace.toLowerCase())
+    );
+    if (exactNamespace.length > 0) candidates = exactNamespace;
+
+    // Multiple retained identities are meaningful only for event-discriminated
+    // APIs. A dynamic sensor ID, for example, denotes a finite may-set; ordinary
+    // alias-equivalent calls still denote one API usage.
+    if (candidates.some(({ api }) => api.method.includes('('))) return candidates;
+    return candidates.slice(0, 1);
 }
 
 function appendTopLevelImportUnits(
@@ -305,6 +402,7 @@ interface SourceOccurrence {
     member: string;
     accessKind: "call" | "property";
     receiver: string;
+    firstArgument?: string;
     line: number;
     column: number;
     expression: string;
@@ -338,7 +436,7 @@ function collectSourceTypeHints(file: ArkFile): SourceTypeHints {
 
     function recordHint(name: any, typeNode: any): void {
         if (!typeNode || !name || !ts.isIdentifier(name)) return;
-        const identities = new Set(identityTokens(typeNode.getText(source)));
+        const identities = new Set(typeIdentityTokens(typeNode.getText(source)));
         for (const identity of [...identities]) {
             const imported = importedTypeAliases.get(identity);
             if (imported) identities.add(imported);
@@ -358,8 +456,39 @@ function collectSourceTypeHints(file: ArkFile): SourceTypeHints {
         ts.forEachChild(node, collectDeclarations);
     }
 
+    function unwrapExpression(node: any): any {
+        let current = node;
+        while (current && (ts.isAwaitExpression(current) ||
+            ts.isParenthesizedExpression(current) ||
+            ts.isAsExpression(current) ||
+            ts.isTypeAssertionExpression(current))) {
+            current = current.expression;
+        }
+        return current;
+    }
+
+    function collectContainerExtractions(node: any): void {
+        if (ts.isVariableDeclaration(node) && ts.isIdentifier(node.name) && !node.type && node.initializer) {
+            const initializer = unwrapExpression(node.initializer);
+            if (initializer && ts.isCallExpression(initializer) &&
+                ts.isPropertyAccessExpression(initializer.expression)) {
+                const member = initializer.expression.name.text;
+                const base = initializer.expression.expression;
+                if ((member === 'getFirstObject' || member === 'getObjectByPosition') &&
+                    ts.isIdentifier(base)) {
+                    const containerTypes = hints.get(normalizedIdentity(base.text));
+                    if (containerTypes?.size) {
+                        hints.set(normalizedIdentity(node.name.text), new Set(containerTypes));
+                    }
+                }
+            }
+        }
+        ts.forEachChild(node, collectContainerExtractions);
+    }
+
     collectImports(source);
     collectDeclarations(source);
+    collectContainerExtractions(source);
     return hints;
 }
 
@@ -400,6 +529,7 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
                 member: node.name.text,
                 accessKind: call ? "call" : "property",
                 receiver: node.expression.getText(source),
+                firstArgument: call?.arguments[0]?.getText(source),
                 line: location.line + 1,
                 column: location.character + 1,
                 expression: (call || node).getText(source),
@@ -412,6 +542,7 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
                 member: importedMemberOrigins.get(localName) || localName,
                 accessKind: "call",
                 receiver: localName,
+                firstArgument: node.arguments[0]?.getText(source),
                 line: location.line + 1,
                 column: location.character + 1,
                 expression: node.getText(source),
@@ -431,7 +562,16 @@ function recoverSourceLocations(
     sourceTypeHints: SourceTypeHints,
 ): PrivacyDataApiResult[] {
     const occurrences = collectSourceOccurrences(file);
-    const used = new Set<number>();
+    const used = new Set<string>();
+    const rejectedBySourceEvent = new Set<PrivacyDataApiResult>();
+
+    function resultLocationKey(result: PrivacyDataApiResult, occurrenceIndex: number): string {
+        return [
+            occurrenceIndex,
+            normalizedIdentity(result.namespace),
+            result.method,
+        ].join('|');
+    }
 
     function occurrenceScore(result: PrivacyDataApiResult, occurrence: SourceOccurrence): number {
         const receiverText = occurrence.receiver.replace(/\s+/g, '');
@@ -480,7 +620,7 @@ function recoverSourceLocations(
         const candidates = occurrences
             .map((occurrence, index) => ({ occurrence, index }))
             .filter(item =>
-                !used.has(item.index) &&
+                !used.has(resultLocationKey(result, item.index)) &&
                 item.occurrence.accessKind === expectedAccess &&
                 item.occurrence.member.toLowerCase() === expectedMember,
             )
@@ -492,6 +632,15 @@ function recoverSourceLocations(
             );
         if (candidates.length === 0) continue;
         const best = candidates[0];
+        const event = result.method.match(/['"]([^'"]+)['"]/);
+        if (event && !eventDiscriminatorMatches(
+            best.occurrence.expression,
+            event[1],
+            best.occurrence.firstArgument,
+        )) {
+            rejectedBySourceEvent.add(result);
+            continue;
+        }
         const sameMemberResultCount = results.filter(other =>
             (other.category === "privacy constants" ? "property" : "call") === expectedAccess &&
             normalizedRuleMethod(other.method).toLowerCase() === expectedMember,
@@ -501,13 +650,13 @@ function recoverSourceLocations(
             occurrence.member.toLowerCase() === expectedMember,
         ).length;
         if (best.score <= 0 && sameMemberResultCount !== sameMemberOccurrenceCount) continue;
-        used.add(best.index);
+        used.add(resultLocationKey(result, best.index));
         result.line = best.occurrence.line;
         result.column = best.occurrence.column;
         result.originalCode = best.occurrence.expression;
         result.locationEvidence = "source_ast";
     }
-    return results;
+    return results.filter(result => !rejectedBySourceEvent.has(result));
 }
 
 function findReceiverDefinitionEvidence(
@@ -604,13 +753,20 @@ function resolveIndirectMatch(
     sourceTypeHints: SourceTypeHints,
 ): { unit: ImportEntryCheckUnit; api: PrivacyDataAPI; evidence: PrivacyDataApiResult["matchEvidence"] } | undefined {
     const candidates = units.flatMap(unit => unit.relatedApis
-        .filter(api => methodMatches(api, invokeMethodName, stmtText, invokeExpr.getArgs().length))
+        .filter(api => methodMatches(
+            api,
+            invokeMethodName,
+            stmtText,
+            invokeExpr.getArgs().length,
+            invokeExpr.getArgs()[0]?.toString(),
+        ))
         .map(api => ({ unit, api })));
     if (candidates.length === 0) return undefined;
 
     const receiver = invokeExpr instanceof ArkInstanceInvokeExpr ? invokeExpr.getBase() : undefined;
     if (receiver) {
         const receiverName = normalizedIdentity(receiver.toString());
+        const sourceReceiverTypes = sourceTypeHints.get(receiverName) || new Set<string>();
         const receiverTypes = new Set(typeIdentityTokens(receiver.getType().getTypeString()));
         const targetClass = normalizedIdentity(
             invokeExpr.getMethodSignature().getDeclaringClassSignature().getClassName()
@@ -624,6 +780,11 @@ function resolveIndirectMatch(
             && targetClass !== 'unk' && !targetMatchesConfiguredReceiver) {
             return undefined;
         }
+        const sourceTypeMatch = candidates.find(item => {
+            return [...apiReceiverIdentities(item.api)]
+                .some(identity => sourceReceiverTypes.has(identity));
+        });
+        if (sourceTypeMatch) return { ...sourceTypeMatch, evidence: "receiver_type" };
         const typeMatch = candidates.find(item => {
             return [...apiReceiverIdentities(item.api)]
                 .some(identity => receiverTypes.has(identity));
@@ -765,27 +926,28 @@ function checkDirectCallPrivacyApis(
                         invokeMethodName,
                         invokeExpr?.getArgs().length || 0,
                     );
-                    let match = findMatchedApi(
+                    const matches = findMatchedApis(
                         namespacesInStmt,
                         invokeMethodName,
                         stmtText,
                         invokeExpr?.getArgs().length || 0,
+                        invokeExpr?.getArgs()[0]?.toString(),
                     );
-                    if (match) {
-                            results.push({
-                                category: "direct invoke stmt after assignment",
-                                apiPackage: match.unit.systemPackage,
-                                namespace: match.api.namespace,
-                                method: match.api.method,
-                                args: invokeExpr?.getArgs().map(arg => arg.toString()) || [],
-                                code: stmt.toString(),
-                                file: filename,
-                                line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
-                                declaringMethod: declaringMethod,
-                                permission: match.api.permission,
-                                profilingCategory: match.api.profilingCategory,
-                                ...catalogResultFields(match.api),
-                            });
+                    for (const match of matches) {
+                        results.push({
+                            category: "direct invoke stmt after assignment",
+                            apiPackage: match.unit.systemPackage,
+                            namespace: match.api.namespace,
+                            method: match.api.method,
+                            args: invokeExpr?.getArgs().map(arg => arg.toString()) || [],
+                            code: stmt.toString(),
+                            file: filename,
+                            line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
+                            declaringMethod: declaringMethod,
+                            permission: match.api.permission,
+                            profilingCategory: match.api.profilingCategory,
+                            ...catalogResultFields(match.api),
+                        });
                     }
                 }
             }
@@ -807,27 +969,28 @@ function checkDirectCallPrivacyApis(
                     invokeMethodName,
                     invokeExpr.getArgs().length,
                 );
-                let match = findMatchedApi(
+                const matches = findMatchedApis(
                     namespacesInStmt,
                     invokeMethodName,
                     stmtText,
                     invokeExpr.getArgs().length,
+                    invokeExpr.getArgs()[0]?.toString(),
                 );
-                if (match) {
-                        results.push({
-                            category: "direct invoke stmt",
-                            apiPackage: match.unit.systemPackage,
-                            namespace: match.api.namespace,
-                            method: match.api.method,
-                            args: invokeExpr.getArgs().map(arg => arg.toString()),
-                            code: stmt.toString(),
-                            file: filename,
-                            line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
-                            declaringMethod: declaringMethod,
-                            permission: match.api.permission,
-                            profilingCategory: match.api.profilingCategory,
-                            ...catalogResultFields(match.api),
-                        });
+                for (const match of matches) {
+                    results.push({
+                        category: "direct invoke stmt",
+                        apiPackage: match.unit.systemPackage,
+                        namespace: match.api.namespace,
+                        method: match.api.method,
+                        args: invokeExpr.getArgs().map(arg => arg.toString()),
+                        code: stmt.toString(),
+                        file: filename,
+                        line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
+                        declaringMethod: declaringMethod,
+                        permission: match.api.permission,
+                        profilingCategory: match.api.profilingCategory,
+                        ...catalogResultFields(match.api),
+                    });
                 }
             }
         }

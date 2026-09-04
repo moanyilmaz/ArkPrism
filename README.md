@@ -97,24 +97,22 @@ The isolated runner records the exact project set, SDK/build/configuration hashe
 
 ## Top-120 benchmark
 
-The delivery benchmark is under `benchmarks/ArkPrismTop120/`. It contains 848 manually confirmed project--API keys from 120 projects, with source files, lines, snippets, and evidence types.
+The current delivery benchmark is under `benchmarks/ArkPrismTop120/pac_v2/`. It was rebuilt source-first for the reviewed PAC catalog. The gold set contains 576 API occurrences at 496 executable source sites in 120 projects, together with 746 reviewed same-name negative candidates.
 
 The delivery package also contains the complete source projects under `benchmarks/ArkPrismTop120/sources/`. Generated dependencies, build output, caches, and Git metadata are excluded.
 
-Verify the annotations:
+Verify the gold set against the source corpus and current catalog:
 
 ```powershell
-node scripts\audit_source_audit_artifact.js `
-  --benchmark benchmarks\ArkPrismTop120\annotations.json `
-  --dataset "E:\Datasets\ARGUS-successful-1015-samples-20260617" `
-  --rules config\sensitive_apis.json `
-  --output benchmarks\ArkPrismTop120\integrity.json
+$env:ARGUS_DATASET = "E:\Datasets\ARGUS-successful-1015-samples-20260617"
+node tests\verify_top120_pac_gold.js
 ```
 
 Run the exact 120 projects in detector-only mode and retain JSON plus DOT output:
 
 ```powershell
 node scripts\run_top120_benchmark.js `
+  --benchmark benchmarks\ArkPrismTop120\pac_v2\selection_manifest.json `
   --dataset benchmarks\ArkPrismTop120\sources `
   --sdkPath $env:OPENHARMONY_SDK_PATH `
   --output-dir benchmarks\ArkPrismTop120\results
@@ -123,14 +121,14 @@ node scripts\run_top120_benchmark.js `
 Calculate metrics:
 
 ```powershell
-node scripts\evaluate_top120_benchmark.js `
-  --benchmark benchmarks\ArkPrismTop120\annotations.json `
+node scripts\evaluate_source_first_gold.js `
+  --gold benchmarks\ArkPrismTop120\pac_v2\gold.json `
   --reports benchmarks\ArkPrismTop120\results `
   --rules config\sensitive_apis.json `
-  --output benchmarks\ArkPrismTop120\results\metrics
+  --output benchmarks\ArkPrismTop120\pac_v2\evaluation
 ```
 
-This benchmark reports manually confirmed project-key precision and gold-key reproduction coverage. It does not claim occurrence-level recall because its candidates were selected from an earlier ArkPrism output.
+The evaluator reports occurrence, source-site, project--API-key, unique-identity, and positive/negative project metrics. The retained `annotations.json` is the earlier benchmark format and is not used for PAC-v2 accuracy claims.
 
 ## Output
 

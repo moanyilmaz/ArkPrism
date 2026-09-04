@@ -81,7 +81,7 @@ function main() {
     if (!fs.existsSync(target)) throw new Error(`${label} does not exist: ${target}`);
   }
   const benchmark = JSON.parse(fs.readFileSync(args.benchmark, 'utf8').replace(/^\uFEFF/, ''));
-  const projects = (benchmark.projects || []).map(project => project.projectName);
+  const projects = (benchmark.projects || []).map(project => project.projectName || project.project);
   if (projects.length !== 120 || new Set(projects).size !== 120) {
     throw new Error(`Expected 120 unique benchmark projects, found ${projects.length}`);
   }

@@ -48,7 +48,8 @@ function main() {
     if (!['accept', 'reject'].includes(decision.decision)) {
       throw new Error(`Invalid manual decision for ${decision.key}`);
     }
-    if (decision.decision === 'accept' && (!decision.api || !decision.evidenceKind)) {
+    const acceptedApis = decision.apis || (decision.api ? [decision.api] : []);
+    if (decision.decision === 'accept' && (acceptedApis.length === 0 || !decision.evidenceKind)) {
       throw new Error(`Accepted decision lacks API/evidence: ${decision.key}`);
     }
     if (decision.decision === 'reject' && !decision.reason) {
@@ -71,42 +72,54 @@ function main() {
         continue;
       }
 
-      const selected = decision.api;
-      const selectedRule = candidate.candidateApis.find(rule =>
-        rule.package === selected.package &&
-        rule.namespace === selected.namespace &&
-        rule.configuredMethod === selected.method,
-      );
-      if (!selectedRule) throw new Error(`Selected API is not a candidate: ${candidateKey}`);
       const filePath = path.join(args.dataset, project.project, candidate.file);
       const sourceBytes = fs.readFileSync(filePath);
       const sourceText = sourceBytes.toString('utf8');
       const sourceLine = sourceText.split(/\r?\n/)[candidate.line - 1] || '';
       const evidenceKind = decision.evidenceKind;
-      const annotationId = sha256(candidateKey).slice(0, 16);
-      annotations.push({
-        annotationId,
-        project: project.project,
-        file: candidate.file,
-        line: candidate.line,
-        column: candidate.column,
-        api: {
-          package: selected.package,
-          namespace: selected.namespace,
-          member: member(selected.method),
-          configuredMethod: selected.method,
-        },
-        accessKind: candidate.accessKind,
-        evidenceKind,
-        receiver: candidate.receiver,
-        sourceExpression: candidate.expression,
-        sourceLine: sourceLine.trim(),
-        sourceImports: candidate.imports,
-        category: selectedRule.category,
-        permission: selectedRule.permission,
-        sourceFileSha256: sha256(sourceBytes),
-      });
-      decisions.push({ key: candidateKey, decision: 'accept', annotationId });
+      const acceptedApis = decision.apis || [decision.api];
+      const annotationIds = [];
+      for (const selected of acceptedApis) {
+        const selectedRule = candidate.candidateApis.find(rule =>
+          rule.package === selected.package &&
+          rule.namespace === selected.namespace &&
+          rule.configuredMethod === selected.method,
+        );
+        if (!selectedRule) throw new Error(`Selected API is not a candidate: ${candidateKey}`);
+        const annotationId = sha256([
+          candidateKey,
+          selected.package,
+          selected.namespace,
+          selected.method,
+        ].join('|')).slice(0, 16);
+        annotationIds.push(annotationId);
+        annotations.push({
+          annotationId,
+          project: project.project,
+          file: candidate.file,
+          line: candidate.line,
+          column: candidate.column,
+          api: {
+            package: selected.package,
+            namespace: selected.namespace,
+            member: member(selected.method),
+            configuredMethod: selected.method,
+          },
+          accessKind: candidate.accessKind,
+          evidenceKind,
+          receiver: candidate.receiver,
+          sourceExpression: candidate.expression,
+          sourceLine: sourceLine.trim(),
+          sourceImports: candidate.imports,
+          dataType: selectedRule.dataType,
+          label: selectedRule.label,
+          category: selectedRule.category,
+          permission: selectedRule.permission,
+          catalogApiSignature: selectedRule.catalogApiSignature,
+          sourceFileSha256: sha256(sourceBytes),
+        });
+      }
+      decisions.push({ key: candidateKey, decision: 'accept', annotationIds });
     }
   }
   const unusedDecisions = [...decisionByKey.keys()].filter(item => !usedDecisions.has(item));
@@ -135,7 +148,7 @@ function main() {
   }));
   const gold = {
     schemaVersion: 1,
-    benchmark: 'ArkSourceFirst60',
+    benchmark: manifest.benchmark,
     projectCount: projects.length,
     occurrenceCount: annotations.length,
     acceptedCandidateCount: decisions.filter(item => item.decision === 'accept').length,

@@ -163,7 +163,17 @@ try {
   for (const [filename, expected] of expectedByFile) {
     const usages = actualByFile.get(filename) || [];
     if (usages.length !== 1) {
-      failures.push(`${filename}: expected one detection, found ${usages.length}`);
+      const identities = usages.map(usage => [
+        usage.apiPackage,
+        usage.namespace,
+        usage.method,
+        usage.dataType,
+        usage.label,
+      ].join('|'));
+      failures.push(
+        `${filename}: expected one detection, found ${usages.length}` +
+        (identities.length > 0 ? ` (${identities.join('; ')})` : ''),
+      );
       continue;
     }
     const usage = usages[0];

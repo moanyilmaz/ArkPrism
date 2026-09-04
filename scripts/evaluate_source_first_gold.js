@@ -1,5 +1,7 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
+const { normalizeSensitiveApiCatalog } = require('../dist/sensitiveApiCatalog');
 
 const PACKAGE_ALIASES = require('../config/package_aliases.json');
 
@@ -31,12 +33,26 @@ function normalizedMethod(value) {
   return normalized(value).replace(/\(\)$/, '');
 }
 
+function normalizedMember(value) {
+  return normalized(value).replace(/\(.*/, '').split('.').filter(Boolean).pop() || '';
+}
+
+function packageAliases(packageName) {
+  const key = Object.keys(PACKAGE_ALIASES).find(item =>
+    item.toLowerCase() === String(packageName || '').toLowerCase(),
+  );
+  return key ? PACKAGE_ALIASES[key] : [];
+}
+
 function packageCompatible(observed, configured) {
-  return observed === configured || (PACKAGE_ALIASES[observed] || []).includes(configured);
+  const left = String(observed || '').toLowerCase();
+  const right = String(configured || '').toLowerCase();
+  return left === right || packageAliases(observed).some(alias => alias.toLowerCase() === right) ||
+    packageAliases(configured).some(alias => alias.toLowerCase() === left);
 }
 
 function loadRules(file) {
-  const groups = JSON.parse(fs.readFileSync(file, 'utf8'));
+  const groups = normalizeSensitiveApiCatalog(JSON.parse(fs.readFileSync(file, 'utf8')));
   return groups.flatMap(group => (group.privacyApis || []).map(api => ({
     package: group.systemPackage,
     namespace: api.namespace,
@@ -45,12 +61,16 @@ function loadRules(file) {
 }
 
 function canonicalApi(usage, rules) {
-  const matches = rules.filter(rule =>
+  let matches = rules.filter(rule =>
     packageCompatible(usage.apiPackage, rule.package) &&
     normalizedNamespace(usage.namespace) === normalizedNamespace(rule.namespace) &&
     normalizedMethod(usage.method) === normalizedMethod(rule.method),
   );
   if (matches.length === 0) return null;
+  const exactPackageMatches = matches.filter(rule =>
+    String(rule.package).toLowerCase() === String(usage.apiPackage || '').toLowerCase(),
+  );
+  if (exactPackageMatches.length > 0) matches = exactPackageMatches;
   const unique = new Map(matches.map(rule => [
     [rule.package, normalizedNamespace(rule.namespace), normalizedMethod(rule.method)].join('|'),
     rule,
@@ -59,16 +79,19 @@ function canonicalApi(usage, rules) {
   return [...unique.values()][0];
 }
 
-function occurrenceKey(record) {
+function occurrenceBaseKey(record) {
   return [
     record.project,
     String(record.file || '').replace(/\\/g, '/').toLowerCase(),
     Number(record.line || 0),
-    Number(record.column || 0),
     record.api.package,
     normalizedNamespace(record.api.namespace),
     normalizedMethod(record.api.configuredMethod || record.api.method),
   ].join('|');
+}
+
+function sha256(value) {
+  return crypto.createHash('sha256').update(value).digest('hex');
 }
 
 function wilson(successes, total, z = 1.959963984540054) {
@@ -95,17 +118,65 @@ function metric(tp, fp, fn) {
   };
 }
 
+function setMetric(expectedValues, observedValues) {
+  const expected = new Set(expectedValues);
+  const observed = new Set(observedValues);
+  let tp = 0;
+  for (const value of expected) if (observed.has(value)) tp++;
+  return metric(tp, [...observed].filter(value => !expected.has(value)).length,
+    [...expected].filter(value => !observed.has(value)).length);
+}
+
+function stratify(gold, detected, tpPairs, fp, fn, goldKey, detectedKey) {
+  const result = {};
+  const ensure = key => {
+    const name = String(key || 'Unspecified');
+    if (!result[name]) result[name] = { gold: 0, detected: 0, tp: 0, fp: 0, fn: 0 };
+    return result[name];
+  };
+  for (const item of gold) ensure(goldKey(item)).gold++;
+  for (const item of detected) ensure(detectedKey(item)).detected++;
+  for (const pair of tpPairs) ensure(goldKey(pair.gold)).tp++;
+  for (const item of fp) ensure(detectedKey(item)).fp++;
+  for (const item of fn) ensure(goldKey(item)).fn++;
+  for (const value of Object.values(result)) {
+    Object.assign(value, metric(value.tp, value.fp, value.fn));
+  }
+  return Object.fromEntries(Object.entries(result).sort((left, right) =>
+    right[1].gold - left[1].gold || left[0].localeCompare(right[0]),
+  ));
+}
+
+function apiIdentity(api) {
+  return [
+    api.package,
+    normalizedNamespace(api.namespace),
+    normalizedMethod(api.configuredMethod || api.method),
+  ].join('|');
+}
+
+function siteIdentity(record) {
+  return [
+    record.project,
+    String(record.file || '').replace(/\\/g, '/').toLowerCase(),
+    Number(record.line || 0),
+    Number(record.column || 0),
+    normalizedMember(record.api.configuredMethod || record.api.method),
+  ].join('|');
+}
+
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const gold = JSON.parse(fs.readFileSync(args.gold, 'utf8'));
   const rules = loadRules(args.rules);
   const goldBuckets = new Map();
   for (const annotation of gold.annotations) {
-    const key = occurrenceKey(annotation);
+    const key = occurrenceBaseKey(annotation);
     goldBuckets.set(key, (goldBuckets.get(key) || []).concat(annotation));
   }
 
   const detected = [];
+  let reportSdk = null;
   const reportProjects = new Set();
   const unresolved = [];
   const ambiguous = [];
@@ -118,6 +189,7 @@ function main() {
     if (!fs.existsSync(reportFile)) throw new Error(`Missing report: ${reportFile}`);
     reportProjects.add(project.project);
     const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
+    if (!reportSdk && report.sdk) reportSdk = report.sdk;
     for (const usage of report.privacyApiUsages || []) {
       const canonical = canonicalApi(usage, rules);
       const record = {
@@ -144,7 +216,7 @@ function main() {
 
   const detectedBuckets = new Map();
   for (const record of detected) {
-    const key = occurrenceKey(record);
+    const key = occurrenceBaseKey(record);
     detectedBuckets.set(key, (detectedBuckets.get(key) || []).concat(record));
   }
   const tp = [];
@@ -152,12 +224,21 @@ function main() {
   const fn = [];
   const allKeys = new Set([...goldBuckets.keys(), ...detectedBuckets.keys()]);
   for (const key of allKeys) {
-    const expected = goldBuckets.get(key) || [];
-    const observed = detectedBuckets.get(key) || [];
-    const paired = Math.min(expected.length, observed.length);
-    for (let index = 0; index < paired; index++) tp.push({ gold: expected[index], detected: observed[index] });
-    fp.push(...observed.slice(paired));
-    fn.push(...expected.slice(paired));
+    const expected = [...(goldBuckets.get(key) || [])];
+    const observed = [...(detectedBuckets.get(key) || [])];
+    for (let observedIndex = observed.length - 1; observedIndex >= 0; observedIndex--) {
+      const actual = observed[observedIndex];
+      const actualColumn = Number(actual.column || 0);
+      let expectedIndex = actualColumn > 0
+        ? expected.findIndex(item => Number(item.column || 0) === actualColumn)
+        : -1;
+      if (expectedIndex < 0 && actualColumn === 0 && expected.length === 1) expectedIndex = 0;
+      if (expectedIndex < 0) continue;
+      tp.push({ gold: expected.splice(expectedIndex, 1)[0], detected: actual });
+      observed.splice(observedIndex, 1);
+    }
+    fp.push(...observed);
+    fn.push(...expected);
   }
 
   const evidence = {};
@@ -198,19 +279,90 @@ function main() {
   const result = {
     schemaVersion: 1,
     benchmark: gold.benchmark,
-    runManifest: path.join(args.reports, 'run_manifest.json'),
+    runManifest: path.posix.join(path.basename(args.reports), 'run_manifest.json'),
     projects: gold.projectCount,
     goldOccurrences: gold.occurrenceCount,
     detectedOccurrences: detected.length,
     occurrence: metric(tp.length, fp.length, fn.length),
+    sourceCandidateClassification: (() => {
+      const matchedSites = new Set(tp.map(pair => siteIdentity(pair.gold)));
+      const missedSites = new Set(fn.map(siteIdentity).filter(site => !matchedSites.has(site)));
+      const extraSites = new Set(fp.map(siteIdentity));
+      const site = metric(matchedSites.size, extraSites.size, missedSites.size);
+      const tn = gold.rejectedCandidateCount - extraSites.size;
+      const total = site.tp + site.fp + site.fn + tn;
+      return {
+        ...site,
+        tn,
+        accuracy: total ? (site.tp + tn) / total : null,
+        specificity: tn + site.fp ? tn / (tn + site.fp) : null,
+      };
+    })(),
+    projectApiKey: setMetric(
+      gold.annotations.map(item => `${item.project}|${apiIdentity(item.api)}`),
+      detected.map(item => `${item.project}|${apiIdentity(item.api)}`),
+    ),
+    uniqueApiIdentity: setMetric(
+      gold.annotations.map(item => apiIdentity(item.api)),
+      detected.map(item => apiIdentity(item.api)),
+    ),
     projectClassification,
     rejectedNavigationCandidates: gold.rejectedCandidateCount,
     evidence,
+    byAccessKind: stratify(
+      gold.annotations,
+      detected,
+      tp,
+      fp,
+      fn,
+      item => item.accessKind,
+      item => item.reportUsage.category === 'privacy constants' ? 'property' : 'call',
+    ),
+    byDataType: stratify(
+      gold.annotations,
+      detected,
+      tp,
+      fp,
+      fn,
+      item => item.dataType,
+      item => item.reportUsage.dataType,
+    ),
+    byPackage: stratify(
+      gold.annotations,
+      detected,
+      tp,
+      fp,
+      fn,
+      item => item.api.package,
+      item => item.api.package,
+    ),
     unresolvedConfiguredIdentities: unresolved,
     ambiguousConfiguredIdentities: ambiguous,
     falsePositives: fp,
     falseNegatives: fn,
   };
+  const runManifestFile = path.join(args.reports, 'run_manifest.json');
+  if (fs.existsSync(runManifestFile)) {
+    const runManifest = JSON.parse(fs.readFileSync(runManifestFile, 'utf8'));
+    const sdkInput = runManifest.inputs?.sdk || {};
+    result.runIntegrity = {
+      status: runManifest.status,
+      completed: runManifest.progress?.completed,
+      errors: runManifest.progress?.errors,
+      sdk: {
+        sha256: sdkInput.sha256,
+        files: sdkInput.files,
+        bytes: sdkInput.bytes,
+        apiVersion: reportSdk?.apiVersion,
+        version: reportSdk?.version,
+      },
+      catalogSha256: runManifest.inputs?.configHashes?.['sensitive_apis.json'],
+      expectedCatalogSha256: sha256(fs.readFileSync(args.rules)),
+      implementationSourceSha256: runManifest.inputs?.implementation?.source?.sha256,
+      compiledBuildSha256: runManifest.inputs?.build?.sha256,
+      taintDisabled: (runManifest.execution?.arkArgs || []).includes('--no-taint'),
+    };
+  }
   fs.mkdirSync(args.output, { recursive: true });
   fs.writeFileSync(
     path.join(args.output, 'source_first_evaluation.json'),
@@ -218,8 +370,15 @@ function main() {
     'utf8',
   );
   const percent = value => value == null ? 'N/A' : `${(value * 100).toFixed(2)}%`;
+  const metricRow = (name, value) =>
+    `| ${name} | ${value.tp} | ${value.fp} | ${value.fn} | ` +
+    `${percent(value.precision)} | ${percent(value.recall)} | ${percent(value.f1)} |`;
+  const strataRows = strata => Object.entries(strata).map(([name, value]) =>
+    `| ${name} | ${value.gold} | ${value.detected} | ${value.tp} | ${value.fp} | ` +
+    `${value.fn} | ${percent(value.precision)} | ${percent(value.recall)} |`,
+  );
   const lines = [
-    '# ArkSourceFirst60 Evaluation',
+    `# ${gold.benchmark} Evaluation`,
     '',
     `- Projects: ${result.projects}`,
     `- Gold occurrences: ${result.goldOccurrences}`,
@@ -234,6 +393,27 @@ function main() {
     `- Project accuracy: ${percent(projectClassification.accuracy)}`,
     `- Project sensitivity/specificity: ${percent(projectClassification.sensitivity)}/${percent(projectClassification.specificity)}`,
     '',
+    'The gold set covers executable `.ets`/`.ts` code under each project\'s declared build-module roots. ' +
+    'Metrics below are observations on this fixed benchmark, not a universal guarantee for unseen projects.',
+    '',
+    '## Evaluation Levels',
+    '',
+    '| Level | TP | FP | FN | Precision | Recall | F1 |',
+    '|---|---:|---:|---:|---:|---:|---:|',
+    metricRow('API occurrences', result.occurrence),
+    metricRow('Project-API keys', result.projectApiKey),
+    metricRow('Unique API identities', result.uniqueApiIdentity),
+    '',
+    '## Source Candidate Classification',
+    '',
+    `- Accepted source sites: ${gold.acceptedCandidateCount}`,
+    `- Rejected same-name candidates: ${gold.rejectedCandidateCount}`,
+    `- TP/TN/FP/FN: ${result.sourceCandidateClassification.tp}/` +
+      `${result.sourceCandidateClassification.tn}/${result.sourceCandidateClassification.fp}/` +
+      `${result.sourceCandidateClassification.fn}`,
+    `- Accuracy: ${percent(result.sourceCandidateClassification.accuracy)}`,
+    `- Specificity: ${percent(result.sourceCandidateClassification.specificity)}`,
+    '',
     '## Evidence Stratification',
     '',
     '| Evidence | Gold | TP | FN | Recall |',
@@ -241,7 +421,40 @@ function main() {
     ...Object.entries(evidence).sort().map(([name, value]) =>
       `| ${name} | ${value.gold} | ${value.tp} | ${value.fn} | ${percent(value.recall)} |`,
     ),
+    '',
+    '## Access Kind',
+    '',
+    '| Access | Gold | Detected | TP | FP | FN | Precision | Recall |',
+    '|---|---:|---:|---:|---:|---:|---:|---:|',
+    ...strataRows(result.byAccessKind),
+    '',
+    '## PAC Data Type',
+    '',
+    '| Data type | Gold | Detected | TP | FP | FN | Precision | Recall |',
+    '|---|---:|---:|---:|---:|---:|---:|---:|',
+    ...strataRows(result.byDataType),
+    '',
+    '## API Package',
+    '',
+    '| Package | Gold | Detected | TP | FP | FN | Precision | Recall |',
+    '|---|---:|---:|---:|---:|---:|---:|---:|',
+    ...strataRows(result.byPackage),
   ];
+  if (result.runIntegrity) {
+    lines.push(
+      '',
+      '## Run Integrity',
+      '',
+      `- Run status: ${result.runIntegrity.status}`,
+      `- Completed/errors: ${result.runIntegrity.completed}/${result.runIntegrity.errors}`,
+      `- SDK API/version: ${result.runIntegrity.sdk?.apiVersion}/${result.runIntegrity.sdk?.version}`,
+      `- SDK SHA-256: ${result.runIntegrity.sdk?.sha256}`,
+      `- Catalog SHA-256: ${result.runIntegrity.catalogSha256}`,
+      `- Implementation source SHA-256: ${result.runIntegrity.implementationSourceSha256}`,
+      `- Compiled build SHA-256: ${result.runIntegrity.compiledBuildSha256}`,
+      `- Detector-only mode: ${result.runIntegrity.taintDisabled}`,
+    );
+  }
   fs.writeFileSync(path.join(args.output, 'source_first_evaluation.md'), `${lines.join('\n')}\n`, 'utf8');
   console.log(JSON.stringify({
     output: args.output,

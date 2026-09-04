@@ -1,0 +1,749 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "ArkPrismTop120-PAC-v2",
+  "runManifest": "results-api26-pac-v2-verified-20260904/run_manifest.json",
+  "projects": 120,
+  "goldOccurrences": 576,
+  "detectedOccurrences": 576,
+  "occurrence": {
+    "tp": 576,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "precisionWilson95": {
+      "estimate": 1,
+      "lower": 0.9933749842094647,
+      "upper": 0.9999999999999999
+    },
+    "recallWilson95": {
+      "estimate": 1,
+      "lower": 0.9933749842094647,
+      "upper": 0.9999999999999999
+    }
+  },
+  "sourceCandidateClassification": {
+    "tp": 496,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "precisionWilson95": {
+      "estimate": 1,
+      "lower": 0.99231464546827,
+      "upper": 0.9999999999999999
+    },
+    "recallWilson95": {
+      "estimate": 1,
+      "lower": 0.99231464546827,
+      "upper": 0.9999999999999999
+    },
+    "tn": 746,
+    "accuracy": 1,
+    "specificity": 1
+  },
+  "projectApiKey": {
+    "tp": 356,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "precisionWilson95": {
+      "estimate": 1,
+      "lower": 0.9893245796821641,
+      "upper": 1
+    },
+    "recallWilson95": {
+      "estimate": 1,
+      "lower": 0.9893245796821641,
+      "upper": 1
+    }
+  },
+  "uniqueApiIdentity": {
+    "tp": 95,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "precisionWilson95": {
+      "estimate": 1,
+      "lower": 0.9611351464605271,
+      "upper": 1
+    },
+    "recallWilson95": {
+      "estimate": 1,
+      "lower": 0.9611351464605271,
+      "upper": 1
+    }
+  },
+  "projectClassification": {
+    "tp": 81,
+    "tn": 39,
+    "fp": 0,
+    "fn": 0,
+    "accuracy": 1,
+    "accuracyWilson95": {
+      "estimate": 1,
+      "lower": 0.9689808335812966,
+      "upper": 1
+    },
+    "sensitivity": 1,
+    "specificity": 1
+  },
+  "rejectedNavigationCandidates": 746,
+  "evidence": {
+    "named-import": {
+      "gold": 228,
+      "tp": 228,
+      "fn": 0,
+      "recall": 1
+    },
+    "receiver-origin": {
+      "gold": 105,
+      "tp": 105,
+      "fn": 0,
+      "recall": 1
+    },
+    "receiver-type": {
+      "gold": 81,
+      "tp": 81,
+      "fn": 0,
+      "recall": 1
+    },
+    "default-import": {
+      "gold": 62,
+      "tp": 62,
+      "fn": 0,
+      "recall": 1
+    },
+    "reviewed-receiver-origin": {
+      "gold": 14,
+      "tp": 14,
+      "fn": 0,
+      "recall": 1
+    },
+    "finite-sensor-id-set": {
+      "gold": 85,
+      "tp": 85,
+      "fn": 0,
+      "recall": 1
+    },
+    "numeric-sensor-id": {
+      "gold": 1,
+      "tp": 1,
+      "fn": 0,
+      "recall": 1
+    }
+  },
+  "byAccessKind": {
+    "call": {
+      "gold": 520,
+      "detected": 520,
+      "tp": 520,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9926667529726603,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9926667529726603,
+        "upper": 1
+      }
+    },
+    "property": {
+      "gold": 56,
+      "detected": 56,
+      "tp": 56,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9358060632812366,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9358060632812366,
+        "upper": 1
+      }
+    }
+  },
+  "byDataType": {
+    "Device information": {
+      "gold": 240,
+      "detected": 240,
+      "tp": 240,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9842460800584412,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9842460800584412,
+        "upper": 1
+      }
+    },
+    "Basic information": {
+      "gold": 95,
+      "detected": 95,
+      "tp": 95,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9611351464605271,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9611351464605271,
+        "upper": 1
+      }
+    },
+    "User content": {
+      "gold": 81,
+      "detected": 81,
+      "tp": 81,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9547219145675847,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9547219145675847,
+        "upper": 1
+      }
+    },
+    "Special category data": {
+      "gold": 47,
+      "detected": 47,
+      "tp": 47,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9244423958360037,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9244423958360037,
+        "upper": 1
+      }
+    },
+    "Location information": {
+      "gold": 45,
+      "detected": 45,
+      "tp": 45,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9213484012671117,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9213484012671117,
+        "upper": 1
+      }
+    },
+    "Identifiers": {
+      "gold": 25,
+      "detected": 25,
+      "tp": 25,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.8668077490609515,
+        "upper": 0.9999999999999999
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.8668077490609515,
+        "upper": 0.9999999999999999
+      }
+    },
+    "Fitness and health information": {
+      "gold": 24,
+      "detected": 24,
+      "tp": 24,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.8620237953250198,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.8620237953250198,
+        "upper": 1
+      }
+    },
+    "Financial information": {
+      "gold": 10,
+      "detected": 10,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.7224672001371107,
+        "upper": 0.9999999999999999
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.7224672001371107,
+        "upper": 0.9999999999999999
+      }
+    },
+    "App information": {
+      "gold": 5,
+      "detected": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      }
+    },
+    "Transaction information": {
+      "gold": 4,
+      "detected": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.5101091635454027,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.5101091635454027,
+        "upper": 1
+      }
+    }
+  },
+  "byPackage": {
+    "@kit.SensorServiceKit": {
+      "gold": 117,
+      "detected": 117,
+      "tp": 117,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9682107543372667,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9682107543372667,
+        "upper": 1
+      }
+    },
+    "@kit.BasicServicesKit": {
+      "gold": 112,
+      "detected": 112,
+      "tp": 112,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9668386529330562,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9668386529330562,
+        "upper": 1
+      }
+    },
+    "@kit.AccountKit": {
+      "gold": 81,
+      "detected": 81,
+      "tp": 81,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9547219145675847,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9547219145675847,
+        "upper": 1
+      }
+    },
+    "@kit.UserAuthenticationKit": {
+      "gold": 46,
+      "detected": 46,
+      "tp": 46,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9229264369144198,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9229264369144198,
+        "upper": 1
+      }
+    },
+    "@kit.LocationKit": {
+      "gold": 45,
+      "detected": 45,
+      "tp": 45,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9213484012671117,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9213484012671117,
+        "upper": 1
+      }
+    },
+    "@kit.MediaLibraryKit": {
+      "gold": 40,
+      "detected": 40,
+      "tp": 40,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9123783988027135,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9123783988027135,
+        "upper": 1
+      }
+    },
+    "@kit.NetworkKit": {
+      "gold": 35,
+      "detected": 35,
+      "tp": 35,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.9010990076755959,
+        "upper": 0.9999999999999999
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.9010990076755959,
+        "upper": 0.9999999999999999
+      }
+    },
+    "@kit.ConnectivityKit": {
+      "gold": 34,
+      "detected": 34,
+      "tp": 34,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.8984854458466761,
+        "upper": 0.9999999999999999
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.8984854458466761,
+        "upper": 0.9999999999999999
+      }
+    },
+    "@kit.AdsKit": {
+      "gold": 16,
+      "detected": 16,
+      "tp": 16,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.8063923194655637,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.8063923194655637,
+        "upper": 1
+      }
+    },
+    "@kit.MediaKit": {
+      "gold": 14,
+      "detected": 14,
+      "tp": 14,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.7846891972623643,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.7846891972623643,
+        "upper": 1
+      }
+    },
+    "@kit.AssetStoreKit": {
+      "gold": 10,
+      "detected": 10,
+      "tp": 10,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.7224672001371107,
+        "upper": 0.9999999999999999
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.7224672001371107,
+        "upper": 0.9999999999999999
+      }
+    },
+    "@kit.CalendarKit": {
+      "gold": 8,
+      "detected": 8,
+      "tp": 8,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.6755924351161198,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.6755924351161198,
+        "upper": 1
+      }
+    },
+    "@kit.AbilityKit": {
+      "gold": 5,
+      "detected": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      }
+    },
+    "@kit.TelephonyKit": {
+      "gold": 5,
+      "detected": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.5655175352168251,
+        "upper": 1
+      }
+    },
+    "@kit.IAPKit": {
+      "gold": 4,
+      "detected": 4,
+      "tp": 4,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.5101091635454027,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.5101091635454027,
+        "upper": 1
+      }
+    },
+    "@kit.PushKit": {
+      "gold": 3,
+      "detected": 3,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.4385029682449546,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.4385029682449546,
+        "upper": 1
+      }
+    },
+    "@kit.VisionKit": {
+      "gold": 1,
+      "detected": 1,
+      "tp": 1,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "precisionWilson95": {
+        "estimate": 1,
+        "lower": 0.20654931437723745,
+        "upper": 1
+      },
+      "recallWilson95": {
+        "estimate": 1,
+        "lower": 0.20654931437723745,
+        "upper": 1
+      }
+    }
+  },
+  "unresolvedConfiguredIdentities": [],
+  "ambiguousConfiguredIdentities": [],
+  "falsePositives": [],
+  "falseNegatives": [],
+  "runIntegrity": {
+    "status": "complete",
+    "completed": 120,
+    "errors": 0,
+    "sdk": {
+      "sha256": "223b84b83d81bd4f4822903d7121b17e981a255bb0a1a36a83e0a082e2a9ad45",
+      "files": 13973,
+      "bytes": 317207974,
+      "apiVersion": "26",
+      "version": "26.0.0.38"
+    },
+    "catalogSha256": "dde9ae33009a5c0f2ed060b59265fe33106c816bdb43075be9c0ffde6a00a3e4",
+    "expectedCatalogSha256": "dde9ae33009a5c0f2ed060b59265fe33106c816bdb43075be9c0ffde6a00a3e4",
+    "implementationSourceSha256": "f3e41b4a31e40ce33354e89577348eae0f49bd402509f12688851901e8757f40",
+    "compiledBuildSha256": "794634e40fa2b24922e96ed51e12e58259bfce384909a1a2bb8498b8f1271b08",
+    "taintDisabled": true
+  }
+}

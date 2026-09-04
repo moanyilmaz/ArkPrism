@@ -9,4 +9,10 @@ dataset/
 .DS_Store
 benchmarks/ArkPrismTop120/sources/
 benchmarks/ArkPrismTop120/results/
+benchmarks/ArkPrismTop120/results-api26-*/
+benchmarks/ArkPrismTop120/pac_v2/review_workbook.json
+benchmarks/ArkPrismTop120/pac_v2/evaluation-api26-final-20260904/
+benchmarks/ArkPrismTop120/pac_v2/targeted-fix-validation-*/
+delivery/*.zip
+experiments/.cache/
 

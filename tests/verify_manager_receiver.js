@@ -59,6 +59,14 @@ const cases = [
       { method: 'serial', fragment: '.serial' },
     ],
   },
+  {
+    fixture: 'catalog_receiver_precision',
+    expected: [
+      'Album.getAssets|receiver_type',
+      'Album.getAssets|receiver_type',
+      'bundleManager.getBundleInfo|undefined',
+    ],
+  },
 ];
 
 const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'arkprism-manager-receiver-'));

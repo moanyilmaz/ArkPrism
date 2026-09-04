@@ -30,6 +30,7 @@ const checks = [
   'verify_sdk_info.js',
   'verify_sensitive_api_catalog.js',
   'verify_sensitive_api_detectability.js',
+  'verify_sensor_event_resolution.js',
   'verify_semantic_path_audit_evaluator.js',
   'verify_semantic_path_audit_queue.js',
   'verify_source_audit_export.js',
@@ -40,6 +41,7 @@ const checks = [
   'verify_taint_source_evidence.js',
   'verify_taint_value_dependency.js',
   'verify_top120_benchmark.js',
+  'verify_top120_pac_gold.js',
   'verify_top120_source_packager.js',
   'verify_windows_long_paths.js',
 ];

@@ -45,7 +45,12 @@ function parseIdentity(record: ReviewedSensitiveApiRecord): { namespace: string;
     }
     if (parts.length === 1) {
         const member = text(record.api_kwd) || parts[0];
-        return { namespace: member, method: `${member}${suffix}` };
+        const moduleTitle = text(record.possible_module_title);
+        const documentedNamespace = moduleTitle.match(/^([A-Za-z_$][\w$]*)/)?.[1];
+        return {
+            namespace: documentedNamespace || member,
+            method: `${member}${suffix}`,
+        };
     }
     return {
         namespace: parts[0],

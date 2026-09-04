@@ -16,6 +16,7 @@ for (const [sourcePackage, targets] of Object.entries(aliases)) {
 
 const requiredMigrations = [
   ['@ohos.identifier.oaid', '@kit.AdsKit'],
+  ['@ohos.bundle', '@kit.AbilityKit'],
   ['@ohos.calendarManager', '@kit.CalendarKit'],
   ['@ohos.multimedia.camera', '@kit.CameraKit'],
   ['@ohos.file.photoAccessHelper', '@kit.MediaLibraryKit'],

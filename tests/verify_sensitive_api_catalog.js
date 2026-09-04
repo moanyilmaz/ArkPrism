@@ -70,4 +70,19 @@ assert.ok(movingPhoto, 'reviewed requestContent rule was not normalized');
 assert.ok(movingPhoto.receiverTypes.includes('MovingPhoto'));
 assert.strictEqual(movingPhoto.overloads.length, 3);
 
+const liveness = rules.find(rule =>
+  rule.catalogApiSignature === 'startLivenessDetection'
+);
+assert.ok(liveness, 'reviewed liveness rule was not normalized');
+assert.strictEqual(liveness.namespace, 'interactiveLiveness');
+assert.strictEqual(liveness.method, 'startLivenessDetection');
+
+const systemInfo = rules.find(rule => rule.catalogApiSignature === 'getSystemInfo');
+assert.ok(systemInfo, 'reviewed ScenarioFusionKit rule was not normalized');
+assert.strictEqual(systemInfo.namespace, 'atomicService');
+
+const integrity = rules.find(rule => rule.catalogApiSignature === 'checkSysIntegrity');
+assert.ok(integrity, 'reviewed DeviceSecurityKit rule was not normalized');
+assert.strictEqual(integrity.namespace, 'SafetyDetect');
+
 console.log('Reviewed sensitive API catalog normalization verified.');

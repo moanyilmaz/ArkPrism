@@ -1,0 +1,1933 @@
+{
+  "schemaVersion": 1,
+  "benchmark": "ArkPrismTop120-PAC-v2",
+  "projectSelection": "The original fixed Top-120 project set; gold labels are rebuilt source-first for the reviewed PAC catalog.",
+  "annotationUnit": "source_api_occurrence",
+  "candidateGenerationReadsArkPrismReports": false,
+  "dataset": "E:\\Projects\\ARGUS\\release_20260617\\ARGUS-successful-1015-samples-20260617",
+  "ruleSetSha256": "dde9ae33009a5c0f2ed060b59265fe33106c816bdb43075be9c0ffde6a00a3e4",
+  "packageAliasSha256": "99eea00d4325dd9f502fdb6f22999077795c9cc2c6d2dba4bf461d605de4d7c8",
+  "projectCount": 120,
+  "projects": [
+    {
+      "sampleId": "T120-S001",
+      "project": "CommonAppDevelopment",
+      "sourceFiles": 1644,
+      "sourceTreeSha256": "c723f4b044ab4029de1e6a1d3d70ca4ea9740dc59f92676074b9048e4d82879c",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "product/entry",
+        "feature/functionalscenes",
+        "common/utils",
+        "feature/eventpropagation",
+        "feature/nativerawfile",
+        "feature/customtabbar",
+        "feature/secondarylinkage",
+        "feature/barchart",
+        "feature/addressexchange",
+        "feature/pendingitems",
+        "feature/imageviewer",
+        "feature/gbktranscoding",
+        "feature/handletabs",
+        "feature/modalwindow",
+        "feature/slidetohideanddisplace",
+        "feature/navigationparametertransfer",
+        "feature/akiusepractice",
+        "feature/variablewatch",
+        "common/routermodule",
+        "feature/pageturninganimation",
+        "feature/applicationexception",
+        "feature/fitfordarkmode",
+        "feature/pulltorefreshnews",
+        "feature/marquee",
+        "feature/nativeprogressnotify",
+        "feature/photopickandsave",
+        "feature/verifycode",
+        "feature/vibrateeffect",
+        "feature/swipersmoothvariation",
+        "feature/swipercomponent",
+        "feature/searchcomponent",
+        "feature/navigationbarchange",
+        "feature/mediafullscreen",
+        "feature/citysearch",
+        "feature/imagecomment",
+        "feature/waterripples",
+        "feature/foldablescreencases",
+        "feature/nativesavepictosandbox",
+        "feature/componentstack",
+        "feature/customcalendarpickerdialog",
+        "feature/customview",
+        "feature/dragandexchange",
+        "feature/decompressfile",
+        "feature/paintcomponent",
+        "feature/shortvideo",
+        "feature/digitalscrollanimation",
+        "feature/lottieview",
+        "feature/votingcomponent",
+        "feature/webgetcameraimage",
+        "feature/sidebaranimation",
+        "feature/imagecompression",
+        "feature/imageenableanalyzer",
+        "feature/chinesetopinyin",
+        "feature/bottomdrawerslidecase",
+        "feature/expandtitle",
+        "feature/componentinstancesharedinpages",
+        "feature/listslidetohistory",
+        "feature/pageloading",
+        "feature/hilogmonitormanagement",
+        "feature/bigfilecopy",
+        "feature/diggingholescreen",
+        "feature/dragtoswitchpictures",
+        "feature/listitemoverflow",
+        "feature/customsafekeyboard",
+        "feature/databaseupgrade",
+        "feature/transitionanimation",
+        "feature/imagegridlayout",
+        "feature/dynamicattributes",
+        "feature/etswrapper",
+        "feature/handwritingtoimage",
+        "feature/indicatorbelowswiper",
+        "feature/multimodaltransion",
+        "feature/multiplefilesdownload",
+        "feature/nativeembed",
+        "feature/sideslipintercept",
+        "feature/webpdfviewer",
+        "feature/imagetheft",
+        "feature/cardswiperanimation",
+        "feature/effectkit",
+        "feature/voicerecordynamiceffect",
+        "feature/fontdynamicregistration",
+        "feature/customscan",
+        "feature/imagedepthcopy",
+        "feature/pageflip",
+        "feature/videocache",
+        "feature/iconmaincolor",
+        "feature/highlightguide",
+        "feature/wordrecognition",
+        "feature/analogclock",
+        "feature/xcomponentvsync",
+        "feature/webcustompressmenu",
+        "feature/bottompanelslide",
+        "feature/danmakuplayer",
+        "feature/listexchange",
+        "feature/tabcontentoverflow",
+        "feature/chatwithexpression",
+        "feature/floatwindow",
+        "feature/gridexchange",
+        "feature/miniplayeranimation",
+        "feature/refreshtimeline",
+        "feature/webpagesnapshot",
+        "feature/customdialog",
+        "feature/navigationinterceptor",
+        "feature/blendmode",
+        "feature/secondfloorloadanimation",
+        "feature/styledtext",
+        "feature/textexpand",
+        "feature/imageresizable",
+        "feature/fadingedge",
+        "feature/textoverflow",
+        "feature/watermark",
+        "feature/customstepper",
+        "feature/navdestinationdialog",
+        "feature/searchswiper",
+        "feature/perfermance/highlyloadedcomponentrender",
+        "feature/videolinkagelist",
+        "feature/customkeyboardtoh5",
+        "feature/perfermance/customreusablepool",
+        "feature/perfermance/operaterdbintaskpool",
+        "feature/sendmessage",
+        "feature/palette",
+        "feature/skeletondiagram",
+        "feature/imagemosaic",
+        "feature/calendarswitch",
+        "feature/videoscreendirectionswitching",
+        "feature/customdrawtabbar",
+        "feature/eraser",
+        "feature/bluetooth",
+        "feature/perfermance/imperativedynamiclayouts",
+        "feature/customdecoration",
+        "feature/videolistautoplay",
+        "feature/editaddress",
+        "feature/customanimationtab",
+        "feature/statusbaranimation",
+        "feature/verticalhorizontallinkage",
+        "feature/livedetectionandencryptiond",
+        "feature/collapsemenu",
+        "feature/addressrecognize",
+        "feature/groupavatar",
+        "feature/h5cache",
+        "feature/publishmultimediaupdates",
+        "feature/keyboardavoid",
+        "feature/mapthumbtack",
+        "feature/patternlock",
+        "feature/selecttextmenu",
+        "feature/shareimagepage",
+        "feature/immersive",
+        "feature/containernestedslide",
+        "feature/advertisingpage",
+        "feature/healthchart",
+        "feature/backgroundblur",
+        "feature/pipwindow",
+        "feature/clockin",
+        "feature/compressfile",
+        "feature/decodeheifimage",
+        "feature/privacyagreement",
+        "feature/customaddresspicker",
+        "feature/videocreategif",
+        "feature/clickanimation",
+        "feature/toolbox",
+        "feature/networkstatusobserver",
+        "feature/multiplescreening",
+        "feature/limitedheightbottomdialog",
+        "feature/faceandfingerprintunlocking",
+        "feature/cuberotateanimation",
+        "feature/multicolumndisplay",
+        "feature/dealstridesolution",
+        "feature/videotrimmer",
+        "feature/encapsulationdialog",
+        "feature/smartfill",
+        "feature/sharebutton"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S002",
+      "project": "Wechat_HarmonyOS",
+      "sourceFiles": 59,
+      "sourceTreeSha256": "d51b391ff8ff9b721dd5378bdc98131b0f153c86e85ef7b653687ca651b6d6aa",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S003",
+      "project": "legado-Harmony-main",
+      "sourceFiles": 360,
+      "sourceTreeSha256": "1b4a37f8fb4089a5a0fecd9c83fc5872a8977e828d01806d834c477d5f1e7e62",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "commons/colorLibrary",
+        "readerLibrary"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S004",
+      "project": "Snake_NEXT-main",
+      "sourceFiles": 45,
+      "sourceTreeSha256": "43246119c01294af26f914869b433736b20131ddd4c418a28e527ab7b0f5d6a0",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S005",
+      "project": "harmony-next-music-sharing",
+      "sourceFiles": 87,
+      "sourceTreeSha256": "4833288c9f69312d240b66b086c27814f30e4dae376a70987f43b0ebb45608f7",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S006",
+      "project": "STUFFS_NEXT-master",
+      "sourceFiles": 29,
+      "sourceTreeSha256": "8d8587d7692f5f0652a87ce5d09acdfa0416b8896d156aa9be08e58355b2ec89",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S007",
+      "project": "applications_settings",
+      "sourceFiles": 163,
+      "sourceTreeSha256": "82edc5145548cd32ea1edb8ef514ed1458d65e3da9d27fd2fe50008a88d723a0",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "product/phone",
+        "common/component",
+        "common/search",
+        "common/settingsBase",
+        "common/utils"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S008",
+      "project": "harmonyos4me_ResponsiveLayout",
+      "sourceFiles": 63,
+      "sourceTreeSha256": "17046b7c0196aee1aac765656c52f5826c14b65ffe754472a3a19c2754bef6ed",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S009",
+      "project": "harmonyos4me_ZUtils",
+      "sourceFiles": 107,
+      "sourceTreeSha256": "56b661289fea97f44d12b3916d7feb93a0176acfd79bde19d475ef1616dce692",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "zutils",
+        "ui/loading",
+        "ui/captchaCode",
+        "ui/countdown",
+        "ui/tab",
+        "ui/selectImage",
+        "ui/refresh",
+        "ui/skeleton"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S010",
+      "project": "harmonyos4me_MultiVideoApplication",
+      "sourceFiles": 58,
+      "sourceTreeSha256": "9a458e089e5b52f455bcec7bf86c3a6f0805c1ce5e2926c7ba35c816a9704ab6",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/home",
+        "features/search",
+        "features/videoDetail",
+        "features/videoPlayer",
+        "commons/base"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S011",
+      "project": "harmony-arkts-chat-app-ui",
+      "sourceFiles": 38,
+      "sourceTreeSha256": "79387c7a745df98567482a1380b39cfe244605bc5052075a744509a9772a7b67",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S012",
+      "project": "harmonyos_samples_network-query",
+      "sourceFiles": 14,
+      "sourceTreeSha256": "5dd0ff853c3a03d81f73d0861f41ae185365de283b8f23e43c4ab1242610648b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S013",
+      "project": "harmonyProject-master",
+      "sourceFiles": 60,
+      "sourceTreeSha256": "9bdfc947114b20b70bb56c8da97c59bcf0ae9e69811b747f5469830c774b000a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S014",
+      "project": "harmonyos_samples_CustomCamera",
+      "sourceFiles": 32,
+      "sourceTreeSha256": "e87b71f78bf45c624d4052444edfad2cd8d31910e85b13bbdf2be2c6e0f34c9e",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "camera",
+        "commons"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S015",
+      "project": "Dictionareow",
+      "sourceFiles": 32,
+      "sourceTreeSha256": "5ba323e9651e1e5db2d78b6c5340652e996950a62290266957407874530f6cba",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "meow"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S016",
+      "project": "Photos",
+      "sourceFiles": 126,
+      "sourceTreeSha256": "16b17c04e93fb57b7df801a2a5cf9888f69f4bcf837760f8c71108557a26909a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S017",
+      "project": "applications_systemui",
+      "sourceFiles": 273,
+      "sourceTreeSha256": "24f723e787f01e471171057ff2c755944b4076aebb7c1bde2381daa923ef1f0b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry/phone",
+        "entry/pc",
+        "product/default/navigationBar",
+        "product/default/notificationmanagement",
+        "product/default/volumepanel",
+        "product/default/dialog",
+        "product/pc/controlpanel",
+        "product/pc/notificationpanel",
+        "product/pc/statusbar",
+        "product/phone/dropdownpanel",
+        "product/phone/statusbar",
+        "common",
+        "features/airplanecomponent",
+        "features/autorotatecomponent",
+        "features/batterycomponent",
+        "features/bluetoothcomponent",
+        "features/brightnesscomponent",
+        "features/capsulecomponent",
+        "features/clockcomponent",
+        "features/controlcentercomponent",
+        "features/locationcomponent",
+        "features/managementcomponent",
+        "features/navigationservice",
+        "features/nfccomponent",
+        "features/noticeitem",
+        "features/ringmodecomponent",
+        "features/signalcomponent",
+        "features/statusbarcomponent",
+        "features/volumecomponent",
+        "features/volumepanelcomponent",
+        "features/wificomponent"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S018",
+      "project": "Gramony",
+      "sourceFiles": 77,
+      "sourceTreeSha256": "a030856da9e5f4ef1a5158d8522c509928f53e055f0f7ffadcae988171fa0f56",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/home",
+        "common/base"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S019",
+      "project": "Homogram",
+      "sourceFiles": 83,
+      "sourceTreeSha256": "2847ab66f533ead33ebca7b336224b50fd622523e3b5a823378fe3b1c1e87bc2",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/home",
+        "common/base"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S020",
+      "project": "harmonyos4me_readerkit_samplecode_arkts",
+      "sourceFiles": 11,
+      "sourceTreeSha256": "a4d9247e1ac3a1d0d520b85f36988cfae7156dd6bd31d96dbb471bb413f1a140",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S021",
+      "project": "UserAuthentication",
+      "sourceFiles": 8,
+      "sourceTreeSha256": "35e8740ac14f65d9dac09aa05a1412ba12e225a8a0d077336092c58ab32cbc77",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S022",
+      "project": "Melotopia-HMOS",
+      "sourceFiles": 150,
+      "sourceTreeSha256": "5d0a5151c55543cd1a5184faecdc518ce32e7985fb5dc8a0fd61c40c7ad23c8a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S023",
+      "project": "MultiVideoApplication",
+      "sourceFiles": 56,
+      "sourceTreeSha256": "66d84d9e7011f4df4407db08c8f884aaaeee8a7dfc93cc5d605fff7b9fc5654e",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/home",
+        "features/search",
+        "features/videoDetail",
+        "features/videoPlayer",
+        "commons/base"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S024",
+      "project": "harmonyos4me_MultiDeviceCommunication",
+      "sourceFiles": 41,
+      "sourceTreeSha256": "fab1b5fcadb72bef1bcaaf9909d3fbed1461bb8b3602ee7f4888ee159c356f66",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/home",
+        "features/socialCircle",
+        "common/base"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S025",
+      "project": "uitest",
+      "sourceFiles": 54,
+      "sourceTreeSha256": "69a3c6eda4477db8676437b3a49e893543ddc3dafabf79ae5148579a4559a90a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S026",
+      "project": "ChildrenEducation",
+      "sourceFiles": 95,
+      "sourceTreeSha256": "022a6e653863eba30a2cac8f77b82b7173fe9a6d99c338d12e419625d792eaed",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "commons/datasource",
+        "scenes/tabs/homepage",
+        "commons/utils",
+        "scenes/services/selected",
+        "scenes/services/cartoon",
+        "scenes/services/englishZone",
+        "scenes/tabs/minepage",
+        "scenes/services/sing",
+        "scenes/services/chinese",
+        "scenes/tabs/vippage",
+        "product/phone"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S027",
+      "project": "legado-Harmony-master",
+      "sourceFiles": 329,
+      "sourceTreeSha256": "deede5072417d351849b787ebf9372394873e200abd3245a51e0933c984e1cb1",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "commons/colorLibrary",
+        "readerLibrary"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S028",
+      "project": "siyuan-harmony",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "6024e5175e71dc94c1434c1746bf3a4d9f368b2b77e4f09fc565932a5ac95595",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S029",
+      "project": "Spaceow",
+      "sourceFiles": 20,
+      "sourceTreeSha256": "249247f25db0a61c903f8cd349dd2bfbb222458c6b995be6370cf1841d7634f6",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "woof"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S030",
+      "project": "DistributedAuthentication",
+      "sourceFiles": 14,
+      "sourceTreeSha256": "e60134e724ff93376367214b1ad6a9b43627873d43b544476cc980b6dac28e18",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S031",
+      "project": "harmonyos_samples_continue-progress",
+      "sourceFiles": 37,
+      "sourceTreeSha256": "4e8de2082621ad4f13bed4e463c8b11441bce9ca0472387998dca8a6b3e72782",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S032",
+      "project": "HarmonyOS-Inno",
+      "sourceFiles": 35,
+      "sourceTreeSha256": "0c79ba023ad386c1e293c51dbadb0ce687f1c46b3b24cb43c57cfd6270d15d00",
+      "sourceScope": "project-root-fallback",
+      "sourceRoots": [
+        "."
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S033",
+      "project": "harmonyos4me_HMRouter",
+      "sourceFiles": 78,
+      "sourceTreeSha256": "68d0510196257bfc52a55c3649e679615782777c88c732f82527c58eee8fe685",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S034",
+      "project": "Renameow",
+      "sourceFiles": 24,
+      "sourceTreeSha256": "ee169d679fdb99e712e47865f51259b2b485bd5a8685eb3aa1f6b48ef1e9b844",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "honk"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S035",
+      "project": "Wake-HarmonyOS",
+      "sourceFiles": 42,
+      "sourceTreeSha256": "ea362fbd0b514648fbefbd181b2e06abe8a944a0ff162729655852f482db3698",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S036",
+      "project": "Aigis",
+      "sourceFiles": 36,
+      "sourceTreeSha256": "638d042ec691518e244f2b2ffe9d1817e3bbc0490108dfd84125c576cc11817a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S037",
+      "project": "Audio",
+      "sourceFiles": 19,
+      "sourceTreeSha256": "4a2483d7f8ba139f6d696d2e3e8137d2be3f6b3b8d3322e2e273e7acff547657",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S038",
+      "project": "Camera_js",
+      "sourceFiles": 30,
+      "sourceTreeSha256": "11c0bc21adbad8c143e4962b196625c1f9d9fb41ce5b8d84561506197fd6fb5d",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S039",
+      "project": "MNUIKitDemo",
+      "sourceFiles": 27,
+      "sourceTreeSha256": "e246c5b9fd8db74946c60b622e311222894b47fd0c5e1b10f3fb6721a7318ff4",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "MNUIkit"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S040",
+      "project": "SmartHome",
+      "sourceFiles": 169,
+      "sourceTreeSha256": "e37aa1b45263a738a5cedf7a1d055e9c8b2a3f3d60569bc7e40d4417780825fb",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/device_mng",
+        "commons/utils",
+        "features/device_service",
+        "test/device_simulation",
+        "features/device_add",
+        "commons/external_interactions",
+        "commons/uicomponents",
+        "components/login",
+        "components/category_list",
+        "components/form_bar",
+        "components/base_apis",
+        "components/message_list",
+        "components/bluetooth_scan",
+        "components/wifi_scan"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S041",
+      "project": "Wlan",
+      "sourceFiles": 16,
+      "sourceTreeSha256": "c245410112d3dc6a9a12d4200092336b684bc7dbe230da55d28e155b46957b48",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S042",
+      "project": "aloeplayer_ohos",
+      "sourceFiles": 56,
+      "sourceTreeSha256": "c7403d226383b0a6627e57de415018a11c1c5e0bf29fa904c795abb23b267c9a",
+      "sourceScope": "project-root-fallback",
+      "sourceRoots": [
+        "."
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S043",
+      "project": "AVCodec",
+      "sourceFiles": 16,
+      "sourceTreeSha256": "8440662eff75b77f442052b0d3685bd0a8ce5baa62026281c7d0708a8cc70288",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S044",
+      "project": "FoldableAdaptation",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "a3f8474d87fabde3aaf66dba804f8cf11d7413432648a31e25919a82625a8d96",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S045",
+      "project": "harmonyos_samples_graphic-creation",
+      "sourceFiles": 25,
+      "sourceTreeSha256": "a876b1b0937808dcf7932bd3ed9ffef200621e2dd4fe4a2e362923886ec712e7",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S046",
+      "project": "harmonyos4me_transitions-collection",
+      "sourceFiles": 47,
+      "sourceTreeSha256": "9b3a2679f2ffb26959097aaaa605bc9d499292bad5fc62ec38eb87e8d0e121cf",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S047",
+      "project": "com.example.myapplication2",
+      "sourceFiles": 8,
+      "sourceTreeSha256": "69d4148529fa6a22bffe863f3e35357476edd1bb8b673f9d678921893f39c9f1",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S048",
+      "project": "Exam",
+      "sourceFiles": 200,
+      "sourceTreeSha256": "37d5ba908e6286888984935ad969cdbe97f0fae87118a8cf3858d2bbe7699b8f",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "product/entry",
+        "features/homePage",
+        "features/minePage",
+        "features/topicPage",
+        "commons/commonLib",
+        "components/base_select",
+        "components/select_category",
+        "components/answer_questions",
+        "components/login_info",
+        "components/aggregated_payment",
+        "commons/router_module",
+        "components/feed_back",
+        "components/search",
+        "components/search_question"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S049",
+      "project": "harmonyos4me_accountkit-samplecode-clientdemo-arkts",
+      "sourceFiles": 21,
+      "sourceTreeSha256": "2290b467918b4d4fd64947c0118198fb4a1b170603b27ee074d0e232c8e7ab49",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S050",
+      "project": "LiveStreaming",
+      "sourceFiles": 333,
+      "sourceTreeSha256": "798e36ef155306229a43277bcda846135a8638fdf279d47d89790c2646a5c239",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/common",
+        "commons/utils",
+        "commons/resources",
+        "commons/styles",
+        "commons/server",
+        "commons/widgets",
+        "features/home",
+        "features/mine",
+        "features/detail",
+        "components/video_swiper",
+        "components/module_login",
+        "components/feed_back",
+        "commons/router_module",
+        "components/aggregated_payment",
+        "components/module_share",
+        "components/live_interaction"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S051",
+      "project": "NetworkObserver",
+      "sourceFiles": 11,
+      "sourceTreeSha256": "66d8aabecd44c6dc6f55d9263380d7803b4f8b6fbae47294b4abd2736a8abcaf",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S052",
+      "project": "readmigo_harmony-app",
+      "sourceFiles": 228,
+      "sourceTreeSha256": "18278114812fe9da5d28544efef7281d3c950940393fd6561a6ed7f7ccf9d661",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S053",
+      "project": "SensorJsSamples",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "051f0fc4a4a29fad9c03b79127aad73e271a15b65f4ed2a40fec82ac6b28af5b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S054",
+      "project": "bluetoothSample",
+      "sourceFiles": 17,
+      "sourceTreeSha256": "9bee0776ce388c3f6d01002e3383fbf2f3105cb7c743ee19ee1e0af7583e7bf2",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S055",
+      "project": "FinVideo",
+      "sourceFiles": 83,
+      "sourceTreeSha256": "0fe0de318c6314d7dc3e15c4bd2051b6a643143bdeec869afc1e587b2991e8e8",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S056",
+      "project": "harmonyos_samples_LandscapePortraitToggle",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "262b64daa10c3ef7e54fbbb2d6e2ac1f4d6414f31690e9167645145713c3b861",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S057",
+      "project": "harmonyos_samples_network-boost-kit-sample-code-arkts",
+      "sourceFiles": 8,
+      "sourceTreeSha256": "b60e5ff3f3cd9b272a9d932430caf3eb2dec0935da716cdd9928b89fad1dba20",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S058",
+      "project": "harmonyos_samples_scan-kit_-sample-code_-clientdemo_-arkts",
+      "sourceFiles": 56,
+      "sourceTreeSha256": "d2066c7381403a85d4d1031da12e79bc3b0c0a51818623d11544e99d9559fed9",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S059",
+      "project": "harmonyos4me_exam-project",
+      "sourceFiles": 124,
+      "sourceTreeSha256": "51936f922bf3fd3000536d6de93f9f7c2f489d2f5ce9ce4874c0d1b508c2651b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/basic",
+        "features/home",
+        "features/answer",
+        "features/video",
+        "features/mine"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S060",
+      "project": "harmonyos4me_login-and-logout",
+      "sourceFiles": 17,
+      "sourceTreeSha256": "7d6a7e44b758df491201c0acbfb26077bf69c9638a63f56e7d841022bf0d165c",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "login"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S061",
+      "project": "Notes",
+      "sourceFiles": 54,
+      "sourceTreeSha256": "7c26821eac9d4af8726481f1a5aa975c01bb767d89507ac86451d902f4811b4b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "common/datasource",
+        "common/utils",
+        "product/phone",
+        "components/secretlock",
+        "components/richeditor"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S062",
+      "project": "pasteboard",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "697dc8722c1561842f41cad3f50ea6e68797d4e8ca945c5485f4b05e7e684e20",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S063",
+      "project": "AuthorizedButton",
+      "sourceFiles": 20,
+      "sourceTreeSha256": "39f8f41849e1345f7008d5d2ebce664d47f38754c7bcd87dccc0880abe144562",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S064",
+      "project": "Camera",
+      "sourceFiles": 27,
+      "sourceTreeSha256": "1fc21be9f5d0edce73b9562acb29747359e6a379d337c2d9b00a6c203619932d",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S065",
+      "project": "DeadlinerNEXT",
+      "sourceFiles": 147,
+      "sourceTreeSha256": "51b2bb31468c461a45afbf5f84f908f9a34e58614bc6e0441a65ee1fb760c346",
+      "sourceScope": "project-root-fallback",
+      "sourceRoots": [
+        "."
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S066",
+      "project": "harmonyos4me_location-service",
+      "sourceFiles": 4,
+      "sourceTreeSha256": "c072e9142c90f23c2e05ed4d851832e07952c6efa53bd2a9cfdfed5449de9f22",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S067",
+      "project": "KikaInputMethod",
+      "sourceFiles": 29,
+      "sourceTreeSha256": "3c674e5f96018cc38feac302db5c53ddd339e5220314b63ba1c9015e9aa238f5",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S068",
+      "project": "NetConnection_Manage_case",
+      "sourceFiles": 7,
+      "sourceTreeSha256": "a1648daf0a31357f1ee9ead3d590542f08b8320c7274a2769e9eb591b24bdf1d",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S069",
+      "project": "PostpartumCareCenter",
+      "sourceFiles": 119,
+      "sourceTreeSha256": "15c86863e7df53d559d45dad596998de248b153a4f77b20c9bb90afb6cb9a374",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "scenes/home",
+        "scenes/stores",
+        "scenes/mine",
+        "components/uicomponents",
+        "components/utils",
+        "scenes/activities"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S070",
+      "project": "ReminderAgentManager",
+      "sourceFiles": 24,
+      "sourceTreeSha256": "1d7593975d0a1bf3abfa913cbb04e4b238a7259c85fe96116dd1d45eab3a1d20",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S071",
+      "project": "Sensor",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "5d2000f284d5fab0a41dc7d71ce52179be0e9fb1f0123ebf2c42361fd4aef324",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S072",
+      "project": "WifiHotspotManager",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "34a5a66085a981e604996bcad8d4624dc883aa5407191bd4b990dc8dcac333b5",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S073",
+      "project": "Application",
+      "sourceFiles": 217,
+      "sourceTreeSha256": "b0cff166d1f1f2a9dc19450fde71a7f52d040e2ce93ffa76851fd630347d05ec",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonlib",
+        "commons/componentlib",
+        "commons/network",
+        "feature/courses",
+        "feature/checkin",
+        "feature/mine",
+        "feature/home",
+        "components/module_check_in",
+        "components/module_ui_base",
+        "components/module_course_list",
+        "components/module_store_map"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S074",
+      "project": "BikeTravel",
+      "sourceFiles": 73,
+      "sourceTreeSha256": "2052f8860c1d9e34b067b7f9f574b285c69069cfef99bc2fcf7154923837aa6a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "commons/common",
+        "feature/bike_home",
+        "feature/bike_mine"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S075",
+      "project": "birthday_reminder",
+      "sourceFiles": 139,
+      "sourceTreeSha256": "3b1f3cd6d0786f9fe115a75c026305e3eb30173c824a54b41aec02e230c5d5a3",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S076",
+      "project": "CarBeautyCare",
+      "sourceFiles": 188,
+      "sourceTreeSha256": "79a30a0a96566e3ba37bf8bffc69c0cba688ca08acca21f65b737ede714ef9a8",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonLib",
+        "commons/componentLib",
+        "commons/network",
+        "scenes/shop",
+        "scenes/package",
+        "scenes/coupon",
+        "scenes/citySelect",
+        "scenes/garage",
+        "scenes/makeAppointment",
+        "scenes/order",
+        "scenes/contact",
+        "scenes/product",
+        "scenes/carKeyboard"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S077",
+      "project": "ComprehensiveMall",
+      "sourceFiles": 244,
+      "sourceTreeSha256": "6b59ad24b20fd827941aa894298d6ff6468bab95523ddc32509964b340543c5c",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/lib_network",
+        "scenes/shopping",
+        "scenes/order",
+        "components/module_product_detail",
+        "commons/lib_foundation",
+        "components/module_address_manage",
+        "components/module_product_waterflow",
+        "components/module_shopping_cart",
+        "components/module_login",
+        "components/module_coupons",
+        "components/module_product_share",
+        "components/module_product_search"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S078",
+      "project": "delay_related_performance",
+      "sourceFiles": 24,
+      "sourceTreeSha256": "a1aa9a89c80b25662bbbbd02dc290261564c9767127095f945746e22733a5dc8",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S079",
+      "project": "DistributedFilemanager",
+      "sourceFiles": 22,
+      "sourceTreeSha256": "ff8045f0dacbf7adce09c77e386ab02b9c796d361e4f7a4fb5fd2a3e0e18d735",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "Library"
+      ],
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S080",
+      "project": "DriverLicenseExam",
+      "sourceFiles": 107,
+      "sourceTreeSha256": "4da75fa74840e1c716cf5029fb8dc043a1f04916370af29eb60f54f9d23ce7e1",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonLib",
+        "commons/network",
+        "commons/datasource",
+        "components/guide",
+        "components/module_city_select",
+        "components/exam",
+        "components/search"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S081",
+      "project": "DriverLicenseExam-master",
+      "sourceFiles": 107,
+      "sourceTreeSha256": "4da75fa74840e1c716cf5029fb8dc043a1f04916370af29eb60f54f9d23ce7e1",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonLib",
+        "commons/network",
+        "commons/datasource",
+        "components/guide",
+        "components/module_city_select",
+        "components/exam",
+        "components/search"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S082",
+      "project": "etohos",
+      "sourceFiles": 11,
+      "sourceTreeSha256": "a09534ff2bac6df3b49625a8c8295a0b0585b55ca2bf158608cc04192572b701",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S083",
+      "project": "harmonyos4me_aicharacter-recognition",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "2d807aa567bf8f5c07fe71f34b580575b3180e3fc16d278ce7d75500ad7a1556",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S084",
+      "project": "harmonyos4me_hmosworld",
+      "sourceFiles": 201,
+      "sourceTreeSha256": "57cb268363e4729d9ba51abc2382e918cf90df96aecf93af1ccc138359921d0d",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "features/discover",
+        "features/learning",
+        "features/topic",
+        "features/login",
+        "features/challenge",
+        "features/mine",
+        "features/conference",
+        "commons/uicomponents",
+        "commons/utils",
+        "commons/network",
+        "commons/datastore",
+        "commons/audioplayer",
+        "commons/aspect"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S085",
+      "project": "harmonyos4me_ibest-ui",
+      "sourceFiles": 234,
+      "sourceTreeSha256": "53d58cab2a669e26315a379ae4beafe36b48afec2b80dd214415b799b2bbb442",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "library"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S086",
+      "project": "harmonyos4me_Immersive",
+      "sourceFiles": 38,
+      "sourceTreeSha256": "da69525574efc31076a54d8e262d980be2a7cf61da7fc728f19757e3389711e0",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/default",
+        "commons/commons",
+        "features/shopping"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S087",
+      "project": "harmonyos4me_SmoothSwitchShortVideos",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "6c6329c14e2a373a9090397679503c783b5d8596b856105a0d403c35640e8720",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S088",
+      "project": "harmonyos4me_ZeroOneApp",
+      "sourceFiles": 81,
+      "sourceTreeSha256": "c801c4b8ec7c157c40deedcc9ae5ce7248b5b1c990f47953fe5108d92d5cee95",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "common/utils",
+        "feature/login",
+        "common/dialog",
+        "common/component"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S089",
+      "project": "HomeDecoration",
+      "sourceFiles": 170,
+      "sourceTreeSha256": "043cc56da4eecfc54e0d0242a05216b3e60a149f430fa1709ef1b8d259adcfab",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonlib",
+        "commons/network",
+        "features/home",
+        "features/find",
+        "features/custom",
+        "components/module_filter_list",
+        "features/mine",
+        "components/module_posting",
+        "components/module_login",
+        "components/module_city_select",
+        "components/module_decoration_form"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S090",
+      "project": "QRCodeScan",
+      "sourceFiles": 16,
+      "sourceTreeSha256": "ad64001032e66ff36589928f7c841d3da8384733a41a8a168e5128cd4fcc9588",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "Feature"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S091",
+      "project": "BookRead",
+      "sourceFiles": 204,
+      "sourceTreeSha256": "cd2e55bfc368d7a1c989d347549f97a567b1c0c171e742148abcfc8c8d9813da",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "commons/common",
+        "feature/book_home",
+        "feature/book_person",
+        "feature/book_shelf",
+        "feature/book_read_kit",
+        "feature/book_sort",
+        "components/swiper_card",
+        "components/reader_tool_bar",
+        "components/base_common",
+        "components/aggregated_payment",
+        "components/custom_push",
+        "components/incentive_ad"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S092",
+      "project": "CalendarViewSwitch",
+      "sourceFiles": 26,
+      "sourceTreeSha256": "356d877445548d4cbdcea4c85fc881d7afbd6fd4957b6ff12d38560d84947e58",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "casesfeature/calendarswitch"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S093",
+      "project": "EnterpriseRecruitment",
+      "sourceFiles": 121,
+      "sourceTreeSha256": "0ea8a00678243ce6ed2a21e32c6af3a91e5be36bb9f5a56bb4c8165da48eb849",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "product/phone",
+        "commons/component",
+        "components/message_manager",
+        "components/file_management",
+        "components/ui_steps",
+        "components/check_app_update"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S094",
+      "project": "Express",
+      "sourceFiles": 203,
+      "sourceTreeSha256": "81de093baaacacb11f0bb1a9be456c87f492b25621b7d1d9fbe517d34153270c",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "components/module_address",
+        "components/module_base",
+        "commons/lib_foundation",
+        "features/business_home",
+        "features/business_order",
+        "features/business_vip",
+        "features/business_mine",
+        "components/module_template",
+        "components/module_city",
+        "components/module_auth"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S095",
+      "project": "FlameChase",
+      "sourceFiles": 27,
+      "sourceTreeSha256": "3599f66ebd5dd5481e988646f1a07b5a6f88320ecd4dce3165a7e43159207fd1",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S096",
+      "project": "PedometerApp",
+      "sourceFiles": 13,
+      "sourceTreeSha256": "7342593c3ddb128caec9dd235d298d6e3088fe1b8e8676908d513854ac738e1a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S097",
+      "project": "SecurityComponent",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "db4cd8d1765e44bff2f2356de20ec4e88ecaf82242263cad5c157f1b075cc6a4",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S098",
+      "project": "VoiceCallDemo",
+      "sourceFiles": 35,
+      "sourceTreeSha256": "7b039123afaaad55a6030c6a4e4bf6e366064747c6c6c60b67751f4b9f6514ee",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S099",
+      "project": "WebShortDrama",
+      "sourceFiles": 258,
+      "sourceTreeSha256": "99656ec88faeb1edeb06e2ee7116e2009fce07cf96e45aa98bf6c4d56bff2ed4",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/common",
+        "commons/utils",
+        "commons/resources",
+        "commons/styles",
+        "commons/server",
+        "commons/widgets",
+        "features/home",
+        "features/mine",
+        "features/frame",
+        "features/detail",
+        "features/theater",
+        "features/login",
+        "components/video_swiper"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S100",
+      "project": "ArkTSGraphicsDraw",
+      "sourceFiles": 15,
+      "sourceTreeSha256": "79c3267fd8034a5449b2ac7d3c09d3acf47c2ba15666f5417f1a300c52d8d7f0",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S101",
+      "project": "Asset",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "7fafe9efa9364e8424eaf7eb41188a6dded997ed7ec688c065b6ed305b8bef32",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S102",
+      "project": "AssetStoreArkTS",
+      "sourceFiles": 9,
+      "sourceTreeSha256": "6aa870fba497a73aeb7df39b9d6e8cfe134053478cbc7e26f8be971be9f55491",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S103",
+      "project": "BindSheet",
+      "sourceFiles": 32,
+      "sourceTreeSha256": "d5f82115875b5cc2d707881c6170769a67151887fb72e7e369c97e18780a96a6",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S104",
+      "project": "DistributedNote",
+      "sourceFiles": 22,
+      "sourceTreeSha256": "902b6499749ab895540a63f1c5a39e692f2dd81dd00d411456b8c9009d040998",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "no_configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S105",
+      "project": "FinancialManagement",
+      "sourceFiles": 225,
+      "sourceTreeSha256": "a23ccea340ef517a5d6bd85b9159b2200b864df7832f730fecba4b4ec2fdbf79",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "scenes/product",
+        "scenes/position",
+        "components/module_notice_board",
+        "components/module_base",
+        "components/module_line_chart",
+        "components/module_time_line",
+        "scenes/business_home",
+        "scenes/business_mine",
+        "commons/lib_foundation",
+        "components/module_product_list"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S106",
+      "project": "harmonyos_samples_fluent-news-homepage",
+      "sourceFiles": 23,
+      "sourceTreeSha256": "799f8102b7ead1a8143ee1cc07b480bc89b085e321242e22821a0c1f61d1867a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S107",
+      "project": "harmonyos_samples_iapkit-sample-clientdemo-arkts",
+      "sourceFiles": 10,
+      "sourceTreeSha256": "9715c036110b993c5f9bd2a61d993452a7a9abc4a7a716a1b668b21129eae064",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S108",
+      "project": "harmonyos_samples_knock-share",
+      "sourceFiles": 14,
+      "sourceTreeSha256": "2e8ad7cc5b327a492fc78369cf54d8aaed103474e8716ea78b719798348a4e05",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S109",
+      "project": "harmonyos4me_cloud-foundation-kit_-sample-code_-arkts",
+      "sourceFiles": 14,
+      "sourceTreeSha256": "987fc6842bd971ba48e30f8485eb7fd3b93f5905c632a69b1945dc81c9b4828a",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S110",
+      "project": "harmonyos4me_fluent-news-homepage",
+      "sourceFiles": 23,
+      "sourceTreeSha256": "e6d0b9379ac72f81815dcb1704d998ef8c30629cbc2085c1006733e66ad3617b",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S111",
+      "project": "harmonyos4me_ohos_smart_dialog",
+      "sourceFiles": 75,
+      "sourceTreeSha256": "e78fe6465c36ad8a3e76e2a10989be52766a25b05829a9fba5ebf5c7b58c7943",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "smart_dialog"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S112",
+      "project": "harmonyos4me_TaoYao",
+      "sourceFiles": 75,
+      "sourceTreeSha256": "3b101a9e936e2b7d444123832d3c8a3fba92fd4e2897d87d16a58d74735cc596",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry",
+        "taoyao"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S113",
+      "project": "MoneyTrack",
+      "sourceFiles": 215,
+      "sourceTreeSha256": "09c324643c8187678d9e1cd70a3d44091c27aa42ab9f3fedec5e1eaa94b44d29",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonlib",
+        "components/bill_manage",
+        "features/home",
+        "components/bill_card",
+        "components/bill_chart",
+        "features/statistics",
+        "components/asset_manage",
+        "components/asset_card",
+        "components/asset_base",
+        "features/assets",
+        "components/bill_base",
+        "components/bill_data_processing"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S114",
+      "project": "MoneyTrack-master",
+      "sourceFiles": 203,
+      "sourceTreeSha256": "cd0bc08fbbfe6bdeaad46f2cd242d9cfa0a708941c957d0bbfd66d49c5c31b46",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/entry",
+        "commons/commonlib",
+        "components/bill_manage",
+        "features/home",
+        "components/bill_card",
+        "components/bill_chart",
+        "features/statistics",
+        "components/asset_manage",
+        "components/asset_card",
+        "components/asset_base",
+        "features/assets",
+        "components/bill_base",
+        "components/bill_data_processing"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S115",
+      "project": "MultiCommunityApplication",
+      "sourceFiles": 51,
+      "sourceTreeSha256": "cb56102ac95479ef96b36b5418f6b91b3fe20999328c016000c9fd8f916d33d2",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "products/phone",
+        "commons/base",
+        "features/detail",
+        "features/hot",
+        "features/rank",
+        "features/picture"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S116",
+      "project": "MultiMedia",
+      "sourceFiles": 25,
+      "sourceTreeSha256": "0dd6ee5dc793b881661912e775882bd84d95e03f5aafa1baa401b6a867a48c0d",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S117",
+      "project": "Navigation",
+      "sourceFiles": 52,
+      "sourceTreeSha256": "1263333fe1dec96d369457ba94f5e17148157014eb28c7a7e86fd415813b165e",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "medium"
+    },
+    {
+      "sampleId": "T120-S118",
+      "project": "OfficeAttendance",
+      "sourceFiles": 139,
+      "sourceTreeSha256": "78ab4f33f74337152f73fc85ff27d2cdb8c554e79f42ab3e9f1ba69adf3a9ac2",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "product/phone",
+        "commons/common_lib",
+        "commons/component_lib",
+        "commons/network",
+        "scenes/agency",
+        "scenes/schedule",
+        "scenes/checkin",
+        "scenes/account"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "large"
+    },
+    {
+      "sampleId": "T120-S119",
+      "project": "OHAudio",
+      "sourceFiles": 12,
+      "sourceTreeSha256": "020df5b3736b352c3867e274028d950c9601fc90e90444da45e1143df288af42",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    },
+    {
+      "sampleId": "T120-S120",
+      "project": "PixelMap",
+      "sourceFiles": 14,
+      "sourceTreeSha256": "4b0fd205b026e5395ca60f09f3e9658d0056dc7cab8f04ba3b96dc8cad8a7492",
+      "sourceScope": "declared-build-modules",
+      "sourceRoots": [
+        "entry"
+      ],
+      "importStratum": "configured_import",
+      "sizeStratum": "small"
+    }
+  ]
+}
