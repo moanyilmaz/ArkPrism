@@ -119,7 +119,7 @@ function main() {
   const results = [
     processFile(
       path.join(ROOT, 'config', 'sensitive_apis.json'),
-      'detector',
+      'flat',
       write
     ),
     processFile(

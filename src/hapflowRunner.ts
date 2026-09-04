@@ -19,7 +19,7 @@ import { TaintAnalysisMetadata, TaintFlowResult } from './prototypes';
 import { buildLifecycleDummyMain } from './lifecycleDummyMain';
 import { LifecycleModeler } from './lifecycleModeler';
 import * as path from 'path';
-import * as fs from 'fs';
+import { readOpenHarmonySdkInfo } from './sdkInfo';
 
 export interface HapflowOptions {
     noPta?: boolean;      // Skip pointer analysis (faster but less precise)
@@ -79,14 +79,12 @@ export function runHapflowAnalysis(
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
 
     // 1. Load SDK files for source/sink resolution
-    const sdkPath = opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
-    if (!fs.existsSync(sdkPath)) {
-        throw new Error(`SDK path does not exist: ${sdkPath}`);
-    }
+    const sdk = readOpenHarmonySdkInfo(opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || '');
+    const sdkPath = sdk.path;
 
     const existingSdkFiles = scene.getSdkArkFiles().length;
     if (existingSdkFiles === 0) {
-        console.log(`[HAPFLOW] Loading SDK files from: ${sdkPath}`);
+        console.log(`[HAPFLOW] Loading OpenHarmony API ${sdk.apiVersion} SDK files from: ${sdkPath}`);
         const sdkCount = loadSdkIntoScene(scene, sdkPath);
         console.log(`[HAPFLOW] SDK files loaded: ${sdkCount}`);
         if (sdkCount === 0) {
@@ -369,7 +367,11 @@ export function convertOutcome(
                 sourceIndex: sourceEvidence.sourceIndex,
                 callbackIndex: sourceEvidence.callbackIndex,
                 methodSignature: sourceEvidence.methodSignature,
-                ruleOrigin: rule.ruleOrigin || ''
+                ruleOrigin: rule.ruleOrigin || '',
+                dataType: rule.dataType || undefined,
+                label: rule.label || undefined,
+                catalogApiSignature: rule.catalogApiSignature || undefined,
+                description: rule.description || undefined
             },
             sourceApi: sourceStmt?.toString() || 'unknown',
             sourceFile: statementFile(sourceStmt),

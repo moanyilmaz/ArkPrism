@@ -14,7 +14,7 @@ const ROOT = path.resolve(__dirname, '..');
 
 function parseArgs(argv) {
   const options = {
-    sdkPath: process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets',
+    sdkPath: process.env.OPENHARMONY_SDK_PATH || '',
     sourcePath: path.join(ROOT, 'config', 'hapflow_sources.json'),
     output: path.join(
       ROOT,
@@ -57,9 +57,14 @@ function ruleId(rule, index) {
 }
 
 function audit(options) {
-  if (!fs.existsSync(options.sdkPath)) {
+  if (!options.sdkPath || !fs.existsSync(options.sdkPath)) {
     throw new Error(`SDK path does not exist: ${options.sdkPath}`);
   }
+  const sdkManifestPath = path.join(options.sdkPath, 'oh-uni-package.json');
+  if (!fs.existsSync(sdkManifestPath)) {
+    throw new Error(`Invalid OpenHarmony ets SDK: missing ${sdkManifestPath}`);
+  }
+  const sdkManifest = JSON.parse(fs.readFileSync(sdkManifestPath, 'utf8'));
   const rules = JSON.parse(
     fs.readFileSync(options.sourcePath, 'utf8').replace(/^\uFEFF/, ''),
   );
@@ -138,6 +143,9 @@ function audit(options) {
     generatedAt: new Date().toISOString(),
     sdk: {
       path: options.sdkPath,
+      apiVersion: String(sdkManifest.apiVersion || ''),
+      version: String(sdkManifest.version || ''),
+      releaseType: String(sdkManifest.releaseType || ''),
       loadedDeclarationFiles: scene.getSdkArkFiles().length,
     },
     sources: {

@@ -6,6 +6,11 @@
   "@ohos.window": ["@kit.ArkUI"],
   "@kit.AssetStoreKit": ["@ohos.security.asset"],
   "@ohos.security.asset": ["@kit.AssetStoreKit"],
+  "@kit.AbilityKit": ["@ohos.app.ability.appManager", "@ohos.bundle.bundleManager"],
+  "@ohos.app.ability.appManager": ["@kit.AbilityKit"],
+  "@ohos.bundle.bundleManager": ["@kit.AbilityKit"],
+  "@kit.AccountKit": ["@hms.core.authentication"],
+  "@hms.core.authentication": ["@kit.AccountKit"],
   "@kit.AudioKit": ["@ohos.multimedia.audio"],
   "@ohos.multimedia.audio": ["@kit.AudioKit"],
   "@kit.BasicServicesKit": [
@@ -15,6 +20,7 @@
     "@ohos.deviceInfo",
     "@ohos.pasteboard",
     "@ohos.request",
+    "@ohos.settings",
     "@ohos.wallpaper"
   ],
   "@ohos.account.appAccount": ["@kit.BasicServicesKit"],
@@ -23,6 +29,7 @@
   "@ohos.deviceInfo": ["@kit.BasicServicesKit"],
   "@ohos.pasteboard": ["@kit.BasicServicesKit"],
   "@ohos.request": ["@kit.BasicServicesKit"],
+  "@ohos.settings": ["@kit.BasicServicesKit"],
   "@ohos.wallpaper": ["@kit.BasicServicesKit"],
   "@kit.CalendarKit": ["@ohos.calendarManager"],
   "@ohos.calendarManager": ["@kit.CalendarKit"],
@@ -89,8 +96,9 @@
   "@ohos.enterprise.wifiManager": ["@kit.MDMKit"],
   "@kit.MediaKit": ["@ohos.multimedia.media"],
   "@ohos.multimedia.media": ["@kit.MediaKit"],
-  "@kit.MediaLibraryKit": ["@ohos.file.photoAccessHelper"],
+  "@kit.MediaLibraryKit": ["@ohos.file.photoAccessHelper", "@ohos.file.sendablePhotoAccessHelper"],
   "@ohos.file.photoAccessHelper": ["@kit.MediaLibraryKit"],
+  "@ohos.file.sendablePhotoAccessHelper": ["@kit.MediaLibraryKit"],
   "@kit.NetworkKit": [
     "@ohos.net.connection",
     "@ohos.net.eap",

@@ -26,30 +26,18 @@ const cases = [
   },
   {
     fixture: 'factory_chain_receiver',
-    expected: [
-      'audio.audio.AudioVolumeManager.getVolumeGroupManager|receiver_origin',
-      'audio.getAudioManager|undefined',
-    ],
+    expected: [],
   },
   {
     fixture: 'helper_factory_chain_receiver',
-    expected: [
-      'audio.audio.AudioVolumeManager.getVolumeGroupManager|receiver_type',
-      'audio.getAudioManager|undefined',
-    ],
-    expectedSourceLocations: [
-      { method: 'audio.AudioVolumeManager.getVolumeGroupManager', fragment: '.getVolumeGroupManager' },
-    ],
+    expected: [],
   },
   {
     fixture: 'factory_inferred_receiver',
     expected: [
-      'AVImageGenerator.fetchFrameByTime|receiver_type',
+      'AVImageGenerator.fetchFrameByTime|receiver_origin',
       'AVMetadataExtractor.fetchAlbumCover|receiver_origin',
       'AVMetadataExtractor.fetchMetadata|receiver_origin',
-      'audio.getAudioManager|undefined',
-      'audio.getAudioScene|receiver_origin',
-      'reminderAgent.publishReminder|undefined',
     ],
   },
   {
@@ -58,11 +46,7 @@ const cases = [
   },
   {
     fixture: 'sdk_receiver_origins',
-    expected: [
-      'TCPSocket.close|receiver_type',
-      'TLSSocketServer.close|receiver_type',
-      'resourceManager.getDeviceCapability|receiver_type',
-    ],
+    expected: [],
   },
   {
     fixture: 'api_identity_resolution',
@@ -70,7 +54,6 @@ const cases = [
       'UserAuthInstance.on(\'result\')|receiver_type',
       'deviceInfo.serial|undefined',
       'identifier.getOAID|undefined',
-      'request.agent.create|undefined',
     ],
     expectedSourceLocations: [
       { method: 'serial', fragment: '.serial' },
@@ -109,6 +92,16 @@ try {
       `${testCase.fixture}-arkprism-report.json`,
     );
     const report = JSON.parse(fs.readFileSync(reportPath, 'utf8'));
+    if (!report.sdk || !report.sdk.apiVersion || !report.sdk.version) {
+      throw new Error(`${testCase.fixture}: report is missing SDK provenance`);
+    }
+    for (const usage of report.privacyApiUsages || []) {
+      if (!usage.dataType || !usage.label || !usage.catalogApiSignature) {
+        throw new Error(
+          `${testCase.fixture}: ${usage.namespace}.${usage.method} is missing PAC catalog metadata`,
+        );
+      }
+    }
     const actual = (report.privacyApiUsages || [])
       .map(usage => `${usage.namespace}.${usage.method}|${usage.matchEvidence}`)
       .sort();

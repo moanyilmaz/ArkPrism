@@ -8,17 +8,20 @@ Chinese documentation: [README.zh-CN.md](README.zh-CN.md)
 
 - 64-bit Windows, Linux, or macOS
 - Node.js 20.x or 24.x and npm
-- OpenHarmony SDK with ArkTS declarations
+- OpenHarmony SDK with ArkTS declarations; use the SDK version targeted by the project, and use the latest installed release when validating the full API catalog
 - 16 GB system memory is recommended for large-project PTA/IFDS runs
 - Graphviz only when rendering DOT files
 
-The SDK argument must point to the real `ets` directory. Do not use project stubs as an SDK substitute.
+The SDK argument must point to the real `ets` directory. ArkPrism requires its
+`oh-uni-package.json`, reads the exact API/SDK version, and records that version
+in every report. It does not fall back to a bundled path or project stubs.
 
 Windows example:
 
 ```powershell
-$sdk = "E:\OpenHarmony_SDK\20\ets"
+$sdk = $env:OPENHARMONY_SDK_PATH
 Test-Path $sdk
+Get-Content (Join-Path $sdk "oh-uni-package.json")
 Get-ChildItem $sdk -Recurse -Filter *.d.ts | Select-Object -First 1
 ```
 
@@ -52,7 +55,7 @@ $env:ARKPRISM_MAX_OLD_SPACE_SIZE_MB = "12288"  # 0 disables automatic relaunch
 node dist\arkprism.js `
   "E:\Projects\MyHarmonyApp" `
   --output-dir "E:\ArkPrismResults\MyHarmonyApp" `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --ifds-max-edges 30000000 `
   --ifds-max-worklist 8000000 `
   --ifds-timeout-ms 1800000 `
@@ -74,7 +77,7 @@ node scripts\run_argus_batch_isolated.js `
   --dataset "E:\Datasets\HarmonyApps" `
   --output-dir "E:\ArkPrismResults\batch" `
   --log-dir "E:\ArkPrismResults\batch\logs" `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --engine compiled `
   --concurrency 2 `
   --timeout-ms 3600000 `
@@ -113,7 +116,7 @@ Run the exact 120 projects in detector-only mode and retain JSON plus DOT output
 ```powershell
 node scripts\run_top120_benchmark.js `
   --dataset benchmarks\ArkPrismTop120\sources `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --output-dir benchmarks\ArkPrismTop120\results
 ```
 
@@ -143,10 +146,11 @@ Important JSON sections:
 
 | Field | Content |
 |---|---|
-| `privacyApiUsages` | API identity, package, source location, permission, and match evidence |
+| `sdk` | exact OpenHarmony API version, SDK build version, and SDK path |
+| `privacyApiUsages` | API identity, PAC `dataType`/`label`, package, source location, permission, and match evidence |
 | `callChains` | recovered entry-to-API context and edge provenance |
 | `dataSinks` | detector-local sink observations |
-| `taintFlows` | configured-query source-to-sink may-paths and source provenance |
+| `taintFlows` | configured-query source-to-sink may-paths, source provenance, and PAC metadata where the source is catalog-backed |
 | `taintAnalysis` | PTA/IFDS status, limits, and deduplication statistics |
 | `statistics` | project-level counts |
 
@@ -156,14 +160,28 @@ A detected API or may-flow is analysis evidence, not an automatic policy-violati
 
 | File | Purpose |
 |---|---|
-| `config/sensitive_apis.json` | detector API rules |
+| `config/sensitive_apis.json` | reviewed flat API catalog with signatures, descriptions, permissions, PAC `dataType`, and PAC `label` |
 | `config/package_aliases.json` | namespace-constrained `@ohos`/`@kit` migration |
 | `config/data_sinks.json` | detector-local sink rules |
 | `config/hapflow_sources.json` | typed IFDS privacy-data sources |
 | `config/lifecycle_sources.json` | explicit framework-input sources |
 | `config/hapflow_sinks.json` | IFDS sinks |
 
-Detector rules and IFDS source rules are intentionally separate. A permission-bearing operation is not a taint source unless the source rule identifies a concrete return or callback carrier.
+The reviewed catalog is the detector's only sensitive-API inventory. IFDS source
+rules are a carrier-bearing subset synchronized to that catalog; an operation is
+not an IFDS source unless a concrete return or callback value can be seeded.
+
+Audit a catalog against any installed SDK and record its exact version:
+
+```powershell
+npm run audit:sdk-sensitive-apis -- --sdkPath $env:OPENHARMONY_SDK_PATH
+```
+
+Check source synchronization without modifying files:
+
+```powershell
+npm run sync:ifds-sources
+```
 
 ## Useful options
 
@@ -183,7 +201,7 @@ Detector rules and IFDS source rules are intentionally separate. A permission-be
 ## Validation
 
 ```powershell
-$env:OPENHARMONY_SDK_PATH = "E:\OpenHarmony_SDK\20\ets"
+$env:OPENHARMONY_SDK_PATH = "<OpenHarmony SDK ets directory>"
 npm run build
 npm test
 ```

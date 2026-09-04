@@ -21,8 +21,26 @@ export interface PrivacyDataAPI {
     namespace: string;
     method: string;
     permission?: string;            // required permission, if any
+    permissions?: string[];         // all permission variants retained from the reviewed catalog
     profilingCategory?: string;     // profiling dimension for multi-source collaboration
     receiverFactories?: string[];   // factory methods that produce the API receiver
+    receiverTypes?: string[];       // concrete receiver types stated by the reviewed catalog
+    packageAliases?: string[];      // legacy modules named by the reviewed catalog
+    dataType: string;               // PAC dataProcess.dataType
+    label: string;                  // PAC dataProcess.label
+    description?: string;           // human-readable API behavior from the reviewed catalog
+    supplement?: string;            // catalog restrictions or availability notes
+    documentation?: string;         // Huawei documentation postfix
+    catalogApiSignature?: string;   // reviewed namespace/member identity
+    overloads?: SensitiveApiOverload[];
+}
+
+/** Overload constraints extracted from the reviewed API declaration text. */
+export interface SensitiveApiOverload {
+    signature: string;
+    minArgs: number;
+    maxArgs: number | null;          // null means a rest parameter accepts more arguments
+    description?: string;
 }
 
 /** A system package containing privacy APIs */
@@ -54,7 +72,14 @@ export interface PrivacyDataApiResult {
     locationEvidence?: "arkir" | "source_ast";
     originalCode?: string;          // original ArkTS source code
     permission?: string;
+    permissions?: string[];
     profilingCategory?: string;
+    dataType: string;
+    label: string;
+    description?: string;
+    supplement?: string;
+    documentation?: string;
+    catalogApiSignature?: string;
     callbackHost?: string;          // for callback invoke: the host method name
     matchEvidence?: "namespace" | "receiver_origin" | "receiver_type" | "target_signature";
 }
@@ -205,6 +230,10 @@ export interface TaintFlowResult {
         callbackIndex: number;
         methodSignature: string;
         ruleOrigin: string;
+        dataType?: string;
+        label?: string;
+        catalogApiSignature?: string;
+        description?: string;
     };
     sourceApi: string;          // Source statement or API signature
     sourceFile: string;         // Source file / position
@@ -278,6 +307,12 @@ export interface ArkPrismOutput {
     projectName: string;
     projectDirectory: string;
     analysisTimestamp: string;
+    sdk: {
+        path: string;
+        apiVersion: string;
+        version: string;
+        releaseType?: string;
+    };
     privacyApiUsages: PrivacyDataApiResult[];
     callChains: CallChainResult[];
     multiSourceCollaborations: MultiSourceCollaboration[];

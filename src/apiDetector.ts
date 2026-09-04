@@ -94,25 +94,64 @@ function normalizedRuleMethod(method: string | undefined): string {
         .pop() || method;
 }
 
-function methodMatches(api: PrivacyDataAPI, invokeMethodName: string | undefined, stmtText: string): boolean {
-    if (!invokeMethodName) return false;
-    if (api.method === invokeMethodName) return true;
+function argumentCountMatches(api: PrivacyDataAPI, argumentCount: number): boolean {
+    if (!api.overloads || api.overloads.length === 0) return true;
+    return api.overloads.some(overload =>
+        argumentCount >= overload.minArgs &&
+        (overload.maxArgs === null || argumentCount <= overload.maxArgs)
+    );
+}
 
+function eventDiscriminatorMatches(stmtText: string, expected: string): boolean {
+    const expectedTail = expected.split(".").pop() || expected;
+    const escape = (value: string): string =>
+        value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const exactQualified = new RegExp(`(^|[^A-Za-z0-9_$])${escape(expected)}([^A-Za-z0-9_$]|$)`);
+    const exactTail = new RegExp(`(^|[^A-Za-z0-9_$])${escape(expectedTail)}([^A-Za-z0-9_$]|$)`);
+    return exactQualified.test(stmtText) || exactTail.test(stmtText);
+}
+
+function isTopLevelFunctionApi(api: PrivacyDataAPI): boolean {
+    return api.directCall === true &&
+        api.namespace === api.method &&
+        !api.method.includes("(") &&
+        !api.method.includes(".");
+}
+
+function topLevelImportMatches(
+    unit: ImportEntryCheckUnit,
+    api: PrivacyDataAPI,
+    invokeMethodName: string | undefined,
+    argumentCount: number,
+): boolean {
+    if (!invokeMethodName || !isTopLevelFunctionApi(api) || !argumentCountMatches(api, argumentCount)) {
+        return false;
+    }
+    return [api.method, unit.importSystemNamespace, unit.importClauseName]
+        .some(name => name === invokeMethodName);
+}
+
+function methodMatches(
+    api: PrivacyDataAPI,
+    invokeMethodName: string | undefined,
+    stmtText: string,
+    argumentCount: number,
+): boolean {
+    if (!invokeMethodName) return false;
     const normalized = normalizedRuleMethod(api.method);
     if (normalized !== invokeMethodName) return false;
+    if (!argumentCountMatches(api, argumentCount)) return false;
 
-    if (api.method.includes(".")) return true;
-
+    // Event-discriminated rules such as sensor.on('SensorId.GYROSCOPE')
+    // must be resolved before compound namespace handling. Otherwise every
+    // on(...) call would inherit the PAC label of the first sensor rule.
     if (api.method.includes("(")) {
         const argMatch = api.method.match(/['"]([^'"]+)['"]/);
         if (!argMatch) return true;
-        const expected = argMatch[1];
-        const expectedTail = expected.split(".").pop() || expected;
-        return stmtText.includes(`'${expected}'`) || stmtText.includes(`"${expected}"`) ||
-            stmtText.includes(expected) || stmtText.includes(expectedTail);
+        return eventDiscriminatorMatches(stmtText, argMatch[1]);
     }
 
-    return false;
+    return api.method === invokeMethodName || api.method.includes(".");
 }
 
 function stmtHasNamespaceCaller(namespaceName: string, stmtText: string): boolean {
@@ -150,13 +189,14 @@ function findUnitsInStmt(
 function findMatchedApi(
     units: ImportEntryCheckUnit[],
     invokeMethodName: string | undefined,
-    stmtText: string
+    stmtText: string,
+    argumentCount: number,
 ): { unit: ImportEntryCheckUnit; api: PrivacyDataAPI } | undefined {
     for (const unit of units) {
-        let matchedApi = unit.relatedApis.find(api => api.method === invokeMethodName);
-        if (!matchedApi) {
-            matchedApi = unit.relatedApis.find(api => methodMatches(api, invokeMethodName, stmtText));
-        }
+        const matchedApi = unit.relatedApis.find(api =>
+            methodMatches(api, invokeMethodName, stmtText, argumentCount) ||
+            topLevelImportMatches(unit, api, invokeMethodName, argumentCount)
+        );
         if (matchedApi) return { unit, api: matchedApi };
     }
     return undefined;
@@ -195,7 +235,57 @@ function apiReceiverIdentities(api: PrivacyDataAPI): Set<string> {
         const normalized = normalizedIdentity(factory);
         if (normalized) identities.add(normalized);
     }
+    for (const receiverType of api.receiverTypes || []) {
+        const normalized = normalizedIdentity(receiverType);
+        if (normalized) identities.add(normalized);
+    }
     return identities;
+}
+
+function appendTopLevelImportUnits(
+    matchedUnits: ImportEntryCheckUnit[],
+    allUnits: ImportEntryCheckUnit[],
+    invokeMethodName: string | undefined,
+    argumentCount: number,
+): ImportEntryCheckUnit[] {
+    const result = [...matchedUnits];
+    for (const unit of allUnits) {
+        if (result.includes(unit)) continue;
+        if (unit.relatedApis.some(api =>
+            topLevelImportMatches(unit, api, invokeMethodName, argumentCount)
+        )) {
+            result.push(unit);
+        }
+    }
+    return result;
+}
+
+function apiReceiverOriginIdentities(api: PrivacyDataAPI): Set<string> {
+    const identities = apiReceiverIdentities(api);
+    for (const receiver of [api.namespace, ...(api.receiverTypes || [])]) {
+        const typeName = receiver.split('.').filter(Boolean).pop() || receiver;
+        for (const prefix of ['create', 'get', 'construct']) {
+            identities.add(normalizedIdentity(`${prefix}${typeName}`));
+        }
+        identities.add(normalizedIdentity(`construct${typeName}Instance`));
+    }
+    return identities;
+}
+
+function catalogResultFields(api: PrivacyDataAPI): Pick<
+    PrivacyDataApiResult,
+    'dataType' | 'label' | 'permissions' | 'description' | 'supplement' |
+    'documentation' | 'catalogApiSignature'
+> {
+    return {
+        dataType: api.dataType,
+        label: api.label,
+        permissions: api.permissions,
+        description: api.description,
+        supplement: api.supplement,
+        documentation: api.documentation,
+        catalogApiSignature: api.catalogApiSignature,
+    };
 }
 
 const GENERIC_INDIRECT_METHODS = new Set([
@@ -282,6 +372,22 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
         ts.ScriptKind.TS,
     );
     const occurrences: SourceOccurrence[] = [];
+    const importedMemberOrigins = new Map<string, string>();
+
+    function collectImports(node: any): void {
+        if (ts.isImportDeclaration(node)) {
+            const bindings = node.importClause?.namedBindings;
+            if (bindings && ts.isNamedImports(bindings)) {
+                for (const element of bindings.elements) {
+                    importedMemberOrigins.set(
+                        element.name.text,
+                        element.propertyName?.text || element.name.text,
+                    );
+                }
+            }
+        }
+        ts.forEachChild(node, collectImports);
+    }
 
     function visit(node: any): void {
         if (ts.isPropertyAccessExpression(node)) {
@@ -298,9 +404,22 @@ function collectSourceOccurrences(file: ArkFile): SourceOccurrence[] {
                 column: location.character + 1,
                 expression: (call || node).getText(source),
             });
+        } else if (ts.isCallExpression(node) && ts.isIdentifier(node.expression)) {
+            const localName = node.expression.text;
+            const start = node.expression.getStart(source);
+            const location = source.getLineAndCharacterOfPosition(start);
+            occurrences.push({
+                member: importedMemberOrigins.get(localName) || localName,
+                accessKind: "call",
+                receiver: localName,
+                line: location.line + 1,
+                column: location.character + 1,
+                expression: node.getText(source),
+            });
         }
         ts.forEachChild(node, visit);
     }
+    collectImports(source);
     visit(source);
     return occurrences;
 }
@@ -328,7 +447,10 @@ function recoverSourceLocations(
             namespace: result.namespace,
             method: result.method,
             permission: result.permission,
+            permissions: result.permissions,
             profilingCategory: result.profilingCategory || '',
+            dataType: result.dataType,
+            label: result.label,
             directCall: result.category === "privacy constants" ? null : result.category !== "indirect invoke",
         };
         const expectedIdentities = apiReceiverIdentities(api);
@@ -482,7 +604,7 @@ function resolveIndirectMatch(
     sourceTypeHints: SourceTypeHints,
 ): { unit: ImportEntryCheckUnit; api: PrivacyDataAPI; evidence: PrivacyDataApiResult["matchEvidence"] } | undefined {
     const candidates = units.flatMap(unit => unit.relatedApis
-        .filter(api => methodMatches(api, invokeMethodName, stmtText))
+        .filter(api => methodMatches(api, invokeMethodName, stmtText, invokeExpr.getArgs().length))
         .map(api => ({ unit, api })));
     if (candidates.length === 0) return undefined;
 
@@ -523,7 +645,12 @@ function resolveIndirectMatch(
             sourceTypeHints,
         );
         const originUnits = new Set(definitionEvidence.units);
-        const originCandidates = candidates.filter(item => originUnits.has(item.unit));
+        const originCandidates = candidates.filter(item =>
+            originUnits.has(item.unit) &&
+            definitionEvidence.identities.some(identity =>
+                apiReceiverOriginIdentities(item.api).has(identity)
+            )
+        );
         const originTargets = new Set(originCandidates.map(item =>
             `${normalizedIdentity(item.api.namespace)}|${normalizedRuleMethod(item.api.method).toLowerCase()}`
         ));
@@ -532,7 +659,7 @@ function resolveIndirectMatch(
         }
 
         const definitionMatch = candidates.find(item => {
-            const identities = apiReceiverIdentities(item.api);
+            const identities = apiReceiverOriginIdentities(item.api);
             return definitionEvidence.identities.some(identity => identities.has(identity));
         });
         if (definitionMatch) return { ...definitionMatch, evidence: "receiver_type" };
@@ -632,7 +759,18 @@ function checkDirectCallPrivacyApis(
                     if (invokeCaller && namespaceMemberAliases.has(invokeCaller)) {
                         namespacesInStmt = namespacesInStmt.concat(namespaceMemberAliases.get(invokeCaller) || []);
                     }
-                    let match = findMatchedApi(namespacesInStmt, invokeMethodName, stmtText);
+                    namespacesInStmt = appendTopLevelImportUnits(
+                        namespacesInStmt,
+                        directCallCheckUnits,
+                        invokeMethodName,
+                        invokeExpr?.getArgs().length || 0,
+                    );
+                    let match = findMatchedApi(
+                        namespacesInStmt,
+                        invokeMethodName,
+                        stmtText,
+                        invokeExpr?.getArgs().length || 0,
+                    );
                     if (match) {
                             results.push({
                                 category: "direct invoke stmt after assignment",
@@ -645,7 +783,8 @@ function checkDirectCallPrivacyApis(
                                 line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
                                 declaringMethod: declaringMethod,
                                 permission: match.api.permission,
-                                profilingCategory: match.api.profilingCategory
+                                profilingCategory: match.api.profilingCategory,
+                                ...catalogResultFields(match.api),
                             });
                     }
                 }
@@ -662,7 +801,18 @@ function checkDirectCallPrivacyApis(
                 if (invokeCaller && namespaceMemberAliases.has(invokeCaller)) {
                     namespacesInStmt = namespacesInStmt.concat(namespaceMemberAliases.get(invokeCaller) || []);
                 }
-                let match = findMatchedApi(namespacesInStmt, invokeMethodName, stmtText);
+                namespacesInStmt = appendTopLevelImportUnits(
+                    namespacesInStmt,
+                    directCallCheckUnits,
+                    invokeMethodName,
+                    invokeExpr.getArgs().length,
+                );
+                let match = findMatchedApi(
+                    namespacesInStmt,
+                    invokeMethodName,
+                    stmtText,
+                    invokeExpr.getArgs().length,
+                );
                 if (match) {
                         results.push({
                             category: "direct invoke stmt",
@@ -675,7 +825,8 @@ function checkDirectCallPrivacyApis(
                             line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
                             declaringMethod: declaringMethod,
                             permission: match.api.permission,
-                            profilingCategory: match.api.profilingCategory
+                            profilingCategory: match.api.profilingCategory,
+                            ...catalogResultFields(match.api),
                         });
                 }
             }
@@ -735,6 +886,7 @@ function checkIndirectCallPrivacyApis(
                             permission: match.api.permission,
                             profilingCategory: match.api.profilingCategory,
                             matchEvidence: match.evidence,
+                            ...catalogResultFields(match.api),
                         });
                     }
                 }
@@ -774,7 +926,7 @@ function checkPrivacyConstantUsages(
                     : findUnitsInStmt(constantCheckUnits, stmt.getUses(), stmtText, [1]);
 
                 if (namespacesInStmt.length > 0) {
-                    let match = findMatchedApi(namespacesInStmt, fieldName, stmtText);
+                    let match = findMatchedApi(namespacesInStmt, fieldName, stmtText, 0);
                     if (match) {
                         results.push({
                             category: "privacy constants",
@@ -787,7 +939,8 @@ function checkPrivacyConstantUsages(
                             line: stmt.getOriginPositionInfo()?.getLineNo() || 0,
                             declaringMethod: declaringMethod,
                             permission: match.api.permission,
-                            profilingCategory: match.api.profilingCategory
+                            profilingCategory: match.api.profilingCategory,
+                            ...catalogResultFields(match.api),
                         });
                     }
                 }
@@ -881,8 +1034,11 @@ export function analyzeFileForPrivacyApis(
         let indirectCallApis: PrivacyDataAPI[] = [];
         let privacyConstants: PrivacyDataAPI[] = [];
         const rulePackages = getRulePackagesForImport(importInfo.importFrom);
-        let relatedPackages: PrivacyPackageInfo[] = privacyPackageInfos.filter(
-            pkg => rulePackages.includes(pkg.systemPackage)
+        let relatedPackages: PrivacyPackageInfo[] = privacyPackageInfos.filter(pkg =>
+            rulePackages.includes(pkg.systemPackage) ||
+            pkg.privacyApis.some(api =>
+                (api.packageAliases || []).includes(importInfo.importFrom || '')
+            )
         );
 
         for (let pkg of relatedPackages) {

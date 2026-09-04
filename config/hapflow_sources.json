@@ -12,7 +12,12 @@
     "reason": "返回所有可访问的账户信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Basic information",
+    "label": "Account information",
+    "catalogApiSignature": "AppAccountManager.getAllAccounts",
+    "description": "根据应用账号所有者获取调用方可访问的应用账号列表。使用callback异步回调。",
+    "documentation": "js-apis-appaccount"
   },
   {
     "api_name": "getAllAccounts",
@@ -32,7 +37,12 @@
     "reason": "回调函数参数返回所有可访问的账户信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Basic information",
+    "label": "Account information",
+    "catalogApiSignature": "AppAccountManager.getAllAccounts",
+    "description": "根据应用账号所有者获取调用方可访问的应用账号列表。使用callback异步回调。",
+    "documentation": "js-apis-appaccount"
   },
   {
     "api_name": "getAllAccounts",
@@ -56,35 +66,12 @@
     "reason": "回调函数参数返回所有账户信息，可能包含用户的敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAccountCredential",
-    "module": "@ohos.account.appAccount",
-    "class": "AppAccountManager",
-    "namespace": "appAccount",
-    "parameters": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "credentialType",
-        "type": "string"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 3,
-    "reason": "回调函数参数返回应用账户的凭证信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Basic information",
+    "label": "Account information",
+    "catalogApiSignature": "AppAccountManager.getAllAccounts",
+    "description": "根据应用账号所有者获取调用方可访问的应用账号列表。使用callback异步回调。",
+    "documentation": "js-apis-appaccount"
   },
   {
     "api_name": "getAllAccounts",
@@ -104,239 +91,12 @@
     "reason": "返回所有账户的信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAccountCredential",
-    "module": "@ohos.account.appAccount",
-    "class": "AppAccountManager",
-    "namespace": "appAccount",
-    "parameters": [
-      {
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "name": "credentialType",
-        "type": "string"
-      }
-    ],
-    "returnType": "Promise<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回应用程序账户的凭证，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getOsAccountLocalId",
-    "module": "@ohos.account.osAccount",
-    "class": "AccountManager",
-    "namespace": "osAccount",
-    "parameters": [],
-    "returnType": "Promise<number>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回当前操作系统账户的本地 ID，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getOsAccountLocalId",
-    "module": "@ohos.account.osAccount",
-    "class": "AccountManager",
-    "namespace": "osAccount",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回当前操作系统账户的本地ID，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getDeviceName",
-    "module": "@ohos.bluetooth.ble",
-    "class": "GattClientDevice",
-    "namespace": "ble",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回BLE外设设备名称，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getDeviceName",
-    "module": "@ohos.bluetooth.ble",
-    "class": "GattClientDevice",
-    "namespace": "ble",
-    "parameters": [],
-    "returnType": "Promise<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回BLE外设的名称，可能包含设备的敏感信息。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getRssiValue",
-    "module": "@ohos.bluetooth.ble",
-    "class": "GattClientDevice",
-    "namespace": "ble",
-    "parameters": [],
-    "returnType": "Promise<number>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回BLE外设的RSSI值，属于设备信号强度信息，可能涉及用户隐私。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getRssiValue",
-    "module": "@ohos.bluetooth.ble",
-    "class": "GattClientDevice",
-    "namespace": "ble",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<number, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回BLE设备的RSSI值，属于设备通信信息，可能涉及用户隐私。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getRemoteDeviceName",
-    "module": "@ohos.bluetoothManager",
-    "class": "",
-    "namespace": "bluetoothManager",
-    "parameters": [
-      {
-        "name": "deviceId",
-        "type": "string"
-      }
-    ],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回蓝牙设备名称，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getProfileInstance",
-    "module": "@ohos.bluetoothManager",
-    "class": "",
-    "namespace": "bluetoothManager",
-    "parameters": [
-      {
-        "name": "profileId",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.ProfileId"
-      }
-    ],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.A2dpSourceProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.HandsFreeAudioGatewayProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.HidHostProfile | import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.bluetoothManager\").default.PanProfile",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回用户的个人资料实例，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "addContact",
-    "module": "@ohos.contact",
-    "class": "",
-    "namespace": "contact",
-    "parameters": [
-      {
-        "name": "context",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/application/Context\").default"
-      },
-      {
-        "name": "contact",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact"
-      }
-    ],
-    "returnType": "Promise<number>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回值为联系人 ID，可能涉及用户的敏感信息。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "selectContacts",
-    "module": "@ohos.contact",
-    "class": "",
-    "namespace": "contact",
-    "parameters": [
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactSelectionOptions"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回用户联系人信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "selectContacts",
-    "module": "@ohos.contact",
-    "class": "",
-    "namespace": "contact",
-    "parameters": [],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回用户选择的联系人列表，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Basic information",
+    "label": "Account information",
+    "catalogApiSignature": "AppAccountManager.getAllAccounts",
+    "description": "根据应用账号所有者获取调用方可访问的应用账号列表。使用callback异步回调。",
+    "documentation": "js-apis-appaccount"
   },
   {
     "api_name": "queryContact",
@@ -364,7 +124,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -392,7 +157,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -416,7 +186,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -444,7 +219,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -476,7 +256,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -508,27 +293,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "selectContacts",
-    "module": "@ohos.contact",
-    "class": "",
-    "namespace": "contact",
-    "parameters": [
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.ContactSelectionOptions"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[]>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回用户选择的联系人列表，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -560,7 +330,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -592,27 +367,12 @@
     "reason": "返回指定的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "selectContacts",
-    "module": "@ohos.contact",
-    "class": "",
-    "namespace": "contact",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.contact\").default.Contact[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -640,7 +400,12 @@
     "reason": "返回指定的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -660,7 +425,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -684,7 +454,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContact",
@@ -720,7 +495,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContact",
+    "description": "根据key查询联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -748,7 +528,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -776,7 +561,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -800,7 +590,12 @@
     "reason": "返回联系人列表，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -828,7 +623,12 @@
     "reason": "返回联系人列表，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -852,7 +652,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -884,7 +689,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -912,7 +722,12 @@
     "reason": "回调函数参数返回与联系人相关的信息，可能包含用户的隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -940,7 +755,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContacts",
@@ -964,7 +784,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContacts",
+    "description": "查询所有联系人。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -996,7 +821,12 @@
     "reason": "回调函数参数返回与指定电子邮件相关的联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1020,7 +850,12 @@
     "reason": "回调函数参数返回与指定电子邮件相关的联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1048,7 +883,12 @@
     "reason": "回调函数参数返回与联系人相关的信息，可能包含用户的隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1080,7 +920,12 @@
     "reason": "回调函数参数返回与联系人相关的数据，可能包含用户的隐私信息。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1108,7 +953,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1144,7 +994,12 @@
     "reason": "回调函数参数返回与联系人相关的数据，可能包含用户的隐私信息。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1176,7 +1031,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1204,7 +1064,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1232,7 +1097,12 @@
     "reason": "返回的联系人列表可能包含用户的个人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1264,7 +1134,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1288,7 +1163,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1316,7 +1196,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1344,7 +1229,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByEmail",
@@ -1376,7 +1266,12 @@
     "reason": "返回联系人列表，可能包含用户的个人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByEmail",
+    "description": "根据email查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、Emails属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1408,7 +1303,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1444,7 +1344,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1468,7 +1373,12 @@
     "reason": "回调函数参数返回联系人组信息，可能包含用户的联系人隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1500,7 +1410,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1520,7 +1435,12 @@
     "reason": "回调函数参数返回联系人组信息，可能包含用户的联系人隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1548,7 +1468,12 @@
     "reason": "返回联系人列表，包含用户的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1572,7 +1497,12 @@
     "reason": "回调函数参数返回联系人组信息，可能包含用户的隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1592,7 +1522,12 @@
     "reason": "返回联系人组列表，可能包含用户的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryContactsByPhoneNumber",
@@ -1624,7 +1559,12 @@
     "reason": "返回联系人列表，包含用户的联系方式，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryContactsByPhoneNumber",
+    "description": "根据电话号码查询联系人。使用callback异步回调。该接口仅返回联系人信息中的id、key、phoneNumbers属性。如果要查询联系人的所有信息，建议使用queryContact接口，根据该接口返回的属性key查询。应用在后台调用此接口获取联系人信息时，必须申请对应的长时任务。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1648,7 +1588,12 @@
     "reason": "返回联系人组列表，可能包含用户的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryHolders",
@@ -1668,7 +1613,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryHolders",
+    "description": "查询所有创建联系人的应用信息。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryGroups",
@@ -1696,7 +1646,12 @@
     "reason": "回调函数参数返回联系人组信息，可能包含用户的联系信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryGroups",
+    "description": "查询联系人的所有群组。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryHolders",
@@ -1720,7 +1675,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryHolders",
+    "description": "查询所有创建联系人的应用信息。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryHolders",
@@ -1740,7 +1700,12 @@
     "reason": "返回联系人持有者列表，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryHolders",
+    "description": "查询所有创建联系人的应用信息。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryHolders",
@@ -1755,7 +1720,12 @@
     "reason": "返回联系人持有者列表，包含用户的联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryHolders",
+    "description": "查询所有创建联系人的应用信息。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1783,7 +1753,12 @@
     "reason": "回调函数参数返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1815,7 +1790,12 @@
     "reason": "回调函数参数返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1839,7 +1819,12 @@
     "reason": "回调函数参数返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1867,7 +1852,12 @@
     "reason": "返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1891,7 +1881,12 @@
     "reason": "返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -1911,7 +1906,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryKey",
@@ -1939,7 +1939,12 @@
     "reason": "回调函数参数返回联系人查询密钥，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryKey",
+    "description": "根据联系人的id查询联系人的key。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -1963,7 +1968,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -1987,7 +1997,12 @@
     "reason": "回调函数参数返回联系人信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -2015,7 +2030,12 @@
     "reason": "回调函数参数返回联系人信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -2039,7 +2059,12 @@
     "reason": "返回用户的卡片信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "queryMyCard",
@@ -2059,7 +2084,12 @@
     "reason": "返回关于用户的卡片信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.queryMyCard",
+    "description": "查询“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "isLocalContact",
@@ -2087,7 +2117,12 @@
     "reason": "回调函数参数返回是否为本地联系人，可能涉及用户的联系人隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.isLocalContact",
+    "description": "判断当前联系人id是否在电话簿中。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "isLocalContact",
@@ -2111,7 +2146,12 @@
     "reason": "回调函数参数返回是否为本地联系人，可能涉及用户的联系人隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.isLocalContact",
+    "description": "判断当前联系人id是否在电话簿中。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "isMyCard",
@@ -2135,7 +2175,12 @@
     "reason": "回调函数参数返回是否为用户的名片，涉及用户的隐私信息。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Contact information",
+    "label": "Contact list",
+    "catalogApiSignature": "contact.isMyCard",
+    "description": "判断是否为“我的名片”。使用callback异步回调。",
+    "documentation": "js-apis-contact"
   },
   {
     "api_name": "getAssets",
@@ -2159,7 +2204,12 @@
     "reason": "回调函数参数返回图像和视频资产，可能包含用户的隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Image or video",
+    "catalogApiSignature": "AbsAlbum.getAssets",
+    "description": "获取相册中的文件。使用callback异步回调。",
+    "documentation": "arkts-apis-photoaccesshelper-absalbum"
   },
   {
     "api_name": "getAssets",
@@ -2179,7 +2229,12 @@
     "reason": "返回相册中的资产，可能包含用户的照片和视频，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Image or video",
+    "catalogApiSignature": "AbsAlbum.getAssets",
+    "description": "获取相册中的文件。使用callback异步回调。",
+    "documentation": "arkts-apis-photoaccesshelper-absalbum"
   },
   {
     "api_name": "getAssets",
@@ -2199,67 +2254,12 @@
     "reason": "返回图像和视频资产，属于用户的敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "createAsset",
-    "module": "@ohos.file.photoAccessHelper",
-    "class": "PhotoAccessHelper",
-    "namespace": "photoAccessHelper",
-    "parameters": [
-      {
-        "name": "photoType",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
-      },
-      {
-        "name": "extension",
-        "type": "string"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 4,
-    "reason": "回调函数参数返回创建的图像或视频资产的结果，可能包含敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "createAsset",
-    "module": "@ohos.file.photoAccessHelper",
-    "class": "PhotoAccessHelper",
-    "namespace": "photoAccessHelper",
-    "parameters": [
-      {
-        "name": "photoType",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
-      },
-      {
-        "name": "extension",
-        "type": "string"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.CreateOptions"
-      }
-    ],
-    "returnType": "Promise<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回新创建的资产的 URI，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Image or video",
+    "catalogApiSignature": "PhotoAccessHelper.getAssets",
+    "description": "获取图片和视频资源，使用callback方式返回结果。",
+    "documentation": "arkts-apis-photoaccesshelper-photoaccesshelper"
   },
   {
     "api_name": "getAssets",
@@ -2283,59 +2283,12 @@
     "reason": "回调函数参数返回图像和视频资产，可能包含用户的隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "createAsset",
-    "module": "@ohos.file.photoAccessHelper",
-    "class": "PhotoAccessHelper",
-    "namespace": "photoAccessHelper",
-    "parameters": [
-      {
-        "name": "photoType",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.file.photoAccessHelper\").default.PhotoType"
-      },
-      {
-        "name": "extension",
-        "type": "string"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 3,
-    "reason": "回调函数参数返回创建的图像或视频资产的文件名，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "off",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"locationChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能包含位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Image or video",
+    "catalogApiSignature": "PhotoAccessHelper.getAssets",
+    "description": "获取图片和视频资源，使用callback方式返回结果。",
+    "documentation": "arkts-apis-photoaccesshelper-photoaccesshelper"
   },
   {
     "api_name": "on",
@@ -2363,107 +2316,12 @@
     "reason": "回调函数参数返回位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "off",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"cachedGnssLocationsReporting\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location[]>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回缓存的 GNSS 位置数据，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"cachedGnssLocationsReporting\""
-      },
-      {
-        "name": "request",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.CachedGnssLocationsRequest"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.Location[]>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 3,
-    "reason": "回调函数参数返回缓存的 GNSS 位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"gnssStatusChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.SatelliteStatusInfo>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回卫星状态信息，可能包含用户的位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"nmeaMessageChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<string>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回 NMEA 消息，可能包含位置信息等敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "GPS location",
+    "catalogApiSignature": "geoLocationManager.on('locationChange')",
+    "description": "开启位置变化订阅，并发起定位请求。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentLocation",
@@ -2487,7 +2345,12 @@
     "reason": "回调函数参数返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentLocation",
@@ -2507,7 +2370,12 @@
     "reason": "回调函数参数返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getLastLocation",
@@ -2527,22 +2395,12 @@
     "reason": "回调函数参数返回用户最后已知的位置，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "isLocationEnabled",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [],
-    "returnType": "Promise<boolean>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回当前位置信息开关状态，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geolocation.getLastLocation",
+    "description": "获取上一次位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocation"
   },
   {
     "api_name": "getCurrentLocation",
@@ -2562,7 +2420,12 @@
     "reason": "返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getLastLocation",
@@ -2577,71 +2440,12 @@
     "reason": "返回用户位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "isLocationEnabled",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回当前位置信息开关状态，可能涉及用户的隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAddressesFromLocation",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "request",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.ReverseGeoCodeRequest"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoAddress[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回地理位置信息对应的地址，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "requestEnableLocation",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回位置服务的启用状态，可能涉及用户的位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geolocation.getLastLocation",
+    "description": "获取上一次位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocation"
   },
   {
     "api_name": "getCachedGnssLocationsSize",
@@ -2661,75 +2465,12 @@
     "reason": "回调函数参数返回缓存的GNSS位置信息数量，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAddressesFromLocationName",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "request",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoCodeRequest"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geolocation\").default.GeoAddress[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回地理位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "flushCachedGnssLocations",
-    "module": "@ohos.geolocation",
-    "class": "",
-    "namespace": "geolocation",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<boolean, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回缓存的GNSS位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "off",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"locationError\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.LocationError>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能包含位置信息错误，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCachedGnssLocationsSize",
+    "description": "获取GNSS芯片缓存位置的个数。该接口功能由GNSS定位芯片提供（仅部分型号支持），如果设备无此芯片或使用的芯片型号不支持该功能，则返回错误码801（Capability not supported）。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -2757,7 +2498,12 @@
     "reason": "回调函数参数返回位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "GPS location",
+    "catalogApiSignature": "geoLocationManager.on('locationChange')",
+    "description": "开启位置变化订阅，并发起定位请求。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -2781,79 +2527,12 @@
     "reason": "回调函数参数返回位置错误信息，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"locationEnabledChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<boolean>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回位置开关状态，可能涉及用户位置信息的隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "off",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"cachedGnssLocationsChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location[]>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回缓存的GNSS位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "off",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"locationChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.Location>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回位置变化信息，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "GPS location",
+    "catalogApiSignature": "geoLocationManager.on('locationError')",
+    "description": "订阅持续定位过程中的错误码。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -2877,31 +2556,12 @@
     "reason": "回调函数参数返回 NMEA 消息，可能包含位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"countryCodeChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能包含国家代码变化的信息，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.on('nmeaMessage')",
+    "description": "订阅GNSS NMEA信息上报事件。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -2925,7 +2585,12 @@
     "reason": "回调函数参数包含卫星状态信息，可能涉及敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.on('satelliteStatusChange')",
+    "description": "订阅GNSS卫星状态信息上报事件。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentLocation",
@@ -2945,7 +2610,12 @@
     "reason": "返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentLocation",
@@ -2969,7 +2639,12 @@
     "reason": "回调函数参数返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getLastLocation",
@@ -2984,7 +2659,12 @@
     "reason": "返回用户位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getLastLocation",
+    "description": "获取上一次位置。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -3008,51 +2688,12 @@
     "reason": "回调函数参数返回蓝牙扫描结果，可能包含用户位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAddressesFromLocation",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "request",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.GeoAddress[]>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回地址信息，可能包含用户位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAddressesFromLocation",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "request",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.ReverseGeoCodeRequest"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.GeoAddress[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回地理位置信息的地址，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.on('bluetoothScanResultChange')",
+    "description": "订阅蓝牙扫描信息上报事件，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCachedGnssLocationsSize",
@@ -3072,7 +2713,12 @@
     "reason": "回调函数参数返回缓存的GNSS位置信息的数量，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCachedGnssLocationsSize",
+    "description": "获取GNSS芯片缓存位置的个数。该接口功能由GNSS定位芯片提供（仅部分型号支持），如果设备无此芯片或使用的芯片型号不支持该功能，则返回错误码801（Capability not supported）。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentLocation",
@@ -3092,62 +2738,12 @@
     "reason": "回调函数参数返回当前位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "flushCachedGnssLocations",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<void, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回缓存的 GNSS 位置信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getCountryCode",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回当前国家代码，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getCountryCode",
-    "module": "@ohos.geoLocationManager",
-    "class": "",
-    "namespace": "geoLocationManager",
-    "parameters": [],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.geoLocationManager\").default.CountryCode>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回当前国家代码，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.getCurrentLocation",
+    "description": "获取当前位置，使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "on",
@@ -3175,7 +2771,12 @@
     "reason": "回调函数参数返回缓存的GNSS位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Other approximate location information",
+    "catalogApiSignature": "geoLocationManager.on('cachedGnssLocationsChange')",
+    "description": "订阅缓存GNSS定位结果上报事件。该接口功能由GNSS定位芯片提供（仅部分型号支持），如果设备无此芯片或使用的芯片型号不支持该功能，则返回错误码801（Capability not supported）。使用callback异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getPoiInfo",
@@ -3190,7 +2791,12 @@
     "reason": "返回的 POI 信息可能包含用户的位置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Network location",
+    "catalogApiSignature": "geoLocationManager.getPoiInfo",
+    "description": "获取当前位置附近的POI信息。使用Promise异步回调。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getCurrentWifiBssidForLocating",
@@ -3205,7 +2811,12 @@
     "reason": "返回当前连接的Wi-Fi热点的BSSID，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Location information",
+    "label": "Network location",
+    "catalogApiSignature": "geoLocationManager.getCurrentWifiBssidForLocating",
+    "description": "获取连接的Wi-Fi AP（Access Point）的Bssid（Basic Service Set Identifier）信息。如果当前设备未连接Wi-Fi，调用该接口将抛出错误码3301900。建议参考示例代码，通过try-catch结构捕获异常。",
+    "documentation": "js-apis-geolocationmanager"
   },
   {
     "api_name": "getOAID",
@@ -3220,7 +2831,12 @@
     "reason": "返回 OAID（设备唯一标识符），属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "OAID",
+    "catalogApiSignature": "identifier.getOAID",
+    "description": "获取开放匿名设备标识符（OAID）。使用Promise异步回调。",
+    "documentation": "js-apis-oaid"
   },
   {
     "api_name": "getOAID",
@@ -3240,86 +2856,12 @@
     "reason": "回调函数参数返回 OAID，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getInputMethodAbility",
-    "module": "@ohos.inputMethodEngine",
-    "class": "",
-    "namespace": "inputMethodEngine",
-    "parameters": [],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.inputMethodEngine\").default.InputMethodAbility",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回输入法能力对象，可能包含用户输入法相关的敏感信息。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "createAudioCapturer",
-    "module": "@ohos.multimedia.audio",
-    "class": "",
-    "namespace": "audio",
-    "parameters": [
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturer, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回音频捕获器实例，可能涉及用户的音频数据，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "createAudioCapturer",
-    "module": "@ohos.multimedia.audio",
-    "class": "",
-    "namespace": "audio",
-    "parameters": [
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturerOptions"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioCapturer>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回音频捕获器实例，可能涉及用户音频数据，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAudioScene",
-    "module": "@ohos.multimedia.audio",
-    "class": "AudioManager",
-    "namespace": "audio",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.multimedia.audio\").default.AudioScene, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回音频场景模式，可能包含用户的音频使用情况，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "OAID",
+    "catalogApiSignature": "identifier.getOAID",
+    "description": "获取开放匿名设备标识符（OAID）。使用Promise异步回调。",
+    "documentation": "js-apis-oaid"
   },
   {
     "api_name": "getDefaultNetSync",
@@ -3334,27 +2876,12 @@
     "reason": "返回默认激活的数据网络信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAllNets",
-    "module": "@ohos.net.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回激活的数据网络列表，可能包含用户的网络信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Network type",
+    "catalogApiSignature": "connection.getDefaultNetSync",
+    "description": "获取系统默认使用的网络句柄，包含网络ID。使用同步方式返回。",
+    "documentation": "js-apis-net-connection"
   },
   {
     "api_name": "getDefaultNet",
@@ -3369,7 +2896,12 @@
     "reason": "返回默认激活的数据网络信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Network type",
+    "catalogApiSignature": "connection.getDefaultNet",
+    "description": "获取系统默认使用的网络句柄，包含网络ID。使用callback异步回调。",
+    "documentation": "js-apis-net-connection"
   },
   {
     "api_name": "getDefaultNet",
@@ -3389,111 +2921,12 @@
     "reason": "回调函数参数返回默认激活的数据网络信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAllNetsSync",
-    "module": "@ohos.net.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[]",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回已激活的数据网络列表，可能包含用户的网络信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getAllNets",
-    "module": "@ohos.net.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle[]>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回已激活的数据网络列表，可能包含网络连接信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getNetCapabilities",
-    "module": "@ohos.net.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [
-      {
-        "name": "netHandle",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetCapabilities>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回网络能力信息，可能包含网络状态和连接信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getNetCapabilities",
-    "module": "@ohos.net.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [
-      {
-        "name": "netHandle",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetHandle"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.net.connection\").default.NetCapabilities, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回网络能力信息，可能包含敏感的网络状态数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSystemPasteboard",
-    "module": "@ohos.pasteboard",
-    "class": "",
-    "namespace": "pasteboard",
-    "parameters": [],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.pasteboard\").default.SystemPasteboard",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回系统剪贴板对象，可能包含用户复制的敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getPrimaryText",
-    "module": "@ohos.pasteboard",
-    "class": "PasteData",
-    "namespace": "pasteboard",
-    "parameters": [],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回粘贴板中主要记录的纯文本，可能包含用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Network type",
+    "catalogApiSignature": "connection.getDefaultNet",
+    "description": "获取系统默认使用的网络句柄，包含网络ID。使用callback异步回调。",
+    "documentation": "js-apis-net-connection"
   },
   {
     "api_name": "getData",
@@ -3513,7 +2946,12 @@
     "reason": "回调函数参数返回粘贴板内容，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getData",
+    "description": "读取系统剪贴板内容，使用callback异步回调。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "getData",
@@ -3528,42 +2966,12 @@
     "reason": "返回系统剪贴板中的数据，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getDeviceCapability",
-    "module": "@ohos.resourceManager",
-    "class": "ResourceManager",
-    "namespace": "resourceManager",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.resourceManager\").default.DeviceCapability, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回设备能力信息，可能包含设备的敏感信息。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getDeviceCapability",
-    "module": "@ohos.resourceManager",
-    "class": "ResourceManager",
-    "namespace": "resourceManager",
-    "parameters": [],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.resourceManager\").default.DeviceCapability>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回设备能力信息，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getData",
+    "description": "读取系统剪贴板内容，使用callback异步回调。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "on",
@@ -3591,7 +2999,12 @@
     "reason": "回调函数参数返回加速度传感器数据，属于用户隐私数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Acceleration sensor",
+    "catalogApiSignature": "sensor.on('SensorId.ACCELEROMETER')",
+    "description": "订阅加速度传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3619,7 +3032,12 @@
     "reason": "回调函数参数返回未校准的加速度计传感器数据，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Acceleration sensor",
+    "catalogApiSignature": "sensor.on('SensorId.ACCELEROMETER_UNCALIBRATED')",
+    "description": "订阅未校准加速度传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3647,7 +3065,12 @@
     "reason": "回调函数参数返回气压传感器数据，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Barometer",
+    "catalogApiSignature": "sensor.on('SensorId.BAROMETER')",
+    "description": "订阅气压计传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3675,7 +3098,12 @@
     "reason": "回调函数参数返回重力传感器数据，属于用户隐私数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Gravity sensor",
+    "catalogApiSignature": "sensor.on('SensorId.GRAVITY')",
+    "description": "订阅重力传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3703,7 +3131,12 @@
     "reason": "回调函数参数返回陀螺仪传感器数据，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Gyroscope",
+    "catalogApiSignature": "sensor.on('SensorId.GYROSCOPE')",
+    "description": "订阅校准的陀螺仪传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3731,7 +3164,12 @@
     "reason": "回调函数参数返回环境光传感器数据，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Light sensor",
+    "catalogApiSignature": "sensor.on('SensorId.AMBIENT_LIGHT')",
+    "description": "订阅环境光传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3759,35 +3197,12 @@
     "reason": "回调函数参数返回未校准的陀螺仪传感器数据，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.HALL"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HallResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回与大厅传感器相关的数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Gyroscope",
+    "catalogApiSignature": "sensor.on('SensorId.GYROSCOPE_UNCALIBRATED')",
+    "description": "订阅未校准陀螺仪传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3815,7 +3230,12 @@
     "reason": "回调函数参数返回磁场传感器数据，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Magnetometer",
+    "catalogApiSignature": "sensor.on('SensorId.MAGNETIC_FIELD')",
+    "description": "订阅地磁传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3843,7 +3263,12 @@
     "reason": "回调函数参数返回方向传感器数据，可能包含用户的设备状态信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Screen orientation sensor",
+    "catalogApiSignature": "sensor.on('SensorId.ORIENTATION')",
+    "description": "订阅方向传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3871,7 +3296,12 @@
     "reason": "回调函数参数返回心率传感器数据，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Fitness and health information",
+    "label": "Heart rate",
+    "catalogApiSignature": "sensor.on('SensorId.HEART_RATE')",
+    "description": "订阅心率传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3899,7 +3329,12 @@
     "reason": "回调函数参数返回未校准的磁场传感器数据，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Magnetometer",
+    "catalogApiSignature": "sensor.on('SensorId.MAGNETIC_FIELD_UNCALIBRATED')",
+    "description": "订阅未校准地磁传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3927,7 +3362,12 @@
     "reason": "回调函数参数返回步态检测传感器数据，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Fitness and health information",
+    "label": "Fitness information",
+    "catalogApiSignature": "sensor.on('SensorId.PEDOMETER_DETECTION')",
+    "description": "订阅计步检测器传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -3955,35 +3395,12 @@
     "reason": "回调函数参数可能返回线性加速度传感器数据，属于用户隐私数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId.WEAR_DETECTION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.WearDetectionResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回穿戴检测传感器数据，属于用户隐私数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Acceleration sensor",
+    "catalogApiSignature": "sensor.on('SensorId.LINEAR_ACCELEROMETER')",
+    "description": "订阅线性加速度传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -4011,7 +3428,12 @@
     "reason": "回调函数参数返回接近传感器的数据，属于用户隐私数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Light sensor",
+    "catalogApiSignature": "sensor.on('SensorId.PROXIMITY')",
+    "description": "订阅接近光传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -4039,7 +3461,12 @@
     "reason": "回调函数参数返回旋转向量传感器数据，可能包含用户的运动和位置相关信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Rotation vector sensor",
+    "catalogApiSignature": "sensor.on('SensorId.ROTATION_VECTOR')",
+    "description": "订阅旋转矢量传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -4067,7 +3494,12 @@
     "reason": "回调函数参数返回计步器传感器数据，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Fitness and health information",
+    "label": "Fitness information",
+    "catalogApiSignature": "sensor.on('SensorId.PEDOMETER')",
+    "description": "订阅计步器传感器数据。计步传感器数据上报有一定延迟，延迟时间由具体的实现产品决定。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "on",
@@ -4095,769 +3527,12 @@
     "reason": "回调函数参数返回显著运动传感器数据，属于用户隐私数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER_UNCALIBRATED"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerUncalibratedResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ACCELEROMETER"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.AccelerometerResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HEART_RATE"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HeartRateResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数 HeartRateResponse 可能包含用户的心率数据，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_LINEAR_ACCELERATION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.LinearAccelerometerResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_HUMIDITY"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.HumidityResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER_DETECTION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerDetectionResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，涉及用户的运动信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PROXIMITY"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.ProximityResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ROTATION_VECTOR"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.RotationVectorResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_SIGNIFICANT_MOTION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SignificantMotionResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_WEAR_DETECTION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.WearDetectionResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_MAGNETIC_FIELD_UNCALIBRATED"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.MagneticFieldUncalibratedResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回传感器数据，可能包含用户的环境信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_ORIENTATION"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.OrientationResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_PEDOMETER"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.PedometerResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，包含用户的步态信息，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorType.SENSOR_TYPE_ID_GYROSCOPE_UNCALIBRATED"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.GyroscopeUncalibratedResponse>"
-      },
-      {
-        "name": "options",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Options"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数可能返回传感器数据，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSingleSensorSync",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
-      }
-    ],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回传感器信息，可能包含用户的敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSingleSensorByDeviceSync",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
-      },
-      {
-        "name": "deviceId",
-        "type": "number"
-      }
-    ],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回指定设备和类型的传感器信息，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSingleSensor",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回指定类型的传感器信息，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSingleSensor",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorId"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回传感器信息，可能包含用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSensorList",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[], void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 1,
-    "reason": "回调函数参数返回设备传感器信息，可能包含用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSensorListSync",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [],
-    "returnType": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回设备上的传感器信息，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSensorList",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.Sensor[]>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回设备上的所有传感器信息，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "on",
-    "module": "@ohos.sensor",
-    "class": "",
-    "namespace": "sensor",
-    "parameters": [
-      {
-        "name": "type",
-        "type": "\"sensorStatusChange\""
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").Callback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.sensor\").default.SensorStatusEvent>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回设备状态变化事件，可能包含敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimOperatorNumeric",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      }
-    ],
-    "returnType": "Promise<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回值为 SIM 卡的 PLMN 号码，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getISOCountryCodeForSimSync",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      }
-    ],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回SIM卡的ISO国家代码，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimSpn",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回SIM卡的服务提供商名称，属于用户隐私数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimOperatorNumeric",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<string, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回SIM卡的PLMN号码，属于敏感数据。",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimState",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      },
-      {
-        "name": "callback",
-        "type": "import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.base\").AsyncCallback<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.SimState, void>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "回调函数参数返回SIM卡状态，可能包含用户的敏感信息。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimState",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      }
-    ],
-    "returnType": "Promise<import(\"${OPENHARMONY_SDK_PATH}/api/@ohos.telephony.sim\").default.SimState>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回SIM卡状态，可能涉及用户的通信信息，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getSimSpn",
-    "module": "@ohos.telephony.sim",
-    "class": "",
-    "namespace": "sim",
-    "parameters": [
-      {
-        "name": "slotId",
-        "type": "number"
-      }
-    ],
-    "returnType": "Promise<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回SIM卡的服务提供商名称（SPN），属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Fitness and health information",
+    "label": "Fitness information",
+    "catalogApiSignature": "sensor.on('SensorId.SIGNIFICANT_MOTION')",
+    "description": "订阅有效运动传感器数据。",
+    "documentation": "js-apis-sensor"
   },
   {
     "api_name": "getSimAccountInfo",
@@ -4877,7 +3552,12 @@
     "reason": "返回的 IccAccountInfo 对象可能包含 SIM 卡的敏感信息，如 ICCID 和电话号码，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "ICCID",
+    "catalogApiSignature": "sim.getSimAccountInfo",
+    "description": "获取SIM卡账户信息。使用callback异步回调。",
+    "documentation": "js-apis-sim"
   },
   {
     "api_name": "getSimAccountInfo",
@@ -4901,7 +3581,12 @@
     "reason": "回调函数参数返回SIM卡账户信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "ICCID",
+    "catalogApiSignature": "sim.getSimAccountInfo",
+    "description": "获取SIM卡账户信息。使用callback异步回调。",
+    "documentation": "js-apis-sim"
   },
   {
     "api_name": "getActiveSimAccountInfoList",
@@ -4921,7 +3606,12 @@
     "reason": "回调函数参数返回活动SIM卡账户信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "ICCID",
+    "catalogApiSignature": "sim.getActiveSimAccountInfoList",
+    "description": "获取激活SIM卡账户信息列表。使用callback异步回调。",
+    "documentation": "js-apis-sim"
   },
   {
     "api_name": "getActiveSimAccountInfoList",
@@ -4936,7 +3626,12 @@
     "reason": "返回活动SIM卡账户信息，包含敏感数据如ICCID和电话号码。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "ICCID",
+    "catalogApiSignature": "sim.getActiveSimAccountInfoList",
+    "description": "获取激活SIM卡账户信息列表。使用callback异步回调。",
+    "documentation": "js-apis-sim"
   },
   {
     "api_name": "getScanResults",
@@ -4956,7 +3651,12 @@
     "reason": "回调函数参数返回扫描到的WiFi信息，可能包含用户的网络信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getScanResults",
+    "description": "获取扫描结果，使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getScanResults",
@@ -4971,7 +3671,12 @@
     "reason": "返回扫描到的Wi-Fi热点信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getScanResults",
+    "description": "获取扫描结果，使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getScanInfoList",
@@ -4986,7 +3691,12 @@
     "reason": "返回扫描到的Wi-Fi热点信息，可能包含敏感的网络信息。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getScanInfoList",
+    "description": "获取包含当前时间点前30s内的缓存扫描结果。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getLinkedInfo",
@@ -5001,7 +3711,12 @@
     "reason": "返回 Wi-Fi 连接信息，可能包含敏感数据，如设备的 MAC 地址等。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getLinkedInfo",
+    "description": "获取WLAN连接信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getMultiLinkedInfo",
@@ -5016,7 +3731,12 @@
     "reason": "返回多个 Wi-Fi 连接信息，可能包含用户的网络连接信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getMultiLinkedInfo",
+    "description": "获取MLO(Multi-Link Operation，多链路操作)WLAN连接信息。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getLinkedInfo",
@@ -5036,7 +3756,12 @@
     "reason": "回调函数参数返回 Wi-Fi 连接信息，可能包含用户的网络连接状态和相关隐私数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getLinkedInfo",
+    "description": "获取WLAN连接信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getLinkedInfoSync",
@@ -5051,7 +3776,12 @@
     "reason": "返回 Wi-Fi 连接信息，可能包含敏感数据，如设备的 MAC 地址。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getLinkedInfoSync",
+    "description": "获取WLAN连接信息，使用同步方式返回结果。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getCandidateConfigs",
@@ -5066,7 +3796,12 @@
     "reason": "返回用户创建的 Wi-Fi 配置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi parameters|SSID|BSSID",
+    "catalogApiSignature": "wifiManager.getCandidateConfigs",
+    "description": "获取候选网络配置。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getDeviceMacAddress",
@@ -5081,7 +3816,12 @@
     "reason": "返回 Wi-Fi 设备的 MAC 地址，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Identifiers",
+    "label": "MAC",
+    "catalogApiSignature": "wifiManager.getDeviceMacAddress",
+    "description": "获取设备的MAC地址。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getIpInfo",
@@ -5096,22 +3836,12 @@
     "reason": "返回 Wi-Fi 连接的 IP 信息，包括主机 IP 地址、网关地址和 DNS 信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getCountryCode",
-    "module": "@ohos.wifiManager",
-    "class": "",
-    "namespace": "wifiManager",
-    "parameters": [],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "返回设备的国家代码，属于敏感数据。",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "IP address",
+    "catalogApiSignature": "wifiManager.getIpInfo",
+    "description": "获取IPV4信息。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getDeviceConfigs",
@@ -5126,7 +3856,12 @@
     "reason": "返回所有存在的 Wi-Fi 配置，包含用户的网络配置信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi parameters|SSID|BSSID",
+    "catalogApiSignature": "wifiManager.getDeviceConfigs",
+    "description": "获取网络配置。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pLinkedInfo",
@@ -5141,7 +3876,12 @@
     "reason": "返回 P2P 连接信息，可能包含设备间的敏感连接数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pLinkedInfo",
+    "description": "获取P2P连接信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getCurrentGroup",
@@ -5156,7 +3896,12 @@
     "reason": "返回当前 p2p 组的信息，可能包含敏感的网络连接信息。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getCurrentGroup",
+    "description": "获取P2P当前组信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getCurrentGroup",
@@ -5176,7 +3921,12 @@
     "reason": "回调函数参数返回当前 p2p 组的信息，可能包含敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getCurrentGroup",
+    "description": "获取P2P当前组信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getScanResultsSync",
@@ -5191,7 +3941,12 @@
     "reason": "返回扫描到的Wi-Fi热点信息，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getScanResultsSync",
+    "description": "获取扫描结果，使用同步方式返回一个包含多个WifiScanInfo对象的数组，每个对象表示一个WLAN网络的扫描信息。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pLinkedInfo",
@@ -5211,7 +3966,12 @@
     "reason": "回调函数参数返回 P2P 连接信息，可能包含用户的网络连接状态和设备信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pLinkedInfo",
+    "description": "获取P2P连接信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getIpv6Info",
@@ -5226,7 +3986,12 @@
     "reason": "返回 Wi-Fi 连接的 IPv6 信息，包括主机 IP 地址、网关地址和 DNS 信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "IP address",
+    "catalogApiSignature": "wifiManager.getIpv6Info",
+    "description": "获取IPV6信息。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pPeerDevices",
@@ -5241,7 +4006,12 @@
     "reason": "返回的 p2p 设备信息可能包含设备的敏感数据，如设备名称和地址，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pPeerDevices",
+    "description": "获取P2P对端设备列表信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pPeerDevices",
@@ -5261,7 +4031,12 @@
     "reason": "回调函数参数返回找到的设备信息，可能包含用户的网络设备信息，属于敏感数据。",
     "sensitivity": "medium",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pPeerDevices",
+    "description": "获取P2P对端设备列表信息。使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pLocalDevice",
@@ -5281,7 +4056,12 @@
     "reason": "回调函数参数返回设备信息，可能包含设备的MAC地址，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pLocalDevice",
+    "description": "获取P2P本端设备信息，使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getP2pLocalDevice",
@@ -5296,23 +4076,12 @@
     "reason": "返回设备信息，包括设备地址，属于敏感数据。",
     "sensitivity": "high",
     "source_kind": "privacy_data",
-    "rule_origin": "typed_privacy_source_inventory"
-  },
-  {
-    "api_name": "getLocalDeviceId",
-    "module": "@ohos.distributedDeviceManager",
-    "class": "DeviceManager",
-    "namespace": "distributedDeviceManager",
-    "parameters": [],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "Returns the identifier of the local distributed device.",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.distributedDeviceManager.d.ts:210"
+    "rule_origin": "typed_privacy_source_inventory",
+    "dataType": "Device information",
+    "label": "Wi-Fi status",
+    "catalogApiSignature": "wifiManager.getP2pLocalDevice",
+    "description": "获取P2P本端设备信息，使用Promise异步回调。",
+    "documentation": "js-apis-wifimanager"
   },
   {
     "api_name": "getCalendar",
@@ -5333,7 +4102,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:147"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:147",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "CalendarManager.getCalendar",
+    "description": "获取默认Calendar对象，默认Calendar是日历存储首次运行时创建的，若创建Event时不关注其Calendar归属，则无须通过createCalendar()创建Calendar，直接使用默认Calendar，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getCalendar",
@@ -5358,7 +4132,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:173"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:173",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "CalendarManager.getCalendar",
+    "description": "获取默认Calendar对象，默认Calendar是日历存储首次运行时创建的，若创建Event时不关注其Calendar归属，则无须通过createCalendar()创建Calendar，直接使用默认Calendar，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getCalendar",
@@ -5379,7 +4158,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:197"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:197",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "CalendarManager.getCalendar",
+    "description": "获取默认Calendar对象，默认Calendar是日历存储首次运行时创建的，若创建Event时不关注其Calendar归属，则无须通过createCalendar()创建Calendar，直接使用默认Calendar，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getAllCalendars",
@@ -5395,7 +4179,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:209"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:209",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "CalendarManager.getAllCalendars",
+    "description": "获取当前应用所有创建的Calendar对象以及默认Calendar对象，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getAllCalendars",
@@ -5416,7 +4205,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:221"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:221",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "CalendarManager.getAllCalendars",
+    "description": "获取当前应用所有创建的Calendar对象以及默认Calendar对象，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getEvents",
@@ -5441,7 +4235,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:367"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:367",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.getEvents",
+    "description": "查询当前日历下所有日程，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getEvents",
@@ -5470,7 +4269,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:376"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:376",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.getEvents",
+    "description": "查询当前日历下所有日程，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getEvents",
@@ -5491,7 +4295,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:383"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:383",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.getEvents",
+    "description": "查询当前日历下所有日程，使用callback异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getConfig",
@@ -5507,7 +4316,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:390"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:390",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.getConfig",
+    "description": "获取日历配置信息。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getAccount",
@@ -5523,7 +4337,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:413"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:413",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.getAccount",
+    "description": "获取日历账户信息。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "queryEventInstances",
@@ -5556,7 +4375,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.calendarManager.d.ts:425"
+    "sdk_declaration": "@ohos.calendarManager.d.ts:425",
+    "dataType": "Basic information",
+    "label": "Calendar and schedule",
+    "catalogApiSignature": "Calendar.queryEventInstances",
+    "description": "获取Calendar下符合查询条件的日程实例，使用Promise异步回调。",
+    "documentation": "js-apis-calendarmanager"
   },
   {
     "api_name": "getDataSync",
@@ -5572,7 +4396,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.pasteboard.d.ts:1426"
+    "sdk_declaration": "@ohos.pasteboard.d.ts:1426",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getDataSync",
+    "description": "读取系统剪贴板内容, 此接口为同步接口。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "getUnifiedData",
@@ -5588,7 +4417,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.pasteboard.d.ts:1580"
+    "sdk_declaration": "@ohos.pasteboard.d.ts:1580",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getUnifiedData",
+    "description": "读取系统剪贴板内容，使用Promise异步回调。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "getUnifiedDataSync",
@@ -5604,7 +4438,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.pasteboard.d.ts:1592"
+    "sdk_declaration": "@ohos.pasteboard.d.ts:1592",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getUnifiedDataSync",
+    "description": "读取系统剪贴板内容, 此接口为同步接口。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "getDataWithProgress",
@@ -5625,53 +4464,12 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.pasteboard.d.ts:1690"
-  },
-  {
-    "api_name": "getFile",
-    "module": "@ohos.wallpaper",
-    "class": "",
-    "namespace": "wallpaper",
-    "parameters": [
-      {
-        "name": "wallpaperType",
-        "type": "WallpaperType"
-      }
-    ],
-    "returnType": "Promise<number>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "Returns a file descriptor for the configured wallpaper.",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.wallpaper.d.ts:163"
-  },
-  {
-    "api_name": "getFile",
-    "module": "@ohos.wallpaper",
-    "class": "",
-    "namespace": "wallpaper",
-    "parameters": [
-      {
-        "name": "wallpaperType",
-        "type": "WallpaperType"
-      },
-      {
-        "name": "callback",
-        "type": "AsyncCallback<number>"
-      }
-    ],
-    "returnType": "void",
-    "api_type": "source",
-    "source_type": "callback",
-    "tainted_param_index": 2,
-    "reason": "Returns a file descriptor for the configured wallpaper.",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.wallpaper.d.ts:151"
+    "sdk_declaration": "@ohos.pasteboard.d.ts:1690",
+    "dataType": "User content",
+    "label": "Pasteboard",
+    "catalogApiSignature": "SystemPasteboard.getDataWithProgress",
+    "description": "获取剪贴板的内容和进度，使用Promise异步回调，不支持对文件夹的拷贝。",
+    "documentation": "js-apis-pasteboard"
   },
   {
     "api_name": "fetchFrameByTime",
@@ -5700,7 +4498,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:608"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:608",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVMetadataExtractor.fetchFrameByTime",
+    "description": "获取视频缩略图。使用Promise异步回调。",
+    "documentation": "arkts-apis-media-avmetadataextractor"
   },
   {
     "api_name": "fetchFrameByTime",
@@ -5729,7 +4532,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:1059"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:1059",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVImageGenerator.fetchFrameByTime",
+    "description": "获取视频缩略图。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avimagegenerator"
   },
   {
     "api_name": "fetchFrameByTime",
@@ -5762,7 +4570,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:1047"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:1047",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVImageGenerator.fetchFrameByTime",
+    "description": "获取视频缩略图。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avimagegenerator"
   },
   {
     "api_name": "fetchScaledFrameByTime",
@@ -5791,7 +4604,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:1072"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:1072",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVImageGenerator.fetchScaledFrameByTime",
+    "description": "支持按比例缩放提取视频缩略图。使用Promise异步回调。",
+    "documentation": "arkts-apis-media-avimagegenerator"
   },
   {
     "api_name": "fetchMetadata",
@@ -5807,7 +4625,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:545"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:545",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVMetadataExtractor.fetchMetadata",
+    "description": "获取媒体元数据。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avmetadataextractor"
   },
   {
     "api_name": "fetchMetadata",
@@ -5828,7 +4651,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:527"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:527",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVMetadataExtractor.fetchMetadata",
+    "description": "获取媒体元数据。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avmetadataextractor"
   },
   {
     "api_name": "fetchAlbumCover",
@@ -5844,7 +4672,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:583"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:583",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVMetadataExtractor.fetchAlbumCover",
+    "description": "获取音频专辑封面。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avmetadataextractor"
   },
   {
     "api_name": "fetchAlbumCover",
@@ -5865,7 +4698,12 @@
     "sensitivity": "medium",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.multimedia.media.d.ts:565"
+    "sdk_declaration": "@ohos.multimedia.media.d.ts:565",
+    "dataType": "User content",
+    "label": "Audio",
+    "catalogApiSignature": "AVMetadataExtractor.fetchAlbumCover",
+    "description": "获取音频专辑封面。使用callback异步回调。",
+    "documentation": "arkts-apis-media-avmetadataextractor"
   },
   {
     "api_name": "getPersistentDeviceIds",
@@ -5881,38 +4719,11 @@
     "sensitivity": "high",
     "source_kind": "privacy_data",
     "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.bluetooth.access.d.ts:360"
-  },
-  {
-    "api_name": "getLocalName",
-    "module": "@ohos.bluetooth.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [],
-    "returnType": "string",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "Returns the local Bluetooth device name.",
-    "sensitivity": "medium",
-    "source_kind": "privacy_data",
-    "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.bluetooth.connection.d.ts:428"
-  },
-  {
-    "api_name": "getPairedDevices",
-    "module": "@ohos.bluetooth.connection",
-    "class": "",
-    "namespace": "connection",
-    "parameters": [],
-    "returnType": "Array<string>",
-    "api_type": "source",
-    "source_type": "return",
-    "tainted_param_index": -1,
-    "reason": "Returns identifiers of paired Bluetooth devices.",
-    "sensitivity": "high",
-    "source_kind": "privacy_data",
-    "rule_origin": "sdk20_verified_privacy_source",
-    "sdk_declaration": "@ohos.bluetooth.connection.d.ts:471"
+    "sdk_declaration": "@ohos.bluetooth.access.d.ts:360",
+    "dataType": "Identifiers",
+    "label": "MAC",
+    "catalogApiSignature": "access.getPersistentDeviceIds",
+    "description": "获取应用持久化存储过的蓝牙虚拟MAC地址。",
+    "documentation": "js-apis-bluetooth-access"
   }
 ]

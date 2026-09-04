@@ -10,6 +10,10 @@ export interface SourceRuleMetadata {
     parameterTypes?: string[];
     sourceKind?: SourceKind;
     ruleOrigin?: string;
+    dataType?: string;
+    label?: string;
+    catalogApiSignature?: string;
+    description?: string;
 }
 
 export function hasConcreteSourceCarrierType(typeName: string): boolean {

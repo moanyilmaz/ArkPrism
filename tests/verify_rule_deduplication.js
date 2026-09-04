@@ -31,4 +31,10 @@ const flat = [{ a: 1, b: 2 }, { b: 2, a: 1 }, { a: 2 }];
 const flatResult = deduplicateFlat(flat);
 assert.strictEqual(flatResult.length, 2);
 assert.ok(equalSets(semanticSet('flat', flat), semanticSet('flat', flatResult)));
+
+const reviewedCatalog = [
+  { import_kit: '@kit.TestKit', api_signature: 'test.read', dataType: 'A', label: 'B' },
+  { label: 'B', dataType: 'A', api_signature: 'test.read', import_kit: '@kit.TestKit' },
+];
+assert.strictEqual(deduplicateFlat(reviewedCatalog).length, 1);
 console.log('Rule-set deduplication verified.');

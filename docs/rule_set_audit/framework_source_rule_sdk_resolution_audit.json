@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-09-04T06:59:53.279Z",
+  "sdk": {
+    "path": "E:\\OpenHarmony_SDK\\26.0.0\\ets",
+    "apiVersion": "26",
+    "version": "26.0.0.38",
+    "releaseType": "Release",
+    "loadedDeclarationFiles": 3055
+  },
+  "sources": {
+    "path": "E:\\arkprism-fixLongpath-20260825\\config\\lifecycle_sources.json",
+    "rules": 2,
+    "resolvedRules": 2,
+    "resolvedSignatures": 2,
+    "unresolvedRules": 0,
+    "ambiguousRules": 0,
+    "signatureCollisions": 0,
+    "carrierMismatches": 0
+  },
+  "unresolved": [],
+  "ambiguous": [],
+  "collisions": [],
+  "carrierMismatches": [],
+  "resolutions": [
+    {
+      "index": 0,
+      "module": "@ohos.app.ability.UIAbility",
+      "namespace": "",
+      "className": "UIAbility",
+      "apiName": "onCreate",
+      "sourceType": "ArgIn",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.app.ability.UIAbility.d.ts: UIAbility.onCreate(Want, AbilityConstant.LaunchParam)"
+      ]
+    },
+    {
+      "index": 1,
+      "module": "@ohos.app.ability.UIAbility",
+      "namespace": "",
+      "className": "UIAbility",
+      "apiName": "onNewWant",
+      "sourceType": "ArgIn",
+      "signatureCount": 1,
+      "signatures": [
+        "@@ohosSdk/api/@ohos.app.ability.UIAbility.d.ts: UIAbility.onNewWant(Want, AbilityConstant.LaunchParam)"
+      ]
+    }
+  ]
+}

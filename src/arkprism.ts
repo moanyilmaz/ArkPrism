@@ -14,7 +14,7 @@
 
 import { Scene, SceneConfig } from './arkanalyzer';
 import {
-    getSceneFromJson, readPrivacyApis, readSystemPackages,
+    getSceneFromJson, readPrivacyApis,
     writeJsonOutput, getTimestamp
 } from './utils';
 import { analyzeFileForPrivacyApis } from './apiDetector';
@@ -37,8 +37,9 @@ import { readFileSync, readdirSync, statSync, writeFileSync, existsSync, mkdirSy
 import * as path from 'path';
 import { resolveAnalysisPath, toDisplayPath } from './pathUtils';
 import { ensureAnalysisHeap } from './runtimeHeap';
+import { readOpenHarmonySdkInfo } from './sdkInfo';
 
-const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets';
+const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || '';
 const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
 const SOURCE_SKIP_DIRS = new Set([
     'build',
@@ -99,6 +100,7 @@ function analyzeProject(
     opts: AnalysisOptions,
     reportProjectDir: string = toDisplayPath(projectDir)
 ): ArkPrismOutput {
+    const sdk = readOpenHarmonySdkInfo(opts.sdkPath);
     console.log(`[SCENE] Building ArkAnalyzer Scene for ${projectName}...`);
     let sceneConfig = new SceneConfig();
     sceneConfig.buildFromProjectDir(projectDir);
@@ -129,12 +131,11 @@ function analyzeProject(
 
     // Read rules - use sensitive_apis.json for unified privacy API definitions
     let privacyApisPath = path.resolve(__dirname, '..', 'config', 'sensitive_apis.json');
-    let systemPackagesPath = path.resolve(__dirname, '..', 'config', 'system_packages14.json');
     let privacyApis = readPrivacyApis(privacyApisPath);
-    let systemPackages = Array.from(new Set([
-        ...readSystemPackages(systemPackagesPath),
-        ...privacyApis.map(pkg => pkg.systemPackage),
-    ]));
+    let systemPackages = Array.from(new Set(privacyApis.flatMap(pkg => [
+        pkg.systemPackage,
+        ...pkg.privacyApis.flatMap(api => api.packageAliases || []),
+    ])));
 
     // Detect APIs
     let allApiResults: PrivacyDataApiResult[] = [];
@@ -248,6 +249,12 @@ function analyzeProject(
         projectName,
         projectDirectory: reportProjectDir,
         analysisTimestamp: getTimestamp(),
+        sdk: {
+            path: toDisplayPath(sdk.path),
+            apiVersion: sdk.apiVersion,
+            version: sdk.version,
+            releaseType: sdk.releaseType,
+        },
         privacyApiUsages: allApiResults,
         callChains: callChainResults,
         multiSourceCollaborations: multiSourceResults,
@@ -304,7 +311,7 @@ Options:
   --no-dot              Skip DOT graph generation
   --no-taint            Skip HapFlow taint analysis
   --no-pta              Skip pointer analysis (faster but less precise)
-  --sdkPath <dir>       OpenHarmony SDK path (default: OPENHARMONY_SDK_PATH or E:/OpenHarmony_SDK/20/ets)
+  --sdkPath <dir>       OpenHarmony SDK ets path (required unless OPENHARMONY_SDK_PATH is set)
 
 IFDS Options:
   --ifds-batch-size <n>         Sources per batch (default: all sources in one solver run)
@@ -321,7 +328,7 @@ Callback Analysis Options:
 
 Examples:
   # Basic analysis
-  npx ts-node src/arkprism.ts dataset/DrawingBook-master
+  npx ts-node src/arkprism.ts dataset/DrawingBook-master --sdkPath <OpenHarmony-SDK-ets-dir>
 
   # Faster analysis (no pointer analysis)
   npx ts-node src/arkprism.ts dataset/DrawingBook-master --no-pta
@@ -567,11 +574,13 @@ function runConfig(configPath: string, opts: AnalysisOptions): void {
 
 ensureAnalysisHeap();
 let { mode, target, opts } = parseArgs();
+const sdk = readOpenHarmonySdkInfo(opts.sdkPath);
 opts = {
     ...opts,
     outputDir: toDisplayPath(opts.outputDir),
-    sdkPath: toDisplayPath(opts.sdkPath),
+    sdkPath: toDisplayPath(sdk.path),
 };
+console.log(`[SDK] OpenHarmony API ${sdk.apiVersion}, SDK ${sdk.version}: ${toDisplayPath(sdk.path)}`);
 
 if (!target) {
     printUsage();

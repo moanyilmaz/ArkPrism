@@ -8,17 +8,20 @@ English documentation: [README.md](README.md)
 
 - 64 位 Windows、Linux 或 macOS
 - Node.js 20.x 与 npm
-- 包含 ArkTS 声明的 OpenHarmony SDK
-- 普通工程建议为 Node.js 分配 8 GB 堆内存
+- 包含 ArkTS 声明的 OpenHarmony SDK；分析工程时使用与工程匹配的版本，完整核验 API 目录时使用本机最新稳定版本
+- 大型工程建议预留 16 GB 系统内存
 - Graphviz 仅用于渲染 DOT
 
-`--sdkPath` 必须指向真实 SDK 的 `ets` 目录，不能用工程内 stub 代替 SDK。
+`--sdkPath` 必须指向真实 SDK 的 `ets` 目录。ArkPrism 会读取其中的
+`oh-uni-package.json`，将实际 API/SDK 版本写入报告；不会回退到代码内置
+路径，也不能用工程内 stub 代替 SDK。
 
 Windows 检查示例：
 
 ```powershell
-$sdk = "E:\OpenHarmony_SDK\20\ets"
+$sdk = $env:OPENHARMONY_SDK_PATH
 Test-Path $sdk
+Get-Content (Join-Path $sdk "oh-uni-package.json")
 Get-ChildItem $sdk -Recurse -Filter *.d.ts | Select-Object -First 1
 ```
 
@@ -43,12 +46,12 @@ ArkPrism 会在访问文件系统前，将工程、SDK、配置和输出目录�
 ## 分析单个工程
 
 ```powershell
-$env:NODE_OPTIONS = "--max-old-space-size=8192"
+$env:ARKPRISM_MAX_OLD_SPACE_SIZE_MB = "12288"
 
 node dist\arkprism.js `
   "E:\Projects\MyHarmonyApp" `
   --output-dir "E:\ArkPrismResults\MyHarmonyApp" `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --ifds-max-edges 30000000 `
   --ifds-max-worklist 8000000 `
   --ifds-timeout-ms 1800000 `
@@ -70,7 +73,7 @@ node scripts\run_argus_batch_isolated.js `
   --dataset "E:\Datasets\HarmonyApps" `
   --output-dir "E:\ArkPrismResults\batch" `
   --log-dir "E:\ArkPrismResults\batch\logs" `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --engine compiled `
   --concurrency 2 `
   --timeout-ms 3600000 `
@@ -109,7 +112,7 @@ node scripts\audit_source_audit_artifact.js `
 ```powershell
 node scripts\run_top120_benchmark.js `
   --dataset benchmarks\ArkPrismTop120\sources `
-  --sdkPath "E:\OpenHarmony_SDK\20\ets" `
+  --sdkPath $env:OPENHARMONY_SDK_PATH `
   --output-dir benchmarks\ArkPrismTop120\results
 ```
 
@@ -139,10 +142,11 @@ node scripts\evaluate_top120_benchmark.js `
 
 | 字段 | 内容 |
 |---|---|
-| `privacyApiUsages` | API 身份、包、源码位置、权限及匹配证据 |
+| `sdk` | 实际 OpenHarmony API 版本、SDK 构建版本和 SDK 路径 |
+| `privacyApiUsages` | API 身份、PAC `dataType`/`label`、包、源码位置、权限及匹配证据 |
 | `callChains` | 入口到 API 的上下文与边来源 |
 | `dataSinks` | detector-local sink 结果 |
-| `taintFlows` | 配置查询下的 source-to-sink may-path |
+| `taintFlows` | 配置查询下的 source-to-sink may-path；目录支持的 source 同时带 PAC 元数据 |
 | `taintAnalysis` | PTA/IFDS 状态、资源上限与去重统计 |
 | `statistics` | 工程级汇总 |
 
@@ -152,14 +156,27 @@ API 或 may-flow 检出结果是审计证据，不直接等同于违规结论。
 
 | 文件 | 作用 |
 |---|---|
-| `config/sensitive_apis.json` | detector API 规则 |
+| `config/sensitive_apis.json` | 审核后的扁平 API 目录，包含签名、说明、权限、PAC `dataType` 和 `label` |
 | `config/package_aliases.json` | `@ohos`/`@kit` 迁移映射 |
 | `config/data_sinks.json` | detector-local sink 规则 |
 | `config/hapflow_sources.json` | 带明确 carrier 的 IFDS 隐私 source |
 | `config/lifecycle_sources.json` | 显式 framework-input source |
 | `config/hapflow_sinks.json` | IFDS sink |
 
-Detector 规则与 IFDS source 规则相互独立。具有权限的 API 只有在规则明确返回值或 callback carrier 时才会成为污点 source。
+`sensitive_apis.json` 是 detector 唯一的敏感 API 清单。IFDS source 是与该
+目录同步、且具有明确返回值或 callback carrier 的子集。
+
+使用任意已安装 SDK 核验目录，并记录实际 SDK 版本：
+
+```powershell
+npm run audit:sdk-sensitive-apis -- --sdkPath $env:OPENHARMONY_SDK_PATH
+```
+
+只检查 IFDS source 是否与目录一致，不写文件：
+
+```powershell
+npm run sync:ifds-sources
+```
 
 ## 常用参数
 
@@ -179,7 +196,7 @@ Detector 规则与 IFDS source 规则相互独立。具有权限的 API 只有�
 ## 验证
 
 ```powershell
-$env:OPENHARMONY_SDK_PATH = "E:\OpenHarmony_SDK\20\ets"
+$env:OPENHARMONY_SDK_PATH = "<OpenHarmony SDK ets directory>"
 npm run build
 npm test
 ```

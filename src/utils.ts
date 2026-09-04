@@ -8,6 +8,7 @@ import { PrivacyPackageInfo, ImportBasicInfo } from "./prototypes";
 import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync } from 'fs';
 import * as path from 'path';
 import { toDisplayPath } from './pathUtils';
+import { normalizeSensitiveApiCatalog } from './sensitiveApiCatalog';
 
 /**
  * Build a Scene from a JSON config file (matches privacyanalyzer's approach).
@@ -34,7 +35,7 @@ export function readSystemPackages(filePath: string): string[] {
  */
 export function readPrivacyApis(filePath: string): PrivacyPackageInfo[] {
     let data = readFileSync(filePath, 'utf8');
-    return JSON.parse(data) as PrivacyPackageInfo[];
+    return normalizeSensitiveApiCatalog(JSON.parse(data));
 }
 
 /**

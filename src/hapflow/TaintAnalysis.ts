@@ -2180,7 +2180,11 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         ? object.parameters.map((parameter: any) => String(parameter?.type || ''))
                         : [],
                     sourceKind,
-                    ruleOrigin: String(object.rule_origin || '')
+                    ruleOrigin: String(object.rule_origin || ''),
+                    dataType: String(object.dataType || ''),
+                    label: String(object.label || ''),
+                    catalogApiSignature: String(object.catalogApiSignature || ''),
+                    description: String(object.description || '')
                 }));
             }
         }

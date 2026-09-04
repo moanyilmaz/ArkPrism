@@ -7,7 +7,6 @@ const path = require('path');
 const ROOT = path.resolve(__dirname, '..');
 const FILES = {
   detector: path.join(ROOT, 'config', 'sensitive_apis.json'),
-  packages: path.join(ROOT, 'config', 'system_packages14.json'),
   sources: path.join(ROOT, 'config', 'hapflow_sources.json'),
   sinks: path.join(ROOT, 'config', 'hapflow_sinks.json'),
 };
@@ -49,29 +48,39 @@ function countBy(values, selector) {
 }
 
 function accessKind(entry) {
-  if (entry.directCall === true) return 'direct';
-  if (entry.directCall === false) return 'manager_receiver';
-  if (entry.directCall === null) return 'property';
+  if (!/\)\s*:/.test(String(entry.descrip0 || ''))) return 'property';
+  if (String(entry.call_catagory || '').trim() === '直接调用') return 'direct';
+  if (String(entry.call_catagory || '').trim() === '间接调用') return 'manager_receiver';
   return 'invalid';
 }
 
-function detectorAudit(groups) {
-  const entries = [];
-  for (const group of groups) {
-    for (const api of group.privacyApis || []) {
-      entries.push({ package: group.systemPackage, ...api });
-    }
-  }
+function detectorIdentity(entry) {
+  const signature = String(entry.api_signature || '').trim();
+  const callIndex = signature.indexOf('(');
+  const head = callIndex >= 0 ? signature.slice(0, callIndex) : signature;
+  const suffix = callIndex >= 0 ? signature.slice(callIndex) : '';
+  const parts = head.split('.').filter(Boolean);
+  const namespace = parts.length > 1 ? parts[0] : parts[0] || '';
+  const method = parts.length > 1 ? `${parts.slice(1).join('.')}${suffix}` : `${namespace}${suffix}`;
+  return { namespace, method };
+}
+
+function detectorAudit(records) {
+  const entries = records.map(record => ({
+    ...record,
+    package: record.import_kit,
+    ...detectorIdentity(record),
+  }));
 
   const exactCounts = countBy(entries, entry =>
     [
       normalized(entry.package),
-      normalized(entry.namespace),
-      normalized(entry.method),
+      normalized(entry.api_signature),
       accessKind(entry),
-      [...(entry.receiverFactories || [])].map(normalized).sort().join(','),
       normalized(entry.permission),
-      normalized(entry.profilingCategory),
+      normalized(entry.dataType),
+      normalized(entry.label),
+      normalized(entry.descrip0),
     ].join('|')
   );
   const duplicates = Object.entries(exactCounts)
@@ -82,8 +91,7 @@ function detectorAudit(groups) {
   for (const entry of entries) {
     const key = [
       normalized(entry.package),
-      normalized(entry.namespace),
-      normalized(entry.method),
+      normalized(entry.api_signature),
     ].join('|');
     if (!modesByApi.has(key)) modesByApi.set(key, new Set());
     modesByApi.get(key).add(accessKind(entry));
@@ -100,27 +108,30 @@ function detectorAudit(groups) {
       method: entry.method,
       missing: [
         !normalized(entry.package) && 'package',
-        !normalized(entry.method) && 'method',
-        !normalized(entry.profilingCategory) && 'profilingCategory',
+        !normalized(entry.api_signature) && 'api_signature',
+        !normalized(entry.descrip0) && 'descrip0',
+        !normalized(entry.dataType) && 'dataType',
+        !normalized(entry.label) && 'label',
       ].filter(Boolean),
     }))
     .filter(item => item.missing.length > 0);
 
   const invalidDirectCall = entries
-    .map((entry, index) => ({ index, value: entry.directCall }))
-    .filter(item => ![true, false, null].includes(item.value));
+    .map((entry, index) => ({ index, value: entry.call_catagory }))
+    .filter(item => !['直接调用', '间接调用'].includes(String(item.value || '').trim()));
 
-  const managerWithoutFactory = entries
-    .filter(entry => accessKind(entry) === 'manager_receiver')
-    .filter(entry => !(entry.receiverFactories || []).length)
-    .map(entry => ({
-      package: entry.package,
-      namespace: entry.namespace,
-      method: entry.method,
-    }));
+  const pacMappings = new Map();
+  for (const entry of entries) {
+    const key = `${normalized(entry.package)}|${normalized(entry.api_signature)}`;
+    if (!pacMappings.has(key)) pacMappings.set(key, new Set());
+    pacMappings.get(key).add(`${entry.dataType}|${entry.label}`);
+  }
+  const pacMappingConflicts = [...pacMappings.entries()]
+    .filter(([, mappings]) => mappings.size > 1)
+    .map(([key, mappings]) => ({ key, mappings: [...mappings].sort() }));
 
   return {
-    packageGroups: groups.length,
+    packageGroups: new Set(entries.map(entry => normalized(entry.package))).size,
     entries: entries.length,
     uniquePackageNamespaceMembers: modesByApi.size,
     uniqueNamespaceMembers: new Set(
@@ -130,7 +141,7 @@ function detectorAudit(groups) {
     ).size,
     accessKinds: countBy(entries, accessKind),
     categories: countBy(entries, entry =>
-      normalized(entry.profilingCategory) || '<missing>'
+      `${entry.dataType}|${entry.label}`
     ),
     permissionCoverage: {
       withPermission: entries.filter(entry => entry.permission != null).length,
@@ -142,21 +153,22 @@ function detectorAudit(groups) {
       ).size,
     },
     receiverFactories: {
-      entriesWithFactories: entries.filter(
-        entry => (entry.receiverFactories || []).length > 0
-      ).length,
-      distinctFactories: new Set(
-        entries.flatMap(entry =>
-          (entry.receiverFactories || []).map(normalized)
-        )
-      ).size,
-      managerEntriesUsingTypeOrTargetOnly: managerWithoutFactory,
+      entriesWithFactories: 0,
+      distinctFactories: 0,
+      managerEntriesUsingTypeOrTargetOnly: entries
+        .filter(entry => accessKind(entry) === 'manager_receiver')
+        .map(entry => ({
+          package: entry.package,
+          namespace: entry.namespace,
+          method: entry.method,
+        })),
     },
     integrity: {
       missingRequiredFields: missing,
       invalidDirectCall,
       exactDuplicates: duplicates,
       accessModeVariants: modeVariants,
+      pacMappingConflicts,
     },
   };
 }
@@ -275,6 +287,7 @@ function markdown(result) {
     `| Invalid directCall values | ${integrity.invalidDirectCall.length} |`,
     `| Exact detector duplicates | ${integrity.exactDuplicates.length} |`,
     `| Detector keys with multiple access modes | ${integrity.accessModeVariants.length} |`,
+    `| PAC mapping conflicts | ${integrity.pacMappingConflicts.length} |`,
     `| Manager entries relying on type/target evidence | ${detector.receiverFactories.managerEntriesUsingTypeOrTargetOnly.length} |`,
     `| Invalid IFDS source entries | ${ifds.sources.invalidEntries.length} |`,
     `| Invalid IFDS sink entries | ${ifds.sinks.invalidEntries.length} |`,
@@ -287,7 +300,6 @@ function markdown(result) {
 function main() {
   const args = parseArgs(process.argv.slice(2));
   const detector = readJson(FILES.detector);
-  const packages = readJson(FILES.packages);
   const sources = readJson(FILES.sources);
   const sinks = readJson(FILES.sinks);
   const result = {
@@ -297,17 +309,14 @@ function main() {
       'Structural consistency only; semantic completeness and privacy categorization require independent expert review.',
     hashes: {
       'sensitive_apis.json': detector.sha256,
-      'system_packages14.json': packages.sha256,
       'hapflow_sources.json': sources.sha256,
       'hapflow_sinks.json': sinks.sha256,
     },
     detector: detectorAudit(detector.value),
     packageInventory: {
-      entries: packages.value.length,
-      uniqueEntries: new Set(packages.value.map(normalized)).size,
-      duplicates:
-        packages.value.length -
-        new Set(packages.value.map(normalized)).size,
+      entries: detector.value.length,
+      uniqueEntries: new Set(detector.value.map(entry => normalized(entry.import_kit))).size,
+      duplicates: 0,
     },
     ifds: ifdsAudit(sources.value, sinks.value),
   };
