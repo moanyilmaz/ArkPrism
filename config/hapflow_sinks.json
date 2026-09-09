@@ -1,340 +1,239 @@
 [
-  
   {
     "api_name": "console.log",
     "module": "@internal/full/global",
-    "class": "console",
     "namespace": "",
-    "parameters": [],
-    "returnType": "void",
+    "class": "console",
     "api_type": "sink",
-    "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "console.info",
     "module": "@internal/full/global",
-    "class": "console",
     "namespace": "",
-    "parameters": [],
-    "returnType": "void",
+    "class": "console",
     "api_type": "sink",
-    "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "console.warn",
     "module": "@internal/full/global",
-    "class": "console",
     "namespace": "",
-    "parameters": [],
-    "returnType": "void",
+    "class": "console",
     "api_type": "sink",
-    "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "console.error",
     "module": "@internal/full/global",
-    "class": "console",
     "namespace": "",
-    "parameters": [],
-    "returnType": "void",
+    "class": "console",
     "api_type": "sink",
-    "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "console.debug",
     "module": "@internal/full/global",
-    "class": "console",
     "namespace": "",
-    "parameters": [],
-    "returnType": "void",
+    "class": "console",
     "api_type": "sink",
-    "reason": "Console output may leak sensitive data",
     "is_sink": "yes"
   },
-
-  
   {
     "api_name": "debug",
     "module": "@ohos.hilog",
-    "class": "",
     "namespace": "hilog",
-    "parameters": [],
-    "returnType": "void",
+    "class": "",
     "api_type": "sink",
-    "reason": "HiLog output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "info",
     "module": "@ohos.hilog",
-    "class": "",
     "namespace": "hilog",
-    "parameters": [],
-    "returnType": "void",
+    "class": "",
     "api_type": "sink",
-    "reason": "HiLog output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "warn",
     "module": "@ohos.hilog",
-    "class": "",
     "namespace": "hilog",
-    "parameters": [],
-    "returnType": "void",
+    "class": "",
     "api_type": "sink",
-    "reason": "HiLog output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "error",
     "module": "@ohos.hilog",
-    "class": "",
     "namespace": "hilog",
-    "parameters": [],
-    "returnType": "void",
+    "class": "",
     "api_type": "sink",
-    "reason": "HiLog output may leak sensitive data",
     "is_sink": "yes"
   },
   {
     "api_name": "fatal",
     "module": "@ohos.hilog",
-    "class": "",
     "namespace": "hilog",
-    "parameters": [],
-    "returnType": "void",
-    "api_type": "sink",
-    "reason": "HiLog output may leak sensitive data",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "createHttp",
-    "module": "@ohos.net.http",
     "class": "",
-    "namespace": "http",
-    "parameters": [],
-    "returnType": "HttpRequest",
     "api_type": "sink",
-    "reason": "HTTP request can send sensitive data to remote server",
     "is_sink": "yes"
   },
   {
     "api_name": "request",
-    "module": "@ohos.request",
-    "class": "",
-    "namespace": "agent",
-    "parameters": [],
-    "returnType": "Promise",
-    "api_type": "sink",
-    "reason": "HTTP request can send sensitive data to remote server",
-    "is_sink": "yes"
-  },
-  {
-    "api_name": "sendRequest",
     "module": "@ohos.net.http",
-    "class": "",
     "namespace": "http",
-    "parameters": [],
-    "returnType": "Promise",
+    "class": "HttpRequest",
     "api_type": "sink",
-    "reason": "HTTP request can send sensitive data to remote server",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0,
+      1
+    ]
   },
-
-  
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "namespace": "socket",
+    "class": "TCPSocket",
+    "api_type": "sink",
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "namespace": "socket",
+    "class": "UDPSocket",
+    "api_type": "sink",
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
+  },
+  {
+    "api_name": "send",
+    "module": "@ohos.net.socket",
+    "namespace": "socket",
+    "class": "TLSSocket",
+    "api_type": "sink",
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
+  },
   {
     "api_name": "setData",
     "module": "@ohos.pasteboard",
-    "class": "",
     "namespace": "pasteboard",
-    "parameters": [],
-    "returnType": "void",
+    "class": "SystemPasteboard",
     "api_type": "sink",
-    "reason": "Clipboard write can exfiltrate sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   },
   {
-    "api_name": "setData",
+    "api_name": "setDataSync",
     "module": "@ohos.pasteboard",
-    "class": "",
-    "namespace": "SystemPasteboard",
-    "parameters": [],
-    "returnType": "void",
+    "namespace": "pasteboard",
+    "class": "SystemPasteboard",
     "api_type": "sink",
-    "reason": "Clipboard write can exfiltrate sensitive data",
-    "is_sink": "yes"
-  },
-  {
-    "api_name": "writeText",
-    "module": "@ohos.pasteboard",
-    "class": "",
-    "namespace": "dataShare",
-    "parameters": [],
-    "returnType": "Promise",
-    "api_type": "sink",
-    "reason": "Clipboard write can exfiltrate sensitive data",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "writeText",
-    "module": "@ohos.file.fs",
-    "class": "",
-    "namespace": "",
-    "parameters": [],
-    "returnType": "Promise",
-    "api_type": "sink",
-    "reason": "File write may persist sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   },
   {
     "api_name": "write",
     "module": "@ohos.file.fs",
-    "class": "",
     "namespace": "",
-    "parameters": [],
-    "returnType": "Promise",
+    "class": "",
     "api_type": "sink",
-    "reason": "File write may persist sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      1
+    ]
   },
   {
-    "api_name": "appendFile",
+    "api_name": "writeSync",
     "module": "@ohos.file.fs",
-    "class": "",
     "namespace": "",
-    "parameters": [],
-    "returnType": "Promise",
+    "class": "",
     "api_type": "sink",
-    "reason": "File write may persist sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      1
+    ]
   },
-
-  
+  {
+    "api_name": "put",
+    "module": "@ohos.data.preferences",
+    "namespace": "preferences",
+    "class": "Preferences",
+    "api_type": "sink",
+    "is_sink": "yes",
+    "dataArguments": [
+      0,
+      1
+    ]
+  },
+  {
+    "api_name": "putSync",
+    "module": "@ohos.data.preferences",
+    "namespace": "preferences",
+    "class": "Preferences",
+    "api_type": "sink",
+    "is_sink": "yes",
+    "dataArguments": [
+      0,
+      1
+    ]
+  },
   {
     "api_name": "showToast",
     "module": "@ohos.promptAction",
+    "namespace": "promptAction",
     "class": "",
-    "namespace": "",
-    "parameters": [],
-    "returnType": "void",
     "api_type": "sink",
-    "reason": "Toast may expose sensitive information in UI",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   },
   {
     "api_name": "showDialog",
     "module": "@ohos.promptAction",
+    "namespace": "promptAction",
     "class": "",
-    "namespace": "",
-    "parameters": [],
-    "returnType": "void",
     "api_type": "sink",
-    "reason": "Dialog may expose sensitive information in UI",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   },
   {
     "api_name": "showActionMenu",
     "module": "@ohos.promptAction",
+    "namespace": "promptAction",
     "class": "",
-    "namespace": "",
-    "parameters": [],
-    "returnType": "void",
     "api_type": "sink",
-    "reason": "Action menu may expose sensitive information in UI",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "publish",
-    "module": "@ohos.notification",
-    "class": "",
-    "namespace": "notificationManager",
-    "parameters": [],
-    "returnType": "void",
-    "api_type": "sink",
-    "reason": "Notification may expose sensitive information",
-    "is_sink": "yes"
-  },
-  {
-    "api_name": "publishAsBundle",
-    "module": "@ohos.notification",
-    "class": "",
-    "namespace": "notificationManager",
-    "parameters": [],
-    "returnType": "void",
-    "api_type": "sink",
-    "reason": "Notification may expose sensitive information",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "getWakeUpIntent",
-    "module": "@ohos.wantAgent",
-    "class": "",
-    "namespace": "wantAgent",
-    "parameters": [],
-    "returnType": "Want",
-    "api_type": "sink",
-    "reason": "WantAgent may contain sensitive data for inter-app communication",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "getApplicationInfo",
-    "module": "@ohos.bundle",
-    "class": "",
-    "namespace": "bundleManager",
-    "parameters": [],
-    "returnType": "ApplicationInfo",
-    "api_type": "sink",
-    "reason": "Application info may be shared with other apps",
-    "is_sink": "yes"
-  },
-  {
-    "api_name": "getBundleInfo",
-    "module": "@ohos.bundle",
-    "class": "",
-    "namespace": "bundleManager",
-    "parameters": [],
-    "returnType": "BundleInfo",
-    "api_type": "sink",
-    "reason": "Bundle info may be shared with other apps",
-    "is_sink": "yes"
-  },
-
-  
-  {
-    "api_name": "send",
-    "module": "@ohos.bluetoothManager",
-    "class": "",
-    "namespace": "bluetooth",
-    "parameters": [],
-    "returnType": "boolean",
-    "api_type": "sink",
-    "reason": "Bluetooth send can transmit sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   },
   {
     "api_name": "publish",
-    "module": "@ohos.bluetoothManager",
+    "module": "@ohos.notificationManager",
+    "namespace": "notificationManager",
     "class": "",
-    "namespace": "bluetoothManager",
-    "parameters": [],
-    "returnType": "boolean",
     "api_type": "sink",
-    "reason": "Bluetooth publish can transmit sensitive data",
-    "is_sink": "yes"
+    "is_sink": "yes",
+    "dataArguments": [
+      0
+    ]
   }
 ]

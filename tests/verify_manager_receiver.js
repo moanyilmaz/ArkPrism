@@ -67,6 +67,18 @@ const cases = [
       'bundleManager.getBundleInfo|undefined',
     ],
   },
+  {
+    fixture: 'app_account_overloads',
+    expected: [
+      'AppAccountManager.getAllAccounts|receiver_origin',
+      'AppAccountManager.getAllAccounts|receiver_origin',
+      'AppAccountManager.getAllAccounts|receiver_type',
+      'AppAccountManager.getAllAccounts|receiver_type',
+    ],
+    expectedOccurrenceLines: {
+      getAllAccounts: [6, 7, 11, 12],
+    },
+  },
 ];
 
 const outputRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'arkprism-manager-receiver-'));
@@ -130,6 +142,19 @@ try {
         throw new Error(
           `${testCase.fixture}: ${expectedLocation.method} location ` +
           `${usage.line}/${usage.locationEvidence}, expected ${expectedLine}/source_ast`,
+        );
+      }
+    }
+    for (const [method, expectedLines] of Object.entries(testCase.expectedOccurrenceLines || {})) {
+      const usages = (report.privacyApiUsages || [])
+        .filter(item => item.method === method)
+        .sort((left, right) => left.line - right.line);
+      const actualLines = usages.map(item => item.line);
+      if (JSON.stringify(actualLines) !== JSON.stringify(expectedLines) ||
+          usages.some(item => item.locationEvidence !== 'source_ast')) {
+        throw new Error(
+          `${testCase.fixture}: ${method} locations ${actualLines.join(',')}, ` +
+          `expected ${expectedLines.join(',')} with source_ast evidence`,
         );
       }
     }

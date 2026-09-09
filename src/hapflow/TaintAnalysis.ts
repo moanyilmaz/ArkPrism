@@ -13,12 +13,14 @@ import { ArrayType, ClassType, ClosureType, FunctionType, LexicalEnvType, Unclea
 import { MethodSignature } from "../arkanalyzer";
 import { PointerAnalysis } from "../arkanalyzer";
 import * as fs from 'fs';
+import * as path from 'path';
 import { Source, validateSourceRuleObject } from "./Source";
 import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, TaintOutcomeEqual, ValueDependsOn, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
 import { TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
 import { ArkThisRef } from "../arkanalyzer";
+import { CatalogSourceBindings } from './CatalogSourceBindings';
 
 // @ts-ignore - ClassCategory may need deep import
 import { ClassCategory } from "../arkanalyzer/core/model/ArkClass";
@@ -28,6 +30,8 @@ import { INSTANCE_INIT_METHOD_NAME } from "../arkanalyzer";
 const logger = Logger.getLogger(LOG_MODULE_TYPE.ARKANALYZER, 'HapFlow');
 const SDK_PATH_PLACEHOLDER = '${OPENHARMONY_SDK_PATH}';
 const HMS_SDK_PATH_PLACEHOLDER = '${HMS_SDK_PATH}';
+const packageAliases: Record<string, string[]> = JSON.parse(fs.readFileSync(
+    path.resolve(__dirname, '../../config/package_aliases.json'), 'utf8'));
 
 function irRecoveryEnabled(): boolean {
     return process.env.ARKPRISM_DISABLE_IR_RECOVERY !== '1';
@@ -105,10 +109,25 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private scene: Scene;
     private sources: Map<string, Source> = new Map();
     private sinks: MethodSignature[] = [];
-    private sinkMatchers: Array<{ method: string, owners: string[] }> = [];
+    private sinkMatchers: Array<{ method: string, owners: string[], module: string, className: string, dataArguments?: number[] }> = [];
     private santizations: MethodSignature[] = [];
     private pointerAnalysis: PointerAnalysis | undefined;
     private detectOutcome: TaintFact[] = [];
+    private catalogBindings?: CatalogSourceBindings;
+    private callbackBudgetExceeded = false;
+
+    public setCatalogBindings(bindings: CatalogSourceBindings): void {
+        this.catalogBindings = bindings;
+    }
+
+    public resolveSource(value: Value): Source | null {
+        const bound = this.catalogBindings?.values.get(value);
+        if (bound) return bound;
+        const source = callSource(value, this.sources, this.scene, this.pointerAnalysis);
+        return this.catalogBindings && source?.rule.sourceKind === 'privacy_data' ? null : source;
+    }
+
+    public wasCallbackBudgetExceeded(): boolean { return this.callbackBudgetExceeded; }
 
     // Budget options for callback analysis
     private callbackBudgetOptions = {
@@ -178,6 +197,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
      * but contain source API calls with callbacks.
      */
     public analyzeCallbackDataFlows(): void {
+        this.callbackBudgetExceeded = false;
         // Bounded callback analysis - uses conservative settings to prevent OOM
         const MAX_METHODS = this.callbackBudgetOptions.maxMethods;
         const MAX_SOURCES = this.callbackBudgetOptions.maxSources;
@@ -195,16 +215,20 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const callbackSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
         const returnSources: Array<{ method: ArkMethod, stmt: Stmt, invokeExpr: AbstractInvokeExpr, source: Source }> = [];
 
-        for (const method of this.scene.getMethods()) {
+        const scanMethods = this.catalogBindings
+            ? [...new Set([...this.catalogBindings.statements.keys()].map(stmt => stmt.getCfg().getDeclaringMethod()))]
+            : this.scene.getMethods();
+        for (const method of scanMethods) {
             const fileName = method.getDeclaringArkFile().getName();
-            if (fileName.startsWith('api/') || fileName.includes("build") || fileName.includes("cache") ||
+            if (!this.catalogBindings && (fileName.startsWith('api/') || fileName.includes("build") || fileName.includes("cache") ||
                 fileName.includes("node_modules") || fileName.includes("oh_modules") ||
-                fileName.includes(".preview")) {
+                fileName.includes(".preview"))) {
                 continue;
             }
 
             if (methodCount++ >= MAX_METHODS) {
                 console.log(`[HAPFLOW] Callback analysis: reached method limit ${MAX_METHODS}`);
+                this.callbackBudgetExceeded = true;
                 break;
             }
 
@@ -217,7 +241,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         const invokeExpr = stmt.getInvokeExpr();
                         if (!invokeExpr) continue;
 
-                        const source = callSource(invokeExpr, this.sources, this.scene, this.pointerAnalysis);
+                        const source = this.resolveSource(invokeExpr);
                         if (source && source.sourceType === 'callback') {
                             callbackSources.push({ method, stmt, invokeExpr, source });
                         } else if (source && source.sourceType === 'return' && stmt instanceof ArkAssignStmt) {
@@ -239,6 +263,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         // Process callback sources with budget limits
         for (const { method, stmt, invokeExpr, source } of callbackSources) {
             if (sourceCount++ >= MAX_SOURCES) {
+                this.callbackBudgetExceeded = true;
                 console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
                 break;
             }
@@ -246,6 +271,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             try {
                 this.analyzeCallbackSourceSafe(method, stmt, invokeExpr, source, MAX_STATES, MAX_PATH_LEN, () => {
                     stateCount++;
+                    if (stateCount > MAX_STATES * 10) this.callbackBudgetExceeded = true;
                     return stateCount <= MAX_STATES * 10;
                 });
             } catch (e) {
@@ -255,6 +281,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         for (const { method, stmt, invokeExpr, source } of returnSources) {
             if (sourceCount++ >= MAX_SOURCES) {
+                this.callbackBudgetExceeded = true;
                 console.log(`[HAPFLOW] Callback analysis: reached source limit ${MAX_SOURCES}`);
                 break;
             }
@@ -398,6 +425,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             // Check path length budget
             if (currentFact.getPath().length > maxPathLen) {
+                this.callbackBudgetExceeded = true;
                 continue;
             }
 
@@ -409,7 +437,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                 if (this.callSink(invokeExpr)) {
                     const sinkMethodName = invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName();
-                    const sinkArgs = invokeExpr.getArgs();
+                    const sinkArgs = this.sinkDataArguments(invokeExpr);
 
                     for (let argIdx = 0; argIdx < sinkArgs.length; argIdx++) {
                         const arg = sinkArgs[argIdx];
@@ -564,7 +592,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             if (rightOp instanceof ArkAwaitExpr && leftOp instanceof Local) {
                 const promise = rightOp.getPromise();
                 const sourceCheck = promise instanceof AbstractInvokeExpr
-                    ? callSource(promise, this.sources, this.scene, this.pointerAnalysis)
+                    ? this.resolveSource(promise)
                     : undefined;
                 if (promise === invokeExpr || sourceCheck?.sourceType === 'return') {
                     const fact = this.createSourceFact(leftOp, stmt, sourceCheck || source);
@@ -613,7 +641,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
         // Case 1: Direct chaining - sourceApi().then(callback)
         if (base instanceof AbstractInvokeExpr) {
-            const source = callSource(base, this.sources, this.scene, this.pointerAnalysis);
+            const source = this.resolveSource(base);
             if (source && source.sourceType === 'return') {
                 this.processThenCallback(method, stmt, invokeExpr, source, stmt);
             }
@@ -626,7 +654,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         const sourceCall = this.findSourceInvokeForVariable(method, base);
         if (!sourceCall) return;
 
-        const source = callSource(sourceCall.invokeExpr, this.sources, this.scene, this.pointerAnalysis);
+        const source = this.resolveSource(sourceCall.invokeExpr);
         if (!source || source.sourceType !== 'return') return;
 
         this.processThenCallback(method, stmt, invokeExpr, source, sourceCall.statement);
@@ -748,7 +776,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             // Get the base of .then() - this is the source API call
                             const thenBase = rightOp.getBase();
                             if (thenBase instanceof AbstractInvokeExpr) {
-                                const source = callSource(thenBase, this.sources, this.scene, this.pointerAnalysis);
+                                const source = this.resolveSource(thenBase);
                                 if (source && source.sourceType === 'return') {
                                     return { invokeExpr: thenBase, statement: stmt };
                                 }
@@ -854,6 +882,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         while (worklist.length > 0) {
             stateCount++;
             if (stateCount > this.callbackBudgetOptions.maxStates) {
+                this.callbackBudgetExceeded = true;
                 console.log(`[HAPFLOW] collectResolveFacts: budget exceeded (${stateCount} states)`);
                 break;
             }
@@ -865,6 +894,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             visited.add(key);
 
             if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                this.callbackBudgetExceeded = true;
                 continue;
             }
 
@@ -1066,6 +1096,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             // Check state budget
             stateCount++;
             if (stateCount > this.callbackBudgetOptions.maxStates) {
+                this.callbackBudgetExceeded = true;
                 console.log(`[HAPFLOW] traceReturnedValueDataFlow: budget exceeded (${stateCount} states)`);
                 break;
             }
@@ -1079,6 +1110,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             // Check path length budget
             if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                this.callbackBudgetExceeded = true;
                 continue;
             }
 
@@ -1090,7 +1122,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     if (!invokeExpr) continue;
 
                     if (this.callSink(invokeExpr)) {
-                        const args = invokeExpr.getArgs();
+                        const args = this.sinkDataArguments(invokeExpr);
                         for (const arg of args) {
                             if (ValueDependsOn(arg, currentVar)) {
                                 const sinkFact = currentFact.copyForValue(currentVar, stmt);
@@ -1176,6 +1208,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             // Check state budget
             stateCount++;
             if (stateCount > this.callbackBudgetOptions.maxStates) {
+                this.callbackBudgetExceeded = true;
                 console.log(`[HAPFLOW] traceCallbackParamDataFlow: budget exceeded (${stateCount} states)`);
                 break;
             }
@@ -1190,6 +1223,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
             // Check path length budget
             if (currentFact.getPath().length > this.callbackBudgetOptions.maxPathLen) {
+                this.callbackBudgetExceeded = true;
                 continue;
             }
 
@@ -1201,7 +1235,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
                 const isSink = this.callSink(invokeExpr);
                 if (isSink) {
-                    const args = invokeExpr.getArgs();
+                    const args = this.sinkDataArguments(invokeExpr);
                     for (const arg of args) {
                         if (ValueEqual(arg, currentVar)) {
                             // Found a sink!
@@ -1340,6 +1374,17 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             const normalizedReceiver = receiver.replace(/[^a-z0-9_.]/g, '');
             for (const matcher of this.sinkMatchers) {
                 if (matcher.method !== methodName) continue;
+                if (expr instanceof ArkInstanceInvokeExpr && matcher.className) {
+                    const base = expr.getBase();
+                    const type = base.getType().toString();
+                    const parts = type.split('.');
+                    const file = base.getDeclaringStmt()?.getCfg()?.getDeclaringMethod()?.getDeclaringArkFile();
+                    if (parts[parts.length - 1] === matcher.className && file?.getImportInfos().some(info => {
+                        const from = info.getFrom() || '';
+                        return info.getImportClauseName() === parts[0]
+                            && (from === matcher.module || (packageAliases[from] || []).includes(matcher.module));
+                    })) return true;
+                }
                 if (matcher.owners.some(owner =>
                     normalizedReceiver === owner
                     || normalizedReceiver.endsWith(`.${owner}`)
@@ -1352,6 +1397,15 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         return false;
     }
 
+    public sinkDataArguments(expr: AbstractInvokeExpr): Value[] {
+        const method = expr.getMethodSignature().getMethodSubSignature().getMethodName().toLowerCase();
+        const matches = this.sinkMatchers.filter(m => m.method === method);
+        // Only restrict arguments when every configured owner agrees on the payload positions.
+        const positions = matches[0]?.dataArguments;
+        if (!positions || !matches.every(m => JSON.stringify(m.dataArguments) === JSON.stringify(positions))) return expr.getArgs();
+        return positions.filter(i => i < expr.getArgs().length).map(i => expr.getArgs()[i]);
+    }
+
     data2Sink(srcStmt: Stmt, dataFact: TaintFact): void {
         const callExpr = srcStmt.getInvokeExpr();
         const dataValue = dataFact.getValue();
@@ -1359,7 +1413,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
                 console.log(`[HAPFLOW][SINK-FACT] ${srcStmt.toString()} <= ${dataValue.toString()}`);
             }
-            for (const param of callExpr.getArgs()) {
+            for (const param of this.sinkDataArguments(callExpr)) {
                 if (ValueEqual(param, dataValue) || dataValue instanceof ArkInstanceFieldRef && param instanceof Local && LocalEqual(dataValue.getBase(), param)) {
                     dataFact.addPath(srcStmt);
                     const dataFactPaths = dataFact.getPath()
@@ -1387,14 +1441,14 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     }
 
     protected addTaintFromSourceAssgin(dataFact: TaintFact, stmt: ArkAssignStmt, ret: Set<TaintFact>) {
-        const source = callSource(stmt.getRightOp(), this.sources, this.scene, this.pointerAnalysis);
-        if (this.getZeroValue() == dataFact && source) {
+        const source = this.resolveSource(stmt.getRightOp());
+        if (this.getZeroValue() == dataFact && source?.sourceType === 'return') {
             ret.add(this.createSourceFact(stmt.getDef()!, stmt, source));
         }
     }
 
     protected addTaintFromSourceCall(stmt: Stmt, method: ArkMethod, ret: Set<TaintFact>) {
-        const source = callSource(stmt.getInvokeExpr()!, this.sources, this.scene, this.pointerAnalysis);
+        const source = this.resolveSource(stmt.getInvokeExpr()!);
         if (source) {
             const invokeExpr = stmt.getInvokeExpr()!;
             if (source.sourceType == 'callback') {
@@ -1592,7 +1646,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
                 } else if (srcStmt.getInvokeExpr()) {
                     const invokeExpr = srcStmt.getInvokeExpr();
-                    const source = callSource(invokeExpr!, checkerInstance.sources, checkerInstance.scene, checkerInstance.pointerAnalysis);
+                    const source = checkerInstance.resolveSource(invokeExpr!);
                     if (source && source.sourceType == 'ArgIn') {
                         const argument = invokeExpr!.getArgs()[source.sourceIndex];
                         if (argument) ret.add(checkerInstance.createSourceFact(argument, srcStmt, source));
@@ -2128,7 +2182,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                 .map(value => String(value || '').toLowerCase().replace(/[^a-z0-9_]/g, ''))
                 .filter(Boolean);
             if (method) {
-                this.sinkMatchers.push({ method, owners: [...new Set(owners)] });
+                this.sinkMatchers.push({ method, owners: [...new Set(owners)], module: String(object.module || ''), className: String(object.class || ''), dataArguments: object.dataArguments });
             }
             let methodSignatures: MethodSignature[] = [];
             methodSignatures = Json2ArkMethodSignature(object.module, object.namespace || '', object.class || '', object.api_name, this.scene, object.parameters);

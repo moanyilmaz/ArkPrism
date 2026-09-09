@@ -15,13 +15,16 @@ import { Scene, PointerAnalysis, PointerAnalysisConfig } from './arkanalyzer';
 import { TaintAnalysisChecker } from './hapflow/TaintAnalysis';
 import { TaintAnalysisSolver } from './hapflow/TaintAnalysisSolver';
 import { TaintFact } from './hapflow/TaintFact';
-import { TaintAnalysisMetadata, TaintFlowResult } from './prototypes';
+import { TaintAnalysisMetadata, TaintFlowResult, PrivacyDataApiResult, PrivacyPackageInfo } from './prototypes';
+import { bindCatalogSources } from './hapflow/CatalogSourceBindings';
 import { buildLifecycleDummyMain } from './lifecycleDummyMain';
 import { LifecycleModeler } from './lifecycleModeler';
 import * as path from 'path';
 import { readOpenHarmonySdkInfo } from './sdkInfo';
 
 export interface HapflowOptions {
+    privacyApiUsages?: PrivacyDataApiResult[];
+    privacyRules?: PrivacyPackageInfo[];
     noPta?: boolean;      // Skip pointer analysis (faster but less precise)
     sdkPath?: string;     // OpenHarmony SDK path (required for API signature resolution)
 
@@ -77,6 +80,12 @@ export function runHapflowAnalysis(
     opts: HapflowOptions = {}
 ): HapflowAnalysisResult {
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
+    const catalogBindings = opts.privacyApiUsages && opts.privacyRules
+        ? bindCatalogSources(scene, opts.privacyApiUsages, opts.privacyRules) : undefined;
+    if (catalogBindings) {
+        const stats = catalogBindings.stats;
+        console.log(`[HAPFLOW] Catalog source binding: ${stats.boundUsages}/${stats.detectedUsages} usages, ${stats.propertyUsages} properties, ${stats.unresolved.length} unresolved`);
+    }
 
     // 1. Load SDK files for source/sink resolution
     const sdk = readOpenHarmonySdkInfo(opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || '');
@@ -137,6 +146,7 @@ export function runHapflowAnalysis(
     console.log(`[HAPFLOW] Entry stmt selected (block 0, index ${Math.min(paramCount, stmts.length - 1)}).`);
 
     const problem = new TaintAnalysisChecker(entryStmt, entry, pta);
+    if (catalogBindings) problem.setCatalogBindings(catalogBindings);
 
     // Load source/sink definitions
     const configDir = path.resolve(__dirname, '..', 'config');
@@ -190,6 +200,7 @@ export function runHapflowAnalysis(
 
         // Create a fresh problem for this batch
         const batchProblem = new TaintAnalysisChecker(entryStmt, entry, pta);
+        if (catalogBindings) batchProblem.setCatalogBindings(catalogBindings);
 
         // Load all sinks (same for all batches)
         batchProblem.addSinksFromJson(sinksPath, sdkPath);
@@ -262,7 +273,8 @@ export function runHapflowAnalysis(
     }
 
     // 6. Convert and deduplicate results across the IFDS and callback engines.
-    const finalStatus = ifdsBudgetExceeded ? 'PARTIAL_SUCCESS' : (callbackEnabled ? 'SUCCESS' : 'SUCCESS');
+    const finalStatus = ifdsBudgetExceeded || problem.wasCallbackBudgetExceeded()
+        || (catalogBindings?.stats.unresolved.length || 0) > 0 ? 'PARTIAL_SUCCESS' : 'SUCCESS';
     const converted = [
         ...convertOutcome(ifdsOutcomes, 'ifds'),
         ...convertOutcome(callbackOutcomes, 'async_supplement')
@@ -278,6 +290,7 @@ export function runHapflowAnalysis(
         flows: uniqueFlows,
         metadata: {
             status: finalStatus,
+            catalogBindings: catalogBindings?.stats,
             pointerAnalysis: {
                 requested: !opts.noPta,
                 status: opts.noPta ? 'SKIPPED' : 'SUCCESS',
@@ -295,7 +308,8 @@ export function runHapflowAnalysis(
             },
             callback: {
                 enabled: callbackEnabled,
-                rawFlows: callbackOutcomes.length
+                rawFlows: callbackOutcomes.length,
+                budgetExceeded: problem.wasCallbackBudgetExceeded(),
             },
             flowsBeforeDeduplication: converted.length,
             uniqueFlows: uniqueFlows.length,

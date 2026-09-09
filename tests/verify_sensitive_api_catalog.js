@@ -12,10 +12,10 @@ const raw = JSON.parse(bytes.toString('utf8'));
 
 assert.strictEqual(
   crypto.createHash('sha256').update(bytes).digest('hex').toUpperCase(),
-  'DDE9AE33009A5C0F2ED060B59265FE33106C816BDB43075BE9C0FFDE6A00A3E4',
+  '029DEA9236DEAC1724F36F1A6747C096BDDE8246A04693190700C2384E9D52ED',
   'reviewed catalog bytes changed',
 );
-assert.strictEqual(raw.length, 295);
+assert.strictEqual(raw.length, 298);
 assert.strictEqual(new Set(raw.map(record => record.import_kit)).size, 24);
 
 const requiredFields = [
@@ -57,6 +57,16 @@ assert.deepStrictEqual(
   { direct: 115, indirect: 41, property: 16 },
 );
 assert.ok(rules.every(rule => rule.dataType && rule.label && rule.catalogApiSignature));
+
+const hmsHealthStore = groups.find(group => group.systemPackage === '@hms.health.store')
+  .privacyApis.find(rule => rule.catalogApiSignature === 'healthStore.readData');
+assert.deepStrictEqual(
+  hmsHealthStore.overloads.map(overload => [overload.minArgs, overload.maxArgs]).sort(),
+  [[1, 1], [2, 2]],
+  'HMS readData must retain both the one-argument and callback overloads',
+);
+assert.strictEqual(hmsHealthStore.dataType, 'Fitness and health information');
+assert.strictEqual(hmsHealthStore.label, 'Fitness information');
 
 const sensorRules = rules.filter(rule => rule.catalogApiSignature.startsWith('sensor.on('));
 assert.ok(sensorRules.length > 1);

@@ -369,16 +369,22 @@ function apiReceiverOriginIdentities(api: PrivacyDataAPI): Set<string> {
     return identities;
 }
 
-function catalogResultFields(api: PrivacyDataAPI): Pick<
+function catalogResultFields(api: PrivacyDataAPI, argumentCount?: number): Pick<
     PrivacyDataApiResult,
     'dataType' | 'label' | 'permissions' | 'description' | 'supplement' |
     'documentation' | 'catalogApiSignature'
 > {
+    const matchingOverloads = argumentCount === undefined ? [] : (api.overloads || [])
+        .filter(overload => argumentCount >= overload.minArgs &&
+            (overload.maxArgs === null || argumentCount <= overload.maxArgs));
+    const description = matchingOverloads.length === 1
+        ? matchingOverloads[0].description || api.description
+        : api.description;
     return {
         dataType: api.dataType,
         label: api.label,
         permissions: api.permissions,
-        description: api.description,
+        description,
         supplement: api.supplement,
         documentation: api.documentation,
         catalogApiSignature: api.catalogApiSignature,
@@ -946,7 +952,7 @@ function checkDirectCallPrivacyApis(
                             declaringMethod: declaringMethod,
                             permission: match.api.permission,
                             profilingCategory: match.api.profilingCategory,
-                            ...catalogResultFields(match.api),
+                            ...catalogResultFields(match.api, invokeExpr?.getArgs().length),
                         });
                     }
                 }
@@ -989,7 +995,7 @@ function checkDirectCallPrivacyApis(
                         declaringMethod: declaringMethod,
                         permission: match.api.permission,
                         profilingCategory: match.api.profilingCategory,
-                        ...catalogResultFields(match.api),
+                        ...catalogResultFields(match.api, invokeExpr.getArgs().length),
                     });
                 }
             }
@@ -1049,7 +1055,7 @@ function checkIndirectCallPrivacyApis(
                             permission: match.api.permission,
                             profilingCategory: match.api.profilingCategory,
                             matchEvidence: match.evidence,
-                            ...catalogResultFields(match.api),
+                            ...catalogResultFields(match.api, invokeExpr?.getArgs().length),
                         });
                     }
                 }

@@ -911,10 +911,11 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
                 if (source.sourceType === 'callback' && source.callbackIndex >= val.getArgs().length) {
                     continue;
                 }
-                const sourceArity = source.methodSignature.getParamLength();
-                if (sourceArity !== invokeArgs.length) {
+                if (!acceptsSourceArity(source.methodSignature, invokeArgs.length)) {
                     continue;
                 }
+                const sensorMember = source.rule.parameterTypes?.[0]?.match(/\bSensorId\.([A-Za-z0-9_]+)/)?.[1];
+                if (sensorMember && sourceEnumMember(invokeArgs[0]) !== sensorMember) continue;
                 const firstArgument = invokeArgs[0] instanceof Constant
                     ? invokeArgs[0].toString()
                     : undefined;
@@ -1030,4 +1031,23 @@ export function callSource(val: Value, sources: Map<string, Source>, scene: Scen
         }
     }
     return null;
+}
+
+export function acceptsSourceArity(signature: MethodSignature, count: number): boolean {
+    const parameters = signature.getMethodSubSignature().getParameters();
+    const required = parameters.filter(p => !p.isOptional() && !p.hasDotDotDotToken()).length;
+    return count >= required && (parameters.some(p => p.hasDotDotDotToken()) || count <= parameters.length);
+}
+
+function sourceEnumMember(value: Value | undefined, visited = new Set<Value>()): string | undefined {
+    if (!value || visited.has(value)) return;
+    visited.add(value);
+    if (value instanceof ArkInstanceFieldRef || value instanceof ArkStaticFieldRef) {
+        return value.getFieldSignature().getFieldName();
+    }
+    if (value instanceof Local) {
+        const stmt = value.getDeclaringStmt();
+        if (stmt instanceof ArkAssignStmt) return sourceEnumMember(stmt.getRightOp(), visited);
+    }
+    return undefined;
 }

@@ -215,6 +215,8 @@ function analyzeProject(
     if (!opts.noTaint) {
         try {
             const taintResult = runHapflowAnalysis(scene, {
+                privacyApiUsages: allApiResults,
+                privacyRules: privacyApis,
                 noPta: opts.noPta,
                 sdkPath: opts.sdkPath,
                 ifdsBatchSize: opts.ifdsBatchSize,

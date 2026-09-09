@@ -254,6 +254,12 @@ export interface TaintFlowLink {
 
 export interface TaintAnalysisMetadata {
     status: "SUCCESS" | "PARTIAL_SUCCESS";
+    catalogBindings?: {
+        detectedUsages: number;
+        boundUsages: number;
+        propertyUsages: number;
+        unresolved: Array<{ file: string; line?: number; api: string; reason: string }>;
+    };
     pointerAnalysis: {
         requested: boolean;
         status: "SUCCESS" | "SKIPPED";
@@ -272,6 +278,7 @@ export interface TaintAnalysisMetadata {
     callback: {
         enabled: boolean;
         rawFlows: number;
+        budgetExceeded?: boolean;
     };
     flowsBeforeDeduplication: number;
     uniqueFlows: number;

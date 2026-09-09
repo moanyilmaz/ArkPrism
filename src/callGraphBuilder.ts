@@ -143,11 +143,13 @@ function collectEntryPoints(scene: Scene, lifecycleModel?: LifecycleModel): any[
 
         // Also include any entry points from the legacy list that weren't discovered
         // by the lifecycle modeler (e.g., constructor, _DEFAULT_ARK_METHOD)
+        const entrySignatures = new Set(entryPoints.map(ep => ep.toString()));
         for (const method of scene.getMethods()) {
             let methodName = method.getName();
             if ((methodName === 'constructor' || methodName === '_DEFAULT_ARK_METHOD') &&
-                !entryPoints.some(ep => ep.toString() === method.getSignature().toString())) {
+                !entrySignatures.has(method.getSignature().toString())) {
                 entryPoints.push(method.getSignature());
+                entrySignatures.add(method.getSignature().toString());
             }
         }
     } else {

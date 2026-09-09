@@ -181,6 +181,22 @@ Check source synchronization without modifying files:
 npm run sync:ifds-sources
 ```
 
+Normal project analysis binds accepted API occurrences directly to the reviewed
+catalog's return values, callback parameters, and property reads. The legacy
+`hapflow_sources.json` remains available for standalone HapFlow experiments;
+the synchronization command filters that file and does not generate new sources.
+
+`taintAnalysis.catalogBindings` records the number of detected and bound
+occurrences, property reads, and unresolved carriers. Binding an occurrence does
+not imply that it reaches a sink. `hapflow_sinks.json` configures the IFDS endpoints;
+`data_sinks.json` is used separately for call-chain evidence. An omitted sink
+`parameters` field selects SDK overloads, while an empty array requires zero
+parameters. HTTP sinks refer to `HttpRequest.request`, not the request factory.
+
+Run the source-carrier and sink regression checks with `npm run test:catalog-taint`.
+`PARTIAL_SUCCESS` indicates an IFDS/callback budget limit or unresolved catalog
+carriers; inspect the corresponding metadata before treating flows as complete.
+
 ## Useful options
 
 | Option | Meaning |

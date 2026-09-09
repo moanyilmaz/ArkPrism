@@ -26,6 +26,7 @@ import { ClassHierarchyAnalysis } from '../arkanalyzer';
 import { RapidTypeAnalysis } from '../arkanalyzer';
 import { Logger, LOG_MODULE_TYPE } from '../arkanalyzer';
 import { TaintFact } from './TaintFact';
+import { AnalysisWorklist } from './AnalysisWorklist';
 import { Local } from '../arkanalyzer';
 import { ArkArrayRef, ArkInstanceFieldRef, ArkParameterRef } from '../arkanalyzer';
 import { ClassType, FunctionType } from '../arkanalyzer';
@@ -57,18 +58,26 @@ it have several improvments:
 export abstract class DataflowSolver<D extends object> {
 
     protected problem: DataflowProblem<D>;
-    protected workList: Array<PathEdge<D>>;
+    protected workList: AnalysisWorklist<PathEdge<D>>;
     protected pathEdgeSet: Set<PathEdge<D>>;
     protected zeroFact: D;
     protected entryFact: D | undefined;
     protected inComing: Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
     private exactIncoming: WeakMap<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
+    private incomingByNode = new Map<Stmt, Set<PathEdgePoint<D>>>();
+    private summariesByNode = new Map<Stmt, Set<PathEdgePoint<D>>>();
+    private pathsByEnd = new Map<Stmt, Set<PathEdge<D>>>();
+    private summaryKeys = new Set<string>();
+    private pointerCallsites = new WeakMap<ArkMethod, {
+        exact: Map<Stmt, Set<ArkMethod>>;
+        textual: Map<string, Set<ArkMethod>>;
+    }>();
+    private receiverAssignments = new WeakMap<ArkMethod, Map<string, ArkAssignStmt[]>>();
     protected endSummary: Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>;
     protected summaryEdge: Set<PathEdge<D>>;
     protected scene: Scene;
     protected CG!: ClassHierarchyAnalysis | RapidTypeAnalysis;
     protected stmtNexts: Map<Stmt, Set<Stmt>>;
-    protected laterEdges: Set<PathEdge<D>> = new Set();
     protected pointerAnalysis: PointerAnalysis | undefined;
 
     // O(1) edge key set. Object-scoped IDs prevent same-named locals and
@@ -92,7 +101,7 @@ export abstract class DataflowSolver<D extends object> {
         this.pointerAnalysis = pta;
         this.entryFact = entryFact;
         this.zeroFact = problem.createZeroValue();
-        this.workList = new Array<PathEdge<D>>();
+        this.workList = new AnalysisWorklist<PathEdge<D>>();
         this.pathEdgeSet = new Set<PathEdge<D>>();
         this.inComing = new Map<PathEdgePoint<D>, Set<PathEdgePoint<D>>>();
         this.exactIncoming = new WeakMap<PathEdgePoint<D>, Set<PathEdgePoint<D>>>();
@@ -138,6 +147,8 @@ export abstract class DataflowSolver<D extends object> {
         this.objectIds = new WeakMap();
         this.nextObjectId = 1;
         this.exactIncoming = new WeakMap();
+        this.pointerCallsites = new WeakMap();
+        this.receiverAssignments = new WeakMap();
         this.init();
         this.doSolve();
         if (this.budgetExceeded) {
@@ -159,6 +170,7 @@ export abstract class DataflowSolver<D extends object> {
         let edge: PathEdge<D> = new PathEdge<D>(edgePoint, edgePoint);
         this.workList.push(edge);
         this.pathEdgeSet.add(edge);
+        this.indexPathEdge(edge);
         this.edgeKeys.add(this.edgeKey(edge));
 
         // Resolve calls on demand, as in HapFlow's reference solver. Building a
@@ -381,25 +393,33 @@ export abstract class DataflowSolver<D extends object> {
         const callerMethod = callNode.getCfg()?.getDeclaringMethod();
         if (!callerMethod) return methods;
 
-        const callGraph = this.pointerAnalysis.getCallGraph();
-        const callerNode = callGraph.getCallGraphNodeByMethod(callerMethod.getSignature());
-        for (const edge of callerNode.getOutgoingEdges()) {
-            // ArkAnalyzer records PTA-resolved virtual calls per edge, but the
-            // bundled version does not expose a public accessor for the set.
-            const indirectCalls = (edge as unknown as { indirectCalls?: Set<Stmt> }).indirectCalls;
-            const sameCallSite = [...(indirectCalls || [])].some(stmt =>
-                stmt === callNode ||
-                (stmt.toString() === callNode.toString() &&
-                    stmt.getCfg()?.getDeclaringMethod().getSignature().toString() ===
-                    callNode.getCfg()?.getDeclaringMethod().getSignature().toString())
-            );
-            if (!sameCallSite) continue;
-
-            const signature = callGraph.getMethodByFuncID(edge.getDstNode().getID());
-            const method = signature ? this.scene.getMethod(signature) : null;
-            if (method?.getCfg() && !paramFuncs.includes(method)) {
-                methods.add(method);
+        let index = this.pointerCallsites.get(callerMethod);
+        if (!index) {
+            index = { exact: new Map(), textual: new Map() };
+            const callGraph = this.pointerAnalysis.getCallGraph();
+            const callerNode = callGraph.getCallGraphNodeByMethod(callerMethod.getSignature());
+            const callerSignature = callerMethod.getSignature().toString();
+            for (const edge of callerNode.getOutgoingEdges()) {
+                const signature = callGraph.getMethodByFuncID(edge.getDstNode().getID());
+                const method = signature ? this.scene.getMethod(signature) : null;
+                if (!method?.getCfg()) continue;
+                // PTA is complete before solving. Index its immutable callsites once per caller.
+                const indirectCalls = (edge as unknown as { indirectCalls?: Set<Stmt> }).indirectCalls;
+                for (const stmt of indirectCalls || []) {
+                    let exact = index.exact.get(stmt);
+                    if (!exact) index.exact.set(stmt, exact = new Set());
+                    exact.add(method);
+                    if (stmt.getCfg()?.getDeclaringMethod().getSignature().toString() !== callerSignature) continue;
+                    const text = stmt.toString();
+                    let textual = index.textual.get(text);
+                    if (!textual) index.textual.set(text, textual = new Set());
+                    textual.add(method);
+                }
             }
+            this.pointerCallsites.set(callerMethod, index);
+        }
+        for (const method of [...(index.exact.get(callNode) || []), ...(index.textual.get(callNode.toString()) || [])]) {
+            if (!paramFuncs.includes(method)) methods.add(method);
         }
         return methods;
     }
@@ -434,8 +454,22 @@ export abstract class DataflowSolver<D extends object> {
         if (visited.has(visitKey)) return names;
         visited.add(visitKey);
 
-        for (const stmt of method.getCfg()?.getStmts() || []) {
-            if (!(stmt instanceof ArkAssignStmt) || !ValueEqual(stmt.getLeftOp(), value)) continue;
+        let assignments = this.receiverAssignments.get(method);
+        if (!assignments) {
+            assignments = new Map();
+            for (const stmt of method.getCfg()?.getStmts() || []) {
+                if (!(stmt instanceof ArkAssignStmt)) continue;
+                const left = stmt.getLeftOp();
+                if (!(left instanceof Local)) continue;
+                const name = left.getName();
+                let definitions = assignments.get(name);
+                if (!definitions) assignments.set(name, definitions = []);
+                definitions.push(stmt);
+            }
+            this.receiverAssignments.set(method, assignments);
+        }
+        for (const stmt of assignments.get(value.getName()) || []) {
+            if (!ValueEqual(stmt.getLeftOp(), value)) continue;
             const rightOp = stmt.getRightOp();
             if (rightOp instanceof ArkNewExpr) {
                 const type = rightOp.getType();
@@ -552,7 +586,10 @@ export abstract class DataflowSolver<D extends object> {
         points: Map<PathEdgePoint<D>, T>,
         target: PathEdgePoint<D>
     ): PathEdgePoint<D> | undefined {
-        for (const point of points.keys()) {
+        const index = points === this.inComing ? this.incomingByNode
+            : points === this.endSummary ? this.summariesByNode : undefined;
+        const candidates = index ? index.get(target.node) || [] : points.keys();
+        for (const point of candidates) {
             if (this.edgePointEqual(point, target)) {
                 return point;
             }
@@ -560,7 +597,7 @@ export abstract class DataflowSolver<D extends object> {
         return undefined;
     }
 
-    protected propagate(edge: PathEdge<D>) {
+    protected propagate(edge: PathEdge<D>, deferred = false) {
         // Check budget limits
         if (this.budgetExceeded) return;
 
@@ -590,15 +627,30 @@ export abstract class DataflowSolver<D extends object> {
         }
 
         this.edgeKeys.add(key);
-        let index = this.workList.length;
-        for (let i = 0; i < this.workList.length; i++) {
-            if (this.laterEdges.has(this.workList[i])) {
-                index = i;
-                break;
-            }
-        }
-        this.workList.splice(index, 0, edge);
+        if (deferred) this.workList.defer(edge);
+        else this.workList.push(edge);
         this.pathEdgeSet.add(edge);
+        this.indexPathEdge(edge);
+    }
+
+    private indexPathEdge(edge: PathEdge<D>): void {
+        let edges = this.pathsByEnd.get(edge.edgeEnd.node);
+        if (!edges) this.pathsByEnd.set(edge.edgeEnd.node, edges = new Set());
+        edges.add(edge);
+    }
+
+    private indexPoint(index: Map<Stmt, Set<PathEdgePoint<D>>>, point: PathEdgePoint<D>): void {
+        let points = index.get(point.node);
+        if (!points) index.set(point.node, points = new Set());
+        points.add(point);
+    }
+
+    private addSummary(edge: PathEdge<D>): boolean {
+        const key = `${this.objectKey(edge.edgeStart)}|${this.objectKey(edge.edgeEnd.node)}|${this.objectKey(edge.edgeEnd.fact)}`;
+        if (this.summaryKeys.has(key)) return false;
+        this.summaryKeys.add(key);
+        this.summaryEdge.add(edge);
+        return true;
     }
 
     protected getCallEdgePoints(edge: PathEdge<D>): Set<PathEdgePoint<D>> {
@@ -644,6 +696,7 @@ export abstract class DataflowSolver<D extends object> {
         if (!coming) {
             coming = new Set<PathEdgePoint<D>>();
             this.inComing.set(startEdgePoint, coming);
+            this.indexPoint(this.incomingByNode, startEdgePoint);
         }
         coming.add(callEdgePoint);
 
@@ -655,7 +708,7 @@ export abstract class DataflowSolver<D extends object> {
 
     protected propagateIfExitCalled(callEdgePoint: PathEdgePoint<D>, returnSitePoint: PathEdgePoint<D>): void {
         let startOfCaller: Stmt = this.getStartStmt(callEdgePoint.node);
-        for (let pathEdge of this.pathEdgeSet) {
+        for (let pathEdge of this.pathsByEnd.get(callEdgePoint.node) || []) {
             if (pathEdge.edgeStart.node == startOfCaller && this.edgePointEqual(pathEdge.edgeEnd, callEdgePoint)) {
                 this.propagate(new PathEdge<D>(pathEdge.edgeStart, returnSitePoint));
             }
@@ -669,6 +722,7 @@ export abstract class DataflowSolver<D extends object> {
         const summary = summaryKey ? this.endSummary.get(summaryKey) : undefined;
         if (summary == undefined) {
             this.endSummary.set(startEdgePoint, new Set([exitEdgePoint]));
+            this.indexPoint(this.summariesByNode, startEdgePoint);
         } else {
             summary.add(exitEdgePoint);
         }
@@ -680,15 +734,7 @@ export abstract class DataflowSolver<D extends object> {
             for (let fact of returnFlowFunc.getDataFacts(exitEdgePoint.fact)) {
                 let returnSitePoint: PathEdgePoint<D> = new PathEdgePoint<D>(returnSite, fact);
                 let cacheEdge: PathEdge<D> = new PathEdge<D>(callEdgePoint, returnSitePoint);
-                let summaryEdgeHasCacheEdge = false;
-                for (const sEdge of this.summaryEdge) {
-                    if (sEdge.edgeStart == callEdgePoint && sEdge.edgeEnd.node == returnSite && sEdge.edgeEnd.fact == fact) {
-                        summaryEdgeHasCacheEdge = true;
-                        break;
-                    }
-                }
-                if (!summaryEdgeHasCacheEdge) {
-                    this.summaryEdge.add(cacheEdge);
+                if (this.addSummary(cacheEdge)) {
                     this.propagateIfExitCalled(callEdgePoint, returnSitePoint);
                 }
             }
@@ -706,8 +752,7 @@ export abstract class DataflowSolver<D extends object> {
             for (let fact of set) {
                 let edgePoint: PathEdgePoint<D> = new PathEdgePoint<D>(stmt, fact);
                 const newEdge = new PathEdge<D>(start, edgePoint);
-                this.propagate(newEdge);
-                this.laterEdges.add(newEdge);
+                this.propagate(newEdge, true);
             }
         }
     }
@@ -758,20 +803,27 @@ export abstract class DataflowSolver<D extends object> {
             exitEdgePoints = this.endSummary.get(summaryKey)!;
         }
         let returnSite: Stmt = this.getReturnSiteOfCall(callEdgePoint.node);
+        if (!returnSite) return;
         for (let exitEdgePoint of exitEdgePoints) {
             let returnFlowFunc = this.problem.getExitToReturnFlowFunction(exitEdgePoint.node, returnSite, callEdgePoint.node);
             for (let returnFact of returnFlowFunc.getDataFacts(exitEdgePoint.fact)) {
-                this.summaryEdge.add(new PathEdge<D>(edge.edgeEnd, new PathEdgePoint<D>(returnSite, returnFact)));
+                const returnPoint = new PathEdgePoint<D>(returnSite, returnFact);
+                if (this.addSummary(new PathEdge<D>(edge.edgeEnd, returnPoint))) {
+                    this.propagateIfExitCalled(callEdgePoint, returnPoint);
+                }
             }
         }
     }
 
     protected doSolve() {
         while (this.workList.length != 0) {
-            let pathEdge: PathEdge<D> = this.workList.shift()!;
-            if (this.laterEdges.has(pathEdge)) {
-                this.laterEdges.delete(pathEdge);
+            if (this.budgetExceeded) break;
+            if (Date.now() - this.startTime > this.maxMillis) {
+                this.budgetExceeded = true;
+                console.log('[HAPFLOW] IFDS budget exceeded: max time reached');
+                break;
             }
+            let pathEdge: PathEdge<D> = this.workList.shift()!;
             let targetStmt: Stmt = pathEdge.edgeEnd.node;
             if (!targetStmt) {
                 logger_hapflow.info('******* undefined targetstmt  ' + this.scene.getRealProjectDir())

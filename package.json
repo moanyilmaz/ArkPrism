@@ -9,6 +9,7 @@
     "build": "tsc",
     "test": "npm run test:delivery",
     "test:delivery": "npm run build && node scripts/run_delivery_checks.js",
+    "test:catalog-taint": "npm run build && node tests/verify_catalog_taint.js",
     "test:corpus-summary": "node tests/verify_corpus_summary.js",
     "test:call-chain-dominators": "npm run build && node tests/verify_call_chain_dominators.js",
     "test:ifds-incoming-identity": "npm run build && node tests/verify_ifds_incoming_identity.js",
