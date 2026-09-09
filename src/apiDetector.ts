@@ -30,7 +30,7 @@ const PACKAGE_ALIASES: Record<string, string[]> = JSON.parse(
     readFileSync(path.resolve(__dirname, '..', 'config', 'package_aliases.json'), 'utf8'),
 );
 
-function getRulePackagesForImport(importFrom: string | undefined): string[] {
+export function getRulePackagesForImport(importFrom: string | undefined): string[] {
     if (!importFrom) return [];
     return [importFrom, ...(PACKAGE_ALIASES[importFrom] || [])];
 }

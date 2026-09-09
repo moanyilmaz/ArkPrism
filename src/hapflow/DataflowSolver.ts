@@ -279,6 +279,8 @@ export abstract class DataflowSolver<D extends object> {
         }
     }
 
+    protected shouldIncludeSdkCallback(stmt: Stmt, callback: ArkMethod): boolean { return true; }
+
     protected getCallees(invokeStmt: ArkInvokeStmt): Set<ArkMethod> {
         let callees: Set<ArkMethod> = new Set();
         const invokeExpr = invokeStmt.getInvokeExpr();
@@ -330,7 +332,7 @@ export abstract class DataflowSolver<D extends object> {
                 // For SDK calls, include any found paramFuncs or callbacks
                 if (paramFuncs.length > 0) {
                     for (const pf of paramFuncs) {
-                        callees.add(pf);
+                        if (this.shouldIncludeSdkCallback(invokeStmt, pf)) callees.add(pf);
                     }
                 }
             }
@@ -860,7 +862,7 @@ export abstract class DataflowSolver<D extends object> {
                 if (file && this.scene.getFiles().includes(file)) {
                     return true;
                 }
-                if (stmt instanceof ArkInvokeStmt && getRecallMethodInParam(stmt).length > 0) {
+                if ((stmt instanceof ArkInvokeStmt || stmt instanceof ArkAssignStmt) && getRecallMethodInParam(stmt).length > 0) {
                     return true;
                 }
             }

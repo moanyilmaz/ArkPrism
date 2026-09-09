@@ -1,4 +1,4 @@
-import { ArkInvokeStmt, Stmt } from "../arkanalyzer";
+import { ArkInvokeStmt, ArkMethod, Stmt } from "../arkanalyzer";
 import { DataflowProblem, FlowFunction } from "../arkanalyzer";
 import { PathEdge, PathEdgePoint } from "../arkanalyzer";
 import { Scene } from "../arkanalyzer";
@@ -15,6 +15,10 @@ export class TaintAnalysisSolver extends DataflowSolver<TaintFact> {
     protected problem!: TaintAnalysisChecker;
     constructor(problem: TaintAnalysisChecker | LightTaintAnalysisChecker, scene: Scene, pta?: PointerAnalysis, entryFact?: TaintFact) {
         super(problem, scene, pta, entryFact);
+    }
+
+    protected shouldIncludeSdkCallback(stmt: Stmt, callback: ArkMethod): boolean {
+        return this.problem.callbackMayExecute(stmt);
     }
 }
 

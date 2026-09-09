@@ -5,7 +5,20 @@ import http from '@ohos.net.http';
 import pasteboard from '@ohos.pasteboard';
 import fs from '@ohos.file.fs';
 
+class Globals {
+  static secret: string = '';
+}
+
 export class Cases {
+  unrelatedObjectNegative() {
+    Globals.secret = deviceInfo.udid;
+    const box = { value: 'public' };
+    console.info(box.value);
+  }
+  objectFieldPositive() {
+    const box = { value: deviceInfo.udid };
+    console.info(box.value);
+  }
   filePositive() {
     const id = deviceInfo.udid;
     fs.writeSync(1, id);

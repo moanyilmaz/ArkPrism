@@ -13,6 +13,8 @@ export interface TaintSourceEvidence {
     rule: SourceRuleMetadata;
 }
 
+export type TaintCarrierState = 'value' | 'promise_payload';
+
 export class TaintFact {
     private static statementIds: WeakMap<object, number> = new WeakMap();
     private static nextStatementId: number = 1;
@@ -20,13 +22,15 @@ export class TaintFact {
     private path: Stmt[] = [];
     private last: TaintFact | null = null;
     private sourceEvidence?: TaintSourceEvidence;
+    private carrierState: TaintCarrierState;
 
-    constructor(value: Value, stmts?: Stmt[], sourceEvidence?: TaintSourceEvidence) {
+    constructor(value: Value, stmts?: Stmt[], sourceEvidence?: TaintSourceEvidence, carrierState: TaintCarrierState = 'value') {
         this.value = value;
         if (stmts) {
             this.path = [...stmts];
         }
         this.sourceEvidence = sourceEvidence;
+        this.carrierState = carrierState;
     }
 
     public static createSourceEvidence(
@@ -48,9 +52,11 @@ export class TaintFact {
             ?.getMethodSignature?.()
             ?.toString?.() || statement.toString();
         const carrierKey = `${sourceType}:${sourceIndex}:${callbackIndex}`;
+        const catalogKey = rule.catalogApiSignature
+            ? JSON.stringify([rule.catalogApiSignature, rule.dataType, rule.label]) : '';
         const identityKey = sourceKind === 'framework_input'
             ? `${sourceKind}|${methodSignature}|${invokedMethod}|${carrierKey}`
-            : `${sourceKind}|${methodSignature}|stmt:${statementId}|${carrierKey}`;
+            : `${sourceKind}|${methodSignature}|stmt:${statementId}|${carrierKey}|${catalogKey}`;
         return {
             identityKey,
             statement,
@@ -91,8 +97,10 @@ export class TaintFact {
         return this.getSourceIdentityKey() === other.getSourceIdentityKey();
     }
 
-    public copyForValue(value: Value, nextStmt?: Stmt): TaintFact {
-        const copy = new TaintFact(value, this.path, this.sourceEvidence);
+    public getCarrierState(): TaintCarrierState { return this.carrierState; }
+
+    public copyForValue(value: Value, nextStmt?: Stmt, carrierState = this.carrierState): TaintFact {
+        const copy = new TaintFact(value, this.path, this.sourceEvidence, carrierState);
         if (nextStmt) copy.addPath(nextStmt);
         return copy;
     }

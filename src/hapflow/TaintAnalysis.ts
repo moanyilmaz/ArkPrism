@@ -18,6 +18,7 @@ import { Source, validateSourceRuleObject } from "./Source";
 import { getPossibleRelatedNodes, INTERNAL_SINK_METHOD_toString, LOG_SINK_METHODS, Json2ArkMethod, Json2ArkMethodSignature, LocalEqual, localDeclaredInCfg, propagateFact, RefEqual, TaintOutcomeEqual, ValueDependsOn, ValueEqual, getThisAssignStmt, callSource, getRecallMethodInParam, isClosureLocal, getClosures, getResolvedCallbackParameters } from "./Util";
 import { TaintFact } from "./TaintFact";
 import { MultiRef } from "./MuiltiRef";
+import { rebaseTaintedValue, unresolvedFieldReadMatches } from './Util';
 import { Logger, LOG_MODULE_TYPE } from "../arkanalyzer";
 import { ArkThisRef } from "../arkanalyzer";
 import { CatalogSourceBindings } from './CatalogSourceBindings';
@@ -115,16 +116,53 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private detectOutcome: TaintFact[] = [];
     private catalogBindings?: CatalogSourceBindings;
     private callbackBudgetExceeded = false;
+    private emittedEvents?: Set<string | undefined>;
+
+    private isEmitterInvocation(stmt: Stmt): boolean {
+        const invoke = stmt.getInvokeExpr();
+        if (!(invoke instanceof ArkInstanceInvokeExpr)) return false;
+        const file = stmt.getCfg().getDeclaringMethod().getDeclaringArkFile();
+        const imported = file.getImportInfoBy(invoke.getBase().getName());
+        if (!imported || (imported.getFrom() !== '@ohos.events.emitter'
+            && !(imported.getFrom() === '@kit.BasicServicesKit' && imported.getOriginName() === 'emitter'))) return false;
+        const type = invoke.getBase().getType();
+        return !(type instanceof ClassType) || this.scene.hasSdkFile(type.getClassSignature().getDeclaringFileSignature());
+    }
+
+    public callbackMayExecute(stmt: Stmt): boolean {
+        if (process.env.ARKPRISM_UNRESTRICTED_SDK_CALLBACKS === '1' || !this.isEmitterInvocation(stmt)) return true;
+        const invoke = stmt.getInvokeExpr()!;
+        if (!['on', 'once'].includes(invoke.getMethodSignature().getMethodSubSignature().getMethodName())) return true;
+        const event = invoke.getArgs()[0];
+        if (!(event instanceof Constant)) return true;
+        if (!this.emittedEvents) {
+            this.emittedEvents = new Set();
+            for (const method of this.scene.getMethods()) {
+                for (const statement of method.getCfg()?.getStmts() || []) {
+                    const call = statement.getInvokeExpr();
+                    if (call?.getMethodSignature().getMethodSubSignature().getMethodName() !== 'emit'
+                        || !this.isEmitterInvocation(statement)) continue;
+                    const emitted = call.getArgs()[0];
+                    this.emittedEvents.add(emitted instanceof Constant ? emitted.getValue() : undefined);
+                }
+            }
+        }
+        return this.emittedEvents.has(event.getValue()) || this.emittedEvents.has(undefined);
+    }
 
     public setCatalogBindings(bindings: CatalogSourceBindings): void {
         this.catalogBindings = bindings;
     }
 
     public resolveSource(value: Value): Source | null {
+        return this.resolveSources(value)[0] || null;
+    }
+
+    public resolveSources(value: Value): Source[] {
         const bound = this.catalogBindings?.values.get(value);
         if (bound) return bound;
         const source = callSource(value, this.sources, this.scene, this.pointerAnalysis);
-        return this.catalogBindings && source?.rule.sourceKind === 'privacy_data' ? null : source;
+        return source && !(this.catalogBindings && source.rule.sourceKind === 'privacy_data') ? [source] : [];
     }
 
     public wasCallbackBudgetExceeded(): boolean { return this.callbackBudgetExceeded; }
@@ -159,7 +197,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             source.rule,
             source.sourceIndex,
             source.callbackIndex
-        ));
+        ), source.sourceType === 'return' && /^\s*Promise\s*</.test(source.rule.returnType || '')
+            ? 'promise_payload' : 'value');
     }
 
     /**
@@ -241,11 +280,12 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         const invokeExpr = stmt.getInvokeExpr();
                         if (!invokeExpr) continue;
 
-                        const source = this.resolveSource(invokeExpr);
-                        if (source && source.sourceType === 'callback') {
-                            callbackSources.push({ method, stmt, invokeExpr, source });
-                        } else if (source && source.sourceType === 'return' && stmt instanceof ArkAssignStmt) {
-                            returnSources.push({ method, stmt, invokeExpr, source });
+                        for (const source of this.resolveSources(invokeExpr)) {
+                            if (source.sourceType === 'callback') {
+                                callbackSources.push({ method, stmt, invokeExpr, source });
+                            } else if (source.sourceType === 'return' && stmt instanceof ArkAssignStmt) {
+                                returnSources.push({ method, stmt, invokeExpr, source });
+                            }
                         }
                     }
                 }
@@ -1324,7 +1364,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
     private appendDistinctOutcome(outcome: TaintFact): void {
         const duplicate = this.detectOutcome.some(existing => TaintOutcomeEqual(existing, outcome));
         if (!duplicate) {
-            this.detectOutcome.push(outcome);
+            this.detectOutcome.push(outcome.copyForValue(outcome.getValue()));
         }
     }
 
@@ -1415,8 +1455,8 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
             }
             for (const param of this.sinkDataArguments(callExpr)) {
                 if (ValueEqual(param, dataValue) || dataValue instanceof ArkInstanceFieldRef && param instanceof Local && LocalEqual(dataValue.getBase(), param)) {
-                    dataFact.addPath(srcStmt);
-                    const dataFactPaths = dataFact.getPath()
+                    const outcome = dataFact.copyForValue(dataValue, srcStmt);
+                    const dataFactPaths = outcome.getPath();
                     let newOutcome = true;
                     for (let i = 0; i < this.detectOutcome.length; i++) {
                         const outcomeValue = this.detectOutcome[i].getValue();
@@ -1427,45 +1467,45 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             if (outcomePath.every(item => dataFactPaths.includes(item))) {
                                 newOutcome = false;
                             } else if (dataFactPaths.every(item => outcomePath.includes(item))) {
-                                this.detectOutcome[i] = dataFact;
+                                this.detectOutcome[i] = outcome;
                                 newOutcome = false;
                             }
                         }
                     }
                     if (newOutcome) {
-                        this.detectOutcome.push(dataFact);
+                        this.detectOutcome.push(outcome);
                     }
+                    break;
                 }
             }
         }
     }
 
     protected addTaintFromSourceAssgin(dataFact: TaintFact, stmt: ArkAssignStmt, ret: Set<TaintFact>) {
-        const source = this.resolveSource(stmt.getRightOp());
-        if (this.getZeroValue() == dataFact && source?.sourceType === 'return') {
-            ret.add(this.createSourceFact(stmt.getDef()!, stmt, source));
+        if (this.getZeroValue() != dataFact) return;
+        for (const source of this.resolveSources(stmt.getRightOp())) {
+            if (source.sourceType === 'return') ret.add(this.createSourceFact(stmt.getDef()!, stmt, source));
         }
     }
 
     protected addTaintFromSourceCall(stmt: Stmt, method: ArkMethod, ret: Set<TaintFact>) {
-        const source = this.resolveSource(stmt.getInvokeExpr()!);
-        if (source) {
+        for (const source of this.resolveSources(stmt.getInvokeExpr()!)) {
             const invokeExpr = stmt.getInvokeExpr()!;
             if (source.sourceType == 'callback') {
                 const arg = invokeExpr.getArgs()[source.callbackIndex];
                 if (!arg || !(arg.getType() instanceof FunctionType)) {
-                    return;
+                    continue;
                 }
                 const methodSignature = (arg.getType() as FunctionType).getMethodSignature();
-                const callbackMethod = stmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass().getMethod(methodSignature);
-                if (callbackMethod) {
+                const callbackMethod = this.scene.getMethod(methodSignature);
+                if (callbackMethod === method) {
                     if (method.getParameters().length <= source.sourceIndex) {
-                        return;
+                        continue;
                     }
                     const paramOffset = method.getParameters()[0]?.getType() instanceof LexicalEnvType ? 1 : 0;
                     const paramRef = callbackMethod.getParameterInstances()[source.sourceIndex + paramOffset];
                     if (!paramRef) {
-                        return;
+                        continue;
                     }
                     ret.add(this.createSourceFact(paramRef, stmt, source));
                 }
@@ -1593,7 +1633,14 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         let tainted = false;
                         const uses = new Set([...rightOp.getUses(), rightOp]);
                         for (const use of uses) {
-                            if (ValueEqual(use, dataFact.getValue())) {
+                            // A fulfillment handler, rather than the receiver object,
+                            // determines the payload of the Promise returned by then.
+                            if (rightOp instanceof ArkInstanceInvokeExpr
+                                && rightOp.getMethodSignature().getMethodSubSignature().getMethodName() === 'then'
+                                && rightOp.getArgs()[0]?.getType() instanceof FunctionType
+                                && checkerInstance.isPromiseValue(rightOp.getBase())
+                                && ValueEqual(use, rightOp.getBase())) continue;
+                            if (ValueEqual(use, dataFact.getValue()) || unresolvedFieldReadMatches(use, dataFact.getValue())) {
                                 if (process.env.ARKPRISM_DEBUG_IFDS === '1') {
                                     console.log(
                                         `[HAPFLOW][ASSIGN] ${dataFact.getValue().toString()} -> `
@@ -1601,7 +1648,9 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                                     );
                                 }
                                 tainted = true;
-                                propagateFact(assigned, srcStmt, ret, dataFact);
+                                propagateFact(assigned, srcStmt, ret, dataFact,
+                                    checkerInstance.isPromiseResolve(rightOp) ? 'promise_payload'
+                                        : rightOp instanceof ArkAwaitExpr ? 'value' : undefined);
                                 if (irRecoveryEnabled() && assigned instanceof ArkInstanceFieldRef) {
                                     const canonicalAccess = canonicalizeFieldAccess(assigned);
                                     if (canonicalAccess) {
@@ -1646,18 +1695,14 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     }
                 } else if (srcStmt.getInvokeExpr()) {
                     const invokeExpr = srcStmt.getInvokeExpr();
-                    const source = checkerInstance.resolveSource(invokeExpr!);
-                    if (source && source.sourceType == 'ArgIn') {
-                        const argument = invokeExpr!.getArgs()[source.sourceIndex];
-                        if (argument) ret.add(checkerInstance.createSourceFact(argument, srcStmt, source));
-                    }
-                    // Handle return-type sources: when the API returns sensitive data (e.g., getAddressesFromLocation)
-                    // The return value flows through Promise.then() to the callback parameter
-                    if (source && source.sourceType == 'return') {
-                        // Create a special taint fact for the invoke expression result
-                        // This will propagate through .then() callbacks automatically
-                        const invokeResultFact = checkerInstance.createSourceFact(invokeExpr!, srcStmt, source);
-                        ret.add(invokeResultFact);
+                    for (const source of checkerInstance.resolveSources(invokeExpr!)) {
+                        if (source.sourceType == 'ArgIn') {
+                            const argument = invokeExpr!.getArgs()[source.sourceIndex];
+                            if (argument) ret.add(checkerInstance.createSourceFact(argument, srcStmt, source));
+                        }
+                        if (source.sourceType == 'return') {
+                            ret.add(checkerInstance.createSourceFact(invokeExpr!, srcStmt, source));
+                        }
                     }
                     if (invokeExpr instanceof ArkInstanceInvokeExpr
                         && invokeExpr.getMethodSignature().getMethodSubSignature().getMethodName() == 'constructor'
@@ -1695,12 +1740,66 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
         }
     }
 
+    private isPromiseResolve(value: Value): boolean {
+        if (!(value instanceof ArkInstanceInvokeExpr)
+            || value.getMethodSignature().getMethodSubSignature().getMethodName() !== 'resolve'
+            || value.getBase().getName() !== 'Promise') return false;
+        const target = this.scene.getMethod(value.getMethodSignature());
+        if (target && !this.scene.hasSdkFile(target.getDeclaringArkFile().getFileSignature())) return false;
+        const type = value.getBase().getType();
+        return !(type instanceof ClassType) || this.scene.hasSdkFile(type.getClassSignature().getDeclaringFileSignature());
+    }
+
+    private isPromiseValue(value: Value, visited = new Set<Value>()): boolean {
+        if (visited.has(value) || visited.size >= 32) return false;
+        visited.add(value);
+        const type = value.getType();
+        if (type instanceof ClassType) {
+            const cls = this.scene.getClass(type.getClassSignature());
+            if (cls && !this.scene.hasSdkFile(cls.getDeclaringArkFile().getFileSignature())) return false;
+        }
+        if (/(^|[:.\s])Promise(?:<|$)/.test(type.toString())) return true;
+        if (!(value instanceof Local)) return false;
+        const declaration = value.getDeclaringStmt();
+        if (!(declaration instanceof ArkAssignStmt)) return false;
+        const right = declaration.getRightOp();
+        if (/^\s*Promise\s*</.test(this.resolveSource(right)?.rule.returnType || '')) return true;
+        if (this.isPromiseResolve(right)) return true;
+        if (right instanceof ArkInstanceInvokeExpr
+            && right.getMethodSignature().getMethodSubSignature().getMethodName() === 'then') {
+            return this.isPromiseValue(right.getBase(), visited);
+        }
+        return right instanceof Local && this.isPromiseValue(right, visited);
+    }
+
+    private isPromiseSuccessCallback(stmt: Stmt, method: ArkMethod): boolean {
+        if (process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW === '1') return false;
+        const invoke = stmt.getInvokeExpr();
+        if (!(invoke instanceof ArkInstanceInvokeExpr)
+            || invoke.getMethodSignature().getMethodSubSignature().getMethodName() !== 'then'
+            || !this.isPromiseValue(invoke.getBase())) return false;
+        const handler = invoke.getArgs()[0]?.getType();
+        return handler instanceof FunctionType
+            && (this.scene.getMethod(handler.getMethodSignature()) === method
+                || handler.getMethodSignature().toString() === method.getSignature().toString());
+    }
+
     getCallFlowFunction(srcStmt: Stmt, method: ArkMethod): FlowFunction<TaintFact> {
         let checkerInstance: TaintAnalysisChecker = this;
         return new class implements FlowFunction<TaintFact> {
             getDataFacts(dataFact: TaintFact): Set<TaintFact> {
                 const dataValue = dataFact.getValue();
                 const ret: Set<TaintFact> = new Set();
+                if (checkerInstance.isPromiseSuccessCallback(srcStmt, method)
+                    && dataFact.getCarrierState() === 'promise_payload') {
+                    const invoke = srcStmt.getInvokeExpr() as ArkInstanceInvokeExpr;
+                    const parameter = getParameterInstanceForArgument(method, 0);
+                    if (parameter) {
+                        const delivered = rebaseTaintedValue(dataValue, invoke.getBase(), parameter);
+                        if (delivered) propagateFact(delivered, srcStmt, ret, dataFact, 'value');
+                    }
+                    return ret;
+                }
                 if (checkerInstance.getZeroValue() == dataFact) {
                     ret.add(checkerInstance.getZeroValue());
                     checkerInstance.addTaintFromSourceCall(srcStmt, method, ret);
@@ -1827,20 +1926,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         }
                     }
 
-                    for (const sink of checkerInstance.sinks) {
-                        const callSig = callExpr.getMethodSignature().toString();
-                        const sinkSig = sink.toString();
-                        // Exact match or fuzzy match for unknown signatures
-                        if (callSig === sinkSig ||
-                            (callSig.includes('@%unk') && sinkSig.includes(callExpr.getMethodSignature().getMethodSubSignature().getMethodName()))) {
-                            for (const param of callExpr.getArgs()) {
-                                if (ValueEqual(param, dataFact.getValue())) {
-                                    dataFact.addPath(srcStmt);
-                                    checkerInstance.detectOutcome.push(dataFact);
-                                }
-                            }
-                        }
-                    }
+                    checkerInstance.data2Sink(srcStmt, dataFact);
                 }
                 const callStmt = srcStmt as ArkInvokeStmt;
                 if (getRecallMethodInParam(callStmt).includes(method)) {
@@ -1924,16 +2010,24 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                         if (irRecoveryEnabled()
                             && callee.getDeclaringArkClass().getCategory() === ClassCategory.OBJECT
                             && callee.getName() === INSTANCE_INIT_METHOD_NAME
+                            && dataValue.getFieldSignature().getDeclaringSignature().toString()
+                                === callee.getDeclaringArkClass().getSignature().toString()
                             && expr instanceof ArkInstanceInvokeExpr) {
-                            // Object-literal fields are emitted as static refs
-                            // in this ArkAnalyzer IR. The initialized object
-                            // carries that field taint back to its call site.
-                            propagateFact(expr.getBase(), srcStmt, ret, dataFact);
+                            // Keep the field suffix when materializing an object-literal instance.
+                            propagateFact(new ArkInstanceFieldRef(expr.getBase(), dataValue.getFieldSignature()), srcStmt, ret, dataFact);
                         }
                     } else if (dataValue instanceof ArkInstanceFieldRef && dataValue.getBase().getName() == "this") {
                         const expr = callStmt.getInvokeExpr();
+                        const callee = srcStmt.getCfg().getDeclaringMethod();
+                        const owner = callee.getDeclaringArkClass();
+                        // Object-literal lowering can attach a this-field to the enclosing class.
+                        const fieldSignature = irRecoveryEnabled() && owner.getCategory() === ClassCategory.OBJECT
+                            && callee.getName() === INSTANCE_INIT_METHOD_NAME
+                            ? owner.getFieldWithName(dataValue.getFieldSignature().getFieldName())?.getSignature()
+                                || dataValue.getFieldSignature()
+                            : dataValue.getFieldSignature();
                         if (expr instanceof ArkInstanceInvokeExpr) {
-                            const fieldRef = new ArkInstanceFieldRef(expr.getBase(), dataValue.getFieldSignature());
+                            const fieldRef = new ArkInstanceFieldRef(expr.getBase(), fieldSignature);
                             const newFact = propagateFact(fieldRef, srcStmt, ret, dataFact);
                             if (newFact && dataFact.getLast() && ValueEqual(fieldRef, dataFact.getLast()!.getValue())) {
                                 newFact.setLast(dataFact.getLast()!.getLast());
@@ -1943,14 +2037,14 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                             if (checkerInstance.pointerAnalysis) {
                                 getPossibleRelatedNodes(expr.getBase(), checkerInstance.pointerAnalysis).forEach(v => {
                                     if (v instanceof Local && localDeclaredInCfg(v, callStmt.getCfg())) {
-                                        const field = new ArkInstanceFieldRef(v, dataValue.getFieldSignature());
+                                        const field = new ArkInstanceFieldRef(v, fieldSignature);
                                         propagateFact(field, srcStmt, ret, dataFact);
                                     } else if (v instanceof ArkInstanceFieldRef && localDeclaredInCfg(v.getBase(), callStmt.getCfg())) {
-                                        const fieldSignatures = [v.getFieldSignature(), dataValue.getFieldSignature()];
+                                        const fieldSignatures = [v.getFieldSignature(), fieldSignature];
                                         const mRef = new MultiRef(v.getBase(), fieldSignatures);
                                         propagateFact(mRef, srcStmt, ret, dataFact);
                                     } else if (v instanceof MultiRef && localDeclaredInCfg(v.getBase(), callStmt.getCfg())) {
-                                        const fieldSignatures = [...v.getFieldSignatures(), dataValue.getFieldSignature()];
+                                        const fieldSignatures = [...v.getFieldSignatures(), fieldSignature];
                                         const mRef = new MultiRef(v.getBase(), fieldSignatures);
                                         propagateFact(mRef, srcStmt, ret, dataFact);
                                     }
@@ -2105,8 +2199,11 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
                     let retVal: Value = (srcStmt as ArkReturnStmt).getOp();
                     if (dataFact == checkerInstance.getZeroValue()) {
                         ret.add(checkerInstance.getZeroValue());
-                    } else if (retVal == dataValue) {
-                        propagateFact(leftOp, srcStmt, ret, dataFact);
+                    } else {
+                        const promiseReturn = checkerInstance.isPromiseSuccessCallback(callStmt, srcStmt.getCfg().getDeclaringMethod());
+                        const returned = rebaseTaintedValue(dataValue, retVal, leftOp);
+                        if (returned) propagateFact(returned, srcStmt, ret, dataFact,
+                            promiseReturn ? 'promise_payload' : dataFact.getCarrierState());
                     }
                 }
                 return ret;
@@ -2162,7 +2259,7 @@ export class TaintAnalysisChecker extends DataflowProblem<TaintFact> {
 
     factEqual(d1: TaintFact, d2: TaintFact): boolean {
         let value1 = d1.getValue(), value2 = d2.getValue();
-        return ValueEqual(value1, value2) && d1.hasSameSource(d2);
+        return ValueEqual(value1, value2) && d1.hasSameSource(d2) && d1.getCarrierState() === d2.getCarrierState();
     }
 
     public addSinksFromJson(filePath: string, sdkPath?: string) {

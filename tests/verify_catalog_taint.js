@@ -9,6 +9,9 @@ const { TaintAnalysisChecker } = require('../dist/hapflow/TaintAnalysis');
 const { TaintAnalysisSolver } = require('../dist/hapflow/TaintAnalysisSolver');
 const { Json2ArkMethodSignature, acceptsSourceArity, callSource } = require('../dist/hapflow/Util');
 const { AnalysisWorklist } = require('../dist/hapflow/AnalysisWorklist');
+const { TaintFact } = require('../dist/hapflow/TaintFact');
+const { ArkInvokeStmt, ArkInstanceInvokeExpr, Local, MethodSignature, MethodSubSignature,
+  ClassSignature, FileSignature, VoidType } = require('../dist/arkanalyzer');
 const root = path.resolve(__dirname, '..');
 const sdk = process.env.OPENHARMONY_SDK_PATH;
 assert.ok(sdk && fs.existsSync(sdk), 'Set OPENHARMONY_SDK_PATH to an installed SDK');
@@ -54,7 +57,8 @@ assert.strictEqual(callSource(callbackCall, legacyChecker.getSources(), scene)?.
 
 const expected = { filePositive: true, fileDescriptorNegative: false, repeatedCallsPositive: true, fieldPositive: true, fieldKilled: false, settingsPositive: true,
   sensorPositive: true, sensorNegative: false, httpPositive: true,
-  httpFactoryNegative: false, pasteboardErrorNegative: false };
+  httpFactoryNegative: false, pasteboardErrorNegative: false,
+  unrelatedObjectNegative: false, objectFieldPositive: true };
 for (const [name, positive] of Object.entries(expected)) {
   const method = scene.getMethods().find(m => m.getName() === name);
   assert.ok(method, name);
@@ -116,4 +120,25 @@ for (let i = 0; i < 200; i++) {
 assert.deepStrictEqual([...indexedSolver.getPointerResolvedCallees(sites[1], [])], [targets[1]]);
 assert.strictEqual(indexedSolver.getPointerResolvedCallees(sites[0], [targets[0]]).size, 0);
 assert.ok(renders < 1000, `Expected indexed lookup, got ${renders} statement renderings`);
+
+const sinkMethod = targets[1];
+const sinkStmts = [...sinkMethod.getCfg().getBlocks()].flatMap(b => b.getStmts());
+const logStmt = sinkStmts.find(s => s.getInvokeExpr()?.getMethodSignature().getMethodSubSignature().getMethodName() === 'info');
+const dataValue = logStmt.getInvokeExpr().getArg(0);
+const fact = new TaintFact(dataValue, [sinkStmts[0]]);
+const sinkChecker = new TaintAnalysisChecker(sinkStmts[0], sinkMethod);
+sinkChecker.addSinksFromJson(path.join(root, 'config/hapflow_sinks.json'), sdk);
+for (const member of ['on', 'publish', 'write', 'get']) {
+  const signature = new MethodSignature(new ClassSignature('', new FileSignature('%unk', '%unk')),
+    new MethodSubSignature(member, [], VoidType.getInstance()));
+  const call = new ArkInvokeStmt(new ArkInstanceInvokeExpr(new Local('ordinaryEvents'), signature, [dataValue]));
+  call.setCfg(sinkMethod.getCfg());
+  sinkChecker.getCallFlowFunction(call, sinkMethod).getDataFacts(fact);
+  assert.strictEqual(sinkChecker.getOutcome().length, 0, `${member} must not match a substring of a sink signature`);
+}
+sinkChecker.data2Sink(logStmt, fact);
+assert.strictEqual(fact.getPath().length, 1, 'Sink reporting must not mutate a propagation fact');
+const savedPath = [...sinkChecker.getOutcome()[0].getPath()];
+fact.addPath(sinkStmts[sinkStmts.length - 1]);
+assert.deepStrictEqual(sinkChecker.getOutcome()[0].getPath(), savedPath, 'Reported endpoints must remain stable');
 console.log('Catalog source binding, flow endpoints, SDK sinks, optional arguments and queue scheduling verified.');

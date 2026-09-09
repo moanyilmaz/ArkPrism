@@ -5,7 +5,7 @@ import { ArkClass } from "../arkanalyzer";
 import { ArkMethod } from "../arkanalyzer";
 import { ArkNamespace } from "../arkanalyzer";
 import { Scene } from "../arkanalyzer";
-import { TaintFact } from "./TaintFact";
+import { TaintCarrierState, TaintFact } from "./TaintFact";
 import { Local } from "../arkanalyzer";
 import { AbstractRef, ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ClosureFieldRef, GlobalRef } from "../arkanalyzer";
 import { Cfg } from "../arkanalyzer";
@@ -490,16 +490,17 @@ function paramEqual(methodSignature: MethodSignature, paramInfos: string[]): boo
     return result;
 }
 
-export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
+export function getRecallMethodInParam(stmt: Stmt): ArkMethod[] {
     const ret: ArkMethod[] = [];
     const invokeExpr = stmt.getInvokeExpr();
+    if (!invokeExpr) return ret;
     const args = invokeExpr.getArgs ? invokeExpr.getArgs() : [];
     for (let i = 0; i < args.length; i++) {
         const param = args[i];
         const paramType = param?.getType ? param.getType() : null;
         if (paramType instanceof FunctionType) {
             const methodSignature = paramType.getMethodSignature();
-            const method = stmt.getCfg()?.getDeclaringMethod().getDeclaringArkClass().getMethod(methodSignature);
+            const method = stmt.getCfg()?.getDeclaringMethod().getDeclaringArkFile().getScene().getMethod(methodSignature);
             if (method) {
                 ret.push(method);
             }
@@ -508,8 +509,8 @@ export function getRecallMethodInParam(stmt: ArkInvokeStmt): ArkMethod[] {
     return ret;
 }
 
-export function propagateFact(value: Value, stmt: Stmt, ret: Set<TaintFact>, fromFact?: TaintFact): TaintFact | null {
-    const fact = new TaintFact(value, undefined, fromFact?.getSourceEvidence());
+export function propagateFact(value: Value, stmt: Stmt, ret: Set<TaintFact>, fromFact?: TaintFact, carrierState?: TaintCarrierState): TaintFact | null {
+    const fact = new TaintFact(value, undefined, fromFact?.getSourceEvidence(), carrierState || fromFact?.getCarrierState());
     let last: TaintFact | undefined | null = fromFact;
     while (last) {
         if (ValueEqual(value, last.getValue()) && stmt == last.getPath()[last.getPath().length - 1]) return null;
@@ -666,6 +667,30 @@ export function ValueEqual(value1: Value, value2: Value): boolean {
         return RefEqual(value1, value2);
     }
     return false;
+}
+
+export function rebaseTaintedValue(value: Value, from: Value, to: Value): Value | undefined {
+    if (ValueEqual(value, from)) return to;
+    if (!(to instanceof Local)) return undefined;
+    if (value instanceof ArkInstanceFieldRef && ValueEqual(value.getBase(), from)) {
+        return new ArkInstanceFieldRef(to, value.getFieldSignature());
+    }
+    if (value instanceof ArkArrayRef && ValueEqual(value.getBase(), from)) {
+        return new ArkArrayRef(to, value.getIndex());
+    }
+    if (value instanceof MultiRef && ValueEqual(value.getBase(), from)) {
+        return new MultiRef(to, value.getFieldSignatures());
+    }
+    return undefined;
+}
+
+export function unresolvedFieldReadMatches(read: Value, tainted: Value): boolean {
+    if (!(read instanceof ArkInstanceFieldRef) || !(tainted instanceof ArkInstanceFieldRef)
+        || !ValueEqual(read.getBase(), tainted.getBase())) return false;
+    const readField = read.getFieldSignature();
+    const taintedField = tainted.getFieldSignature();
+    return readField.getFieldName() === taintedField.getFieldName()
+        && /@(?:%unk|unk)\//.test(readField.getDeclaringSignature().toString());
 }
 
 export function ValueDependsOn(value: Value, dependency: Value): boolean {

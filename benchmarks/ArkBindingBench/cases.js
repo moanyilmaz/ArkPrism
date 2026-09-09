@@ -189,4 +189,19 @@ export default class EntryAbility extends UIAbility {
 `;
 }
 
+cases.push(...[
+  { id: 'emitter_matching_event', event: 'privacy-ready', expected: true },
+  { id: 'emitter_different_event', event: 'other-event', expected: false }
+].map(c => ({
+  id: c.id, split: 'execution', expected: c.expected,
+  imports: "import { identifier } from '@kit.AdsKit';\nimport emitter from '@ohos.events.emitter';",
+  body: `emitter.on('privacy-ready', () => {
+      const pending = identifier.getOAID();
+      pending.then(payload => console.info(payload));
+    });
+    emitter.emit('${c.event}');`,
+  binding: c.expected ? { api: 'getOAID', module: '@ohos.identifier.oaid', type: 'return', carrier: 'pending' } : null,
+  reason: 'The registered callback requires an emission for its event; this regression pair differs only in that event.'
+})));
+
 module.exports = { cases, source };

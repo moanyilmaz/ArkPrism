@@ -13,6 +13,7 @@ const checks = [
   'verify_arkanalyzer_empty_constructor.js',
   'verify_api_usage_dedup.js',
   'verify_call_chain_dominators.js',
+  'verify_catalog_binding.js',
   'verify_catalog_taint.js',
   'verify_corpus_summary.js',
   'verify_detector_domain_migration.js',

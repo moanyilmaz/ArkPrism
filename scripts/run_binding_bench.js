@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawnSync, execFileSync } = require('child_process');
 const { cases, source } = require('../benchmarks/ArkBindingBench/cases');
+const { bindingCorrect } = require('./evaluate_binding_bench');
 const root = path.resolve(__dirname, '..');
 
 function argument(name, fallback) {
@@ -13,18 +14,24 @@ const output = path.resolve(argument('--output', 'experiments/binding_run'));
 const sdk = argument('--sdk', process.env.OPENHARMONY_SDK_PATH || 'E:/OpenHarmony_SDK/20/ets');
 const only = argument('--case', '');
 const buildRoot = path.resolve(argument('--engine-root', root));
-const selected = cases.filter(c => (split === 'all' || c.split === split) && (!only || c.id === only));
+const supplementary = argument('--supplementary', 'false');
+if (!['true', 'false'].includes(supplementary)) throw new Error('--supplementary must be true or false');
+const external = process.env.ARKPRISM_EXTERNAL_BENCHMARK;
+const selected = external ? JSON.parse(fs.readFileSync(path.join(external,'oracle.json'),'utf8')).cases.filter(c => !only || c.id === only)
+  : cases.filter(c => (split === 'all' || c.split === split) && (!only || c.id === only));
 if (!selected.length) throw new Error('No matching cases');
 if (fs.existsSync(output)) throw new Error(`Output already exists: ${output}`);
 fs.mkdirSync(output, { recursive: true });
 const manifest = {
   revision: execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim(),
+  engineRevision: argument('--engine-revision', buildRoot === root
+    ? execFileSync('git', ['rev-parse', 'HEAD'], { cwd: root, encoding: 'utf8' }).trim() : null),
   trackedChanges: execFileSync('git', ['diff', '--name-only'], { cwd: root, encoding: 'utf8' }).trim().split(/\r?\n/).filter(Boolean),
-  started: new Date().toISOString(), split, sdk, supplementary: false,
-  buildRoot,
-  features: {
-    receiverOwnerCheck: process.env.ARKPRISM_DISABLE_RECEIVER_OWNER_CHECK !== '1',
-    promiseFieldFlow: process.env.ARKPRISM_DISABLE_PROMISE_FIELD_FLOW !== '1'
+  started: new Date().toISOString(), split, sdk, supplementary: supplementary === 'true',
+  buildRoot, external,
+  featureFlags: {
+    disableContinuationFlow: process.env.ARKPRISM_DISABLE_CONTINUATION_FLOW === '1',
+    unrestrictedSdkCallbacks: process.env.ARKPRISM_UNRESTRICTED_SDK_CALLBACKS === '1'
   },
   sourceRules: 'config/sensitive_apis.json',
   cases: selected.map(({ body, imports, helpers, ...label }) => label),
@@ -35,18 +42,21 @@ function save() {
 }
 save();
 for (const testCase of selected) {
-  const project = path.join(root, 'benchmarks', 'ArkBindingBench', 'projects', testCase.id);
+  const project = external ? path.join(path.resolve(external),testCase.id)
+    : path.join(root, 'benchmarks', 'ArkBindingBench', 'projects', testCase.id);
   const file = path.join(project, 'entryability', 'EntryAbility.ets');
-  const text = source(testCase);
-  fs.mkdirSync(path.dirname(file), { recursive: true });
-  if (fs.existsSync(file) && fs.readFileSync(file, 'utf8') !== text) {
-    throw new Error(`Existing source differs from the fixed case: ${testCase.id}`);
+  if (!external) {
+    const text = source(testCase);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    if (fs.existsSync(file) && fs.readFileSync(file, 'utf8') !== text) {
+      throw new Error(`Existing source differs from the fixed case: ${testCase.id}`);
+    }
+    if (!fs.existsSync(file)) fs.writeFileSync(file, text);
   }
-  if (!fs.existsSync(file)) fs.writeFileSync(file, text);
   const observations = path.join(output, `${testCase.id}-bindings.json`);
   const args = ['--max-old-space-size=8192', 'scripts/observe_binding_run.js', project,
     '--output-dir', output, '--sdkPath', sdk, '--no-dot', '--no-pta',
-    '--callback-analysis', 'false', '--ifds-timeout-ms', '300000'];
+    '--callback-analysis', supplementary, '--ifds-timeout-ms', '300000'];
   const start = Date.now();
   const child = spawnSync(process.execPath, args, {
     cwd: root, encoding: 'utf8', windowsHide: true, timeout: 600000,
@@ -70,8 +80,7 @@ for (const testCase of selected) {
     result.flowCorrect = result.predicted === testCase.expected;
     result.bindings = privacy;
     const expected = testCase.binding;
-    result.bindingCorrect = expected === null ? privacy.length === 0 : privacy.length > 0 && privacy.every(b =>
-      b.rule.apiName === expected.api && b.rule.module === expected.module && b.type === expected.type && b.value === expected.carrier);
+    result.bindingCorrect = bindingCorrect(expected, privacy);
   }
   manifest.results.push(result);
   save();

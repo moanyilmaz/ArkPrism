@@ -5,6 +5,7 @@ import {
 } from '../arkanalyzer';
 import { PrivacyDataApiResult, PrivacyPackageInfo, SensitiveApiOverload } from '../prototypes';
 import { Source } from './Source';
+import { getRulePackagesForImport } from '../apiDetector';
 
 export interface CatalogBindingStats {
     detectedUsages: number;
@@ -14,8 +15,8 @@ export interface CatalogBindingStats {
 }
 
 export interface CatalogSourceBindings {
-    values: WeakMap<Value, Source>;
-    statements: Map<Stmt, Source>;
+    values: WeakMap<Value, Source[]>;
+    statements: Map<Stmt, Source[]>;
     stats: CatalogBindingStats;
 }
 
@@ -23,6 +24,7 @@ interface Carrier {
     kind: 'return' | 'callback';
     callbackIndex: number;
     sourceIndex: number;
+    returnType?: string;
 }
 
 function hasDataValue(type: ts.TypeNode | undefined): boolean {
@@ -43,6 +45,13 @@ function carrierFor(overload: SensitiveApiOverload, invoke: AbstractInvokeExpr):
     if (!declaration || !ts.isInterfaceDeclaration(declaration)) return;
     const method = declaration.members[0];
     if (!method || !ts.isMethodSignature(method)) return;
+    // Equal-arity callback and Promise overloads can differ in a primitive argument.
+    if (method.parameters.some((parameter, i) => {
+        const actual = args[i]?.getType();
+        return (actual instanceof FunctionType || actual instanceof ClosureType) && parameter.type &&
+            [ts.SyntaxKind.NumberKeyword, ts.SyntaxKind.StringKeyword, ts.SyntaxKind.BooleanKeyword,
+                ts.SyntaxKind.BigIntKeyword].includes(parameter.type.kind);
+    })) return;
     for (let i = 0; i < method.parameters.length; i++) {
         const type = method.parameters[i].type;
         if (!type || !ts.isTypeReferenceNode(type)) continue;
@@ -51,13 +60,14 @@ function carrierFor(overload: SensitiveApiOverload, invoke: AbstractInvokeExpr):
         if (!hasDataValue(type.typeArguments?.[0])) continue;
         const actual = args[i]?.getType();
         if (!(actual instanceof FunctionType) && !(actual instanceof ClosureType)) continue;
-        return { kind: 'callback', callbackIndex: i, sourceIndex: name === 'AsyncCallback' ? 1 : 0 };
+        return { kind: 'callback', callbackIndex: i, sourceIndex: name === 'AsyncCallback' ? 1 : 0,
+            returnType: method.type?.getText(file) };
     }
     const returnType = method.type;
     if (!hasDataValue(returnType)) return;
     // Callback overloads cannot be reinterpreted as return sources.
     if (method.parameters.some(p => p.type && /(?:Async)?Callback\s*</.test(p.type.getText(file)))) return;
-    return { kind: 'return', callbackIndex: -1, sourceIndex: -1 };
+    return { kind: 'return', callbackIndex: -1, sourceIndex: -1, returnType: returnType!.getText(file) };
 }
 
 /** Bind accepted occurrences, preserving receiver/event evidence from API recognition. */
@@ -66,14 +76,15 @@ export function bindCatalogSources(
     usages: PrivacyDataApiResult[],
     packages: PrivacyPackageInfo[],
 ): CatalogSourceBindings {
-    const values = new WeakMap<Value, Source>();
-    const statements = new Map<Stmt, Source>();
+    const values = new WeakMap<Value, Source[]>();
+    const statements = new Map<Stmt, Source[]>();
     const stats: CatalogBindingStats = { detectedUsages: usages.length, boundUsages: 0, propertyUsages: 0, unresolved: [] };
     const methods = new Map(scene.getMethods().map(method => [method.getSignature().toString(), method]));
     const rules = packages.flatMap(pkg => pkg.privacyApis.map(api => ({ api, packages: [pkg.systemPackage, ...(api.packageAliases || [])] })));
     for (const usage of usages) {
         const reject = (reason: string) => stats.unresolved.push({ file: usage.file, line: usage.line, api: usage.catalogApiSignature || usage.method, reason });
-        const rule = rules.find(r => r.packages.includes(usage.apiPackage)
+        const importPackages = getRulePackagesForImport(usage.apiPackage);
+        const rule = rules.find(r => r.packages.some(p => importPackages.includes(p))
             && r.api.catalogApiSignature?.toLowerCase() === usage.catalogApiSignature?.toLowerCase()
             && r.api.dataType === usage.dataType && r.api.label === usage.label)?.api;
         if (!rule) { reject('No reviewed catalog rule for the accepted identity'); continue; }
@@ -86,9 +97,9 @@ export function bindCatalogSources(
             const property = usage.category === 'privacy constants' && stmt instanceof ArkAssignStmt && !invoke;
             const value = property ? (stmt as ArkAssignStmt).getRightOp() : invoke;
             if (!value) continue;
-            const carriers = property ? [{ kind: 'return' as const, callbackIndex: -1, sourceIndex: -1 }]
+            const carriers: Carrier[] = property ? [{ kind: 'return', callbackIndex: -1, sourceIndex: -1 }]
                 : (rule.overloads || []).map(o => carrierFor(o, invoke!)).filter((c): c is Carrier => !!c);
-            const unique = new Map(carriers.map(c => [`${c.kind}:${c.callbackIndex}:${c.sourceIndex}`, c]));
+            const unique = new Map(carriers.map(c => [`${c.kind}:${c.callbackIndex}:${c.sourceIndex}:${/^Promise\s*</.test(c.returnType || '')}`, c]));
             if (unique.size !== 1) continue;
             const carrier = [...unique.values()][0];
             const member = usage.method.split('(')[0].split('.').pop()!;
@@ -101,9 +112,15 @@ export function bindCatalogSources(
                 sourceKind: 'privacy_data', ruleOrigin: 'reviewed_catalog_occurrence',
                 dataType: usage.dataType, label: usage.label, catalogApiSignature: usage.catalogApiSignature,
                 description: usage.description,
+                returnType: carrier.returnType,
             });
-            values.set(value, source);
-            statements.set(stmt, source);
+            const sources = statements.get(stmt) || [];
+            if (!sources.some(existing => existing.rule.catalogApiSignature === source.rule.catalogApiSignature
+                && existing.rule.dataType === source.rule.dataType && existing.rule.label === source.rule.label
+                && existing.sourceType === source.sourceType && existing.sourceIndex === source.sourceIndex
+                && existing.callbackIndex === source.callbackIndex)) sources.push(source);
+            values.set(value, sources);
+            statements.set(stmt, sources);
             bound = true;
         }
         if (bound) {
