@@ -1,1 +1,5 @@
 archives/*.zip filter=lfs diff=lfs merge=lfs -text
+config/*.json text eol=lf
+config/sensitive_apis.json -text -eol whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+config/package_aliases.json -text -eol whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+benchmarks/ArkPrismTop120/pac_v2/*.json text eol=lf

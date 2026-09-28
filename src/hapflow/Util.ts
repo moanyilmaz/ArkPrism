@@ -727,6 +727,7 @@ export function TaintOutcomeEqual(first: TaintFact, second: TaintFact): boolean 
 }
 
 export function LocalEqual(local1: Local, local2: Local): boolean {
+    if (local1 === local2) return true;
     return local1.getName() == local2.getName() && (getDeclaringCfg(local1) == getDeclaringCfg(local2) || localInAnonymousClass(local1) || localInAnonymousClass(local2));
 }
 

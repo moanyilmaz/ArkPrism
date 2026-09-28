@@ -10,6 +10,16 @@ class Globals {
 }
 
 export class Cases {
+  private chooseId(flag: boolean): string {
+    if (flag) return deviceInfo.udid;
+    return deviceInfo.ODID;
+  }
+  multipleSummaryPositive() {
+    const first = this.chooseId(true);
+    console.info(first);
+    const second = this.chooseId(false);
+    console.warn(second);
+  }
   unrelatedObjectNegative() {
     Globals.secret = deviceInfo.udid;
     const box = { value: 'public' };

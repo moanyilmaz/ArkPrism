@@ -38,6 +38,8 @@ import * as path from 'path';
 import { resolveAnalysisPath, toDisplayPath } from './pathUtils';
 import { ensureAnalysisHeap } from './runtimeHeap';
 import { readOpenHarmonySdkInfo } from './sdkInfo';
+import { AnalysisConfigurationInput, resolveAnalysisConfiguration } from './analysisConfiguration';
+import { AnalysisTimer } from './analysisMetrics';
 
 const DEFAULT_SDK_PATH = process.env.OPENHARMONY_SDK_PATH || '';
 const SOURCE_EXTENSIONS = new Set(['.ets', '.ts']);
@@ -75,7 +77,7 @@ function discoverSourceFiles(rootDir: string): string[] {
 
 // ---- Core analysis pipeline (shared by single & batch) ----
 
-interface AnalysisOptions {
+interface AnalysisOptions extends AnalysisConfigurationInput {
     outputDir: string;
     noDot: boolean;
     noTaint: boolean;
@@ -100,6 +102,10 @@ function analyzeProject(
     opts: AnalysisOptions,
     reportProjectDir: string = toDisplayPath(projectDir)
 ): ArkPrismOutput {
+    const configuration = resolveAnalysisConfiguration(opts);
+    const timer = new AnalysisTimer();
+    console.log(`[CONFIG] Profile: ${configuration.profile}; taint call graph: ${configuration.taintCallGraph}; taint: ${!opts.noTaint}`);
+    const finishScene = timer.start('scene');
     const sdk = readOpenHarmonySdkInfo(opts.sdkPath);
     console.log(`[SCENE] Building ArkAnalyzer Scene for ${projectName}...`);
     let sceneConfig = new SceneConfig();
@@ -120,9 +126,10 @@ function analyzeProject(
         }
     }
     console.log(`[SCENE] Scene built. Files: ${allFiles.length}`);
+    finishScene();
 
     // Analyze ViewTrees for UI callback patterns and state usage
-    let viewTreeResult = analyzeViewTrees(scene);
+    let viewTreeResult = timer.measure('viewTree', () => analyzeViewTrees(scene));
     if (viewTreeResult.componentClasses.length > 0) {
         console.log(`[VIEW-TREE] ${viewTreeResult.componentClasses.length} components, `
             + `${viewTreeResult.callbackBindings.length} callbacks, `
@@ -130,6 +137,7 @@ function analyzeProject(
     }
 
     // Read rules - use sensitive_apis.json for unified privacy API definitions
+    const finishApi = timer.start('apiDetection');
     let privacyApisPath = path.resolve(__dirname, '..', 'config', 'sensitive_apis.json');
     let privacyApis = readPrivacyApis(privacyApisPath);
     let systemPackages = Array.from(new Set(privacyApis.flatMap(pkg => [
@@ -157,6 +165,7 @@ function analyzeProject(
         }
     }
 
+    finishApi();
     console.log(`[API-DETECT] ${filesAnalyzed} files, ${methodsAnalyzed} methods, ${allApiResults.length} APIs found.`);
     if (allApiResults.length > 0) {
         let categoryCounts = new Map<string, number>();
@@ -171,14 +180,16 @@ function analyzeProject(
     // Call graph + chains + sinks
     let callChainResults: any[] = [];
     let multiSourceResults: any[] = [];
+    let auditCallGraph: 'rta' | 'cha' | 'skipped' | 'failed' = 'skipped';
     if (allApiResults.length > 0) {
         try {
-            let callGraph = buildCallGraph(scene);
-            callChainResults = traceCallChains(allApiResults, scene, callGraph, projectDir);
-            analyzeDataSinks(allApiResults, callChainResults, scene);
+            let callGraph = timer.measure('auditCallGraph', () => buildCallGraph(scene, algorithm => { auditCallGraph = algorithm; }));
+            callChainResults = timer.measure('callChains', () => traceCallChains(allApiResults, scene, callGraph, projectDir));
+            timer.measure('structuralSinks', () => analyzeDataSinks(allApiResults, callChainResults, scene));
             enrichCallChainsWithSemanticContext(callChainResults, allApiResults);
-            multiSourceResults = detectMultiSourceCollaborations(allApiResults, scene, callGraph, callChainResults);
+            multiSourceResults = timer.measure('collaborations', () => detectMultiSourceCollaborations(allApiResults, scene, callGraph, callChainResults));
         } catch (e) {
+            auditCallGraph = 'failed';
             console.log(`[WARN] Call graph failed: ${e}`);
         }
     }
@@ -186,7 +197,7 @@ function analyzeProject(
     // Data Flow Analysis using built-in Cfg Def-Use chains (always runs)
     let dfStats: DataFlowStats | undefined;
     try {
-        dfStats = getDataFlowStats(scene);
+        dfStats = timer.measure('dataFlowStats', () => getDataFlowStats(scene));
         if (dfStats.methodsWithUnreachableBlocks > 0) {
             console.log(`[DATA-FLOW] ${dfStats.methodsWithUnreachableBlocks} methods with unreachable blocks, `
                 + `${dfStats.totalUnreachableBlocks} blocks total.`);
@@ -198,7 +209,7 @@ function analyzeProject(
     // Recursive/Loop Pattern Detection
     let recursiveStats: RecursivePatternStats | undefined;
     try {
-        recursiveStats = getRecursiveStats(scene);
+        recursiveStats = timer.measure('recursivePatterns', () => getRecursiveStats(scene));
         if (recursiveStats.methodsWithLoops > 0) {
             let loopTypes = Object.entries(recursiveStats.loopBreakdown)
                 .map(([k, v]) => `${k}(${v})`)
@@ -214,10 +225,11 @@ function analyzeProject(
     let taintAnalysis: TaintAnalysisMetadata | undefined;
     if (!opts.noTaint) {
         try {
-            const taintResult = runHapflowAnalysis(scene, {
+            const taintResult = timer.measure('taintAnalysis', () => runHapflowAnalysis(scene, {
                 privacyApiUsages: allApiResults,
                 privacyRules: privacyApis,
                 noPta: opts.noPta,
+                taintCallGraph: configuration.taintCallGraph,
                 sdkPath: opts.sdkPath,
                 ifdsBatchSize: opts.ifdsBatchSize,
                 ifdsMaxEdges: opts.ifdsMaxEdges,
@@ -228,7 +240,7 @@ function analyzeProject(
                 callbackMaxSources: opts.callbackMaxSources,
                 callbackMaxStates: opts.callbackMaxStates,
                 callbackMaxPathLen: opts.callbackMaxPathLen
-            });
+            }));
             taintFlows = taintResult.flows;
             taintAnalysis = taintResult.metadata;
             console.log(`[HAPFLOW] Taint analysis complete: ${taintFlows.length} flows detected.`);
@@ -242,7 +254,7 @@ function analyzeProject(
     }
 
     // Permissions
-    let permissionResults = analyzePermissions(projectDir);
+    let permissionResults = timer.measure('permissions', () => analyzePermissions(projectDir));
 
     // Build output
     let chainsWithPath = callChainResults.filter((c: any) => c.chain && c.chain.length > 0).length;
@@ -251,6 +263,8 @@ function analyzeProject(
         projectName,
         projectDirectory: reportProjectDir,
         analysisTimestamp: getTimestamp(),
+        analysisConfiguration: { ...configuration, taintEnabled: !opts.noTaint, auditCallGraph },
+        performance: timer.snapshot(),
         sdk: {
             path: toDisplayPath(sdk.path),
             apiVersion: sdk.apiVersion,
@@ -313,6 +327,8 @@ Options:
   --no-dot              Skip DOT graph generation
   --no-taint            Skip HapFlow taint analysis
   --no-pta              Skip pointer analysis (faster but less precise)
+  --analysis-profile <precise|fast>  precise: PTA (default); fast: RTA, with IFDS retained
+  --taint-call-graph <pta|rta|cha>   Explicit taint call-target algorithm
   --sdkPath <dir>       OpenHarmony SDK ets path (required unless OPENHARMONY_SDK_PATH is set)
 
 IFDS Options:
@@ -353,6 +369,8 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
     let noDot = false;
     let noTaint = false;
     let noPta = false;
+    let analysisProfile: string | undefined;
+    let taintCallGraph: string | undefined;
     let sdkPath = DEFAULT_SDK_PATH;
 
     // IFDS options
@@ -387,6 +405,11 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
             noTaint = true;
         } else if (arg === '--no-pta') {
             noPta = true;
+        } else if (arg === '--analysis-profile' || arg === '--taint-call-graph') {
+            const value = args[++i];
+            if (!value || value.startsWith('-')) throw new Error(`Missing value for ${arg}`);
+            if (arg === '--analysis-profile') analysisProfile = value;
+            else taintCallGraph = value;
         } else if (arg === '--sdkPath') {
             sdkPath = args[++i] || sdkPath;
         }
@@ -416,10 +439,11 @@ function parseArgs(): { mode: 'single' | 'batch' | 'config'; target: string; opt
         }
     }
 
+    resolveAnalysisConfiguration({ analysisProfile, taintCallGraph, noPta });
     return {
         mode, target,
         opts: {
-            outputDir, noDot, noTaint, noPta, sdkPath,
+            outputDir, noDot, noTaint, noPta, sdkPath, analysisProfile, taintCallGraph,
             ifdsBatchSize, ifdsMaxEdges, ifdsMaxWorklist, ifdsTimeoutMs,
             callbackAnalysis, callbackMaxMethods, callbackMaxSources, callbackMaxStates, callbackMaxPathLen
         }

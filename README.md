@@ -199,13 +199,69 @@ carriers; inspect the corresponding metadata before treating flows as complete.
 
 ## Useful options
 
+### Performance modes
+
+API detection, the reviewed catalog, and the source-file scope are identical in
+all modes. The audit call graph used for call chains remains lifecycle-augmented
+RTA (with the existing CHA fallback). The following options control the separate
+call-target analysis used by IFDS:
+
+| Mode | Command option | Taint analysis |
+|---|---|---|
+| Precise (default) | `--analysis-profile precise` | Existing context-depth-2 PTA, receiver refinement and CHA fallback targets |
+| Fast | `--analysis-profile fast` | Fixed-point RTA targets; no points-to alias analysis; IFDS and callback analysis retained |
+| CHA | `--taint-call-graph cha` | Class-hierarchy targets without PTA; equivalent to the legacy `--no-pta` mode |
+| API and call-chain analysis | `--no-taint` | API detection, call chains, structural sinks and collaborations; no PTA or IFDS |
+
+For collection-behavior acceptance tests that do not require taint paths, use:
+
+```powershell
+node dist/arkprism.js "<project directory>" --no-taint --sdkPath $env:OPENHARMONY_SDK_PATH --output-dir out/collection
+```
+
+For a faster run that still produces taint paths, use:
+
+```powershell
+node dist/arkprism.js "<project directory>" --analysis-profile fast --sdkPath $env:OPENHARMONY_SDK_PATH --output-dir out/fast
+```
+
+`--taint-call-graph pta|rta|cha` selects the algorithm explicitly. Conflicting
+profile/algorithm options are rejected before analysis. There is no automatic
+switch from PTA to RTA after a failure. When `--no-taint` is set, the taint
+algorithm is not executed, regardless of the selected profile.
+
+RTA avoids the points-to constraint solution and alias-assisted propagation.
+It can change virtual-call targets and cross-object flows, so its path results
+are not interchangeable with PTA results. A faster call-graph setup does not
+guarantee a faster complete analysis: IFDS cost also depends on the target graph.
+The default mode preserves the existing analysis rather than claiming a measured
+accuracy maximum on every input.
+
+Reports record `analysisConfiguration`, `performance.phaseTimingsMs` and
+`taintAnalysis.performance.phaseTimingsMs`. The latter separates SDK loading,
+lifecycle construction, call-target analysis, source/sink setup, IFDS and the
+callback supplement. `totalAnalysisMs` excludes JSON/DOT serialization; external
+wall-clock measurements include process startup and output generation.
+`cpuTimeMs` measures this analysis interval. `processPeakRssBytes` is the process
+lifetime RSS high-water mark sampled before report output, not the configured
+V8 heap limit; use a fresh process per project for memory comparisons.
+
+Programmatic callers can pass `analysisProfile: 'fast'` or
+`taintCallGraph: 'rta'` to `runHapflowAnalysis`. Batch CLI runs accept the same
+options; the isolated batch runner forwards them after `--`.
+
+See [large-project performance measurements](docs/performance_modes_20260928.md)
+for the tested environment, stage timings and mode comparisons.
+
 | Option | Meaning |
 |---|---|
 | `--sdkPath <dir>` | OpenHarmony SDK `ets` directory |
 | `--output-dir <dir>` | output directory |
 | `--no-dot` | skip DOT generation |
 | `--no-taint` | detector/call-chain/sink analysis only |
-| `--no-pta` | disable pointer analysis; use for ablation only |
+| `--analysis-profile <precise\|fast>` | select PTA or RTA for taint analysis |
+| `--taint-call-graph <pta\|rta\|cha>` | explicitly select taint call-target analysis |
+| `--no-pta` | legacy alias for CHA-based taint analysis without PTA |
 | `--ifds-max-edges <n>` | IFDS edge limit |
 | `--ifds-max-worklist <n>` | IFDS worklist limit |
 | `--ifds-timeout-ms <n>` | IFDS timeout |

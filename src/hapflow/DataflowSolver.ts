@@ -28,7 +28,8 @@ import { Logger, LOG_MODULE_TYPE } from '../arkanalyzer';
 import { TaintFact } from './TaintFact';
 import { AnalysisWorklist } from './AnalysisWorklist';
 import { Local } from '../arkanalyzer';
-import { ArkArrayRef, ArkInstanceFieldRef, ArkParameterRef } from '../arkanalyzer';
+import { ArkArrayRef, ArkInstanceFieldRef, ArkStaticFieldRef, ArkParameterRef } from '../arkanalyzer';
+import { MultiRef } from './MuiltiRef';
 import { ClassType, FunctionType } from '../arkanalyzer';
 import { PointerAnalysis } from '../arkanalyzer';
 import { CallGraphBuilder } from '../arkanalyzer';
@@ -77,6 +78,8 @@ export abstract class DataflowSolver<D extends object> {
     protected summaryEdge: Set<PathEdge<D>>;
     protected scene: Scene;
     protected CG!: ClassHierarchyAnalysis | RapidTypeAnalysis;
+    private configuredCallAnalysis?: ClassHierarchyAnalysis | RapidTypeAnalysis;
+    private rtaTargets = new WeakMap<Stmt, ArkMethod[]>();
     protected stmtNexts: Map<Stmt, Set<Stmt>>;
     protected pointerAnalysis: PointerAnalysis | undefined;
 
@@ -138,6 +141,11 @@ export abstract class DataflowSolver<D extends object> {
         };
     }
 
+    public setCallGraphAnalysis(analysis: ClassHierarchyAnalysis | RapidTypeAnalysis): void {
+        if (analysis.getScene() !== this.scene) throw new Error('Call graph and solver must share the same Scene');
+        this.configuredCallAnalysis = analysis;
+    }
+
     public solve() {
         this.startTime = Date.now();
         this.edgesProcessed = 0;
@@ -149,6 +157,7 @@ export abstract class DataflowSolver<D extends object> {
         this.exactIncoming = new WeakMap();
         this.pointerCallsites = new WeakMap();
         this.receiverAssignments = new WeakMap();
+        this.rtaTargets = new WeakMap();
         this.init();
         this.doSolve();
         if (this.budgetExceeded) {
@@ -176,7 +185,7 @@ export abstract class DataflowSolver<D extends object> {
         // Resolve calls on demand, as in HapFlow's reference solver. Building a
         // separate graph here loses edges from the synthetic DummyMain.
         let callGraph = new CallGraph(this.scene);
-        this.CG = new ClassHierarchyAnalysis(this.scene, callGraph);
+        this.CG = this.configuredCallAnalysis || new ClassHierarchyAnalysis(this.scene, callGraph);
 
         this.buildStmtMapInClass();
         this.setCfg4AllStmt();
@@ -370,19 +379,21 @@ export abstract class DataflowSolver<D extends object> {
             return this.getActualCalleesFromParams(callNode, refined);
         }
 
-        const callerMethod = callNode.getCfg()?.getDeclaringMethod();
-        const callerNode = callerMethod
-            ? this.CG.getCallGraph().getCallGraphNodeByMethod(callerMethod.getSignature())
-            : this.CG.getCallGraph().getCallGraphNodeByMethod(this.problem.getEntryMethod().getSignature());
-        const callSites = this.CG.resolveCall(callerNode.getID(), callNode);
-        let methods: Set<ArkMethod> = new Set();
-        for (const callSite of callSites) {
-            const method = this.scene.getMethod(this.CG.getCallGraph().getMethodByFuncID(callSite.calleeFuncID)!);
-            if (method && !paramFuncs.includes(method)) {
-                methods.add(method);
+        let targets = this.CG instanceof RapidTypeAnalysis ? this.rtaTargets.get(callNode) : undefined;
+        if (!targets) {
+            const callerMethod = callNode.getCfg()?.getDeclaringMethod();
+            const callerNode = this.CG.getCallGraph().getCallGraphNodeByMethod(
+                (callerMethod || this.problem.getEntryMethod()).getSignature());
+            targets = [];
+            for (const callSite of this.CG.resolveCall(callerNode.getID(), callNode)) {
+                const signature = this.CG.getCallGraph().getMethodByFuncID(callSite.calleeFuncID);
+                const method = signature ? this.scene.getMethod(signature) : null;
+                if (method) targets.push(method);
             }
+            // The configured RTA has already reached its allocation fixed point.
+            if (this.CG instanceof RapidTypeAnalysis) this.rtaTargets.set(callNode, targets);
         }
-
+        let methods = new Set(targets.filter(method => !paramFuncs.includes(method)));
         methods = this.refineByReceiverDefinitions(callNode, methods);
         methods = this.getActualCalleesFromParams(callNode, methods);
         return methods;
@@ -575,9 +586,28 @@ export abstract class DataflowSolver<D extends object> {
         const endSource = (edge.edgeEnd.fact as any)?.getSourceIdentityKey?.() ?? 'unseeded';
         const startNode = this.objectKey(edge.edgeStart.node);
         const endNode = this.objectKey(edge.edgeEnd.node);
-        const startFact = this.objectKey(startValue);
-        const endFact = this.objectKey(endValue);
-        return `${startNode}|${startFact}|${startSource}|${endNode}|${endFact}|${endSource}`;
+        const startFact = this.valueKey(startValue);
+        const endFact = this.valueKey(endValue);
+        const startState = (edge.edgeStart.fact as any)?.getCarrierState?.() ?? '';
+        const endState = (edge.edgeEnd.fact as any)?.getCarrierState?.() ?? '';
+        return JSON.stringify([startNode, startFact, startSource, startState, endNode, endFact, endSource, endState]);
+    }
+
+    private valueKey(value: unknown): string {
+        // Transfer functions recreate refs; local identities still distinguish scopes.
+        if (value instanceof ArkStaticFieldRef) {
+            return JSON.stringify(['static', value.getFieldSignature().toString()]);
+        }
+        if (value instanceof ArkInstanceFieldRef) {
+            return JSON.stringify(['field', this.objectKey(value.getBase()), value.getFieldSignature().toString()]);
+        }
+        if (value instanceof ArkArrayRef) {
+            return JSON.stringify(['array', this.objectKey(value.getBase()), value.toString()]);
+        }
+        if (value instanceof MultiRef) {
+            return JSON.stringify(['path', this.objectKey(value.getBase()), value.getFieldSignatures().map(s => s.toString())]);
+        }
+        return this.objectKey(value);
     }
 
     protected edgePointEqual(left: PathEdgePoint<D>, right: PathEdgePoint<D>): boolean {
@@ -765,12 +795,8 @@ export abstract class DataflowSolver<D extends object> {
         const invokeStmt = callEdgePoint.node as ArkInvokeStmt;
         let callees = this.getCallees(invokeStmt);
         let returnSite: Stmt = this.getReturnSiteOfCall(callEdgePoint.node);
-        for (let cacheEdge of this.summaryEdge) {
-            if (this.edgePointEqual(cacheEdge.edgeStart, edge.edgeEnd) && cacheEdge.edgeEnd.node === returnSite) {
-                this.propagate(new PathEdge<D>(start, cacheEdge.edgeEnd));
-                return;
-            }
-        }
+        // Reuse every matching exit summary in callNodeFactPropagate. A cache
+        // hit must not bypass other return facts or call-to-return transfer.
         for (let callee of callees) {
             let callFlowFunc: FlowFunction<D> = this.problem.getCallFlowFunction(invokeStmt, callee);
             if (!callee || !callee.getCfg()) {
@@ -810,9 +836,8 @@ export abstract class DataflowSolver<D extends object> {
             let returnFlowFunc = this.problem.getExitToReturnFlowFunction(exitEdgePoint.node, returnSite, callEdgePoint.node);
             for (let returnFact of returnFlowFunc.getDataFacts(exitEdgePoint.fact)) {
                 const returnPoint = new PathEdgePoint<D>(returnSite, returnFact);
-                if (this.addSummary(new PathEdge<D>(edge.edgeEnd, returnPoint))) {
-                    this.propagateIfExitCalled(callEdgePoint, returnPoint);
-                }
+                this.addSummary(new PathEdge<D>(edge.edgeEnd, returnPoint));
+                this.propagate(new PathEdge<D>(edge.edgeStart, returnPoint));
             }
         }
     }

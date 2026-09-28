@@ -254,6 +254,11 @@ export interface TaintFlowLink {
 
 export interface TaintAnalysisMetadata {
     status: "SUCCESS" | "PARTIAL_SUCCESS";
+    callGraph?: {
+        algorithm: import('./analysisConfiguration').TaintCallGraphMode;
+        ptaContextDepth?: number;
+    };
+    performance?: import('./analysisMetrics').AnalysisPerformance;
     catalogBindings?: {
         detectedUsages: number;
         boundUsages: number;
@@ -314,6 +319,11 @@ export interface ArkPrismOutput {
     projectName: string;
     projectDirectory: string;
     analysisTimestamp: string;
+    analysisConfiguration?: import('./analysisConfiguration').AnalysisConfiguration & {
+        taintEnabled: boolean;
+        auditCallGraph: 'rta' | 'cha' | 'skipped' | 'failed';
+    };
+    performance?: import('./analysisMetrics').AnalysisPerformance;
     sdk: {
         path: string;
         apiVersion: string;

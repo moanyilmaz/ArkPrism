@@ -11,7 +11,9 @@ const { Json2ArkMethodSignature, acceptsSourceArity, callSource } = require('../
 const { AnalysisWorklist } = require('../dist/hapflow/AnalysisWorklist');
 const { TaintFact } = require('../dist/hapflow/TaintFact');
 const { ArkInvokeStmt, ArkInstanceInvokeExpr, Local, MethodSignature, MethodSubSignature,
-  ClassSignature, FileSignature, VoidType } = require('../dist/arkanalyzer');
+  ClassSignature, FileSignature, VoidType, FieldSignature, StringType, ArkInstanceFieldRef,
+  ArkStaticFieldRef, PathEdge, PathEdgePoint } = require('../dist/arkanalyzer');
+const { MultiRef } = require('../dist/hapflow/MuiltiRef');
 const root = path.resolve(__dirname, '..');
 const sdk = process.env.OPENHARMONY_SDK_PATH;
 assert.ok(sdk && fs.existsSync(sdk), 'Set OPENHARMONY_SDK_PATH to an installed SDK');
@@ -58,7 +60,7 @@ assert.strictEqual(callSource(callbackCall, legacyChecker.getSources(), scene)?.
 const expected = { filePositive: true, fileDescriptorNegative: false, repeatedCallsPositive: true, fieldPositive: true, fieldKilled: false, settingsPositive: true,
   sensorPositive: true, sensorNegative: false, httpPositive: true,
   httpFactoryNegative: false, pasteboardErrorNegative: false,
-  unrelatedObjectNegative: false, objectFieldPositive: true };
+  unrelatedObjectNegative: false, objectFieldPositive: true, multipleSummaryPositive: true };
 for (const [name, positive] of Object.entries(expected)) {
   const method = scene.getMethods().find(m => m.getName() === name);
   assert.ok(method, name);
@@ -73,6 +75,7 @@ for (const [name, positive] of Object.entries(expected)) {
   console.log(name, checker.getOutcome().map(f => f.getPath().map(s => s.toString())));
   assert.strictEqual(checker.getOutcome().length > 0, positive, name);
   if (name === 'repeatedCallsPositive') assert.strictEqual(checker.getOutcome().length, 2, 'Both callers must receive the cached return flow');
+  if (name === 'multipleSummaryPositive') assert.strictEqual(checker.getOutcome().length, 4, 'Both callsites must receive both source identities');
 }
 
 // Compare scheduling against the previous array policy over a deterministic mixed workload.
@@ -141,4 +144,32 @@ assert.strictEqual(fact.getPath().length, 1, 'Sink reporting must not mutate a p
 const savedPath = [...sinkChecker.getOutcome()[0].getPath()];
 fact.addPath(sinkStmts[sinkStmts.length - 1]);
 assert.deepStrictEqual(sinkChecker.getOutcome()[0].getPath(), savedPath, 'Reported endpoints must remain stable');
+
+const field = new FieldSignature('payload', sinkMethod.getDeclaringArkClass().getSignature(), StringType.getInstance());
+const refSolver = new TaintAnalysisSolver(legacyChecker, scene);
+const startPoint = new PathEdgePoint(sinkStmts[0], legacyChecker.getZeroValue());
+const keyFor = (value, evidence, state = 'value') => refSolver.edgeKey(new PathEdge(startPoint,
+  new PathEdgePoint(logStmt, new TaintFact(value, [], evidence, state))));
+for (const make of [
+  () => new ArkInstanceFieldRef(dataValue, field),
+  () => new ArkStaticFieldRef(field),
+  () => new MultiRef(dataValue, [field])
+]) {
+  assert.ok(legacyChecker.factEqual(new TaintFact(make()), new TaintFact(make())));
+  assert.strictEqual(keyFor(make()), keyFor(make()), 'Equivalent refs must share a deduplication key');
+}
+assert.notStrictEqual(keyFor(new ArkInstanceFieldRef(dataValue, field)),
+  keyFor(new ArkInstanceFieldRef(new Local(dataValue.getName()), field)), 'Distinct receiver scopes must stay distinct');
+assert.notStrictEqual(keyFor(dataValue, undefined, 'value'), keyFor(dataValue, undefined, 'promise_payload'));
+const origin = TaintFact.createSourceEvidence(sinkStmts[0], 'privacy_data', 'return', 'test.source', {});
+const otherOrigin = TaintFact.createSourceEvidence(logStmt, 'privacy_data', 'return', 'test.source', {});
+assert.notStrictEqual(keyFor(dataValue, origin), keyFor(dataValue, otherOrigin));
+refSolver.setBudgetOptions({ maxEdges: 8, maxWorkList: 8, maxMillis: 10000 });
+refSolver.startTime = Date.now();
+for (let i = 0; i < 1000; i++) {
+  const point = new PathEdgePoint(i % 2 ? logStmt : sinkStmts[0], new TaintFact(new ArkInstanceFieldRef(dataValue, field)));
+  refSolver.propagate(new PathEdge(startPoint, point));
+}
+assert.strictEqual(refSolver.getStats().edgesProcessed, 2, 'Recreated refs in a cycle must converge');
+assert.strictEqual(refSolver.getStats().budgetExceeded, false);
 console.log('Catalog source binding, flow endpoints, SDK sinks, optional arguments and queue scheduling verified.');

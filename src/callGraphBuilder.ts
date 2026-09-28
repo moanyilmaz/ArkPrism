@@ -79,7 +79,7 @@ export function getEntryType(methodName: string): "user_interaction" | "componen
  *   4. Fallback to CHA if RTA fails
  *   5. Augment with lifecycle state machine transitions (intra-layer + cross-layer)
  */
-export function buildCallGraph(scene: Scene): CallGraph {
+export function buildCallGraph(scene: Scene, onAlgorithm?: (algorithm: 'rta' | 'cha') => void): CallGraph {
     console.log("[CALLGRAPH] Building call graph with lifecycle state machine...");
 
     // Build lifecycle model
@@ -96,11 +96,13 @@ export function buildCallGraph(scene: Scene): CallGraph {
     try {
         console.log("[CALLGRAPH] Attempting RTA call graph construction...");
         callGraph = scene.makeCallGraphRTA(entryPoints);
+        onAlgorithm?.('rta');
         console.log(`[CALLGRAPH] RTA call graph built. Nodes: ${callGraph.getNodeNum()}`);
     } catch (e) {
         console.log(`[CALLGRAPH] RTA failed: ${e}. Falling back to CHA...`);
         try {
             callGraph = scene.makeCallGraphCHA(entryPoints);
+            onAlgorithm?.('cha');
             console.log(`[CALLGRAPH] CHA call graph built. Nodes: ${callGraph.getNodeNum()}`);
         } catch (e2) {
             throw new Error(`[CALLGRAPH] All call graph strategies failed: ${e2}`);

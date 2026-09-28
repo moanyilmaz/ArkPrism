@@ -21,8 +21,11 @@ import { buildLifecycleDummyMain } from './lifecycleDummyMain';
 import { LifecycleModeler } from './lifecycleModeler';
 import * as path from 'path';
 import { readOpenHarmonySdkInfo } from './sdkInfo';
+import { AnalysisConfigurationInput, resolveAnalysisConfiguration } from './analysisConfiguration';
+import { AnalysisTimer } from './analysisMetrics';
+import { buildTaintRta } from './hapflow/callTargetAnalysis';
 
-export interface HapflowOptions {
+export interface HapflowOptions extends AnalysisConfigurationInput {
     privacyApiUsages?: PrivacyDataApiResult[];
     privacyRules?: PrivacyPackageInfo[];
     noPta?: boolean;      // Skip pointer analysis (faster but less precise)
@@ -79,18 +82,24 @@ export function runHapflowAnalysis(
     scene: Scene,
     opts: HapflowOptions = {}
 ): HapflowAnalysisResult {
+    const configuration = resolveAnalysisConfiguration(opts);
+    const timer = new AnalysisTimer();
     console.log('[HAPFLOW] Starting IFDS taint analysis...');
+    console.log(`[HAPFLOW] Call target mode: ${configuration.taintCallGraph}`);
+    const finishBinding = timer.start('sourceBinding');
     const catalogBindings = opts.privacyApiUsages && opts.privacyRules
         ? bindCatalogSources(scene, opts.privacyApiUsages, opts.privacyRules) : undefined;
     if (catalogBindings) {
         const stats = catalogBindings.stats;
         console.log(`[HAPFLOW] Catalog source binding: ${stats.boundUsages}/${stats.detectedUsages} usages, ${stats.propertyUsages} properties, ${stats.unresolved.length} unresolved`);
     }
+    finishBinding();
 
     // 1. Load SDK files for source/sink resolution
     const sdk = readOpenHarmonySdkInfo(opts.sdkPath || process.env.OPENHARMONY_SDK_PATH || '');
     const sdkPath = sdk.path;
 
+    const finishSdk = timer.start('sdkLoading');
     const existingSdkFiles = scene.getSdkArkFiles().length;
     if (existingSdkFiles === 0) {
         console.log(`[HAPFLOW] Loading OpenHarmony API ${sdk.apiVersion} SDK files from: ${sdkPath}`);
@@ -103,16 +112,20 @@ export function runHapflowAnalysis(
         console.log(`[HAPFLOW] SDK files already loaded: ${existingSdkFiles}`);
     }
 
+    finishSdk();
+    const finishLifecycle = timer.start('taintLifecycle');
     // 2. Build lifecycle-aware DummyMain (virtual entry method with lifecycle state machine)
     const lifecycleModeler = new LifecycleModeler(scene);
     const lifecycleModel = lifecycleModeler.buildModel();
     const { dummyMain: entry, modeler: creater } = buildLifecycleDummyMain(scene, lifecycleModel);
     console.log('[HAPFLOW] Lifecycle-aware DummyMain created.');
+    finishLifecycle();
 
     // 3. Optional pointer analysis for alias resolution
     let pta: PointerAnalysis | undefined = undefined;
     let rejectedContainerFieldEdges = 0;
-    if (!opts.noPta) {
+    const finishTargets = timer.start('taintCallGraph');
+    if (configuration.taintCallGraph === 'pta') {
         try {
             console.log('[HAPFLOW] Running pointer analysis...');
             let ptaConfig = PointerAnalysisConfig.create(2, './out');
@@ -124,8 +137,11 @@ export function runHapflowAnalysis(
             throw new Error(`Pointer analysis failed: ${message}`);
         }
     } else {
-        console.log('[HAPFLOW] Pointer analysis skipped (--no-pta).');
+        console.log(`[HAPFLOW] Pointer analysis skipped (explicit ${configuration.taintCallGraph} mode).`);
     }
+    const rta = configuration.taintCallGraph === 'rta' ? buildTaintRta(scene, entry) : undefined;
+    finishTargets();
+    const finishRules = timer.start('sourceSinkSetup');
 
     // 4. Configure taint analysis problem
     const cfg = entry.getCfg();
@@ -163,6 +179,8 @@ export function runHapflowAnalysis(
     if (problem.getSources().size === 0 && problem.getSinks().length === 0) {
         throw new Error('No IFDS sources or sinks resolved from the configured SDK');
     }
+    finishRules();
+    const finishIfds = timer.start('ifds');
 
     // 5. Execute IFDS analysis. By default all sources are analyzed in one solver
     // run to preserve cross-source/context precision; explicit batching remains
@@ -214,6 +232,7 @@ export function runHapflowAnalysis(
         // Solve this batch
         try {
             const batchSolver = new TaintAnalysisSolver(batchProblem, scene, pta);
+            if (rta) batchSolver.setCallGraphAnalysis(rta);
 
             // Set budget options for the solver
             batchSolver.setBudgetOptions({
@@ -253,6 +272,8 @@ export function runHapflowAnalysis(
     }
 
     console.log(`[HAPFLOW] IFDS complete: flows=${ifdsOutcomes.length}, totalEdges=${totalIfdsEdges}${ifdsBudgetExceeded ? ' [PARTIAL]' : ''}`);
+    finishIfds();
+    const finishCallback = timer.start('callbackSupplement');
 
     // 5b. Execute direct callback data flow analysis. Enabled by default because
     // ArkTS privacy data often crosses callback and Promise boundaries that IFDS
@@ -271,6 +292,7 @@ export function runHapflowAnalysis(
         problem.analyzeCallbackDataFlows();
         callbackOutcomes = problem.getOutcome();
     }
+    finishCallback();
 
     // 6. Convert and deduplicate results across the IFDS and callback engines.
     const finalStatus = ifdsBudgetExceeded || problem.wasCallbackBudgetExceeded()
@@ -290,10 +312,15 @@ export function runHapflowAnalysis(
         flows: uniqueFlows,
         metadata: {
             status: finalStatus,
+            callGraph: {
+                algorithm: configuration.taintCallGraph,
+                ptaContextDepth: configuration.taintCallGraph === 'pta' ? 2 : undefined,
+            },
+            performance: timer.snapshot(),
             catalogBindings: catalogBindings?.stats,
             pointerAnalysis: {
-                requested: !opts.noPta,
-                status: opts.noPta ? 'SKIPPED' : 'SUCCESS',
+                requested: configuration.taintCallGraph === 'pta',
+                status: configuration.taintCallGraph === 'pta' ? 'SUCCESS' : 'SKIPPED',
                 rejectedContainerFieldEdges
             },
             ifds: {
